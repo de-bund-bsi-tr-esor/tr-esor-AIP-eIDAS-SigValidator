@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xaip="http://www.bsi.bund.de/tr-esor/xaip/1.2"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:ds="http://www.w3.org/2000/09/xmldsig#"
+	xmlns:xades="http://uri.etsi.org/01903/v1.3.2#"
+	xmlns:ers="urn:ietf:params:xml:ns:ers"
+	xmlns:vr="urn:oasis:names:tc:dss-x:1.0:profiles:verificationreport:schema#"
+	xmlns:dss="urn:oasis:names:tc:dss:1.0:core:schema"
+	xmlns:ec="http://www.bsi.bund.de/ecard/api/1.1"
+	xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion"
+	xmlns:xbarch="http://www.xbarch.de"
+	xmlns:xml="http://www.w3.org/XML/1998/namespace"
+	targetNamespace="http://www.bsi.bund.de/tr-esor/xaip/1.2"
+	elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:include schemaLocation="tr-esor-xaip-v1.2.xsd" />
+	<xs:import namespace="http://www.xbarch.de"
+		schemaLocation="./deps/xbarch/xbarch_1_4_3_wrapper.xsd" />
+
+	<!-- ======================================= -->
+	<!-- Version 1.2 vom 31.01.2015             -->
+	<!-- ======================================= -->
+
+	<xs:complexType name="TechnischeMetadatenTyp">
+		<xs:annotation>
+			<xs:documentation>
+				Die technischen Metadaten bezogen auf eine Version von
+				XAIP.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element ref="xbarch:Technische_Daten">
+				<xs:annotation>
+					<xs:documentation>
+						Technische Beschreibung der Objekte (basierend
+						auf PREMIS) und aller Massnahmen für deren
+						Langzeitspeicherung/Archivierung (PREMIS
+						Homepage: http://www.loc.gov/standards/premis/)
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ZusatzTechnischeDaten" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:any namespace="info:lc/xmlns/premis-v2"
+							maxOccurs="unbounded" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="TechMetadatenID" type="xs:ID"
+			use="optional">
+			<xs:annotation>
+				<xs:documentation>
+					Eindeutige ID für dieses Objekt.
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:element name="TechnischeMetadaten"
+		type="xaip:TechnischeMetadatenTyp" />
+</xs:schema>

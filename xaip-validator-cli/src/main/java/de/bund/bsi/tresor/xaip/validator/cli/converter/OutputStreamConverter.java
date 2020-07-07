@@ -6,7 +6,7 @@ import java.io.OutputStream;
 
 import com.beust.jcommander.IStringConverter;
 
-import de.bund.bsi.tresor.xaip.validator.api.XAIPValidatorException;
+import de.bund.bsi.tresor.xaip.validator.api.entity.XAIPValidatorException;
 
 /**
  * @author wolffs

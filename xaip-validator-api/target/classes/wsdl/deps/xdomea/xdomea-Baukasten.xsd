@@ -1,0 +1,1488 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xdomea="http://www.xdomea.de/V2.2.0" xmlns:udt="urn:un:unece:uncefact:data:standard:UnqualifiedDataType:2" targetNamespace="http://www.xdomea.de/V2.2.0" version="2.2.0" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <xs:annotation>
+    <xs:documentation>Der Baukasten beinhaltet alle projektspezifischen Komponenten, die entweder aus XÖV-Kernkomponenten abgeleitet sind oder für das Projekt erstellt wurden.</xs:documentation>
+  </xs:annotation>
+  <xs:include schemaLocation="xdomea-Datentypen.xsd" />
+  <xs:import schemaLocation="UnqualifiedDataType_2p0.xsd" namespace="urn:un:unece:uncefact:data:standard:UnqualifiedDataType:2" />
+  <xs:complexType name="AkteType">
+    <xs:annotation>
+      <xs:documentation>Akte enthält die Metadatenfelder für den Austausch von Akten einschließlich der archivspezifischen Metadaten, anwendungsspezifischer Metadaten, Historien- und Protokollinformationen sowie Informationen zum internen Geschäftsgang. Die absendende Behörde kann festlegen, welche Informationen dem Empfänger mit der Übertragung zur Verfügung gestellt werden sollen. So kann auch der Anforderung nach einer ggf. erforderlichen Beschränkung der übertragenen Metadaten Rechnung getragen werden (z. B. auf Grund datenschutzrechtlicher oder sonstiger gesetzlicher Bestimmungen).</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="Identifikation" type="xdomea:IdentifikationSGOType">
+        <xs:annotation>
+          <xs:documentation>Über Identifikation werden zur systemübergreifend eindeutigen Identifizierung der Akte spezifische Merkmale übergeben.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="AllgemeineMetadaten" minOccurs="0" type="xdomea:AllgemeineMetadatenType">
+        <xs:annotation>
+          <xs:documentation>Über AllgemeineMetadaten werden allgemeine Metadaten zu einer Akte angegeben.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="ArchivspezifischeMetadaten" minOccurs="0" type="xdomea:MetadatenAussonderungType">
+        <xs:annotation>
+          <xs:documentation>Über ArchivspezifischeMetadaten werden die für die Archivierung und Aussonderung relevanten Metadaten zu einer Akte angegeben.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Standort" minOccurs="0" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Der Aufbewahrungsort der Akte.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Typ" minOccurs="0" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Die weitere Spezifikation der Akte, um u. a. Recherche durchzuführen oder um zusätzliche Metadaten festzulegen. Beispiele sind Bauakte oder auch Personalakte.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Laufzeit" minOccurs="0" type="xdomea:ZeitraumType">
+        <xs:annotation>
+          <xs:documentation>Die Laufzeit der Akte, d.h. Zeitpunkt des Beginns und des Endes.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="HistorienProtokollInformation" minOccurs="0" maxOccurs="unbounded" type="xdomea:HistorienProtokollInformationType">
+        <xs:annotation>
+          <xs:documentation>Über HistorienProtokollInformation werden die zur Historisierung und Protokollierung relevanten Metadaten zu einer Akte angegeben, in der die Veränderungen an den beschreibenden Attributen und dem Zustand der Akte erfasst werden.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="InternerGeschaeftsgang" minOccurs="0" type="xdomea:GeschaeftsgangType">
+        <xs:annotation>
+          <xs:appinfo>
+            <implementationHint>Der interne Geschäftsgang kann nach organisatorischer Absprache zwischen den austauschenden Systemen genutzt werden, ist aber nicht verpflichtender Bestandteil von xdomea 2.</implementationHint>
+          </xs:appinfo>
+          <xs:documentation>Über InternerGeschaeftsgang wird der Akte zum Nachweis des internen Geschäftsgangs eine spezifische Ausprägung eines Geschäftsgangs zugeordnet.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Akteninhalt" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Die Sachverhalte in der Akte sind inhaltlich mittels üblicher Akteninhalte wie z. B. Vorgänge abgegrenzt.</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+          <xs:choice>
+            <xs:element name="Dokument" minOccurs="0" maxOccurs="unbounded" type="xdomea:DokumentType">
+              <xs:annotation>
+                <xs:documentation>Ein Dokument, das hierachisch in die Akte eingebunden bzw. der Akte untergeordnet ist.</xs:documentation>
+              </xs:annotation>
+            </xs:element>
+            <xs:element name="Vorgang" minOccurs="0" maxOccurs="unbounded" type="xdomea:VorgangType">
+              <xs:annotation>
+                <xs:documentation>Ein Vorgang, der hierachisch in die Akte eingebunden bzw. der Akte untergeordnet ist.</xs:documentation>
+              </xs:annotation>
+            </xs:element>
+          </xs:choice>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="Verweis" minOccurs="0" maxOccurs="unbounded" type="xdomea:VerweisType">
+        <xs:annotation>
+          <xs:documentation>Über einen Verweis wird eine inhaltliche Querbeziehung der Akte zu einem anderen Schriftgutobjekt dargestellt.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Kontakt" minOccurs="0" maxOccurs="unbounded" type="xdomea:KontaktType">
+        <xs:annotation>
+          <xs:documentation>Eine Kontaktinformation zu einem Geschäftsprozessbeteiligten.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Teilakte" minOccurs="0" maxOccurs="unbounded" type="xdomea:AkteType">
+        <xs:annotation>
+          <xs:appinfo>
+            <implementationHint>An dieser Stelle ist nur eine Hierarchiestufe durch xdomea 2 verpflichtend.</implementationHint>
+          </xs:appinfo>
+          <xs:documentation>Über diese Eigenschaft wird eine Teilakte hierarchisch in eine Akte eingebunden bzw. einer Akte untergeordnet.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="AnwendungsspezifischeErweiterung" minOccurs="0" type="xdomea:AnwendungsspezifischeErweiterungType">
+        <xs:annotation>
+          <xs:appinfo>
+            <implementationHint>Die Speicherung der nicht-auflösbaren Daten beim Empfang erfolgt in einer XML-Datei zum Schriftgutobjekt im empfangenden System. Die Umsetzung muss systemspezifisch gelöst werden - hierbei muss durch das System sichergestellt sein, dass die empfangenen Informationen nicht verloren gehen.</implementationHint>
+          </xs:appinfo>
+          <xs:documentation>Über AnwendungsspezifischeErweiterung können über die in xdomea 2 konkret definierten Metadaten hinaus weiterführende Metadaten, z. B. fachspezifischer Natur, zu einer Akte angegeben werden.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="AktenplanType">
+    <xs:annotation>
+      <xs:documentation>Der Aktenplan enthält ein aufgabenbezogenes mehrstufiges Ordnungssystem mit einer hierarchischer Gliederung für das Bilden und Kennzeichnen von Akten und Vorgängen sowie das Zuordnen von Dokumenten.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="Bezeichnung" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Der Name des Aktenplans.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Typ" minOccurs="0" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Der Typ des Aktenplans, z.B. Teilaktenplan.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Version" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Die Version des Aktenplans.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Einheit" minOccurs="0" maxOccurs="unbounded" type="xdomea:AktenplaneinheitAktenplanType">
+        <xs:annotation>
+          <xs:documentation>Die Einheit eines Aktenplans, die Auskunft über die hierarchische Stukturierung eines Aktenplans gibt. Eine Aktenplanheit entspricht z.B. einer Hauptgruppe, Obergruppe, Gruppe, Untergruppe oder Betreffseinheit.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Gueltigkeit" minOccurs="0" type="xdomea:ZeitraumType">
+        <xs:annotation>
+          <xs:documentation>Die Gültigkeit des Aktenplans mit Beginn und Ende.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Aktenplandatei" minOccurs="0" maxOccurs="unbounded" type="xdomea:FormatType">
+        <xs:annotation>
+          <xs:documentation>Die Datei zum Aktenplan als Primärdokument.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="AktenplaneinheitAktenplanType">
+    <xs:annotation>
+      <xs:documentation>Eine Aktenplaneinheit gibt Auskunft über die hierarchische Stukturierung eines Aktenplans. Eine Aktenplanheit entspricht z.B. einer Hauptgruppe, Obergruppe, Gruppe, Untergruppe oder Betreffseinheit.</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="xdomea:AktenplaneinheitType">
+        <xs:sequence>
+          <xs:element name="Aussonderungsart" type="xdomea:AussonderungsartCodeType">
+            <xs:annotation>
+              <xs:appinfo>
+                <implementationHint>Die Aussonderungsart vererbt sich auf alle unter einer Hierarchiestufe angelegten Schriftgutobjekte.</implementationHint>
+              </xs:appinfo>
+              <xs:documentation>Die Aussonderungsart gibt für eine Akte oder einen Vorgang das Ergebnis der archivischen Bewertung an. Mögliche Werte sind "Archivieren", "Bewerten" oder "Vernichten". Die Aussonderungsart wird vom Aktenplan (zweistufiges Aussonderungsverfahren) auf zugehörige Vorgänge und Dokumente vererbt.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element name="Stillgelegt" default="0" type="xs:boolean">
+            <xs:annotation>
+              <xs:documentation>Stillgelegt gibt an, ob eine Aktenplaneinheit inaktiv ist oder nicht. Der Grund für eine Stilllegung kann eintreten, wenn z.B. auf einen bestimmten Zeitpunkt hin der alte Aktenplan "stillgelegt" und der neue Aktenplan in Kraft tritt - aktive Einheiten werden dann in den neuen Aktenplan übernommen, stillgelegte werden abgeschlossen und nicht übernommen.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element name="Aufbewahrungsdauer" type="xs:integer">
+            <xs:annotation>
+              <xs:documentation>Die Aufbewahrungsdauer legt fest, wie viele Jahre eine Akte oder ein Vorgang nach der Verfügung zur Akte (zdA-Verfügung) innerhalb der aktenführenden Stelle aufzubewahren ist. Nach Ablauf der Aufbewahrungsfrist erfolgt die Aussonderung in Abhängigkeit von der Aussonderungsart.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element name="Einheit" minOccurs="0" maxOccurs="unbounded" type="xdomea:AktenplaneinheitAktenplanType">
+            <xs:annotation>
+              <xs:documentation>Eine Aktenplaneinheit, die hierarchisch einer anderen Aktenplaneinheit untergeordnet ist.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="AktenplaneinheitType">
+    <xs:annotation>
+      <xs:documentation>Die Aktenplaneinheit repräsentiert in dem aufgabenbezogenem Ordungssystem Aktenplan eine Aufgabe.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="Kennzeichen" minOccurs="0" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Das Kennzeichen einer Aktenplaneinheit.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Inhaltsangabe" minOccurs="0" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Die kurze Beschreibung der Aufgabe, die durch die Aktenplaneinheit repräsentiert wird.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="AllgemeineMetadatenType">
+    <xs:annotation>
+      <xs:documentation>AllgemeineMetadaten enthält die Metadaten, die der allgmeinen Charakterisierung eines Schriftgutobjektes dienen.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="Betreff" minOccurs="0" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Der Betreff des Schriftgutobjektes, z. B. für eine Akte der Aktentitel.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Kennzeichen" minOccurs="0" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Aus dem Aktenplan abgeleitete Kennung des Schriftgutobjektes zur Identifikation und Zuordnung zum Schriftgut in einer Behörde.
+Bei Akten ist das Kennzeichen das Aktenzeichen, es setzt sich zusammen aus dem zugehörigen Aktenplankennzeichen und einer eindeutigen Ordnungsnummer.
+Auf Vorgangsebene ist das Kennzeichen das Vorgangszeichen, das sich aus dem Aktenzeichen sowie einer zusätzlichen Nummer für den Vorgang zusammensetzt.
+Auf Dokumentebene wird als Kennzeichen das Geschäftszeichen verwendet. Dies besteht in der Regel aus dem Aktenzeichen resp. Vorgangskennzeichen, einer laufenden Nummer sowie der Organisationskurzbezeichnung der zuständigen Organisationseinheit.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Federfuehrung" minOccurs="0" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Die Organisationseinheit mit der Hauptverantwortung bzw. der Zuständigkeit für einen Geschäftsprozess.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Vertraulichkeitsstufe" minOccurs="0" type="xdomea:VertraulichkeitsstufeCodeType">
+        <xs:annotation>
+          <xs:documentation>Die Vertraulichkeitsstufe beschreibt, welche Kriterien z. B. für die Weitergabe und Veröffentlichung eines Schriftgutobjekts beachtet werden müssen. Mögliche Werte sind "Geheim", "NfD", "Offen", "Streng geheim" oder "Vertraulich".</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Bemerkung" minOccurs="0" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Zusätzliches Feld zur Übermittlung weiterer Informationen in einem konkreten Geschäftsprozess.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Medium" minOccurs="0" type="xdomea:MediumCodeType">
+        <xs:annotation>
+          <xs:documentation>Das Medium beschreibt, ob es sich um ein Papier- und/oder elektronisches Dokument handelt. Mögliche Werte sind "Papier", "Elektronisch" oder "Hybrid".</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Aktenplaneinheit" minOccurs="0" type="xdomea:AktenplaneinheitType">
+        <xs:annotation>
+          <xs:documentation>Die Aktenplaneinheit, dem das Schriftgutobjekt zugeordnet ist.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="AllgemeinerNameType">
+    <xs:annotation>
+      <xs:documentation>AllgemeinerName leitet sich von der entsprechenden XÖV-Kernkomponente ab. Er dient der Darstellung von Vor- und Nachnamen und fasst deren gemeinsame Eigenschaften zusammen.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="Name" minOccurs="0" type="udt:TextType">
+        <xs:annotation>
+          <xs:documentation>Der Name  ist der eigentliche Familien- oder Vorname als Zeichenkette.
+Nachnamen, z.B.  mit Adelstiteln bzw. ausländische Nachnamen werden als ein Name übermittelt und nicht in verschiedene Bestandteile aufgeteilt.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="AnlageDokumentType">
+    <xs:annotation>
+      <xs:documentation>AnlageDokument ist eine Erweiterung eines Dokuments zu einer Anlage mit einer entsprechenden Anlagennummer. Über sie werden andere Dokumente, die einem Dokument als Anlage zugeordnet werden, als solche gekennzeichnet.</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="xdomea:DokumentType">
+        <xs:sequence>
+          <xs:element name="Nummer" minOccurs="0" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Die fortlaufende Nummer eines Anlagendokuments zu einem Dokument.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="AnschriftType">
+    <xs:annotation>
+      <xs:documentation>Die Anschrift leitet sich von der entsprechenden XÖV-Kernkomponente ab. Sie beschreibt einen Ort mit den klassischen Ordnungsbegriffen wie Orts- und Straßennamen sowie ergänzenden Informationen wie z.B. Postfach.
+Eine Anschrift kann genutzt werden, um Orte zu benennen, an denen sich Personen aufhalten, an denen Objekte zu finden sind, oder an denen Ereignisse stattfinden. Darüber hinaus kann sie genutzt werden, um Post oder Waren zuzustellen. Daher enthält sie auch die notwendigen Attribute, um Postfächer zu adressieren.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="Staat" minOccurs="0" type="xdomea:StaatType">
+        <xs:annotation>
+          <xs:documentation>Der Staat, dem die Anschrift postalisch zugeordnet wird.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Strasse" minOccurs="0" type="udt:TextType">
+        <xs:annotation>
+          <xs:documentation>Die Straße enthält den Namen bzw. die Bezeichnung einer Straße.
+
+Eine Straße ist ein planmäßig angelegter, i. allg. befestigter Verkehrsweg innerhalb eines Ortes.
+
+Es soll möglichst der amtliche Straßenname aus einem offiziellen Straßenverzeichnis genutzt werden.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Hausnummer" minOccurs="0" type="udt:TextType">
+        <xs:annotation>
+          <xs:documentation>Eine Hausnummer dient der genauen Lokalisierung eines Grundstücks, Gebäudes oder Gebäudeteils (Eingang) in einer Strasse.
+Hausnummern können entsprechend der üblichen Praxis in vielen Gemeinden mit ergänzenden Angaben zur weiteren Unterteilung versehen werden, etwa "12a" oder "17 1/3".
+Da manche Gebäude oder Organisationen sich als Einheit über mehrere Hausnummern erstrecken, können auch Hausnummernbereiche angegeben werden, etwa "12a - 12e" oder "1 - 3".</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Postfach" minOccurs="0" type="udt:TextType">
+        <xs:annotation>
+          <xs:documentation>Ein Postfach (oft Postfachnummer) ist ein Schlüssel zur Identifikation eines Postfaches in einer Postfiliale.
+Eine Beschränkung auf numerische Postfachbezeichnungen wurde bewusst nicht vorgenommen.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Postleitzahl" minOccurs="0" type="udt:TextType">
+        <xs:annotation>
+          <xs:documentation>Eine Postleitzahl ist eine Angabe, um postalische Zustellgebiete unabhängig von Gebietskörperschaften (Gemeinde, Kreis, …) zu bezeichnen.
+In Deutschland sind durch Postleitzahlen bezeichnete Bereiche und verwaltungspolitische Grenzen in der Regel aufeinander abgestimmt. Größere Gemeinden und Städte sind häufig in mehrere Postleitzahlengebiete aufgeteilt. Postleitzahlen werden durch die Deutsche Post AG verwaltet.
+Eine Beschränkung auf deutsche Postleitzahlen (5-stellig) wurde bewusst nicht vorgenommen.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Ort" minOccurs="0" type="udt:TextType">
+        <xs:annotation>
+          <xs:documentation>Der Ort enthält den Namen eines Ortes (Gemeinde, Ortschaft oder Stadt).
+Als Ortsname sollte der amtliche Gemeindename genutzt werden.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Zusatz" minOccurs="0" type="udt:TextType">
+        <xs:annotation>
+          <xs:documentation>Ein Anschriftenzusatz beinhaltet ggf. erforderliche weitere Präzisierungen zu einer Anschrift.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Typ" minOccurs="0" type="xdomea:AnschriftstypCodeType">
+        <xs:annotation>
+          <xs:documentation>Im Typ wird beschrieben, um welche Art der Anschrift es sich handelt. Mögliche Werte sind "Aktuelle Anschrift", "Hauptsitz" oder "Zweitsitz".</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="AnwendungsspezifischeErweiterungType">
+    <xs:annotation>
+      <xs:documentation>AnwendungsspezifischeErweiterung enthält über die in xdomea 2 konkret definierten Metadaten weiterführende Metadaten, z. B. fachspezifischer Natur. Der anwendungsspezifschen Erweiterung können einzelne Felder und/oder Feldgruppen, in denen mehrere Felder zusammengefasst sind, zugeordnet werden.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="Kennung" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Das Identifikationskennzeichen der anwendungsspezifischen Erweiterung.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Name" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Der Name der anwendungsspezifischen Erweiterung.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Beschreibung" minOccurs="0" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Die textuelle Erläuterung zu einer anwendungsspezifischen Erweiterung.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Versionsnummer" minOccurs="0" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Die Versionsnummer der anwendungsspezifischen Erweiterung.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Versionsdatum" minOccurs="0" type="xs:date">
+        <xs:annotation>
+          <xs:documentation>Das Datum, an dem die Version der anwendungsspezifischen Erweiterung erstellt wurde.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Feldgruppe" minOccurs="0" maxOccurs="unbounded" type="xdomea:FeldgruppeType">
+        <xs:annotation>
+          <xs:documentation>Eine Feldgruppe, die der anwendungsspezifischen Erweiterung zugeordnet ist.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Feld" minOccurs="0" maxOccurs="unbounded" type="xdomea:FeldType">
+        <xs:annotation>
+          <xs:documentation>Ein Feld, das der anwendungsspezifischen Erweiterung zugeordnet ist.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="BearbeitungType">
+    <xs:annotation>
+      <xs:documentation>Die Erledigung eines Beteiligungsschrittes in einem Geschäftsgang.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="Bearbeiter" type="xdomea:KontaktType">
+        <xs:annotation>
+          <xs:appinfo>
+            <implementationHint>Wird ein Schritt durch den Bearbeiter eines vorhergehenden Schrittes als "übersprungen" markiert, so wird derjenige in dem übersprungenen Schritt auch als Bearbeiter geführt.</implementationHint>
+          </xs:appinfo>
+          <xs:documentation>Die spezifische Ausprägung eines Kontaktes, der die Informationen zum Bearbeiter des Beteiligungsschrittes enthält.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Datum" type="xs:date">
+        <xs:annotation>
+          <xs:documentation>Das Datum des Bearbeitungsabschlusses.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Uhrzeit" type="xs:time">
+        <xs:annotation>
+          <xs:documentation>Der Zeitpunkt des Bearbeitungsabschlusses.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Vermerk" minOccurs="0" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Eine Bemerkung auf einem Schriftgutobjekt, die den Geschäftsgang und die Bearbeitung steuert. Sie dient dem Nachvollziehen der Erledigung eines Geschäftsvorfalls. Im konkreten Fall von xdomea 2 ist hiermit die Bestätigung der Erledigung eines Beteiligungsschrittes im externen und internen Geschäftsgang gemeint.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Notiz" minOccurs="0" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Die ergänzende Anmerkung, die der Bearbeiter zum Beteiligungsschritt erfasst.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Anlage" minOccurs="0" maxOccurs="unbounded" type="xdomea:DokumentType">
+        <xs:annotation>
+          <xs:documentation>Ein Dokument, das der Bearbeiter des Beteiligungsschrittes dem Beteiligungsschritt z.B. als Stellungnahme beifügt.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="BehoerdenkennungType">
+    <xs:annotation>
+      <xs:documentation>Die Behördenkennung leitet sich von der entsprechenden XÖV-Kernkomponente ab. Sie fasst die Eigenschaften zusammen, unter denen eine Behörde verzeichnet ist. Sie besteht aus einem Präfix und der eigentlichen Kennung. Die XÖV-Kernkomponente wurde in ihrer Beschreibung so erweitert, dass neben DVDV auch andere Behördenkennungen möglich sind.
+Ein Beispiel für die Nutzung: Bei einer Identifikation von Behörden auf kommunaler Ebene anhand des amtlichen Gemeindeschlüssels  (AGS) der Gemeinde, für die die Behörde zuständig ist, lautet der Präfix "ags:", die Kennung ist dann der AGS der jeweiligen Gemeinde.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="Kennung" minOccurs="0" type="xdomea:CodeType">
+        <xs:annotation>
+          <xs:documentation>Schlüssel zur eindeutigen Identifikation einer Behörde. Die Kennung kennzeichnet eine Behörde ggf. innerhalb der durch den Präfix bezeichneten Klasse eindeutig.
+Im Zusammenhang mit dem DVDV wird die Kennung durch die koordinierende Stelle für das DVDV verwaltet. Die tatsächlich zu nutzende Codeliste kann an dieser Stelle nicht angegeben werden, da es voraussichtlich pro Präfix jeweils eine Codeliste der Kennungen der Behörden mit diesem Präfix geben wird. (Zum Beispiel die Codelste der Amtlichen Gemeindeschlüssel für die Behörden auf kommunaler Ebene, die anhand dieses Ordnungsmerkmals im DVDV verzeichnet sind und mit dem Präfix “ags:” adressiert werden. Eine andere zulässige Liste wäre die Codeliste der Kennungen aller Bundesbehörden, die jeweils mit dem Präfix “dbs:” zu versehen sind. Nach jetzigem Kenntnisstand kann nicht ausgeschlossen werden, dass Inhalte der Codelisten mit Kennungen für Behörden unterschiedlichen Typs immer disjunkt sind.)</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Praefix" minOccurs="0" type="xdomea:CodeType">
+        <xs:annotation>
+          <xs:documentation>Der Präfix bezeichnet eine Klasse von Behördenkennungen.
+Beispiel: So werden beispielsweise alle Behördenkennungen
+der Behörden, die anhand des amtlichen Gemeindeschlüssels (AGS) identifiziert
+werden können, den Präfix “ags”: erhalten.
+Die Liste der Präfixe für Behördenkennungen werden im Zusammenhang mit dem DVDV durch das Bundesverwaltungsamt als koordinierende Stelle für das DVDV verwaltet.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="BeteiligungsschrittType">
+    <xs:annotation>
+      <xs:documentation>Das Verwaltungshandeln an einem Schriftgutobjekt wird in dem zugehörigen Geschäftsgang protokolliert, der sich aus einzelnen Beteiligungsschritten zusammensetzt. Jeder Beteiligungsschritt hat einen Verfügungsteil, in dem der Bearbeitungsschritt festgelegt, und einen Bearbeitungsteil, in dem der Beteiligungsschritt bearbeitet wird.
+Die Beteiligungsschritte im Geschäftsgang werden fortlaufend nummeriert.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="Nummer" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Die Nummer des Beteiligungsschrittes innerhalb der fortlaufenden Nummerierung im Geschäftsgang.
+Die Nummerierung ist innerhalb eines xdomea-Geschäftsgangsobjekts eindeutig. Werden in den xdomea-Geschäftsgang neue Bearbeitungsschritte eingefügt, werden dementsprechend die Nummern der nachfolgenden Beteiligungsschritte verändert. Beteiligungsschritte, die abgeschlossen sind, sind unveränderlich.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Status" default="001" type="xdomea:BeteiligungsstatusCodeType">
+        <xs:annotation>
+          <xs:documentation>Der Status beschreibt den Fortschritt eines Beteiligungsschrittes. Mögliche Werte sind "zukuenftig" (Standard), "aktiv", "bearbeitet" oder "geloescht".</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Verfuegung" type="xdomea:VerfuegungType">
+        <xs:annotation>
+          <xs:documentation>Steuerungsinformation und Arbeitsanweisung bei der Bearbeitung eines Geschäftsvorfalls. Im konkreten Fall von xdomea 2 ist hier die Arbeitsanweisung für den Bearbeiter eines Beteiligungsschrittes im externen und internen Geschäftsgang gemeint.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Bearbeitung" minOccurs="0" type="xdomea:BearbeitungType">
+        <xs:annotation>
+          <xs:documentation>In der Bearbeitung sind die Informationen zum Bearbeitungsteil des Beteiligungsschrittes zusammengefasst.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="DokumentType">
+    <xs:annotation>
+      <xs:documentation>Dokument enthält die Metadatenfelder für den Austausch von Dokumenten einschließlich der archivspezifischen Metadaten, anwendungsspezifischer Metadaten, Historien- und Protokollinformationen sowie Informationen zum internen Geschäftsgang.
+In der Objekthierarchie des DOMEA®-Konzepts ist das Dokument die kleinste logische Einheit des Schriftguts. Es handelt sich um ein einzelnes Schriftstück, papiergebunden oder elektronisch erstellt und verwaltet. Zum Dokument gehören zudem alle ergänzenden Angaben (z. B. Metadaten), die zum Verständnis der Primärinformationen notwendig sind. 
+Der Begriff „Dokument“ entspricht nicht nur den ehemaligen Papierdokumenten, sondern kann daneben jede andere digitale Form von Informationen beinhalten. Es kann aus einem (zum Beispiel ein Bild oder ein Datensatz) oder mehreren Einzelobjekten (zum Beispiel mehrere Bilder, einer Datei mit integrierten Bildern, Text und Tabellen, gemischte Inhalte aus mehreren Quellen) bestehen.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="Identifikation" type="xdomea:IdentifikationSGOType">
+        <xs:annotation>
+          <xs:documentation>Über Identifikation werden zur systemübergreifend eindeutigen Identifizierung des Dokuments spezifische Merkmale übergeben.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="AllgemeineMetadaten" minOccurs="0" type="xdomea:AllgemeineMetadatenType">
+        <xs:annotation>
+          <xs:documentation>Über AllgemeineMetadaten werden allgemeine Metadaten zu einem Dokument angegeben.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="FremdesGeschaeftszeichen" minOccurs="0" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Das Geschäftszeichen des Dokuments im absendenden System, das im Zuge eines Nachrichtentransfers übermittelt wird.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Posteingangsdatum" minOccurs="0" type="xs:date">
+        <xs:annotation>
+          <xs:documentation>Das Posteingangsdatum eines Eingangsdokumentes. Es ist relevant beim Austausch von Dokumenten im Vorgangs- oder Aktenzusammenhang.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Postausgangsdatum" minOccurs="0" type="xs:date">
+        <xs:annotation>
+          <xs:documentation>Das Postausgangsdatum eines Ausgangsdokumentes. Es ist relevant beim Austausch von Dokumenten im Vorgangs- oder Aktenzusammenhang.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="DatumDesSchreibens" minOccurs="0" type="xs:date">
+        <xs:annotation>
+          <xs:documentation>Das Datum des Schreibens, z. B. das Datum eines Briefes. Es handelt sich nicht um das Erstellungs- oder Veränderungsdatum des Primärdokuments.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Bezug" minOccurs="0" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Der konkrete Bezug eines Dokuments, z.B. "Ihr Schreiben vom ..."</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Hier" minOccurs="0" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>"Hier" wird zur Konkretisierung des Betreffs verwendet. Auch als Unterbetreff bekannt.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Bearbeiter" minOccurs="0" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Die für die Bearbeitung zuständige Person.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Typ" minOccurs="0" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Der Dokumenttyp dient der weiteren Spezifikation des Dokumentes. Der Typ ist relevant beim Austausch von Dokumenten im Vorgangs- oder Aktenzusammenhang. Zulässige Werte sind z.B. Erlass, Vermerk, Bericht, Bescheid.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="HistorienProtokollInformation" minOccurs="0" maxOccurs="unbounded" type="xdomea:HistorienProtokollInformationType">
+        <xs:annotation>
+          <xs:documentation>Über HistorienProtokollInformation werden die zur Historisierung und Protokollierung relevanten Metadaten zu einem Dokument angegeben, in der die Veränderungen an den beschreibenden Attributen und dem Zustand des Dokumentes erfasst werden.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="InternerGeschaeftsgang" minOccurs="0" type="xdomea:GeschaeftsgangType">
+        <xs:annotation>
+          <xs:appinfo>
+            <implementationHint>Der interne Geschäftsgang kann nach organisatorischer Absprache zwischen den austauschenden Systemen genutzt werden, ist aber nicht verpflichtender Bestandteil von xdomea 2.</implementationHint>
+          </xs:appinfo>
+          <xs:documentation>Die spezifische Ausprägung eines Geschäftsgangs, über die der interne Geschäftsgang am Dokument nachgewiesen wird.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Version" minOccurs="0" maxOccurs="unbounded" type="xdomea:VersionType">
+        <xs:annotation>
+          <xs:documentation>Über eine Version wird ein bestimmter Bearbeitungszustand zu einem Dokument im Rahmen der Versionierung des Dokumentes abgebildet.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Verweis" minOccurs="0" maxOccurs="unbounded" type="xdomea:VerweisType">
+        <xs:annotation>
+          <xs:documentation>Über einen Verweis wird eine inhaltliche Querbeziehung des Dokuments zu einem anderen Schriftgutobjekt dargestellt.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Anlage" minOccurs="0" maxOccurs="unbounded" type="xdomea:AnlageDokumentType">
+        <xs:annotation>
+          <xs:documentation>Ein dem Dokument zugeordnetes Anlagendokument.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Absender" minOccurs="0" maxOccurs="unbounded" type="xdomea:KontaktType">
+        <xs:annotation>
+          <xs:documentation>Die spezifische Ausprägung eines Kontakts, der die Informationen zum Absender des Dokumentes enthält.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Empfaenger" minOccurs="0" maxOccurs="unbounded" type="xdomea:KontaktType">
+        <xs:annotation>
+          <xs:documentation>Die spezifische Ausprägung eines Kontakts, der die Informationen zum Empfänger des Dokumentes enthält.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="AnwendungsspezifischeErweiterung" minOccurs="0" maxOccurs="unbounded" type="xdomea:AnwendungsspezifischeErweiterungType">
+        <xs:annotation>
+          <xs:appinfo>
+            <implementationHint>Die Speicherung der nicht-auflösbaren Daten beim Empfang erfolgt in einer XML-Datei zum Schriftgutobjekt im empfangenden System. Die Umsetzung muss systemspezifisch gelöst werden - hierbei muss durch das System sichergestellt sein, dass die empfangenen Informationen nicht verloren gehen.</implementationHint>
+          </xs:appinfo>
+          <xs:documentation>Über AnwendungsspezifischeErweiterung können über die in xdomea 2 konkret definierten Metadaten hinaus weiterführende Metadaten, z. B. fachspezifischer Natur, zu einem Dokument angegeben werden.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="WeitererKontakt" minOccurs="0" maxOccurs="unbounded" type="xdomea:KontaktType">
+        <xs:annotation>
+          <xs:documentation>Die spezifische Ausprägung eines Kontakts, der die Informationen zu einem weiteren Beteiligten enthält, der nicht Empfänger oder Absender des Dokuments ist.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="FeldType">
+    <xs:annotation>
+      <xs:documentation>Ein Feld ist ein anwendungsspezifisches Metadatum, das bei dem Austausch eines Schriftgutobjektes übergeben wird. Die Konfiguration eines Feldes in den austauschenden Systemen muss zwischen den Kommunikationspartnern abgesprochen und in den Systemen umgesetzt sein.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="Name" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Der Name des Feldes.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Beschreibung" minOccurs="0" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Die Hinweise und Erläuterungen zu einem Feld.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Datentyp" minOccurs="0" type="xdomea:DatentypCodeType">
+        <xs:annotation>
+          <xs:documentation>Der Datentyp des Feldwertes.
+Gültige Angaben sind die W3C-Datentypen.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Wert" minOccurs="0" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Der Wert des Feldes.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="FeldgruppeType">
+    <xs:annotation>
+      <xs:documentation>Eine Feldgruppe gruppiert mehrere Felder als anwendungsspezifische Metadaten beim Austausch eines Schriftgutobjektes.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="Name" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Der Name der Feldgruppe.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Beschreibung" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Die Hinweise und Erläuterungen zu einer Feldgruppe.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Unterfeldgruppe" minOccurs="0" maxOccurs="unbounded" type="xdomea:FeldgruppeType">
+        <xs:annotation>
+          <xs:documentation>Über Unterfeldgruppe erfolgt die hierarchische Unterteilung einer Feldgruppe in weitere Feldgruppen.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Feld" minOccurs="0" maxOccurs="unbounded" type="xdomea:FeldType">
+        <xs:annotation>
+          <xs:documentation>Über Feld erfolgt die Unterteilung einer Feldgruppe in konkrete Felder.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="FormatType">
+    <xs:annotation>
+      <xs:documentation>Ein Format gibt die Syntax und Semantik einer Datei (z. B. Primärdokument, Aktenplandatei) an.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="Name" type="xdomea:DateiformatCodeType">
+        <xs:annotation>
+          <xs:appinfo>
+            <implementationHint>Für zusätzliche Formatnamen enthält die Codeliste den Wert "Sonstiges" - ist dieser Wert benannt, so muss unterhalb des Formats SonstigerName der Name des Formats angegeben werden.</implementationHint>
+          </xs:appinfo>
+          <xs:documentation>Der Name des Formats. Gültige Werte sind z. B. doc, pdf, jpg.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="SonstigerName" minOccurs="0" type="xs:string">
+        <xs:annotation>
+          <xs:appinfo>
+            <implementationHint>Die Voraussetzung für die Nutzung von SonstigerName ist die Angabe von "Sonstiges" als Namenswert.</implementationHint>
+          </xs:appinfo>
+          <xs:documentation>Der sonstige Name des Formats.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Version" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Die Version des Formats, z.B. für pdf 1.4 wäre hier "1.4" anzugeben.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Primaerdokument" type="xdomea:PrimaerdokumentType">
+        <xs:annotation>
+          <xs:documentation>Über Primaerdokument werden Dateiangaben zum tatsächlich beschriebenen Primärdokument eines Formats angegeben.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="GeburtType">
+    <xs:annotation>
+      <xs:documentation>Geburt fasst geburtsbezogene Informationen einer natürlichen Person zusammen.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="Datum" type="xs:date">
+        <xs:annotation>
+          <xs:documentation>Das Datum der Geburt.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="GeschaeftsgangType">
+    <xs:annotation>
+      <xs:documentation>In einem Geschäftsgang wird das vorgenommene Verwaltungshandeln an Schriftgutobjekten festgehalten.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="Identifikation" type="xdomea:IdentifikationSGOType">
+        <xs:annotation>
+          <xs:documentation>Die Identifikation zur systemübergreifend eindeutigen Identifizierung des Geschäftsgangs.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Beteiligungsschritt" maxOccurs="unbounded" type="xdomea:BeteiligungsschrittType">
+        <xs:annotation>
+          <xs:appinfo>
+            <implementationHint>Es müssen immer alle Beteiligungsschritte eines Geschäftsgangs geliefert werden - unabhängig davon, welchen Status sie besitzen.</implementationHint>
+          </xs:appinfo>
+          <xs:documentation>Ein dem Geschäftsgang zugeordneter Beteiligungsschritt, der im Zuge des Geschäftsgangs durchgeführt wird. Die Beteiligungsschritte sind fortlaufend nummeriert.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="HistorienProtokollInformationType">
+    <xs:annotation>
+      <xs:documentation>Die Historien- und Protokollinformationen entstehen durch die Bearbeitung von Schriftgutobjekten. Sie protokollieren die Veränderungen an den Metadaten und dem Zustand eines Schriftgutobjektes, die für den Nachweis des Verwaltungshandelns relevant sind - dazu gehören zum Beispiel die Anlage von Vorgängen und Akten, deren Umprotokollierung oder die zdA-Verfügung.
+Bei der Historisierung werden der alte und der neue Zustand nach der Änderung mit der Angabe des Zeitpunktes und der Uhrzeit der Änderung und der Person, die die Änderung vorgenommen hat, gespeichert.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="Metadatum" minOccurs="0" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Das Metadatum, das sich geändert.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="AlterWert" minOccurs="0" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Der Wert des Metadatums vor der Änderung.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="NeuerWert" minOccurs="0" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Der Wert des Metadatums als Ergebnis der Änderung.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Akteur" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Die Person, die die Änderung vorgenommen hat. Wird die Änderung automatisch durch das System und nicht manuell durch eine Person vorgenommen, so ist das entsprechende System anzugeben.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="DatumUhrzeit" type="xs:dateTime">
+        <xs:annotation>
+          <xs:documentation>Das Datum und die Uhrzeit der erfassten Änderung.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Bemerkung" minOccurs="0" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Die Hinweise und Erläuterungen zu der Änderung eines Metadatums.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Aktion" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Die Aktion, die die konkrete Änderung des Metadatums näher beschreibt, z. B. gelöscht, neu.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="IdentifikationSGOType">
+    <xs:annotation>
+      <xs:documentation>Die Zusammenfassung von Merkmalen zur eindeutigen Identifizierung eines Schrifgutobjektes (Dokument, Vorgang, Akte, Geschäftsgang) und zur Nummerierung im übergeordneten Schriftgutobjekt.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="ID" type="xdomea:stringUUIDType">
+        <xs:annotation>
+          <xs:documentation>Jedes Objekt (Dokument, Vorgang, Akte, Geschäftsgang, Aktenplan) erhält beim Nachrichtenaustausch eine UUID, die sowohl im sendenden als auch empfangenden System als externe ID gespeichert wird. Für die Verwendung des Objekts in weiteren Nachrichten wird diese bereits vorhandene UUID wiederverwendet. Sie bleibt somit über alle Systeme eindeutig.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="NummerImUebergeordnetenContainer" minOccurs="0" type="xs:string">
+        <xs:annotation>
+          <xs:appinfo>
+            <implementationHint>Die Nummer dient nicht zur Identifizierung von Schriftgutobjekten - hierzu sollte die ID verwendet werden.</implementationHint>
+          </xs:appinfo>
+          <xs:documentation>Die laufende Nummer des Schriftgutobjekts im übergeordneten Objekt (z. B. die Heftungsnummer eines Dokuments in einem Vorgang, die Nummer eines Bandes in einer Akte).</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="KommunikationType">
+    <xs:annotation>
+      <xs:documentation>Die Kommunikation leitet sich von der entsprechenden XÖV-Kernkomponente ab. Sie fasst Angaben zur Erreichbarkeit über elektronische Kommunikationskanäle (z.B. Telefon, Fax, E-Mail) zusammen.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="IstDienstlich" minOccurs="0" type="udt:IndicatorType">
+        <xs:annotation>
+          <xs:documentation>Mit IstDienstlich kann angegeben werden, ob es sich um dienstliche oder private Kommunikationsdaten handelt.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Kanal" minOccurs="0" type="xdomea:KommunikationsartCodeType">
+        <xs:annotation>
+          <xs:documentation>Der Kanal gibt an, über welchen Kommunikationskanal eine Erreichbarkeit besteht  (z.B. Telefon, Fax, E-Mail).</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Kennung" minOccurs="0" type="udt:TextType">
+        <xs:annotation>
+          <xs:documentation>Die Kennung beinhaltet die konkrete Angabe zur Erreichbarkeit über einen Kommunikationskanal, d.h. die Telefonnummer, Faxnummer, E-Mail-Adresse oder dergleichen.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Zusatz" minOccurs="0" type="udt:TextType">
+        <xs:annotation>
+          <xs:documentation>Im Zusatz können zusätzliche freie Angaben zur Erreichbarkeit über einen Kommunikationskanal erfasst werden, z. B. "erreichbar tagsüber zwischen 9 und 16 Uhr".</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="KontaktType">
+    <xs:annotation>
+      <xs:documentation>Ein Kontakt fasst wesentliche Merkmale zu einem Kommunikationspartner zusammen, z.B. Anschriften, Kommunikationsmöglichkeiten.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="Behoerdenkennung" minOccurs="0" type="xdomea:BehoerdenkennungType">
+        <xs:annotation>
+          <xs:documentation>Die Kennung der Behörde zur Adressierung, z.B. im DVDV.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Institution" minOccurs="0" type="xdomea:NameOrganisationType">
+        <xs:annotation>
+          <xs:documentation>Die Institution des Kontakts. Eine Institution ist z. B. ein Unternehmen oder eine Behörde.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Organisationseinheit" minOccurs="0" type="xdomea:OrganisationseinheitType">
+        <xs:annotation>
+          <xs:documentation>Die Organisationseinheit des Kontakts.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Name" minOccurs="0" type="xdomea:NameNatuerlichePersonType">
+        <xs:annotation>
+          <xs:documentation>Der Name des Ansprechpartners zum Kontakt.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Taetigkeit" minOccurs="0" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Die Tätigkeit gibt an, welche Position der im Kontakt angegebene Ansprechpartner in der jeweiligen Institution einnimmt. Es können hier die Amtsbezeichnung (z.B. Regierungsrat), Dienstbezeichnung (z.B. Referendar), der Dienstgrad (z.B. General) oder die Berufsbezeichnung (z.B. IT-Berater) angegeben werden.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Zustaendigkeit" minOccurs="0" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Die Zuständigkeit, gibt die Bereiche an, für die der im Kontakt angegebene Ansprechpartner oder die Institution verantwortlich ist, z.B. "Leiter der Abteilung O", "Projektleiter des XYZ-Projekts".</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Anschrift" minOccurs="0" maxOccurs="unbounded" type="xdomea:AnschriftType">
+        <xs:annotation>
+          <xs:documentation>Eine strukturierte Anschrift des Kontakts.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Kommunikation" minOccurs="0" maxOccurs="unbounded" type="xdomea:KommunikationType">
+        <xs:annotation>
+          <xs:documentation>Eine Kommunikationsmöglichkeit des Kontakts, die die Angaben zur Erreichbarkeit über elektronische Kommunikationskanäle enthält.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Rolle" minOccurs="0" type="xdomea:CodeType">
+        <xs:annotation>
+          <xs:documentation>Die Rolle des Kontakts im konkreten Geschäftsprozess, z.B Antragsteller, Zustellungsbevollmächtigter, Gutachter.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="UnstrukturierteAnschrift" minOccurs="0" maxOccurs="unbounded" type="xdomea:UnstrukturierteAnschriftType">
+        <xs:annotation>
+          <xs:documentation>Eine unstrukturierte Anschrift des Kontakts.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Geburt" minOccurs="0" type="xdomea:GeburtType">
+        <xs:annotation>
+          <xs:documentation>Die Geburtsangaben des Ansprechpartners zum Kontakt.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="MetadatenAussonderungType">
+    <xs:annotation>
+      <xs:documentation>MetadatenAussonderung fasst die Informationen zu einem abschließend bearbeiteten Schriftgutobjekt (Vorgang oder Akte) zusammen, die für seine Aufbewahrung und Aussonderung relevant sind.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="Aufbewahrungsdauer" minOccurs="0" type="xs:int">
+        <xs:annotation>
+          <xs:documentation>Die Aufbewahrungsdauer legt fest, wie viele Jahre eine Akte oder ein Vorgang nach der Verfügung zur Akte (zdA-Verfügung) innerhalb der aktenführenden Stelle aufzubewahren ist. Nach Ablauf der Aufbewahrungsfrist erfolgt die Aussonderung in Abhängigkeit von der Aussonderungsart.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Aussonderungsart" minOccurs="0" type="xdomea:AussonderungsartCodeType">
+        <xs:annotation>
+          <xs:documentation>Die Aussonderungsart gibt das Ergebnis der archivischen Bewertung an. Damit eine automatische Selektion der auszusondernden Vorgänge erfolgen kann, muss in Vorgangsbearbeitungssystemen für Akten und Vorgänge ein Metadatum "Aussonderungsart" vorgegeben werden. Die Metainformation enthält den Status “archivwürdig“, „bewerten“ oder ‚“vernichten“. 
+Die Aussonderungsart wird vom Aktenplan (zweistufiges Aussonderungsverfahren) oder von der Akte (vierstufiges Aussonderungsverfahren) auf zugehörige Vorgänge und Dokumente vererbt.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Kennung" minOccurs="0" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Die Kennung enthält bei der Durchführung einer Aussonderung die Archivkennung, bei einer Abgabe die Kennung des Schriftgutobjekts aus dem System der übernehmenden Behörde.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Bewertungsvorschlag" minOccurs="0" type="xdomea:BewertungsvorschlagCodeType">
+        <xs:annotation>
+          <xs:documentation>Der Bewertungsvorschlag ist ein Hinweis des Bearbeiters eines Schriftgutobjekts an das zuständige Archiv. Er kann die Werte “archivwürdig“ oder “vernichten“ annehmen.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Aufbewahrungsende" minOccurs="0" type="xs:gYear">
+        <xs:annotation>
+          <xs:documentation>Das Aufbewahrungsende gibt das Endjahr der Aufbewahrungsfrist an.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="NameNatuerlichePersonType">
+    <xs:annotation>
+      <xs:documentation>NameNatuerlichePerson leitet sich von der entsprechenden XÖV-Kernkomponente ab. Der Name der Person ist eine Benennung dieser Person, die dazu dient, diese Person von anderen Personen zu unterscheiden.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="Anrede" minOccurs="0" type="udt:TextType">
+        <xs:annotation>
+          <xs:documentation>Die Anrede ist der Namenszusatz (auch eine Anrede ohne Namen nur mit Titel ist eine Anrede!) bei der Anrede (mündlich oder schriftlich) oder bei einem Anruf (fernmündlich) an eine Person oder Personengruppe, z. B. Herr, Frau.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Titel" minOccurs="0" type="udt:TextType">
+        <xs:annotation>
+          <xs:documentation>Ein Titel ist ein akademischer Grad und nicht orginärer Bestandteil des Namens. Der Titel wird häufig im Zusammenhang mit Namen verwendet, z.B. "Dr.".</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Familienname" minOccurs="0" type="xdomea:AllgemeinerNameType">
+        <xs:annotation>
+          <xs:documentation>Der Familienname ist der aktuelle Nachname einer Person und Ausdruck einer bestimmten Familienzugehörigkeit dieser Person.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Vorname" minOccurs="0" type="xdomea:AllgemeinerNameType">
+        <xs:annotation>
+          <xs:documentation>Der Vorname ist der Name bzw. der Teil des Namens, der nicht die Zugehörigkeit zu einer Familie ausdrückt, sondern das Individuum innerhalb der Familie bezeichnet und dazu dient, es von anderen Familienmitgliedern zu unterscheiden.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="NameOrganisationType">
+    <xs:annotation>
+      <xs:documentation>NameOrganisation leitet sich von der entsprechenden XÖV-Kernkomponente ab und fasst Angaben zum Namen einer Organisation zusammen.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="Name" minOccurs="0" type="udt:TextType">
+        <xs:annotation>
+          <xs:documentation>Der offizielle Name einer Organisation. Entspricht bei registrierten Organisationen dem im Register eingetragenen Namen.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Kurzbezeichnung" minOccurs="0" type="udt:TextType">
+        <xs:annotation>
+          <xs:documentation>Die Kurzbezeichnung des Namen einer Organisation.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="NkBasisType">
+    <xs:annotation>
+      <xs:documentation>Der Kopf der Nachricht enthält allgemeine Informationen für den Empfänger der Nachricht.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="ProzessID" type="xdomea:stringUUIDType">
+        <xs:annotation>
+          <xs:documentation>Die UUID des Prozesses, zu dem die Nachricht gehört. Sie dient zur Identifikation bei Rückmeldungen.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Nachrichtentyp" type="xdomea:NachrichtentypCodeType">
+        <xs:annotation>
+          <xs:documentation>Der Nachrichtentyp gibt die Bezeichnung der Nachricht an.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Erstellungszeitpunkt" type="xs:dateTime">
+        <xs:annotation>
+          <xs:documentation>Der Zeitpunkt der Nachrichtenerzeugung.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Absender" type="xdomea:KontaktType">
+        <xs:annotation>
+          <xs:documentation>Der Absender der Nachricht.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Empfaenger" type="xdomea:KontaktType">
+        <xs:annotation>
+          <xs:documentation>Der Empfänger der Nachricht.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="SendendesSystem" type="xdomea:SystemType">
+        <xs:annotation>
+          <xs:documentation>Die Informationen zu dem System, aus dem die Daten gesendet werden.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Hinweis" minOccurs="0" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Der Hinweis umfasst Erläuterungen zu der Nachricht.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="AnwendungsspezifischeErweiterung" minOccurs="0" type="xdomea:AnwendungsspezifischeErweiterungType">
+        <xs:annotation>
+          <xs:documentation>AnwendungsspezifischeErweiterung enthält über die in xdomea 2 konkret definierten Metadaten weiterführende Metadaten, z. B. fachspezifischer Natur. Der anwendungsspezifschen Erweiterung können einzelne Felder und/oder Feldgruppen, in denen mehrere Felder zusammengefasst sind, zugeordnet werden.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="NkFVDatenType">
+    <xs:annotation>
+      <xs:documentation>Der Kopf der Nachricht enthält allgemeine Informationen zu Nachrichten im Rahmen eines Austauschs von Fachverfahrensdaten.</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="xdomea:NkBasisType">
+        <xs:sequence>
+          <xs:element name="EmpfangendesSystem" type="xdomea:SystemType">
+            <xs:annotation>
+              <xs:documentation>Die Informationen zu dem System, das die Daten erhalten soll.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="NkNichtFVDatenEinEmpfaengerMitEmpfangsbestaetigungType">
+    <xs:annotation>
+      <xs:documentation>Der Kopf der Nachricht enthält allgemeine Informationen für den Empfänger einer Nachricht, bei der es sich nicht um eine Empfangs-/Importnachricht auf eine andere Nachricht handelt, die einen Empfänger besitzt und mit der eine Empfangsbestätigung angefordert werden kann.</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="xdomea:NkBasisType">
+        <xs:sequence>
+          <xs:element name="Empfangsbestaetigung" type="xs:boolean">
+            <xs:annotation>
+              <xs:documentation>Die Angabe, ob vom Empfänger der Nachricht eine Empfangsbestätigung erwünscht wird.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="NkNichtFVDatenWeitereEmpfaengerMitEmpfangsbestaetigungType">
+    <xs:annotation>
+      <xs:documentation>Der Kopf der Nachricht enthält allgemeine Informationen für den Empfänger einer Nachricht, bei der es sich nicht um eine Empfangs-/Importnachricht auf eine andere Nachricht handelt, die mehrere Empfänger besitzen kann und mit der eine Empfangsbestätigung angefordert werden kann.</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="xdomea:NkNichtFVDatenWeitereEmpfaengerType">
+        <xs:sequence>
+          <xs:element name="Empfangsbestaetigung" type="xs:boolean">
+            <xs:annotation>
+              <xs:documentation>Die Angabe, ob vom Empfänger der Nachricht eine Empfangsbestätigung erwünscht wird.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="NkNichtFVDatenWeitereEmpfaengerType">
+    <xs:annotation>
+      <xs:documentation>Der Kopf der Nachricht enthält allgemeine Informationen für den Empfänger einer Nachricht, bei der es sich nicht um eine Empfangs-/Importnachricht auf eine andere Nachricht handelt und die beliebige Empfänger besitzen kann.</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="xdomea:NkBasisType">
+        <xs:sequence>
+          <xs:element name="WeitererEmpfaenger" minOccurs="0" maxOccurs="unbounded" type="xdomea:KontaktType">
+            <xs:annotation>
+              <xs:documentation>Ein weiterer Empfänger der Nachricht.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="OCSPAntwortType">
+    <xs:annotation>
+      <xs:documentation>Der Datencontainer für OCSP-Zertifikatsprüfungen.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="Format" default="Antwort auf eine Signaturstatusanfrage nach dem IETF OCSP Standard (IETF RFC 2560-X.509 Internet Public Key Infrastructure Online Certificate Status Protocol-OCSP, 1999) in ASN.1 Notation, DER und Base64 kodiert" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Die textuelle Beschreibung des verwendeten Online Certificate Status Protocol.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Antwort" type="xs:base64Binary">
+        <xs:annotation>
+          <xs:documentation>In Base64-kodierte ASN.1/DER-formatierte Antwortdaten.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+    <xs:attribute name="Version" type="xs:string" use="optional" default="v1">
+      <xs:annotation>
+        <xs:documentation>Die Versionsnummer des OCSP. Die derzeit international gültige Version und zugleich Standardeintrag ist "v1".</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+  </xs:complexType>
+  <xs:complexType name="OrganisationseinheitType">
+    <xs:annotation>
+      <xs:documentation>Die Organisationseinheit leitet sich von der entsprechenden XÖV-Kernkomponente ab. Sie fasst Angaben zur Darstellung der internen hierarchischen Organisationsstruktur einer Institution zusammen, z.B. zur Darstellung von Abteilungen, Referaten.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="Name" type="udt:TextType">
+        <xs:annotation>
+          <xs:documentation>Die Bezeichnung der Organisationseinheit.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="PKCS7SignaturType">
+    <xs:annotation>
+      <xs:documentation>Der Datencontainer für PKCS#7-Signaturen vom Typ SignedData.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="OID" default="1.2.840.113549.1.7.2" type="xs:NMTOKEN">
+        <xs:annotation>
+          <xs:documentation>Der PKCS#7-Object-Identifier. Der Default-Wert 1.2.840.113549.1.7.2 steht für "signedData".</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Format" default="PKCS#7 Signaturcontainer nach dem PKCS #7 - RSA Cryptographic Message Syntax Standard, Version 1.5, in ASN.1 Notation (CCITT. Specification of Abstract Syntax Notation One, Recommendation X.208, 1988), DER (Distinguished Encoding Rules für ASN.1, ITU-T, Information Technology-ASN.1 Encoding Rules, Recommendation X.691, 1997) und Base64 (Multipurpose Internet Mail Extensions (MIME) Part One: Format of Internet Message Bodies, section 6.8, Base64 Content-Transfer-Encoding, IETF RFC 2045, 1996) kodiert." type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Die textuelle Beschreibung des Signaturformats.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Algorithmus" minOccurs="0" type="xdomea:SignaturalgorithmusType">
+        <xs:annotation>
+          <xs:documentation>Der Signaturalgorithmus zu einer PKCS#7-Signatur.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Datum" minOccurs="0" type="xs:dateTime">
+        <xs:annotation>
+          <xs:documentation>Der Signaturzeitpunkt.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Unterzeichner" minOccurs="0" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Die textuelle Beschreibung des Unterzeichners.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Container" type="xs:base64Binary">
+        <xs:annotation>
+          <xs:documentation>Der Base64-kodierte ASN.1/DER-formatierte PKCS#7-Signaturcontainer.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+    <xs:attribute name="Version" type="xs:string" use="optional" default="v1.5">
+      <xs:annotation>
+        <xs:documentation>Die Versionsnummer des PKCS#-Standards. Die derzeit international gültige Version und zugleich Standardeintrag ist "v1.5".</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+  </xs:complexType>
+  <xs:complexType name="PrimaerdokumentType">
+    <xs:annotation>
+      <xs:documentation>Ein Primärdokument gehört zum eigentlichen Inhalt eines Dokuments. Es kann sowohl in analoger Form als Inhalt eines Papierdokuments oder in digitaler Form als Inhalt eines elektronischen Dokuments (Datei) vorliegen.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="Dateiname" type="xdomea:stringDateinameType">
+        <xs:annotation>
+          <xs:appinfo>
+            <implementationHint>Grundsätzlich sollten auch Namensgleichheiten für verschiedene Formatvarianten in den Systemen nicht möglich sein. Hier sollte sich ein entsprechender Hinweis auf das konkrete Format im Dateinamen wiederfinden.</implementationHint>
+          </xs:appinfo>
+          <xs:documentation>Der eindeutige Dateiname des Primärdokumentes, der nach der Syntax "UUID_Dokumentname.Dateiformat" gebildet wird.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Ersteller" minOccurs="0" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Der Ersteller des Primärdokuments.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="DatumUhrzeit" minOccurs="0" type="xs:dateTime">
+        <xs:annotation>
+          <xs:documentation>Der Erstellungszeitpunkt des Primärdokuments.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Signaturdaten" minOccurs="0" type="xdomea:SignaturdatenType">
+        <xs:annotation>
+          <xs:documentation>Die zu einem Primärdokument zugeordneten Signaturdaten.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="SignaturalgorithmusType">
+    <xs:annotation>
+      <xs:documentation>Die Angaben zu dem verwendeten Signaturalgorithmus und den Signaturparametern.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="ID" minOccurs="0" default="1.2.840.113549.1.1.5" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Die ID dient der Identifizierung von der Kombination kryptographischer Algorithmen, die bei der Signatur (Hashing/Signatur) eingesetzt werden. Bspw. steht 1.2.840.113549.1.1.5 für SHA-1 mit RSA.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Algorithmusparameter" minOccurs="0" maxOccurs="unbounded" type="xdomea:FeldType">
+        <xs:annotation>
+          <xs:documentation>Ein Parameter, der für die Signaturberechnung benötigt wird.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="SignaturdatenType">
+    <xs:annotation>
+      <xs:documentation>Der (Metadaten-)Container für die Beschreibung der Signaturdaten und Signaturprüfdaten. Nach § 2 Signaturgesetz (SigG)  sind dies "Daten in elektronischer Form, die anderen elektronischen Daten beigefügt oder logisch mit ihnen verknüpft sind und die zur Authentifizierung dienen."</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="Signatur" type="xdomea:PKCS7SignaturType">
+        <xs:annotation>
+          <xs:documentation>Die Signatur als PKCS7-Signatur.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Zertifikat" maxOccurs="unbounded" type="xdomea:X509ZertifikatType">
+        <xs:annotation>
+          <xs:documentation>Das Zertifikat als X509-Zertifikat.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Status" maxOccurs="unbounded" type="xdomea:OCSPAntwortType">
+        <xs:annotation>
+          <xs:documentation>Der Status einer Signatur als OCSP-Antwort.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="StaatType">
+    <xs:annotation>
+      <xs:documentation>Staat leitet sich von der entsprechenden XÖV-Kernkomponente ab. Als Staat bezeichnet man eine politische Ordnung, die ein gemeinsames als Staatsgebiet abgegrenztes Territorium, ein dazugehöriges Staatsvolk und eine Machtausübung über dieses umfasst.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="Staat" type="xdomea:StaatCodeType">
+        <xs:annotation>
+          <xs:documentation>Staat enthält einen Schlüssel zur Identifikation eines Staates.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="SystemType">
+    <xs:annotation>
+      <xs:documentation>Ein System ist ein die xdomea-Nachrichten erzeugendes Produkt (z.B. DMS oder VBS).</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="InstanzID" minOccurs="0" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Die Instanz-ID dient der eindeutigen Identifikation des Systems, in dem die xdomea-Nachricht erzeugt wird. Die Identifizierung des Mandantens ist darin enthalten.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Produktname" minOccurs="0" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Der Name des Produktes.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Version" minOccurs="0" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Die Version des Produktes.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="UnstrukturierteAnschriftType">
+    <xs:annotation>
+      <xs:documentation>Die unstrukturierte Anschrift dient der Übermittlung von Anschriften, die nicht der regulären Anschrift entsprechen.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="Typ" minOccurs="0" type="xdomea:AnschriftstypCodeType">
+        <xs:annotation>
+          <xs:documentation>Im Typ wird beschrieben, um welche Art der Anschrift es sich handelt. Mögliche Werte sind "Aktuelle Anschrift", "Hauptsitz" oder "Zweitsitz".</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Zeile1" minOccurs="0" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Erste Zeile der unstrukturierten Anschrift.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Zeile2" minOccurs="0" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Zweite Zeile der unstrukturierten Anschrift.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Zeile3" minOccurs="0" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Dritte Zeile der unstrukturierten Anschrift.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Zeile4" minOccurs="0" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Vierte Zeile der unstrukturierten Anschrift.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Zeile5" minOccurs="0" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Fünfte Zeile der unstrukturierten Anschrift.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Zeile6" minOccurs="0" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Sechste Zeile der unstrukturierten Anschrift.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Zusatz" minOccurs="0" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Ein Anschriftenzusatz beinhaltet ggf. erforderliche weitere Präzisierungen zu einer Anschrift.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="VerfuegungType">
+    <xs:annotation>
+      <xs:documentation>Eine Verfügung ist ein Mittel zur Steuerung der Bearbeitung eines Schriftgutobjektes in einem Beteiligungsschritt. Die Bearbeitung eines Geschäftsvorfalls wird durch förmliche und abschließend gezeichnete Verfügung eingeleitet, fortgeführt
+und abgeschlossen.
+Gegenstand von Verfügungen können insbesondere sein:
+
+Entwürfe von Schreiben
+Beteiligung anderer Organisationseinheiten
+Hinweise zur Sicherung eines ausreichenden schriftlichen Nachweises der Bearbeitung
+Abschließende Verfügung zur weiteren Bearbeitung oder zu deren Abschluss (Schlussverfügung)</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="Ersteller" type="xdomea:KontaktType">
+        <xs:annotation>
+          <xs:documentation>Die spezifische Ausprägung eines Kontaktes, durch die der Erlasser der Verfügung bestimmt wird.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Adressat" type="xdomea:KontaktType">
+        <xs:annotation>
+          <xs:documentation>Die spezifische Ausprägung eines Kontaktes, durch die der Empfänger der Verfügung bestimmt wird.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Erstellungsdatum" type="xs:date">
+        <xs:annotation>
+          <xs:documentation>Das Erstellungsdatum der Verfügung.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Erstellungsuhrzeit" type="xs:time">
+        <xs:annotation>
+          <xs:documentation>Die Erstellungsuhrzeit der Verfügung.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Verfuegung" minOccurs="0" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Die textuelle Beschreibung der Verfügung, z.B. zur Kenntnis, zur Mitzeichnung, zur Bearbeitung.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="TerminDatum" minOccurs="0" type="xs:date">
+        <xs:annotation>
+          <xs:documentation>Das vom Ersteller für die Erledigung der Verfügung festgelegte Datum.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="TerminUhrzeit" minOccurs="0" type="xs:time">
+        <xs:annotation>
+          <xs:documentation>Die vom Ersteller für die Erledigung der Verfügung festgelegte Uhrzeit.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Notiz" minOccurs="0" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Die Hinweise oder Erläuterungen zu einer Verfügung.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="VersionType">
+    <xs:annotation>
+      <xs:documentation>Eine Version ist ein definierter Stand eines Dokuments zu einem bestimmten Zeitpunkt. Verschiedene Versionen stellen die Veränderung und Weiterentwicklung eines Dokumentes dar. Welche Veränderungen zu einer neuen Version führen, ist eine organisatorische Festlegung. Um die Chronologie abzubilden, erhält auch das Originaldokument eine Versionsnummer.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="Nummer" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Die Nummer der Version.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Format" maxOccurs="unbounded" type="xdomea:FormatType">
+        <xs:annotation>
+          <xs:documentation>Ein Format, das der Dokumentversion zugeordnet ist.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="VerweisType">
+    <xs:annotation>
+      <xs:documentation>Ein Verweis stellt eine inhaltliche Querbeziehung eines Schriftgutobjekts zu einem anderen Schriftgutobjekt dar.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="ID" minOccurs="0" type="xdomea:stringUUIDType">
+        <xs:annotation>
+          <xs:documentation>Die UUID des Schriftgutobjektes, zu dem der inhaltliche Querverweis dargestellt wird.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="SGOTyp" type="xdomea:SchriftgutobjekttypCodeType">
+        <xs:annotation>
+          <xs:documentation>Der Typ des Schriftgutobjektes, auf das verwiesen wird. Mögliche Werte sind "Akte", "Dokument" und "Vorgang".</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="SGOKennzeichen" minOccurs="0" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Das Kennzeichen des Schriftgutobjektes, auf das verwiesen wird.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Bemerkung" minOccurs="0" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Die Hinweise und Bemerkungen zu diesem Verweis.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="VorgangType">
+    <xs:annotation>
+      <xs:documentation>Vorgang enthält die Metadatenfelder für den Austausch von Vorgängen einschließlich der archivspezifischen Metadaten, anwendungsspezifischer Metadaten, Historien- und Protokollinformationen sowie Informationen zum internen Geschäftsgang. Die absendende Behörde kann jeweils festlegen, welche Informationen dem Empfänger mit der Übertragung zur Verfügung gestellt werden sollen. So kann auch der Anforderung nach einer ggf. erforderlichen Beschränkung der übertragenen Metadaten Rechnung getragen werden (z. B. auf Grund datenschutzrechtlicher oder sonstiger gesetzlicher Bestimmungen).</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="Identifikation" type="xdomea:IdentifikationSGOType">
+        <xs:annotation>
+          <xs:documentation>Über Identifikation werden zur systemübergreifend eindeutigen Identifizierung des Vorgangs spezifische Merkmale übergeben.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="AllgemeineMetadaten" minOccurs="0" type="xdomea:AllgemeineMetadatenType">
+        <xs:annotation>
+          <xs:documentation>Über AllgemeineMetadaten werden allgemeine Metadaten zu einem Vorgang angegeben.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="ArchivspezifischeMetadaten" minOccurs="0" type="xdomea:MetadatenAussonderungType">
+        <xs:annotation>
+          <xs:documentation>Über ArchivspezifischeMetadaten werden die für die Archivierung und Aussonderung relevanten Metadaten zu einem Vorgang angegeben.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Aktenbetreff" minOccurs="0" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Die Inhaltsangabe der Akte, der der Vorgang untergeordnet ist. Dies ist relevant als Kontextinformation bei der Versendung von Vorgängen ohne die Akte.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Typ" minOccurs="0" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Die weitere Spezifikation des Vorgangs über einen Typ, u.a zur Recherche oder zur Festlegung zusätzlicher Metadaten. Mögliche Werte sind z.B. Genehmigungsverfahren, Widerspruchsverfahren, Kabinettsvorlage etc.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="ZdA" type="xs:boolean">
+        <xs:annotation>
+          <xs:documentation>ZdA kennzeichnet, ob der Vorgang zu den Akten verfügt wurde oder nicht.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Laufzeit" minOccurs="0" type="xdomea:ZeitraumType">
+        <xs:annotation>
+          <xs:documentation>Die Laufzeit des Vorgangs, d.h. Zeitpunkt des Beginns und des Endes.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="HistorienProtokollInformation" minOccurs="0" maxOccurs="unbounded" type="xdomea:HistorienProtokollInformationType">
+        <xs:annotation>
+          <xs:documentation>Über HistorienProtokollInformation werden die zur Historisierung und Protokollierung relevanten Metadaten zu einem Vorgang angegeben, in der die Veränderungen an den beschreibenden Attributen und dem Zustand des Vorgangs erfasst werden.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="InternerGeschaeftsgang" minOccurs="0" type="xdomea:GeschaeftsgangType">
+        <xs:annotation>
+          <xs:appinfo>
+            <implementationHint>Der interne Geschäftsgang kann nach organisatorischer Absprache zwischen den austauschenden Systemen genutzt werden, ist aber nicht verpflichtender Bestandteil von xdomea 2.</implementationHint>
+          </xs:appinfo>
+          <xs:documentation>Die spezifische Ausprägung eines Geschäftsgangs, über die der interne Geschäftsgang am Vorgang nachgewiesen wird.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Dokument" minOccurs="0" maxOccurs="unbounded" type="xdomea:DokumentType">
+        <xs:annotation>
+          <xs:documentation>Ein Dokument, das hierachisch in den Vorgang eingebunden bzw. dem Vorgang untergeordnet ist.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Verweis" minOccurs="0" maxOccurs="unbounded" type="xdomea:VerweisType">
+        <xs:annotation>
+          <xs:documentation>Über einen Verweis wird eine inhaltliche Querbeziehung des Vorgangs zu einem anderen Schriftgutobjekt dargestellt.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Kontakt" minOccurs="0" maxOccurs="unbounded" type="xdomea:KontaktType">
+        <xs:annotation>
+          <xs:documentation>Eine Kontaktinformation zu einem Geschäftsprozessbeteiligten.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="AnwendungsspezifischeErweiterung" minOccurs="0" type="xdomea:AnwendungsspezifischeErweiterungType">
+        <xs:annotation>
+          <xs:appinfo>
+            <implementationHint>Die Speicherung der nicht-auflösbaren Daten beim Empfang erfolgt in einer XML-Datei zum Schriftgutobjekt im empfangenden System. Die Umsetzung muss systemspezifisch gelöst werden - hierbei muss durch das System sichergestellt sein, dass die empfangenen Informationen nicht verloren gehen.</implementationHint>
+          </xs:appinfo>
+          <xs:documentation>Über AnwendungsspezifischeErweiterung können über die in xdomea 2 konkret definierten Metadaten hinaus weiterführende Metadaten, z. B. fachspezifischer Natur, zu einem Vorgang angegeben werden.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Teilvorgang" minOccurs="0" maxOccurs="unbounded" type="xdomea:VorgangType">
+        <xs:annotation>
+          <xs:appinfo>
+            <implementationHint>An dieser Stelle ist nur eine Hierarchiestufe in xdomea 2 verpflichtend.</implementationHint>
+          </xs:appinfo>
+          <xs:documentation>Über einen Teilvorgang kann ein Vorgang hierarchisch in einen anderen Vorgang eingebunden bzw. einem anderen Vorgang untergeordnet werden.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="X509ZertifikatType">
+    <xs:annotation>
+      <xs:documentation>Der Datencontainer für ein X.509-Zertikat.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="Format" default="Digitales Zertifikat nach dem X.509 Standard (ITU-T, Information technology-Open Systems Interconnection-The Directory: Public-key and attribute certificate frameworks, Recommendation X.509, 2000), in ASN.1 Notation, DER und Base64 kodiert" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Die textuelle Beschreibung des Zertifikatformats. Der Begriff X.509-Zertifikat bezieht sich meist auf das IETF-Profil des X.509 v3 Zertifikatstandards, wie in RFC 3280 definiert.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Zertifikat" type="xs:base64Binary">
+        <xs:annotation>
+          <xs:documentation>Das Base64-kodierte ASN.1/DER-formatierte X.509-Zertifikat.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+    <xs:attribute name="Version" type="xs:string" use="optional" default="v3">
+      <xs:annotation>
+        <xs:documentation>Die Versionsnummer des X.509-Zertifikats. Die derzeit international gültige Version und zugleich Standardeintrag ist "v3".</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+  </xs:complexType>
+  <xs:complexType name="ZeitraumType">
+    <xs:annotation>
+      <xs:documentation>Der Zeitraum kennzeichnet einen Abschnitt auf dem Zeitstrahl durch Angabe von Beginn und/oder Ende.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="Beginn" minOccurs="0" type="xs:date">
+        <xs:annotation>
+          <xs:documentation>Der Beginn eines Zeitraums beschreibt den Zeitpunkt, ab dem ein Sachverhalt eintritt bzw. rechtskräftig wirksam ist. Der Beginn ist immer Teil der Dauer des Zeitraumes.
+Beispiele sind:
+
+Fristbeginn (BKA)
+Wirksamkeitsdatum der Änderung des Familiennamens (Personenstand)
+Eheschließungsdatum (Personenstand)</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Ende" minOccurs="0" type="xs:date">
+        <xs:annotation>
+          <xs:documentation>Das Ende eines Zeitraumes beschreibt den Zeitpunkt, ab dem ein Sachverhalt endet bzw. nicht mehr rechtskräftig ist. Das Ende ist selbst Teil der Dauer des Zeitraumes.
+Beispiele sind:
+
+Fristdatum (Bau)
+Ablaufdatum (Finanz)
+Faelligkeitsdatum (Finanz)
+Wirksamkeitsdatum der Aufhebung/Scheidung der Ehe (Personenstand)</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>
+

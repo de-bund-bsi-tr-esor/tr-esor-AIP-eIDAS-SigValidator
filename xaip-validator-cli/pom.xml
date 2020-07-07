@@ -14,10 +14,14 @@
         <!-- internal dependencies -->
         <dependency>
             <groupId>de.bund.bsi.tr_esor</groupId>
-            <artifactId>xaip-validator-api</artifactId>
+            <artifactId>xaip-validator-dispatcher</artifactId>
             <version>${project.version}</version>
         </dependency>
         <!-- external dependencies -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
         <dependency>
             <groupId>com.beust</groupId>
             <artifactId>jcommander</artifactId>

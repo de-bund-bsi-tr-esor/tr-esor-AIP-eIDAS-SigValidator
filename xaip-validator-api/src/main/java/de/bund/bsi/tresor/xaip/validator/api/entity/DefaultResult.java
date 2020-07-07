@@ -2,7 +2,7 @@ package de.bund.bsi.tresor.xaip.validator.api.entity;
 
 import java.net.URI;
 
-import com.sun.tools.javac.util.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import oasis.names.tc.dss._1_0.core.schema.InternationalStringType;
 import oasis.names.tc.dss._1_0.core.schema.Result;

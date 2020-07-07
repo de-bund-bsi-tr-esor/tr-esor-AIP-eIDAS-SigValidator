@@ -1,0 +1,9 @@
+/home/wolffs/workspace/xaip-validator/xaip-validator-cli/src/main/java/de/bund/bsi/tresor/xaip/validator/cli/converter/TestConverter.java
+/home/wolffs/workspace/xaip-validator/xaip-validator-cli/src/main/java/de/bund/bsi/tresor/xaip/validator/cli/converter/InputStreamConverter.java
+/home/wolffs/workspace/xaip-validator/xaip-validator-cli/src/main/java/de/bund/bsi/tresor/xaip/validator/cli/MessageBundle.java
+/home/wolffs/workspace/xaip-validator/xaip-validator-cli/src/main/java/de/bund/bsi/tresor/xaip/validator/cli/Dispatcher.java
+/home/wolffs/workspace/xaip-validator/xaip-validator-cli/src/main/java/de/bund/bsi/tresor/xaip/validator/cli/arguments/VerifyCommand.java
+/home/wolffs/workspace/xaip-validator/xaip-validator-cli/src/main/java/de/bund/bsi/tresor/xaip/validator/cli/arguments/Arguments.java
+/home/wolffs/workspace/xaip-validator/xaip-validator-cli/src/main/java/de/bund/bsi/tresor/xaip/validator/cli/converter/OutputStreamConverter.java
+/home/wolffs/workspace/xaip-validator/xaip-validator-cli/src/main/java/de/bund/bsi/tresor/xaip/validator/cli/converter/ValidationTargetConverter.java
+/home/wolffs/workspace/xaip-validator/xaip-validator-cli/src/main/java/de/bund/bsi/tresor/xaip/validator/cli/CLI.java

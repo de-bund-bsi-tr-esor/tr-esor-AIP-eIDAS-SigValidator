@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:udt="urn:un:unece:uncefact:data:standard:UnqualifiedDataType:2" targetNamespace="urn:un:unece:uncefact:data:standard:UnqualifiedDataType:2" version="2.0" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <xs:complexType name="AmountType">
+    <xs:annotation>
+      <xs:documentation>A number of monetary units specified in a currency where the unit of currency is explicit or implied.</xs:documentation>
+    </xs:annotation>
+  </xs:complexType>
+  <xs:complexType name="BinaryObjectType">
+    <xs:annotation>
+      <xs:documentation>A set of finite-length sequences of binary octets.</xs:documentation>
+    </xs:annotation>
+  </xs:complexType>
+  <xs:complexType name="CodeType">
+    <xs:annotation>
+      <xs:documentation>A character string (letters, figures or symbols) that for brevity and/or language independence may be used to represent or replace a definitive value or text of an Attribute together with relevant supplementary information.</xs:documentation>
+    </xs:annotation>
+  </xs:complexType>
+  <xs:complexType name="DateTimeType">
+    <xs:annotation>
+      <xs:documentation>A particular point in the progression of time together with relevant supplementary information.</xs:documentation>
+    </xs:annotation>
+  </xs:complexType>
+  <xs:complexType name="IDType">
+    <xs:annotation>
+      <xs:documentation>A character string to identify and distinguish uniquely, one instance of an object in an identification scheme from all other objects in the same scheme together with relevant supplementary information.</xs:documentation>
+    </xs:annotation>
+  </xs:complexType>
+  <xs:complexType name="IndicatorType">
+    <xs:annotation>
+      <xs:documentation>A list of two mutually exclusive Boolean values that express the only possible states of a Property.</xs:documentation>
+    </xs:annotation>
+  </xs:complexType>
+  <xs:complexType name="MeasureType">
+    <xs:annotation>
+      <xs:documentation>A numeric value determined by measuring an object along with the specified unit of measure.</xs:documentation>
+    </xs:annotation>
+  </xs:complexType>
+  <xs:complexType name="NumericType">
+    <xs:annotation>
+      <xs:documentation>Numeric information that is assigned or is determined by calculation, counting, or sequencing. It does not require a unit of quantity or unit of measure.</xs:documentation>
+    </xs:annotation>
+  </xs:complexType>
+  <xs:complexType name="QuantityType">
+    <xs:annotation>
+      <xs:documentation>A counted number of non-monetary units possibly including fractions.</xs:documentation>
+    </xs:annotation>
+  </xs:complexType>
+  <xs:complexType name="TextType">
+    <xs:annotation>
+      <xs:documentation>A character string (i.e. a finite set of characters) generally in the form of words of a language.</xs:documentation>
+    </xs:annotation>
+  </xs:complexType>
+</xs:schema>
+

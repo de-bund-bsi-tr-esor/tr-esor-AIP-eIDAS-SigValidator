@@ -1,11 +1,8 @@
 package de.bund.bsi.tresor.xaip.validator.cli;
 
-import java.util.Optional;
-
 import com.beust.jcommander.JCommander;
 
 import de.bund.bsi.tresor.xaip.validator.cli.arguments.Arguments;
-import de.bund.bsi.tresor.xaip.validator.cli.arguments.VerifyCommand;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -20,7 +17,6 @@ public final class CLI
         Arguments args = new Arguments();
         JCommander jCommander = JCommander.newBuilder()
                 .addObject( args )
-                .addCommand( VerifyCommand.NAME, args.getVerify(), VerifyCommand.ALIAS )
                 .resourceBundle( MessageBundle.RESOURCE )
                 .programName( MessageBundle.RESOURCE.getString( MessageBundle.CLI_NAME ) )
                 .build();
@@ -28,7 +24,15 @@ public final class CLI
         try
         {
             jCommander.parse( argv );
-            Dispatcher.INSTANCE.dispatch( Optional.ofNullable( jCommander.getParsedCommand() ), args );
+            
+            if ( args.isHelp() )
+            {
+                jCommander.usage();
+            }
+            else
+            {
+                Dispatcher.INSTANCE.dispatch( args );
+            }
         }
         catch ( Exception e )
         {

@@ -1,0 +1,9 @@
+de/bund/bsi/tresor/xaip/validator/cli/converter/TestConverter.class
+de/bund/bsi/tresor/xaip/validator/cli/arguments/Arguments.class
+de/bund/bsi/tresor/xaip/validator/cli/converter/ValidationTargetConverter.class
+de/bund/bsi/tresor/xaip/validator/cli/converter/OutputStreamConverter.class
+de/bund/bsi/tresor/xaip/validator/cli/MessageBundle.class
+de/bund/bsi/tresor/xaip/validator/cli/Dispatcher.class
+de/bund/bsi/tresor/xaip/validator/cli/arguments/VerifyCommand.class
+de/bund/bsi/tresor/xaip/validator/cli/CLI.class
+de/bund/bsi/tresor/xaip/validator/cli/converter/InputStreamConverter.class

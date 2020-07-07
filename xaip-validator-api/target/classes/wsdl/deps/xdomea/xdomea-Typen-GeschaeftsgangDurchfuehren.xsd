@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xdomea="http://www.xdomea.de/V2.2.0" targetNamespace="http://www.xdomea.de/V2.2.0" version="2.2.0" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <xs:include schemaLocation="xdomea-Baukasten.xsd" />
+  <xs:complexType name="GeaenderterBeteiligungsschrittType">
+    <xs:annotation>
+      <xs:documentation>Informationen zu einem geänderten Beteiligungsschritt eines Geschäftsgangs. Geändert kann in diesem Zusammenhang neu erstellt bzw. übersprungen heißen.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="Nummer" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Die Nummer des Beteiligungsschrittes innerhalb der fortlaufenden Nummerierung im Geschäftsgang.
+Die Nummerierung ist innerhalb eines xdomea-Geschäftsgangsobjekts eindeutig. Werden in den xdomea-Geschäftsgang neue Bearbeitungsschritte eingefügt, werden dementsprechend die Nummern der nachfolgenden Beteiligungsschritte verändert. Beteiligungsschritte, die abgeschlossen sind, sind unveränderlich.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Aenderungsart">
+        <xs:annotation>
+          <xs:documentation>Die Änderungsart eines Beteiligungsschrittes.</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+          <xs:choice>
+            <xs:element name="Neu" type="xs:boolean">
+              <xs:annotation>
+                <xs:documentation>Der Beteiligungsschritt wurde dem Laufweg eines Geschäftsgangs neu hinzugefügt.</xs:documentation>
+              </xs:annotation>
+            </xs:element>
+            <xs:element name="Uebersprungen" type="xs:boolean">
+              <xs:annotation>
+                <xs:documentation>Der Beteiligungsschritt wird in dem Laufweg als übersprungen markiert, d.h. der Schritt bleibt im Geschäftsgang erhalten, wird jedoch nicht mehr aktiv beteiligt.</xs:documentation>
+              </xs:annotation>
+            </xs:element>
+          </xs:choice>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="HauptobjektType">
+    <xs:annotation>
+      <xs:appinfo>
+        <implementationHint>Akten oder Vorgänge sind als Element im Hauptobjekt nicht erlaubt.</implementationHint>
+      </xs:appinfo>
+      <xs:documentation>Ein Container für die Dokumente, auf die sich die Beteiligungssschritte im externen Geschäftsgang beziehen.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="Dokument" maxOccurs="unbounded" type="xdomea:DokumentType">
+        <xs:annotation>
+          <xs:documentation>Ein in der Geschäftsgang-Nachricht enthaltenes Dokument, auf das sich die Verfügungen im externen Geschäftsgang beziehen.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="NkGeschaeftsgangType">
+    <xs:annotation>
+      <xs:documentation>Der Kopf der Nachricht enthält allgemeine Informationen für den Empfänger einer Nachricht, bei der es sich um einen Geschäftsgang handelt.</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="xdomea:NkBasisType">
+        <xs:sequence>
+          <xs:element name="EmpfangsbestaetigungAnInitiator" default="0" type="xs:boolean">
+            <xs:annotation>
+              <xs:documentation>Die Angabe, ob vom Empfänger der Nachricht eine
+Empfangsbestätigung für den Initiator des Geschäftsgangs erwünscht wird.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element name="EmpfangsbestaetigungAnVorgaenger" default="0" type="xs:boolean">
+            <xs:annotation>
+              <xs:documentation>Die Angabe, ob vom Empfänger der Nachricht eine
+Empfangsbestätigung für den Absender der Nachricht erwünscht wird.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="NkRueckmeldungGeschaeftsgangType">
+    <xs:annotation>
+      <xs:documentation>Der Kopf der Nachricht enthält allgemeine Informationen für den Empfänger der Empfangs-/Importnachricht zu einer in Beziehung stehenden Nachricht, die durch den Empfänger versendet wurde und sich auf einen Geschäftsgang bezieht.</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="xdomea:NkBasisType">
+        <xs:sequence>
+          <xs:element name="WeitererEmpfaenger" minOccurs="0" type="xdomea:KontaktType">
+            <xs:annotation>
+              <xs:documentation>Der weitere Empfänger der Nachricht.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+</xs:schema>
+
