@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xdomea="http://www.xdomea.de/V2.2.0" targetNamespace="http://www.xdomea.de/V2.2.0" version="2.2.0" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <xs:include schemaLocation="xdomea-Baukasten.xsd" />
+  <xs:complexType name="ErfolgOderMisserfolgAussonderungType">
+    <xs:annotation>
+      <xs:documentation>Die Information zum erfolgreichen oder nicht erfolgreichen Import einer Aussonderung.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="Erfolgreich" default="1" type="xs:boolean">
+        <xs:annotation>
+          <xs:documentation>Die Kennzeichnung des erfolgreichen oder nicht erfolgreichen Imports der Aussonderung.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Fehlermeldung" minOccurs="0" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Details beschreibt die Erläuterung des Grundes für den nicht erfolgreichen Import einer Aussonderung.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Rueckgabeparameter" minOccurs="0" maxOccurs="unbounded" type="xdomea:RueckgabeparameterAussonderungType">
+        <xs:annotation>
+          <xs:appinfo>
+            <implementationHint>Für den Fall, dass "Erfolgreich" positiv belegt ist und von der aussondernden Behörde die Rückgabe der Archivkennungen gewünscht ist ("RueckmeldungArchivkennung" ist positiv belegt), können durch das archivierende System die Archivkennungen zu den einzelnen Schriftgutobjekt übergeben werden.</implementationHint>
+          </xs:appinfo>
+          <xs:documentation>Die Beschreibung der Daten, die bei einem erfolgreichen Import der Aussonderung an die abgebende Behörde zurückübermittelt werden.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="NkAussonderungType">
+    <xs:annotation>
+      <xs:documentation>Der Kopf der Nachricht enthält allgemeine Informationen für den Empfänger einer Nachricht, bei der es sich um die konkrete Aussonderung handelt.</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="xdomea:NkBasisType">
+        <xs:sequence>
+          <xs:element name="Importbestaetigung" fixed="1" type="xs:boolean">
+            <xs:annotation>
+              <xs:documentation>Die Angabe, dass eine Importbestätigung vom Empfänger der Nachricht erwünscht wird.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element name="RueckmeldungArchivkennung" type="xs:boolean">
+            <xs:annotation>
+              <xs:documentation>Die Angabe, ob die Rückübermittlung der Archivsignaturen vom Empfänger erwünscht wird.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="RueckgabeparameterAnbietungType">
+    <xs:annotation>
+      <xs:documentation>Die Rückmeldung des Archivs zu einem zur Bewertung übergegebenen Schriftgutobjekt zur Steuerung des weiteren Aussonderungsprozesses.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="ID" type="xdomea:stringUUIDType">
+        <xs:annotation>
+          <xs:documentation>Die UUID des angebotenen Schriftgutobjektes, in der Regel die eines Vorgangs.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Aussonderungsart" type="xdomea:AussonderungsartCodeType">
+        <xs:annotation>
+          <xs:documentation>Die Beschreibung der des Bewertungsergebnisses für ein angebotenes Schriftgutobjekt. Das Feld kann die Werte "A" für archivwuerdig und "V" für vernichten annehmen.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="RueckgabeparameterAussonderungType">
+    <xs:annotation>
+      <xs:documentation>Die Rückmeldung des Archivs über den Verbleib der ausgesonderten Schriftgutobjekte. Die Rückmeldung kann den ggf. zu einem späteren Zeitpunkt notwendigen Rückgriff auf ausgesonderte Schriftgutobjekte erleichtern.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="ID" type="xdomea:stringUUIDType">
+        <xs:annotation>
+          <xs:documentation>Die UUID des ausgesonderten Schriftgutobjektes, auf die sich die Archivkennung bezieht, in der Regel die eines Vorgangs.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Archivkennung" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Die Archivsignatur, das heißt ID, unter der das Schriftgutobjekt, in der Regel ein Vorgang,  im Archiv verwahrt wird.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>
+

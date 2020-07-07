@@ -1,0 +1,1006 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xdomea="http://www.xdomea.de/V2.2.0" targetNamespace="http://www.xdomea.de/V2.2.0" version="2.2.0" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <xs:include schemaLocation="xdomea-Baukasten.xsd" />
+  <xs:complexType name="BearbeitungFVType">
+    <xs:annotation>
+      <xs:documentation>BearbeitungFV enthält Angaben zur Bearbeitung eines Schriftgutobjekts mit der Möglichkeit, den Bearbeiter, den Bearbeitungszeitpunkt und eine Notiz mitzugeben.</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:restriction base="xdomea:BearbeitungType">
+        <xs:sequence>
+          <xs:element name="Bearbeiter" type="xdomea:KontaktType">
+            <xs:annotation>
+              <xs:documentation>Die spezifische Ausprägung eines Kontaktes, der die Informationen zum Bearbeiter enthält.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element name="Datum" type="xs:date">
+            <xs:annotation>
+              <xs:documentation>Das Datum der Bearbeitungsabschlusses.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element name="Uhrzeit" type="xs:time">
+            <xs:annotation>
+              <xs:documentation>Der Zeitpunkt des Bearbeitungsabschlusses.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element name="Vermerk" minOccurs="0" maxOccurs="0" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Es wird kein Vermerk übermittelt.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element name="Notiz" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Die Anmerkung, die Aufschluss über die durchgeführte(n) Aktion(en) während einer Bearbeitung gibt.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element name="Anlage" minOccurs="0" maxOccurs="0" type="xdomea:DokumentType">
+            <xs:annotation>
+              <xs:documentation>Es werden keine Anlagen übermittelt.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:restriction>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="DatensatzZumLoeschenType">
+    <xs:annotation>
+      <xs:documentation>DatensatzZumLoeschen enthält Informationen zu einem FV-Datensatz, zu dem die entsprechenden Objekte im DMS gelöscht werden sollen. Wird die Nachricht im Stapelbetrieb übergeben, so erfolgt hier zusätzlich die Übergabe der Nummer im Stapel zu jedem angegebenen FV-Datensatz.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="NummerImStapel" minOccurs="0" type="xs:integer">
+        <xs:annotation>
+          <xs:documentation>Die Nummer des übergebenen Elements im Stapel. Anhand dieser Nummer können im Rückmeldestapel die Rückmeldungen den einzelnen Elementen im Stapel zugeordnet werden.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="FachverfahrenDatensatzID" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Die ID des Datensatzes im Fachverfahren.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="DokumentZumAktualisierenType">
+    <xs:annotation>
+      <xs:documentation>DokumentZumAktualisieren enthält Informationen zu einem Dokument (z. B. Ablageort), dessen Daten im empfangenden System aktualisiert werden sollen. Wird die Nachricht im Stapelbetrieb übergeben, so erfolgt hier zusätzlich die Übergabe der Nummer im Stapel zu jedem angegebenen Dokument.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="NummerImStapel" minOccurs="0" type="xs:integer">
+        <xs:annotation>
+          <xs:documentation>Die Nummer des übergebenen Elements im Stapel. Anhand dieser Nummer können im Rückmeldestapel die Rückmeldungen den einzelnen Elementen im Stapel zugeordnet werden.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="IDDokument" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>ID des zu aktualisierenden Dokumentes im DMS, die dem Fachverfahren beim Anlegen des Dokuments vom DMS mitgeteilt wurde.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Ablageort" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Der Ablageort des Schriftgutobjekts, das im DMS abgelegt werden soll.
+Die Primärdaten zu Dokumenten finden sich in Dateien, die durch Primaerdokument.Dateiname spezifiziert werden. In Abhängigkeit des Konfigurationsparameters „Datenaustauschart“ kann dieser Parameter unterschiedliche Werte annehmen:
+
+Übergabe über ein freigegebenes Verzeichnis: Name des Verzeichnisses.
+Übergabe per WebDAV und http(s): URL.
+Übergabe über eine Datenbank: der Parameter bleibt leer (bzw. wird ignoriert).</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="NeueVersionErstellen" minOccurs="0" type="xs:boolean">
+        <xs:annotation>
+          <xs:documentation>Über NeueVersionErstellen kann die Erzeugung einer neuen Version erzwungen werden. Wird kein Wert für diesen Parameter angegeben, so wird keine neue Version erzeugt - Ausnahme: Die Versionsverwaltung des DMS erzwingt die Erstellung einer neuen Version.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Dokument" type="xdomea:DokumentType">
+        <xs:annotation>
+          <xs:documentation>Das Dokument, das aktualisiert werden soll.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="DokumentZumExportierenType">
+    <xs:annotation>
+      <xs:documentation>DokumentZumExportieren enthält Informationen zu den Primärdokumenten eines Schriftgutobjekts (Dokument), die in einem DMS abgelegt wurden und in das empfangende Fachverfahren exportiert werden sollen.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="IDSGO" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Die ID des Schriftgutobjekts im DMS, zu dem Primärdokumente exportiert werden sollen.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Versionsnummer" minOccurs="0" type="xs:string">
+        <xs:annotation>
+          <xs:appinfo>
+            <implementationHint>Wird keine Versionsnummer übergeben, so wird der aktuelle Stand des Dokuments exportiert.</implementationHint>
+          </xs:appinfo>
+          <xs:documentation>Die Versionsnummer des Dokuments.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="ErfolgOderMisserfolgDMSType">
+    <xs:annotation>
+      <xs:documentation>Die Information zum erfolgreichen oder nicht erfolgreichen Import von Daten.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="Rueckmeldung">
+        <xs:annotation>
+          <xs:documentation>Die Beschreibung der Rückmeldungsart, die zu dem Import der empfangenen Daten an das sendende System zurückübermittelt wird.</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+          <xs:choice>
+            <xs:element name="AllgemeineRueckmeldung" type="xdomea:AllgemeineRueckmeldungCodeType">
+              <xs:annotation>
+                <xs:documentation>Eine allgemeine Rückmeldung, z.B. Verbindungsabbruch, Übertragungsfehler.</xs:documentation>
+              </xs:annotation>
+            </xs:element>
+            <xs:element name="SpezifischeFehlermeldung0601" type="xdomea:SpezifischeFehlermeldung0601CodeType">
+              <xs:annotation>
+                <xs:documentation>Eine spezifische Fehlermeldung für die Nachricht 0601.</xs:documentation>
+              </xs:annotation>
+            </xs:element>
+            <xs:element name="SpezifischeFehlermeldung0602" type="xdomea:SpezifischeFehlermeldung0602CodeType">
+              <xs:annotation>
+                <xs:documentation>Eine spezifische Fehlermeldung für die Nachricht 0602.</xs:documentation>
+              </xs:annotation>
+            </xs:element>
+            <xs:element name="SpezifischeFehlermeldung0603" type="xdomea:SpezifischeFehlermeldung0603CodeType">
+              <xs:annotation>
+                <xs:documentation>Eine spezifische Fehlermeldung für die Nachricht 0603.</xs:documentation>
+              </xs:annotation>
+            </xs:element>
+            <xs:element name="SpezifischeFehlermeldung0604" type="xdomea:SpezifischeFehlermeldung0604CodeType">
+              <xs:annotation>
+                <xs:documentation>Eine spezifische Fehlermeldung für die Nachricht 0604.</xs:documentation>
+              </xs:annotation>
+            </xs:element>
+            <xs:element name="SpezifischeFehlermeldung0605" type="xdomea:SpezifischeFehlermeldung0605CodeType">
+              <xs:annotation>
+                <xs:documentation>Eine spezifische Fehlermeldung für die Nachricht 0605.</xs:documentation>
+              </xs:annotation>
+            </xs:element>
+            <xs:element name="SpezifischeFehlermeldung0606" type="xdomea:SpezifischeFehlermeldung0606CodeType">
+              <xs:annotation>
+                <xs:documentation>Eine spezifische Fehlermeldung für die Nachricht 0606.</xs:documentation>
+              </xs:annotation>
+            </xs:element>
+            <xs:element name="SpezifischeFehlermeldung0607" type="xdomea:SpezifischeFehlermeldung0607CodeType">
+              <xs:annotation>
+                <xs:documentation>Eine spezifische Fehlermeldung für die Nachricht 0607.</xs:documentation>
+              </xs:annotation>
+            </xs:element>
+            <xs:element name="SpezifischeFehlermeldung0608" type="xdomea:SpezifischeFehlermeldung0608CodeType">
+              <xs:annotation>
+                <xs:documentation>Eine spezifische Fehlermeldung für die Nachricht 0608.</xs:documentation>
+              </xs:annotation>
+            </xs:element>
+            <xs:element name="SpezifischeFehlermeldung0609" type="xdomea:SpezifischeFehlermeldung0609CodeType">
+              <xs:annotation>
+                <xs:documentation>Eine spezifische Fehlermeldung für die Nachricht 0609.</xs:documentation>
+              </xs:annotation>
+            </xs:element>
+            <xs:element name="SpezifischeFehlermeldung0610" type="xdomea:SpezifischeFehlermeldung0610CodeType">
+              <xs:annotation>
+                <xs:documentation>Eine spezifische Fehlermeldung für die Nachricht 0610.</xs:documentation>
+              </xs:annotation>
+            </xs:element>
+            <xs:element name="SpezifischeFehlermeldung0611" type="xdomea:SpezifischeFehlermeldung0611CodeType">
+              <xs:annotation>
+                <xs:documentation>Eine spezifische Fehlermeldung für die Nachricht 0611.</xs:documentation>
+              </xs:annotation>
+            </xs:element>
+            <xs:element name="SpezifischeFehlermeldung0612" type="xdomea:SpezifischeFehlermeldung0612CodeType">
+              <xs:annotation>
+                <xs:documentation>Eine spezifische Fehlermeldung für die Nachricht 0612.</xs:documentation>
+              </xs:annotation>
+            </xs:element>
+            <xs:element name="SpezifischeFehlermeldung0613" type="xdomea:SpezifischeFehlermeldung0613CodeType">
+              <xs:annotation>
+                <xs:documentation>Eine spezifische Fehlermeldung für die Nachricht 0613.</xs:documentation>
+              </xs:annotation>
+            </xs:element>
+            <xs:element name="SpezifischeFehlermeldung0614" type="xdomea:SpezifischeFehlermeldung0614CodeType">
+              <xs:annotation>
+                <xs:documentation>Eine spezifische Fehlermeldung für die Nachricht 0614.</xs:documentation>
+              </xs:annotation>
+            </xs:element>
+            <xs:element name="SpezifischeFehlermeldung0615" type="xdomea:SpezifischeFehlermeldung0615CodeType">
+              <xs:annotation>
+                <xs:documentation>Eine spezifische Fehlermeldung für die Nachricht 0615.</xs:documentation>
+              </xs:annotation>
+            </xs:element>
+            <xs:element name="SpezifischeFehlermeldung0616" type="xdomea:SpezifischeFehlermeldung0616CodeType">
+              <xs:annotation>
+                <xs:documentation>Eine spezifische Fehlermeldung für die Nachricht 0616.</xs:documentation>
+              </xs:annotation>
+            </xs:element>
+            <xs:element name="SpezifischeFehlermeldung0617" type="xdomea:SpezifischeFehlermeldung0617CodeType">
+              <xs:annotation>
+                <xs:documentation>Eine spezifische Fehlermeldung für die Nachricht 0617.</xs:documentation>
+              </xs:annotation>
+            </xs:element>
+            <xs:element name="SpezifischeFehlermeldung0618" type="xdomea:SpezifischeFehlermeldung0618CodeType">
+              <xs:annotation>
+                <xs:documentation>Eine spezifische Fehlermeldung für die Nachricht 0618.</xs:documentation>
+              </xs:annotation>
+            </xs:element>
+            <xs:element name="SpezifischeFehlermeldung0619" type="xdomea:SpezifischeFehlermeldung0619CodeType">
+              <xs:annotation>
+                <xs:documentation>Eine spezifische Fehlermeldung für die Nachricht 0619.</xs:documentation>
+              </xs:annotation>
+            </xs:element>
+            <xs:element name="SpezifischeFehlermeldung0620" type="xdomea:SpezifischeFehlermeldung0620CodeType">
+              <xs:annotation>
+                <xs:documentation>Eine spezifische Fehlermeldung für die Nachricht 0620.</xs:documentation>
+              </xs:annotation>
+            </xs:element>
+            <xs:element name="SpezifischeFehlermeldung0621" type="xdomea:SpezifischeFehlermeldung0621CodeType">
+              <xs:annotation>
+                <xs:documentation>Eine spezifische Fehlermeldung für die Nachricht 0621.</xs:documentation>
+              </xs:annotation>
+            </xs:element>
+            <xs:element name="SpezifischeFehlermeldung0622" type="xdomea:SpezifischeFehlermeldung0622CodeType">
+              <xs:annotation>
+                <xs:documentation>Eine spezifische Fehlermeldung für die Nachricht 0622.</xs:documentation>
+              </xs:annotation>
+            </xs:element>
+            <xs:element name="SpezifischeFehlermeldung0623" type="xdomea:SpezifischeFehlermeldung0623CodeType">
+              <xs:annotation>
+                <xs:documentation>Eine spezifische Fehlermeldung für die Nachricht 0623.</xs:documentation>
+              </xs:annotation>
+            </xs:element>
+            <xs:element name="SpezifischeFehlermeldung0624" type="xdomea:SpezifischeFehlermeldung0624CodeType">
+              <xs:annotation>
+                <xs:documentation>Eine spezifische Fehlermeldung für die Nachricht 0624.</xs:documentation>
+              </xs:annotation>
+            </xs:element>
+            <xs:element name="SpezifischeFehlermeldung0625" type="xdomea:SpezifischeFehlermeldung0625CodeType">
+              <xs:annotation>
+                <xs:documentation>Eine spezifische Fehlermeldung für die Nachricht 0625.</xs:documentation>
+              </xs:annotation>
+            </xs:element>
+            <xs:element name="SpezifischeFehlermeldung0626" type="xdomea:SpezifischeFehlermeldung0626CodeType">
+              <xs:annotation>
+                <xs:documentation>Eine spezifische Fehlermeldung für die Nachricht 0626.</xs:documentation>
+              </xs:annotation>
+            </xs:element>
+            <xs:element name="SpezifischeFehlermeldung0627" type="xdomea:SpezifischeFehlermeldung0627CodeType">
+              <xs:annotation>
+                <xs:documentation>Eine spezifische Fehlermeldung für die Nachricht 0627.</xs:documentation>
+              </xs:annotation>
+            </xs:element>
+            <xs:element name="SpezifischeFehlermeldung0628" type="xdomea:SpezifischeFehlermeldung0628CodeType">
+              <xs:annotation>
+                <xs:documentation>Eine spezifische Fehlermeldung für die Nachricht 0628.</xs:documentation>
+              </xs:annotation>
+            </xs:element>
+            <xs:element name="SpezifischeFehlermeldung0631" type="xdomea:SpezifischeFehlermeldung0631CodeType">
+              <xs:annotation>
+                <xs:documentation>Eine spezifische Fehlermeldung für die Nachricht 0631.</xs:documentation>
+              </xs:annotation>
+            </xs:element>
+            <xs:element name="SonstigeFehlermeldung" type="xs:string">
+              <xs:annotation>
+                <xs:documentation>Eine sonstige, nicht näher defnierte Fehlermeldung, die als Freitext formuliert werden kann.</xs:documentation>
+              </xs:annotation>
+            </xs:element>
+          </xs:choice>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="Rueckgabeparameter" minOccurs="0" maxOccurs="unbounded" type="xdomea:RueckgabeparameterFVDatenType">
+        <xs:annotation>
+          <xs:documentation>Die Beschreibung der Daten, die bei einem erfolgreichem oder nicht erfolgreichen Import der empfangenen Daten an das sendende System zurückübermittelt werden.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="GesamtprotokollZumAblegenType">
+    <xs:annotation>
+      <xs:documentation>GesamtprotokollZumAblegen beschreibt alle aktenrelevanten Bearbeitungs- und Protokollinformationen zu einem Schriftgutobjekt, die aus einem Fachverfahren in einem DMS abzulegen sind. Wird die Nachricht im Stapelbetrieb übergeben, so erfolgt hier zusätzlich die Übergabe der Nummer im Stapel zu jedem angegebenen Gesamtprotokoll.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="NummerImStapel" minOccurs="0" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Die Nummer des übergebenen Elements im Stapel. Anhand dieser Nummer können im Rückmeldestapel die Rückmeldungen den einzelnen Elementen im Stapel zugeordnet werden.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="IDSGO" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Die ID des Schriftgutobjektes im DMS.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Ablageort" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Der Ablageort des Schriftgutobjekts, das im DMS abgelegt werden soll.
+Die Primärdaten zu Dokumenten finden sich in Dateien, die durch Primaerdokument.Dateiname spezifiziert werden. In Abhängigkeit des Konfigurationsparameters „Datenaustauschart“ kann dieser Parameter unterschiedliche Werte annehmen:
+
+Übergabe über ein freigegebenes Verzeichnis: Name des Verzeichnisses.
+Übergabe per WebDAV und http(s): URL.
+Übergabe über eine Datenbank: der Parameter bleibt leer (bzw. wird ignoriert).</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Dokument" minOccurs="0" type="xdomea:DokumentType">
+        <xs:annotation>
+          <xs:documentation>Das Gesamtprotokoll als Dokument.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Geschaeftsgang" minOccurs="0" type="xdomea:GeschaeftsgangType">
+        <xs:annotation>
+          <xs:documentation>Die Bearbeitungsinformationen im Rahmen eines Geschäftsgangs zu dem Schriftgutobjekt.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="HistorienProtokollInformation" minOccurs="0" maxOccurs="unbounded" type="xdomea:HistorienProtokollInformationType">
+        <xs:annotation>
+          <xs:documentation>Die Bearbeitungs- und Protokollinformationen eines Schriftgutobjekts.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="KonfigurationsparameterType">
+    <xs:annotation>
+      <xs:documentation>Ein Parameter zur Konfiguration eines anderen Systems.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="Parameter" type="xdomea:KonfigurationsparameterCodeType">
+        <xs:annotation>
+          <xs:documentation>Der Name des Konfigurationsparameters.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Datentyp" minOccurs="0" type="xdomea:DatentypCodeType">
+        <xs:annotation>
+          <xs:documentation>Der Datentyp des Konfigurationsparameters.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Wert" minOccurs="0">
+        <xs:annotation>
+          <xs:appinfo>
+            <implementationHint>Für einen zu erstellenden Konfigurationsparameter muss der Wert zwingend übergeben werden.</implementationHint>
+          </xs:appinfo>
+          <xs:documentation>Der Wert des Konfigurationsparameters.</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+          <xs:choice>
+            <xs:element name="WertOffen" type="xs:string">
+              <xs:annotation>
+                <xs:documentation>Der Wert ist nicht näher definiert und kann als Freitext übermittelt werden.</xs:documentation>
+              </xs:annotation>
+            </xs:element>
+            <xs:element name="Transportweg" type="xdomea:TransportwegCodeType">
+              <xs:annotation>
+                <xs:documentation>Es handelt sich bei dem Wert des Konfigurationsparameters um einen Transportweg.</xs:documentation>
+              </xs:annotation>
+            </xs:element>
+            <xs:element name="Datenaustauschart" type="xdomea:DatenaustauschartCodeType">
+              <xs:annotation>
+                <xs:documentation>Es handelt sich bei dem Wert des Konfigurationsparameters um eine Datenaustauschart.</xs:documentation>
+              </xs:annotation>
+            </xs:element>
+            <xs:element name="KomprimierterDatenaustausch" type="xs:boolean">
+              <xs:annotation>
+                <xs:documentation>Es handelt sich bei dem Wert des Konfigurationsparameters um die Aussage zum komprimierten Datenaustausch.</xs:documentation>
+              </xs:annotation>
+            </xs:element>
+            <xs:element name="Kompressionsverfahren" type="xdomea:KompressionsverfahrenCodeType">
+              <xs:annotation>
+                <xs:documentation>Es handelt sich bei dem Wert des Konfigurationsparameters um ein Kompressionsverfahren.</xs:documentation>
+              </xs:annotation>
+            </xs:element>
+            <xs:element name="Standardablage" type="xdomea:StandardablageType">
+              <xs:annotation>
+                <xs:documentation>Es handelt sich bei dem Wert des Konfigurationsparameters um Angaben zur Standardablage.</xs:documentation>
+              </xs:annotation>
+            </xs:element>
+          </xs:choice>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="Gruppe" type="xdomea:KonfigurationsparameterGruppeCodeType">
+        <xs:annotation>
+          <xs:documentation>Die Gruppe von Parametern, zu der der Konfigurationsparameter gehört.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="KonfigurationsparameterZumAbrufenType">
+    <xs:annotation>
+      <xs:documentation>Der Name eines Konfigurationsparameters, der abgerufen werden soll.</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:restriction base="xdomea:FeldType">
+        <xs:sequence>
+          <xs:element name="Name" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Der Name des Feldes.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element name="Beschreibung" minOccurs="0" maxOccurs="0" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Die Hinweise und Erläuterungen zu einem Feld.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element name="Datentyp" minOccurs="0" maxOccurs="0" type="xdomea:DatentypCodeType">
+            <xs:annotation>
+              <xs:documentation>Der Datentyp des Feldwertes.
+Gültige Angaben sind die W3C-Datentypen.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element name="Wert" minOccurs="0" maxOccurs="0" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Der Wert des Feldes.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:restriction>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="KonfigurationsparameterZumErstellenType">
+    <xs:annotation>
+      <xs:documentation>Die Zusammenfassung von Konfigurationsparametern, die durch einen Benutzer oder eine Rolle erstellt wurden.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="BenutzerOderRolle" minOccurs="0" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Der Benutzer oder die Rolle, der den/die Konfigurationsparameter erstellt hat.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="DefinierterKonfigurationsparameter" minOccurs="0" maxOccurs="unbounded" type="xdomea:KonfigurationsparameterType">
+        <xs:annotation>
+          <xs:documentation>Die Informationen zu dem/den zu erstellenden Konfigurationsparameter(n), die bereits näher klassifiziert sind.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Konfigurationsparameter" minOccurs="0" maxOccurs="unbounded" type="xdomea:FeldType">
+        <xs:annotation>
+          <xs:appinfo>
+            <implementationHint>Für einen zu erstellenden Konfigurationsparameter muss der Wert zwingend übergeben werden.</implementationHint>
+          </xs:appinfo>
+          <xs:documentation>Die Informationen zu dem/den zu erstellenden Konfigurationsparameter(n).</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="MetadatenZumBearbeitenType">
+    <xs:annotation>
+      <xs:documentation>Die Zusammenfassung von Metadaten, die zu einem Schriftgutobjekt bearbeitet werden sollen. Wird die Nachricht im Stapelbetrieb übergeben, so erfolgt hier zusätzlich die Übergabe der Nummer im Stapel zu jedem angegebenen Metadatum.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="NummerImStapel" minOccurs="0" type="xs:integer">
+        <xs:annotation>
+          <xs:documentation>Die Nummer des übergebenen Elements im Stapel. Anhand dieser Nummer können im Rückmeldestapel die Rückmeldungen den einzelnen Elementen im Stapel zugeordnet werden.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="IDSGO" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Die ID des Schriftgutobjekts im DMS, zu dem die übergegebenen Metadaten bearbeitet werden sollen.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Metadatum" maxOccurs="unbounded" type="xdomea:FeldType">
+        <xs:annotation>
+          <xs:appinfo>
+            <implementationHint>Für ein anzulegendes Metadatum müssen der Datentyp und der Wert  zwingend übergeben werden. Für zu aktualisierendes Metadatum muss der Wert zwingend übergeben werden. Die Beschreibung und der Datentyp sollten nicht übergeben werden, da sie meist nicht geändert werden.</implementationHint>
+          </xs:appinfo>
+          <xs:documentation>Die Informationen zu einem zu bearbeitenden Metadatum.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="NkFVDatenAnDMSMitDMSSessionType">
+    <xs:annotation>
+      <xs:documentation>Der Kopf für Nachrichten von einem Fachverfahren zu einem DMS, der über die allgemeinen Informationen für die Bereitstellung der Nachricht (z.B. Transportweg) sowie für den Empfänger hinaus eine DMS-Session-ID enthält.</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="xdomea:NkKeineRueckmeldungFVDatenType">
+        <xs:sequence>
+          <xs:element name="DMSSessionID" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Die DMS-Session-ID wird verwendet, um den Benutzer bzw. die Rolle gegenüber dem DMS zu authentifizieren. Sie wird bei der Anmeldung im DMS erzeugt und wird nach einer konfigurierbaren Zeit der Inaktivität ungültig.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="NkKeineRueckmeldungFVDatenType">
+    <xs:annotation>
+      <xs:documentation>Der Kopf für Nachrichten von einem Fachverfahren zu einem DMS bzw. zu einem Fachverfahren enthält allgemeine Informationen für die Bereitstellung der Nachricht sowie für den Empfänger der Nachricht selbst.</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="xdomea:NkFVDatenType">
+        <xs:sequence>
+          <xs:element name="WeiteresEmpfangendesSystem" minOccurs="0" maxOccurs="unbounded" type="xdomea:SystemType">
+            <xs:annotation>
+              <xs:documentation>Die Informationen zu dem System, das ebenfalls die Daten erhalten hat.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element name="Empfangsbestaetigung" type="xs:boolean">
+            <xs:annotation>
+              <xs:documentation>Die Angabe, ob vom Empfänger der Nachricht eine Empfangsbestätigung erwünscht wird.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element name="Importbestaetigung" fixed="1" type="xs:boolean">
+            <xs:annotation>
+              <xs:documentation>Die Angabe, dass eine Importbestätigung vom Empfänger der Nachricht erwünscht wird.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element name="Erstellerkennung" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Die Benutzerkennung des Nachrichtenerstellers.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element name="ErstellerRolle" minOccurs="0" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Die Rolle des Nachrichtenerstellers.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element name="Stapel" type="xs:boolean">
+            <xs:annotation>
+              <xs:documentation>Stapel gibt an, ob die Nachricht mehrere Objekte in der Stapelverarbeitung oder ein Objekt in der Einzelverarbeitung übergibt.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element name="Stapellaenge" minOccurs="0" type="xs:integer">
+            <xs:annotation>
+              <xs:documentation>Die Länge des Stapels.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="NkRueckmeldungFVDatenImportType">
+    <xs:annotation>
+      <xs:documentation>Der Kopf der Nachricht enthält allgemeine Informationen zu einer Rückmeldung eines Datenimports.</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="xdomea:NkFVDatenType">
+        <xs:sequence>
+          <xs:element name="FVSessionID" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Die FV-Session-ID wird verwendet, um den Benutzer bzw. die Rolle aus dem DMS gegenüber dem Fachverfahren zu authentifizieren. Sie wird bei der Anmeldung im Fachverfahren erzeugt und wird nach einer konfigurierbaren Zeit der Inaktivität ungültig.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="ProtokolleintragZumErstellenType">
+    <xs:annotation>
+      <xs:documentation>ProtokolleintragZumErstellen enthält Informationen zu einem Protokolleintrag i. S. eines Funktionsprotokolls, der zu einem Schriftgutobjekt erstellt wird. Wird die Nachricht im Stapelbetrieb übergeben, so erfolgt hier zusätzlich die Übergabe der Nummer im Stapel zu jedem angegebenen Protokolleintrag.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="NummerImStapel" minOccurs="0" type="xs:integer">
+        <xs:annotation>
+          <xs:documentation>Die Nummer des übergebenen Elements im Stapel. Anhand dieser Nummer können im Rückmeldestapel die Rückmeldungen den einzelnen Elementen im Stapel zugeordnet werden.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="IDSGO" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Die ID des Schriftgutobjekts im DMS, zu dem ein Protokolleintrag erstellt werden soll.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Protokolleintrag" type="xdomea:BearbeitungFVType">
+        <xs:annotation>
+          <xs:documentation>Der Protokolleintrag zu dem Schriftgutobjekt.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="RueckgabeparameterFVDatenType">
+    <xs:annotation>
+      <xs:documentation>Die Rückmeldung des DMS zu den gelieferten Daten des Fachverfahrens.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="Parameter">
+        <xs:annotation>
+          <xs:documentation>Die Informationen zum Parameterwert.</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+          <xs:choice>
+            <xs:element name="AllgemeinerRueckgabeparameter" type="xdomea:FeldType">
+              <xs:annotation>
+                <xs:documentation>Es handelt sich bei dem Wert um einen allgemeinen, nicht näher im Standard definierten Rückgabeparameterwert.</xs:documentation>
+              </xs:annotation>
+            </xs:element>
+            <xs:element name="ZumLoeschenMarkiert" default="0" type="xs:boolean">
+              <xs:annotation>
+                <xs:documentation>Es handelt sich bei dem Wert um eine Löschmarkierung.</xs:documentation>
+              </xs:annotation>
+            </xs:element>
+            <xs:element name="Vertretungsstatus" maxOccurs="unbounded" type="xdomea:RueckgabeparameterVertretungsstatusType">
+              <xs:annotation>
+                <xs:documentation>Es handelt sich bei dem Wert um Angaben zu einem Vertretungsstatus.</xs:documentation>
+              </xs:annotation>
+            </xs:element>
+          </xs:choice>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="Erfolgreich" default="1" type="xs:boolean">
+        <xs:annotation>
+          <xs:documentation>Die Kennzeichnung des erfolgreichen oder nicht erfolgreichen Imports eines Datenelements.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="NummerImStapel" minOccurs="0" type="xs:integer">
+        <xs:annotation>
+          <xs:documentation>Die Nummer des übergebenen Elements im Stapel. Anhand dieser Nummer können im Rückmeldestapel die Rückmeldungen den einzelnen Elementen im Stapel zugeordnet werden.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="IDSGO" minOccurs="0" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Die ID des Schriftgutobjekts im DMS, zu dem die Rückmeldung erfolgt.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Hinweis" minOccurs="0" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Der Hinweis enthält weiterführende Informationen zu dem Import eines Datenelements, z.B. eine spezifische Fehlermeldung.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="RueckgabeparameterVertretungsstatusType">
+    <xs:annotation>
+      <xs:documentation>Informationen, die Angaben eines Rückgabeparameters zu einem Vertretungsstatus näher beschreiben.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="BenutzerOderRolle" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Der Benutzer oder die Rolle, für den/die der Vertretungsstatus abgefragt wird.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="VertretungAktiv" type="xs:boolean">
+        <xs:annotation>
+          <xs:documentation>Der Status zur Vertretung.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="SchriftgutobjektZumAblegenOderErstellenType">
+    <xs:annotation>
+      <xs:documentation>SchriftgutobjektZumAblegenOderErstellen enthält Informationen zu einem Schriftgutobjekt, das in einem Fachverfahren erstellt wurde und im empfangenden DMS abgelegt oder erstellt werden soll. Wird die Nachricht im Stapelbetrieb übergeben, so erfolgt hier zusätzlich die Übergabe der Nummer im Stapel zu jedem angegebenen Schriftgutobjekt.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="NummerImStapel" minOccurs="0" type="xs:integer">
+        <xs:annotation>
+          <xs:documentation>Die Nummer des übergebenen Elements im Stapel. Anhand dieser Nummer können im Rückmeldestapel die Rückmeldungen den einzelnen Elementen im Stapel zugeordnet werden.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="FachverfahrenObjektID" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Die ID des Schriftgutobjektes im Fachverfahren.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="IDContainer" minOccurs="0" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Die ID des übergeordneten Schriftgutobjekts, in dem das Schriftgutobjekt erstellt werden soll.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Schriftgutobjekt">
+        <xs:annotation>
+          <xs:documentation>Das Schriftgutobjekt, das abgelegt oder erstellt werden soll.</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+          <xs:choice>
+            <xs:element name="Akte" type="xdomea:AkteType">
+              <xs:annotation>
+                <xs:documentation>Eine Akte.</xs:documentation>
+              </xs:annotation>
+            </xs:element>
+            <xs:element name="Vorgang" type="xdomea:VorgangType">
+              <xs:annotation>
+                <xs:documentation>Ein Vorgang.</xs:documentation>
+              </xs:annotation>
+            </xs:element>
+            <xs:element name="Dokument" type="xdomea:DokumentType">
+              <xs:annotation>
+                <xs:documentation>Ein Dokument.</xs:documentation>
+              </xs:annotation>
+            </xs:element>
+          </xs:choice>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="SchriftgutobjektZumAblegenType">
+    <xs:annotation>
+      <xs:documentation>SchriftgutobjektZumAblegen enthält Informationen zu einem Schriftgutobjekt, das in einem Fachverfahren erstellt wurde und im empfangenden DMS abgelegt werden soll.</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="xdomea:SchriftgutobjektZumAblegenOderErstellenType">
+        <xs:sequence>
+          <xs:element name="Ablageort" minOccurs="0" type="xs:string">
+            <xs:annotation>
+              <xs:appinfo>
+                <implementationHint>Sollte als Austauschart nicht Datenbank oder XML-Datenstrom angegeben sein, so muss für den Ablageort zwingend ein Wert angegeben werden.</implementationHint>
+              </xs:appinfo>
+              <xs:documentation>Der Ablageort des Schriftgutobjekts, das im DMS abgelegt werden soll.
+Die Primärdaten zu Dokumenten finden sich in Dateien, die durch Primaerdokument.Dateiname spezifiziert werden. In Abhängigkeit des Konfigurationsparameters „Datenaustauschart“ kann dieser Parameter unterschiedliche Werte annehmen:
+
+Übergabe über ein freigegebenes Verzeichnis: Name des Verzeichnisses.
+Übergabe per WebDAV und http(s): URL.
+Übergabe über eine Datenbank: der Parameter bleibt leer (bzw. wird ignoriert).</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="SchriftgutobjektZumAnsehenOderBearbeitenType">
+    <xs:annotation>
+      <xs:documentation>SchriftgutobjektZumAnsehenOderBearbeiten enthält Informationen zu einem Schriftgutobjekt, das in einem Fachverfahren erstellt wurde und im empfangenden DMS angesehen oder bearbeitet werden soll.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="IDSGO" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Die ID des Schriftgutobjekts im DMS, das angsehen oder bearbeitet werden soll.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Versionsnummer" minOccurs="0" type="xs:string">
+        <xs:annotation>
+          <xs:appinfo>
+            <implementationHint>Die Versionsnummer kann nur für Dokumente angegeben werden - für Akte und Vorgang ist dies nicht möglich.</implementationHint>
+          </xs:appinfo>
+          <xs:documentation>Die Versionsnummer des Dokuments.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Client" minOccurs="0" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Der Client, auf dem das Schriftgutobjekt zu öffnen ist.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="SchriftgutobjektZumDruckenType">
+    <xs:annotation>
+      <xs:documentation>SchriftgutobjektZumDrucken enthält Informationen zu einem Schriftgutobjekt, das in einem Fachverfahren erstellt wurde und gedruckt werden soll. Wird die Nachricht im Stapelbetrieb übergeben, so erfolgt hier zusätzlich die Übergabe der Nummer im Stapel zu jedem angegebenen Schriftgutobjekt.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="NummerImStapel" minOccurs="0" type="xs:integer">
+        <xs:annotation>
+          <xs:documentation>Die Nummer des übergebenen Elements im Stapel. Anhand dieser Nummer können im Rückmeldestapel die Rückmeldungen den einzelnen Elementen im Stapel zugeordnet werden.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="IDSGO" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Die ID des Schriftgutobjekts im DMS, das gedruckt werden soll.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Drucker" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Der Name des Druckers. Wird kein Druckername angegeben, so wird der Druck auf dem Standarddrucker des Clients ausgegeben.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="MetadatenDrucken" default="0" type="xs:boolean">
+        <xs:annotation>
+          <xs:documentation>MetadatenDrucken legt fest, ob zu einem Schriftgutobjekt auch die Metadaten ausgedruckt werden sollen. Standardmäßig werden keine Metadaten ausgedruckt.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="PrimaerdokumentDrucken" default="0" type="xs:boolean">
+        <xs:annotation>
+          <xs:documentation>PrimaerdokumentDrucken legt fest, ob die Primärdaten zu dem Schriftgutobjekt gedruckt werden. Standardmäßig werden keine Primärdokumente ausgedruckt.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="UnterSGODrucken" default="0" type="xs:boolean">
+        <xs:annotation>
+          <xs:documentation>UnterSGODrucken legt fest, ob sich innerhalb des übergegebenen Schriftgutobjekts befindliche Schriftgutobjekte gedruckt werden sollen, z.B. eine Akte mit ihren Vorgängen und Dokumenten. Standardmäßig werden keine hierarchisch untergeordneten Schriftgutobjekte ausgedruckt.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="UnterSGOTyp" minOccurs="0" maxOccurs="unbounded" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>UnterSGOTyp legt fest, dass nur die Schriftgutobjekte eines angegebenen Typs gedruckt werden.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Versionsnummer" minOccurs="0" type="xs:string">
+        <xs:annotation>
+          <xs:appinfo>
+            <implementationHint>Die Versionsnummer kann nur für Dokumente angegeben werden - für Akte und Vorgang ist dies nicht möglich.</implementationHint>
+          </xs:appinfo>
+          <xs:documentation>Die Versionsnummer des Dokuments.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="SchriftgutobjektZumErstellenType">
+    <xs:annotation>
+      <xs:documentation>SchriftgutobjektZumErstellen enthält Informationen zu einem Schriftgutobjekt, das in einem Fachverfahren erzeugt wurde und im empfangenden DMS erstellt werden soll.</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="xdomea:SchriftgutobjektZumAblegenOderErstellenType">
+        <xs:sequence>
+          <xs:element name="SGOOeffnen" minOccurs="0" type="xs:boolean">
+            <xs:annotation>
+              <xs:documentation>SGOOeffnen legt fest, ob das Schriftgutobjekt nach der Erstellung in dem DMS mit einer externen Applikation oder mit DMS z.B. zur weiteren Bearbeitung geöffnet werden soll.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="SchriftgutobjektZumLoeschenType">
+    <xs:annotation>
+      <xs:documentation>SchriftgutobjektZumLoeschen enthält Informationen zu einem Schriftgutobjekt, das im DMS gelöscht werden soll. Wird die Nachricht im Stapelbetrieb übergeben, so erfolgt hier zusätzlich die Übergabe der Nummer im Stapel zu jedem angegebenen Schriftgutobjekt.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="NummerImStapel" minOccurs="0" type="xs:integer">
+        <xs:annotation>
+          <xs:documentation>Die Nummer des übergebenen Elements im Stapel. Anhand dieser Nummer können im Rückmeldestapel die Rückmeldungen den einzelnen Elementen im Stapel zugeordnet werden.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="IDSGO" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Die ID des Schriftgutobjekts im DMS, das gelöscht werden soll.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="SchriftgutobjektZumLoeschstatusAbfragenType">
+    <xs:annotation>
+      <xs:documentation>SchriftgutobjektZumLoeschStatusAbfragen enthält Informationen zu einem Schriftgutobjekt, dessen Löschstatus im DMS abgefragt werden soll.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="IDSGO" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Die ID des Schriftgutobjekts im DMS, dessen Löschtstatus abgefragt werden soll.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="NummerImStapel" minOccurs="0" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Die Nummer des übergebenen Elements im Stapel. Anhand dieser Nummer können im Rückmeldestapel die Rückmeldungen den einzelnen Elementen im Stapel zugeordnet werden.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="SchriftgutobjektZumSuchenType">
+    <xs:annotation>
+      <xs:documentation>SchriftgutobjektZumSuchen enthält Informationen zur einfachen Suche nach Schriftgutobjekten im DMS.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="Suchbegriffe" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Die Suchbegriffe sind Kriterien, mit deren Hilfe im DMS nach Schriftgutobjekten gesucht wird. Sie werden über eine UND-Verknüpfung ausgewertet.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Volltext" default="1" type="xs:boolean">
+        <xs:annotation>
+          <xs:documentation>Volltext legt fest, ob die Suche auch in den Primärdokumenten der Schriftgutobjekte durchgeführt werden soll. Standardmäßig werden die Primärdokumente durchsucht.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Metadaten" default="1" type="xs:boolean">
+        <xs:annotation>
+          <xs:documentation>Metadaten legt fest, ob die Suche auch in den Metadaten der Schriftgutobjekte durchgeführt werden soll. Standardmäßig werden die Metadaten durchsucht.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="SchriftgutobjektZumZDAVerfuegenType">
+    <xs:annotation>
+      <xs:documentation>SchriftgutobjektZumZDAVerfuegen enthält Informationen zu einem Schriftgutobjekt, das im DMS zdA-verfügt werden soll. Wird die Nachricht im Stapelbetrieb übergeben, so erfolgt hier zusätzlich die Übergabe der Nummer im Stapel zu jedem angegebenen Schriftgutobjekt.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="NummerImStapel" minOccurs="0" type="xs:integer">
+        <xs:annotation>
+          <xs:documentation>Die Nummer des übergebenen Elements im Stapel. Anhand dieser Nummer können im Rückmeldestapel die Rückmeldungen den einzelnen Elementen im Stapel zugeordnet werden.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="IDSGO" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Die ID des Schriftgutobjekts im DMS, das zdA-verfügt werden soll.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="StandardablageType">
+    <xs:annotation>
+      <xs:documentation>Standardablage beschreibt Informationen, an denen routinemäßig für einen bestimmten Benutzer oder eine bestimmte Rolle Daten abgelegt werden.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="Ablageort" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Der Standard-Ablageort.
+In Abhängigkeit des Konfigurationsparameters „Datenaustauschart“ kann dieser Parameter unterschiedliche Werte annehmen:
+
+Übergabe über ein freigegebenes Verzeichnis: Name des Verzeichnisses.
+Übergabe per WebDAV und http(s): URL.
+Übergabe über eine Datenbank: der Parameter bleibt leer (bzw. wird ignoriert).</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="BenutzerOderRolle" minOccurs="0" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Der Benutzer oder die Rolle, dem der Ablageort zugewiesen wird.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="SystemstatusZumAbfragenType">
+    <xs:annotation>
+      <xs:documentation>SystemstatusZumAbfragen enthält Informationen zu einer Statusabfrage des empfangenden Systems.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="SystemstatusID" type="xs:integer">
+        <xs:annotation>
+          <xs:documentation>Die ID der Systemstatus-Information, die abgefragt werden soll.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="VertretungZumAktivierenOderDeaktivierenType">
+    <xs:annotation>
+      <xs:documentation>VertretungZumAktivierenOderDeaktivieren enthält Informationen zu einer Vertretung, die aktiviert oder deaktiviert werden soll.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="ZuVertretender" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Der Benutzer oder die Rolle, für den/die die Vertretung aktiviert bzw. deaktiviert werden soll.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Vertreter" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Der Benutzer oder die Rolle, der/die die Vertretung übernehmen bzw. wieder abgeben soll.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Aktivieren" type="xs:boolean">
+        <xs:annotation>
+          <xs:documentation>Aktivieren bestimmt, ob eine Vertretung aktiviert oder deaktiviert werden soll. Hat Aktivieren den Wert 0, so wird die Vertretung deaktiviert.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="VertretungsstatusZumAbfragenType">
+    <xs:annotation>
+      <xs:documentation>VertretungsstatusZumAbfragen enthält Informationen zur Abfrage des Vertretungsstatus eines Benutzers oder einer Rolle.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="BenutzerOderRolle" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Der Benutzer oder die Rolle, für den/die der Vertretungsstatus abgefragt wird.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="ZustaendigkeitZumAendernType">
+    <xs:annotation>
+      <xs:documentation>ZustaendigkeitZumAendern enthält Informationen zur Zuständigkeitsänderung eines Schriftgutobjekts. Wird die Nachricht im Stapelbetrieb übergeben, so erfolgt hier zusätzlich die Übergabe der Nummer im Stapel zu jedem angegebenen Schriftgutobjekt.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="NummerImStapel" minOccurs="0" type="xs:integer">
+        <xs:annotation>
+          <xs:documentation>Die Nummer des übergebenen Elements im Stapel. Anhand dieser Nummer können im Rückmeldestapel die Rückmeldungen den einzelnen Elementen im Stapel zugeordnet werden.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="IDSGO" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Die ID des Schriftgutobjekts im DMS, für das die Zuständigkeit angepasst werden soll.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="JetztZustaendig" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Der Benutzer oder die Rolle, welcher/welche nach der Zuständigkeitsänderung für das Schriftgutobjekt zuständig ist.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="BisherZustaendig" minOccurs="0" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Der Benutzer oder die Rolle, welcher/welche bisher für das Schriftgutobjekt zuständig war.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="AufnehmendAktenplaneinheitKennzeichen" minOccurs="0" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Das Kennzeichen des übergeordneten Schriftgutobjekts, zu dem das von der Zuständigkeitsänderung betroffene Schriftgutobjekt nach der Änderung gehört.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="AufnehmendIDAkte" minOccurs="0" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Die ID der Akte, zu dem das Schriftgutobjekt nach der Zuständigkeitsänderung gehört.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="AbgebendAktenplaneinheitKennzeichen" minOccurs="0" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Das Kennzeichen des übergeordneten Schriftgutobjekts, zu dem das von der Zuständigkeitsänderung betroffene Schriftgutobjekt vor der Änderung gehörte.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="AbgebendIDAkte" minOccurs="0" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Die ID der Akte, zu dem das Schriftgutobjekt vor der Zuständigkeitsänderung gehörte.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Metadatum" minOccurs="0" maxOccurs="unbounded" type="xdomea:FeldType">
+        <xs:annotation>
+          <xs:documentation>Ein im Rahmen der Zuständigkeitsänderung angepasstes Metadatum zu dem Schriftgutobjekt.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>
+

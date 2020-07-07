@@ -1,0 +1,37 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>de.bund.bsi.tr_esor</groupId>
+    <artifactId>xaip-validator</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>XaipValidator</name>
+    <description>Validator for TR-ESOR XAIP documents </description>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>default-syntax-validator</module>
+        <module>default-signature-finder</module>
+        <module>default-signature-verifier</module>
+        <module>default-protocol-assembler</module>
+        <module>xaip-validator-cli</module>
+        <module>xaip-validator-api</module>
+    </modules>
+
+    <properties>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+    
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>1.18.12</version>
+                <scope>provided</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+</project>

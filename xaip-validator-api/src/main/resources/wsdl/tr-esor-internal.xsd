@@ -1,0 +1,113 @@
+<schema targetNamespace="urn:de:procilon:tresor:1.2"
+	xmlns="http://www.w3.org/2001/XMLSchema"
+	xmlns:tns="urn:de:procilon:tresor:1.2"
+	xmlns:tr="http://www.bsi.bund.de/tr-esor/api/1.2"
+	xmlns:tc="urn:iso:std:iso-iec:24727:tech:schema"
+	xmlns:vr="urn:oasis:names:tc:dss-x:1.0:profiles:verificationreport:schema#"
+	xmlns:sp="urn:oasis:names:tc:dss-x:1.0:profiles:SignaturePolicy:schema#"
+	xmlns:xmime="http://www.w3.org/2005/05/xmlmime"
+	elementFormDefault="qualified">
+
+	<import namespace="http://www.bsi.bund.de/tr-esor/api/1.2"
+		schemaLocation="tr-esor-interfaces-v1.2.xsd" />
+	<import namespace="urn:iso:std:iso-iec:24727:tech:schema"
+		schemaLocation="deps/ISO24727-Protocols.xsd" />
+	<import
+		namespace="urn:oasis:names:tc:dss-x:1.0:profiles:verificationreport:schema#"
+		schemaLocation="deps/oasis-dssx-1.0-profiles-verification-report-cs1.xsd" />
+	<import
+		namespace="urn:oasis:names:tc:dss-x:1.0:profiles:SignaturePolicy:schema#"
+		schemaLocation="deps/oasis-dssx-1.0-profiles-sigpolicy-schema-cd01.xsd" />
+	<element name="TimestampRequest">
+		<complexType>
+			<complexContent>
+				<extension base="tr:RequestType">
+					<sequence>
+						<element name="requestData" type="tns:MessageImprint" />
+					</sequence>
+				</extension>
+			</complexContent>
+		</complexType>
+	</element>
+	<element name="TimestampResponse">
+		<complexType>
+			<complexContent>
+				<extension base="tr:ResponseType">
+					<sequence>
+						<element name="responseData" type="base64Binary"
+							minOccurs="0" />
+					</sequence>
+				</extension>
+			</complexContent>
+		</complexType>
+	</element>
+	<element name="HashRequest">
+		<complexType>
+			<complexContent>
+				<extension base="tr:RequestType">
+					<sequence>
+						<element name="hashAlgorithm"
+							type="tc:AlgorithmIdentifierType" minOccurs="0" />
+						<element name="requestData" type="base64Binary"
+							xmime:expectedContentTypes="application/octet-stream" />
+					</sequence>
+				</extension>
+			</complexContent>
+		</complexType>
+	</element>
+	<element name="HashResponse">
+		<complexType>
+			<complexContent>
+				<extension base="tr:ResponseType">
+					<sequence>
+						<element name="responseData" type="tns:MessageImprint"
+							minOccurs="0" />
+					</sequence>
+				</extension>
+			</complexContent>
+		</complexType>
+	</element>
+	<element name="LatestVersionRequest">
+	<complexType>
+			<complexContent>
+				<extension base="tr:RequestType">
+					<sequence>
+						<element name="aoid" type="string" />
+					</sequence>
+				</extension>
+			</complexContent>
+		</complexType>
+	</element>
+	<element name="LatestVersionResponse">
+		<complexType>
+			<complexContent>
+				<extension base="tr:ResponseType">
+					<sequence>
+						<element name="latestVersion" type="string" minOccurs="0" />
+					</sequence>
+				</extension>
+			</complexContent>
+		</complexType>
+	</element>
+	<element name="xPath" type="tns:xpath" />
+
+	<complexType name="MessageImprint">
+		<sequence>
+			<element name="hashAlgorithm"
+				type="tc:AlgorithmIdentifierType" />
+			<element name="hashedMessage" type="base64Binary" />
+		</sequence>
+	</complexType>
+	<complexType name="xpath">
+		<sequence>
+			<element name="namespaceMapping" minOccurs="0"
+				maxOccurs="unbounded">
+				<complexType>
+					<attribute name="name" type="string" />
+					<attribute name="namespace" type="anyURI" />
+				</complexType>
+			</element>
+		</sequence>
+		<attribute name="path" type="string" />
+	</complexType>
+</schema>

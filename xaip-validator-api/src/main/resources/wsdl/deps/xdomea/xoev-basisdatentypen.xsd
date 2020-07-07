@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xoev-dt="http://xoev.de/schemata/basisdatentypen/1_0" targetNamespace="http://xoev.de/schemata/basisdatentypen/1_0" version="1.0" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <xs:complexType name="Code">
+    <xs:annotation>
+      <xs:appinfo>
+        <title>Datentyp für die Übermittlung von Codes</title>
+      </xs:appinfo>
+      <xs:documentation>Datentyp für die Übermittlung von Codes  (vgl. XÖV-Handbuch).</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="code" type="xs:token" form="unqualified" />
+      <xs:element name="name" minOccurs="0" type="xs:normalizedString" form="unqualified" />
+    </xs:sequence>
+    <xs:attribute name="listURI" type="xs:anyURI" use="optional" />
+    <xs:attribute name="listVersionID" type="xs:normalizedString" use="optional" />
+  </xs:complexType>
+  <xs:simpleType name="String.Latin">
+    <xs:annotation>
+      <xs:appinfo>
+        <title>Datentyp für lateinische Zeichen in Unicode</title>
+      </xs:appinfo>
+      <xs:documentation>Einschränkung auf alle lateinischen Zeichen innerhalb Unicode (vgl. XÖV-Handbuch).</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[&#x9;-&#xa;&#xd;&#x20;-&#x7e;&#xa1;-&#xac;&#xae;-&#x131;&#x134;-&#x17f;&#x187;-&#x188;&#x18f;&#x1a0;-&#x1a1;&#x1af;-&#x1b0;&#x1b7;&#x1bf;&#x1cd;-&#x1d4;&#x1de;-&#x1df;&#x1e2;-&#x1ef;&#x1f4;-&#x1f5;&#x1f7;&#x1fa;-&#x21f;&#x22a;-&#x233;&#x259;&#x292;&#x1e02;-&#x1e03;&#x1e0a;-&#x1e0b;&#x1e10;-&#x1e11;&#x1e1e;-&#x1e21;&#x1e24;-&#x1e27;&#x1e30;-&#x1e31;&#x1e40;-&#x1e41;&#x1e44;-&#x1e45;&#x1e56;-&#x1e57;&#x1e60;-&#x1e63;&#x1e6a;-&#x1e6b;&#x1e80;-&#x1e85;&#x1e8c;-&#x1e93;&#x1e9b;&#x1e9e;&#x1ea0;-&#x1ea1;&#x1eaa;-&#x1eac;&#x1ebd;&#x1ec4;-&#x1ec5;&#x1eca;-&#x1ecf;&#x1ed6;-&#x1ed7;&#x1ee4;-&#x1ee5;&#x1ef2;-&#x1ef3;&#x1ef8;-&#x1ef9;&#x20ac;]*" />
+    </xs:restriction>
+  </xs:simpleType>
+</xs:schema>
+

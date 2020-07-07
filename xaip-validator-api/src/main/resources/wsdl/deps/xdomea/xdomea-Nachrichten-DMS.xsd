@@ -1,0 +1,342 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xdomea="http://www.xdomea.de/V2.2.0" targetNamespace="http://www.xdomea.de/V2.2.0" version="2.2.0" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <xs:annotation />
+  <xs:include schemaLocation="xdomea-Baukasten.xsd" />
+  <xs:include schemaLocation="xdomea-Typen-AbgabeDurchfuehren.xsd" />
+  <xs:include schemaLocation="xdomea-Typen-AussonderungDurchfuehren.xsd" />
+  <xs:element name="Information.Information.0101">
+    <xs:annotation>
+      <xs:documentation>Die Nachricht beschreibt den Export von Schriftgutobjekten (Akte, Vorgang, Dokument) zur Information oder Übernahme in ein anderes System.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Kopf" type="xdomea:NkNichtFVDatenWeitereEmpfaengerMitEmpfangsbestaetigungType">
+          <xs:annotation>
+            <xs:documentation>Der Kopf der Nachricht enthält allgemeine Informationen für den Empfänger der Information-Nachricht.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="Anschreiben" minOccurs="0" type="xdomea:DokumentType">
+          <xs:annotation>
+            <xs:documentation>Ein Dokument, das dem Empfänger zur Erläuterung der Information mitgegeben wird.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="Schriftgutobjekt" maxOccurs="unbounded">
+          <xs:annotation>
+            <xs:appinfo>
+              <implementationHint>Beim Zusammenstellen der Nachricht wird entschieden, welche prozess- und aktenrelevanten Metadaten zu dem Schriftgutobjekt übergeben werden.</implementationHint>
+            </xs:appinfo>
+            <xs:documentation>Ein Schriftgutobjekt (Akte, Vorgang oder Dokument), das mit der Information-Nachricht an ein anderes System gesandt wird.</xs:documentation>
+          </xs:annotation>
+          <xs:complexType>
+            <xs:choice>
+              <xs:element name="Akte" type="xdomea:AkteType">
+                <xs:annotation>
+                  <xs:documentation>Eine Akte.</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element name="Vorgang" type="xdomea:VorgangType">
+                <xs:annotation>
+                  <xs:documentation>Ein Vorgang.</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element name="Dokument" type="xdomea:DokumentType">
+                <xs:annotation>
+                  <xs:documentation>Ein Dokument.</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+            </xs:choice>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Information.EmpfangBestaetigen.0102">
+    <xs:annotation>
+      <xs:documentation>Die Nachricht beschreibt den erfolgreichen Empfang der Information.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Kopf" type="xdomea:NkBasisType">
+          <xs:annotation>
+            <xs:documentation>Der Kopf der Nachricht enthält allgemeine Informationen für den Empfänger der Empfangsbestätigung.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Aktenplan.Aktenplan.0301">
+    <xs:annotation>
+      <xs:appinfo>
+        <implementationHint>Die austauschenden Behörden müssen die für den Aktenplan erforderliche Konfiguration abstimmen, wenn dieser übernommen werden soll.</implementationHint>
+      </xs:appinfo>
+      <xs:documentation>Die Nachricht beschreibt den Export eines Aktenplans zur Information oder Übernahme in ein anderes System.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Kopf" type="xdomea:NkNichtFVDatenWeitereEmpfaengerMitEmpfangsbestaetigungType">
+          <xs:annotation>
+            <xs:documentation>Der Kopf der Nachricht enthält allgemeine Informationen für den Empfänger der Aktenplan-Nachricht.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="Aktenplan" type="xdomea:AktenplanType">
+          <xs:annotation>
+            <xs:documentation>Der zu übergebende Aktenplan enthält ein aufgabenbezogenes mehrstufiges Ordnungssystem mit hierarchischer Gliederung für das Bilden und Kennzeichnen von Akten und Vorgängen sowie das Zuordnen von Dokumenten.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Aktenplan.EmpfangBestaetigen.0302">
+    <xs:annotation>
+      <xs:documentation>Die Nachricht beschreibt den erfolgreichen Empfang des Aktenplans.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Kopf" type="xdomea:NkBasisType">
+          <xs:annotation>
+            <xs:documentation>Der Kopf der Nachricht enthält allgemeine Informationen für den Empfänger der Empfangsbestätigung.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Abgabe.Abgabe.0401">
+    <xs:annotation>
+      <xs:documentation>Die Nachricht beschreibt den vollständigen Export von Schriftgutobjekten bei Zuständigkeitswechseln zwischen Behörden oder bei Systemwechseln.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Kopf" type="xdomea:NkAbgabeType">
+          <xs:annotation>
+            <xs:documentation>Der Kopf der Nachricht enthält allgemeine Informationen für den Empfänger der Abgabe-Nachricht.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="Anschreiben" minOccurs="0" type="xdomea:DokumentType">
+          <xs:annotation>
+            <xs:documentation>Ein Dokument, das dem Empfänger zur Erläuterung der Abgabe mitgegeben wird.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="Schriftgutobjekt" maxOccurs="unbounded">
+          <xs:annotation>
+            <xs:appinfo>
+              <implementationHint>Bei der Abgabe müssen zu einem Schriftgutobjekt alle prozess- und aktenrelevanten Metadaten übergeben werden. Die Fristen und die Aussonderungsart werden bei der Abgabe zu einem Schriftgutobjekt mit übergeben. Die aufnehmende Behörde kann entscheiden, ob diese Informationen dann in das eigene System übernommen werden oder nicht.</implementationHint>
+            </xs:appinfo>
+            <xs:documentation>Ein Schriftgutobjekt (Akte, Vorgang oder Dokument) zu einer Abgabe.</xs:documentation>
+          </xs:annotation>
+          <xs:complexType>
+            <xs:choice>
+              <xs:element name="Akte" type="xdomea:AkteType">
+                <xs:annotation>
+                  <xs:documentation>Eine Akte.</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element name="Vorgang" type="xdomea:VorgangType">
+                <xs:annotation>
+                  <xs:documentation>Ein Vorgang.</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element name="Dokument" type="xdomea:DokumentType">
+                <xs:annotation>
+                  <xs:documentation>Ein Dokument.</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+            </xs:choice>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Aktenplan" minOccurs="0" type="xdomea:AktenplanType">
+          <xs:annotation>
+            <xs:documentation>Der Aktenplan zu einer Abgabe enthält ein aufgabenbezogenes mehrstufiges Ordnungssystem mit einer hierarchischer Gliederung für das Bilden und Kennzeichnen von Akten und Vorgängen sowie das Zuordnen von Dokumenten.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Abgabe.ImportBestaetigen.0402">
+    <xs:annotation>
+      <xs:documentation>Die Nachricht beschreibt den Status des Imports der Abgabe.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Kopf" type="xdomea:NkBasisType">
+          <xs:annotation>
+            <xs:documentation>Der Kopf der Nachricht enthält allgemeine Informationen für den Empfänger der Importnachricht zu einer Abgabe.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="ErfolgOderMisserfolg" type="xdomea:ErfolgOderMisserfolgAbgabeType">
+          <xs:annotation>
+            <xs:documentation>Die Information zum erfolgreichen oder nicht erfolgreichen Import einer Abgabe.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Aussonderung.Anbieteverzeichnis.0501">
+    <xs:annotation>
+      <xs:documentation>Die Nachricht beschreibt den Export von Metadaten zu Schriftgutobjekten, die dem zuständigen Archiv angeboten werden sollen.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Kopf" type="xdomea:NkNichtFVDatenEinEmpfaengerMitEmpfangsbestaetigungType">
+          <xs:annotation>
+            <xs:documentation>Der Kopf der Nachricht enthält allgemeine Informationen für den Empfänger der Anbieteverzeichnis-Nachricht.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="Anschreiben" minOccurs="0" maxOccurs="unbounded" type="xdomea:DokumentType">
+          <xs:annotation>
+            <xs:documentation>Ein Dokument, in dem allgemeine Informationen zu den anzubietenden Schriftgutobjekten an das Archiv mitgegeben werden. Hier können auch Formblätter (z. B. Vorblatt zur Abgabe) mitgegeben werden.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="Schriftgutobjekt" maxOccurs="unbounded">
+          <xs:annotation>
+            <xs:appinfo>
+              <implementationHint>Es werden im Rahmen des Versendens eines Anbieteverzeichnisses keine Primärdokumente übergeben. Die MetadatenAussonderung müssen zwingend übergeben werden.</implementationHint>
+            </xs:appinfo>
+            <xs:documentation>Ein Schriftgutobjekt (Akte, Vorgang oder Dokument) zu einem Anbieteverzeichnis.</xs:documentation>
+          </xs:annotation>
+          <xs:complexType>
+            <xs:choice>
+              <xs:element name="Akte" type="xdomea:AkteType">
+                <xs:annotation>
+                  <xs:documentation>Eine Akte.</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element name="Vorgang" type="xdomea:VorgangType">
+                <xs:annotation>
+                  <xs:documentation>Ein Vorgang.</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element name="Dokument" type="xdomea:DokumentType">
+                <xs:annotation>
+                  <xs:documentation>Ein Dokument.</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+            </xs:choice>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Aktenplan" minOccurs="0" type="xdomea:AktenplanType">
+          <xs:annotation>
+            <xs:documentation>Der Aktenplan bildet als aufgabenbezogenes mehrstufiges Ordnungssystem mit hierarchischer Gliederung für das Bilden und Kennzeichnen von Akten und Vorgängen sowie das Zuordnen von Dokumenten das Anbieteverzeichnis für das Archiv.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Aussonderung.Bewertungsverzeichnis.0502">
+    <xs:annotation>
+      <xs:documentation>Die Nachricht beschreibt den Export von Metadaten zu Schriftgutobjekten, die vom zuständigen Archiv zu einer Bewertung ausgewählt wurden.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Kopf" type="xdomea:NkNichtFVDatenEinEmpfaengerMitEmpfangsbestaetigungType">
+          <xs:annotation>
+            <xs:documentation>Der Kopf der Nachricht enthält allgemeine Informationen für den Empfänger der Bewertungsverzeichnis-Nachricht.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="BewertetesObjekt" maxOccurs="unbounded" type="xdomea:RueckgabeparameterAnbietungType">
+          <xs:annotation>
+            <xs:documentation>Die Information zu einem Schriftgutobjekt über die durch das Archiv erfolgte Bewertung im Anbieteverzeichnis.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Aussonderung.Aussonderung.0503">
+    <xs:annotation>
+      <xs:documentation>Die Nachricht beschreibt den Export von Schriftgutobjekten mit dem Ziel der Übergabe an das zuständige Archiv.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Kopf" type="xdomea:NkAussonderungType">
+          <xs:annotation>
+            <xs:documentation>Der Kopf der Nachricht enthält allgemeine Informationen für den Empfänger der Aussonderung-Nachricht.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="Anschreiben" minOccurs="0" maxOccurs="unbounded" type="xdomea:DokumentType">
+          <xs:annotation>
+            <xs:documentation>Ein Dokument, in dem allgemeine Informationen zu den auszusondernden Schriftgutobjekten an das Archiv mitgegeben werden können. Hier können auch Formblätter (z. B. "Vorblatt zur Abgabe" gemäß Registraturrichtlinie) mitgegeben werden.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="Schriftgutobjekt" maxOccurs="unbounded">
+          <xs:annotation>
+            <xs:appinfo>
+              <implementationHint>Die Primärdokumente und MetadatenAussonderung müssen zwingend im Zuge einer Aussonderung übergeben werden.</implementationHint>
+            </xs:appinfo>
+            <xs:documentation>Ein Schriftgutobjekt (Akte, Vorgang oder Dokument) zu einer Aussonderung.</xs:documentation>
+          </xs:annotation>
+          <xs:complexType>
+            <xs:choice>
+              <xs:element name="Akte" type="xdomea:AkteType">
+                <xs:annotation>
+                  <xs:documentation>Eine Akte.</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element name="Vorgang" type="xdomea:VorgangType">
+                <xs:annotation>
+                  <xs:documentation>Ein Vorgang.</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element name="Dokument" type="xdomea:DokumentType">
+                <xs:annotation>
+                  <xs:documentation>Ein Dokument.</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+            </xs:choice>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Aktenplan" minOccurs="0" type="xdomea:AktenplanType">
+          <xs:annotation>
+            <xs:documentation>Der Aktenplan zu einer Aussonderung enthält ein aufgabenbezogenes mehrstufiges Ordnungssystem mit hierarchischer Gliederung für das Bilden und Kennzeichnen von Akten und Vorgängen sowie das Zuordnen von Dokumenten.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Aussonderung.AnbietungEmpfangBestaetigen.0504">
+    <xs:annotation>
+      <xs:documentation>Die Nachricht beschreibt den erfolgreichen Empfang des Anbietverzeichnisses.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Kopf" type="xdomea:NkBasisType">
+          <xs:annotation>
+            <xs:documentation>Der Kopf der Nachricht enthält allgemeine Informationen für den Empfänger der Empfangsbestätigung.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Aussonderung.BewertungEmpfangBestaetigen.0505">
+    <xs:annotation>
+      <xs:documentation>Die Nachricht beschreibt den erfolgreichen Empfang des Bewertungsverzeichnisses.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Kopf" type="xdomea:NkBasisType">
+          <xs:annotation>
+            <xs:documentation>Der Kopf der Nachricht enthält allgemeine Informationen für den Empfänger der Empfangsbestätigung.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Aussonderung.AussonderungImportBestaetigen.0506">
+    <xs:annotation>
+      <xs:documentation>Die Nachricht beschreibt den erfolgreichen oder nicht erfolgreichen Import der Aussonderung.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Kopf" type="xdomea:NkBasisType">
+          <xs:annotation>
+            <xs:documentation>Der Kopf der Nachricht enthält allgemeine Informationen für den Empfänger der Importnachricht zu einer Aussonderung.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="ErfolgOderMisserfolg" type="xdomea:ErfolgOderMisserfolgAussonderungType">
+          <xs:annotation>
+            <xs:documentation>Die Information zum erfolgreichen oder nicht erfolgreichen Import einer Aussonderung.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
+
