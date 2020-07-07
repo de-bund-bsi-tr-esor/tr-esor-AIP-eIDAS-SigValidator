@@ -21,6 +21,8 @@ public final class CLI
                 .programName( MessageBundle.RESOURCE.getString( MessageBundle.CLI_NAME ) )
                 .build();
         
+        argv = new String[] { "-in", "/tmp/validRetention.xaip" };
+        
         try
         {
             jCommander.parse( argv );

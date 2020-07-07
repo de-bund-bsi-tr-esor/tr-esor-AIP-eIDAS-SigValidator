@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xdomea="http://www.xdomea.de/V2.2.0" targetNamespace="http://www.xdomea.de/V2.2.0" version="2.2.0" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <xs:include schemaLocation="xdomea-Baukasten.xsd" />
+  <xs:complexType name="ErfolgOderMisserfolgAbgabeType">
+    <xs:annotation>
+      <xs:documentation>Die Information zum erfolgreichen oder nicht erfolgreichen Import einer Abgabe.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="Erfolgreich" default="1" type="xs:boolean">
+        <xs:annotation>
+          <xs:documentation>Die Kennzeichnung des erfolgreichen oder nicht erfolgreichen Imports der Abgabe.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Fehlermeldung" minOccurs="0" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Die Information, aus welchem Grund der Import der Abgabe nicht erfolgreich war.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="NkAbgabeType">
+    <xs:annotation>
+      <xs:documentation>Der Kopf der Nachricht enthält allgemeine Informationen für den Empfänger einer Nachricht, bei der es sich um eine Abgabe handelt.</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="xdomea:NkNichtFVDatenWeitereEmpfaengerType">
+        <xs:sequence>
+          <xs:element name="Importbestaetigung" fixed="1" type="xs:boolean">
+            <xs:annotation>
+              <xs:documentation>Die Angabe, dass eine Importbestätigung vom Empfänger der Nachricht erwünscht wird.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+</xs:schema>
+

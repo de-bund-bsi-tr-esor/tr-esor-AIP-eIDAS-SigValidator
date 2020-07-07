@@ -1,0 +1,4316 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xdomea="http://www.xdomea.de/V2.2.0" targetNamespace="http://www.xdomea.de/V2.2.0" version="2.2.0" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <xs:annotation>
+    <xs:documentation>Datentypen enthält projektspezifische Datentypen, welche von Datentypen aus anderen Namensräumen (z.B. UN/CEFACT, W3C) abgeleitet wurden.</xs:documentation>
+  </xs:annotation>
+  <xs:complexType name="AllgemeineRueckmeldungCodeType">
+    <xs:annotation>
+      <xs:documentation>Der Datentyp zur Werteliste von Rückmeldungen für Fachverfahrensnachrichten unter Angabe weiterer Informationen zur konkreten Angabe eines Wertes.</xs:documentation>
+    </xs:annotation>
+    <xs:simpleContent>
+      <xs:restriction base="xdomea:CodeType">
+        <xs:enumeration value="0000000">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Ausführung wurde erfolgreich beendet.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0000001">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Das DMS ist nicht verfügbar oder antwortet nicht in angemessener Zeit (Time-out).</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0000002">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Verbindungsabbruch.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0000003">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Die Kennung ist dem System nicht bekannt.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0000004">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Dem Benutzer bzw. der Rolle fehlen die erforderlichen Rechte zum Aufruf der Nachricht.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0000005">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Die ID des Fachverfahrens ist unbekannt.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0000006">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Die ID der Verwaltung ist unbekannt.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0000007">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>DMS-Session-ID ungültig bzw. nicht bekannt.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0000008">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Die übergebene XML-Struktur entspricht nicht dem angegebenen Schema und ist nicht valide.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0000009">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Nachricht bereits verarbeitet.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0000010">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Stapellänge kleiner oder gleich 0.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0000011">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Stapellänge größer als 1 in der Dialogverarbeitung unzulässig.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0000012">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Stapellänge kleiner als 1 in der Stapelverarbeitung unzulässig.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0000013">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Länge des Stapels stimmt nicht mit der Anzahl der Objekte im Stapel überein.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0000014">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Stapel syntaktisch nicht korrekt.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0000015">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Übertragungsfehler.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0000016">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Das Verzeichnis ist ungültig.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0000017">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Die URL ist ungültig.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0000018">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Datei kann nicht gefunden werden.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0000019">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Datenbanktabelle nicht zugreifbar.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0000499">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Unbekannter Fehler</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0000501">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Das Fachverfahren ist nicht verfügbar oder antwortet nicht in an-gemessener Zeit (Time-out).</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0000502">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Verbindungsabbruch.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0000503">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Die Kennung ist dem System nicht bekannt.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0000504">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Dem Benutzer fehlen die erforderlichen Rechte zum Aufruf der Nachricht.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0000505">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Die ID des Fachverfahrens ist nicht bekannt.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0000506">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Die ID der Verwaltung ist nicht bekannt.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0000507">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>FV-Session-ID ungültig bzw. nicht bekannt.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0000508">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Die übergebene XML-Struktur entspricht nicht dem angegebenen Schema und ist nicht valide.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0000509">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Nachricht bereits verarbeitet.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0000510">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Stapellänge kleiner oder gleich 0.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0000511">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Länge des Stapels stimmt nicht mit der Anzahl der Objekte im Stapel überein.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0000512">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Stapel syntaktisch nicht korrekt.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0000513">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Übertragungsfehler.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0000514">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Das Verzeichnis ist ungültig.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0000515">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Die URL ist ungültig.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0000516">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Datei kann nicht gefunden werden.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0000999">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Unbekannter Fehler</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:attribute name="codeName" type="xs:string" use="required">
+          <xs:annotation>
+            <xs:documentation>Der Klartext zu dem angegebenen Schlüsselwert aus der konkreten Codelisten-Definition.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistAgencyName" type="xs:string" use="required" fixed="AG xdomea">
+          <xs:annotation>
+            <xs:documentation>Der Name der Organisation, die für die Codeliste verantwortlich ist.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistName" type="xs:string" use="required" fixed="AllgemeineRueckmeldung">
+          <xs:annotation>
+            <xs:documentation>Der Name der Codeliste.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistVersionIdentifier" type="xs:token" use="required" fixed="2.2.0">
+          <xs:annotation>
+            <xs:documentation>Die Version der Codeliste.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="languageCode" type="xs:language" use="required" fixed="de">
+          <xs:annotation>
+            <xs:documentation>Die Sprache, in der die Codeliste vorliegt.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:restriction>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="AnschriftstypCodeType">
+    <xs:annotation>
+      <xs:documentation>Der Datentyp zur Werteliste von Anschriftentypen unter Angabe weiterer Informationen zur konkreten Angabe eines Wertes.</xs:documentation>
+    </xs:annotation>
+    <xs:simpleContent>
+      <xs:restriction base="xdomea:CodeType">
+        <xs:enumeration value="001">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Aktuelle Anschrift: Die aktuelle Anschrift, z.B. einer Organisation, einer Person.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="002">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Hauptsitz: Die Anschrift ist der Hauptsitz, z.B. einer Organisation, oder der Hauptwohnsitz einer Person.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="003">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Zweitsitz: Die Anschrift ist der Zweitsitz, z.B. einer Organisation, oder der Nebenwohnsitz einer Person.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:attribute name="codeName" type="xs:string" use="required">
+          <xs:annotation>
+            <xs:documentation>Der Klartext zu dem angegebenen Schlüsselwert aus der konkreten Codelisten-Definition.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistAgencyName" type="xs:string" use="required" fixed="AG xdomea">
+          <xs:annotation>
+            <xs:documentation>Der Name der Organisation, die für die Codeliste verantwortlich ist.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistName" type="xs:string" use="required" fixed="Anschriftstyp">
+          <xs:annotation>
+            <xs:documentation>Der Name der Codeliste.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistVersionIdentifier" type="xs:token" use="required" fixed="2.2.0">
+          <xs:annotation>
+            <xs:documentation>Die Version der Codeliste.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="languageCode" type="xs:language" use="required" fixed="de">
+          <xs:annotation>
+            <xs:documentation>Die Sprache, in der die Codeliste vorliegt.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:restriction>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="AussonderungsartCodeType">
+    <xs:annotation>
+      <xs:documentation>Der Datentyp zur Werteliste von Aussonderungsarten unter Angabe weiterer Informationen zur konkreten Angabe eines Wertes.</xs:documentation>
+    </xs:annotation>
+    <xs:simpleContent>
+      <xs:restriction base="xdomea:CodeType">
+        <xs:enumeration value="A">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Das Schriftgutobjekt ist archivwürdig.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="B">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Das Schriftgutobjekt ist zum Bewerten markiert.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="V">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Das Schriftgutobjekt ist zum Vernichten markiert.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:attribute name="codeName" type="xs:string" use="required">
+          <xs:annotation>
+            <xs:documentation>Der Klartext zu dem angegebenen Schlüsselwert aus der konkreten Codelisten-Definition.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistAgencyName" type="xs:string" use="required" fixed="AG xdomea">
+          <xs:annotation>
+            <xs:documentation>Der Name der Organisation, die für die Codeliste verantwortlich ist.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistName" type="xs:string" use="required" fixed="Aussonderungsart">
+          <xs:annotation>
+            <xs:documentation>Der Name der Codeliste.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistVersionIdentifier" type="xs:token" use="required" fixed="2.2.0">
+          <xs:annotation>
+            <xs:documentation>Die Version der Codeliste.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="languageCode" type="xs:language" use="required" fixed="de">
+          <xs:annotation>
+            <xs:documentation>Die Sprache, in der die Codeliste vorliegt.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:restriction>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="BeteiligungsstatusCodeType">
+    <xs:annotation>
+      <xs:documentation>Der Datentyp zur Werteliste von Beteiligungsstatus unter Angabe weiterer Informationen zur konkreten Angabe eines Wertes.</xs:documentation>
+    </xs:annotation>
+    <xs:simpleContent>
+      <xs:restriction base="xdomea:CodeType">
+        <xs:enumeration value="001">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Der Schritt liegt in der Zukunft.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="002">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Der Schritt ist aktuell.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="003">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Der Schritt ist abgeschlossen.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="004">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Der Schritt wurde übersprungen, jedoch nicht aus dem Geschäftsgang gelöscht. Der Schritt wird im Verlauf des Geschäftsgangs nicht mehr angesprochen.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:attribute name="codeName" type="xs:string" use="required">
+          <xs:annotation>
+            <xs:documentation>Der Klartext zu dem angegebenen Schlüsselwert aus der konkreten Codelisten-Definition.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistAgencyName" type="xs:string" use="required" fixed="AG xdomea">
+          <xs:annotation>
+            <xs:documentation>Der Name der Organisation, die für die Codeliste verantwortlich ist.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistName" type="xs:string" use="required" fixed="Beteiligungsstatus">
+          <xs:annotation>
+            <xs:documentation>Der Name der Codeliste.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistVersionIdentifier" type="xs:token" use="required" fixed="2.2.0">
+          <xs:annotation>
+            <xs:documentation>Die Version der Codeliste.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="languageCode" type="xs:language" use="required" fixed="de">
+          <xs:annotation>
+            <xs:documentation>Die Sprache, in der die Codeliste vorliegt.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:restriction>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="BewertungsvorschlagCodeType">
+    <xs:annotation>
+      <xs:documentation>Der Datentyp zur Werteliste von Bewertungsvorschlägen unter Angabe weiterer Informationen zur konkreten Angabe eines Wertes.</xs:documentation>
+    </xs:annotation>
+    <xs:simpleContent>
+      <xs:restriction base="xdomea:CodeType">
+        <xs:enumeration value="A">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Das Schriftgutobjekt ist archivwürdig.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="V">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Das Schriftgutobjekt ist zum Vernichten markiert.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:attribute name="codeName" type="xs:string" use="required">
+          <xs:annotation>
+            <xs:documentation>Der Klartext zu dem angegebenen Schlüsselwert aus der konkreten Codelisten-Definition.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistAgencyName" type="xs:string" use="required" fixed="AG xdomea">
+          <xs:annotation>
+            <xs:documentation>Der Name der Organisation, die für die Codeliste verantwortlich ist.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistName" type="xs:string" use="required" fixed="Bewertungsvorschlag">
+          <xs:annotation>
+            <xs:documentation>Der Name der Codeliste.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistVersionIdentifier" type="xs:token" use="required" fixed="2.2.0">
+          <xs:annotation>
+            <xs:documentation>Die Version der Codeliste.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="languageCode" type="xs:language" use="required" fixed="de">
+          <xs:annotation>
+            <xs:documentation>Die Sprache, in der die Codeliste vorliegt.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:restriction>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="CodeType">
+    <xs:annotation>
+      <xs:documentation>Der Datentyp zur Einbindung einer in xdomea oder extern gepflegten Codeliste.</xs:documentation>
+    </xs:annotation>
+    <xs:simpleContent>
+      <xs:extension base="xs:token">
+        <xs:attribute name="codeName" type="xs:string" use="required">
+          <xs:annotation>
+            <xs:documentation>Der Klartext zu dem angegebenen Schlüsselwert aus der konkreten Codelisten-Definition.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistAgencyName" type="xs:string" use="required">
+          <xs:annotation>
+            <xs:documentation>Der Name der Organisation, die für die Codeliste verantwortlich ist.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistName" type="xs:string" use="required">
+          <xs:annotation>
+            <xs:documentation>Der Name der Codeliste.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistSchemeUniformResourceIdentifier" type="xs:token" use="optional">
+          <xs:annotation>
+            <xs:documentation>Der Uniform Resource Identifier (URI), der festlegt, wo das Schema zur Codeliste hinterlegt ist.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistUniformResourceIdentifier" type="xs:anyURI" use="optional">
+          <xs:annotation>
+            <xs:documentation>Der Uniform Resource Identifiert (URI), der festlegt, wo die Codeliste zu finden ist.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistVersionIdentifier" type="xs:token" use="required">
+          <xs:annotation>
+            <xs:documentation>Die Version der Codeliste.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="languageCode" type="xs:language" use="optional" default="de">
+          <xs:annotation>
+            <xs:documentation>Die Sprache, in der die Codeliste vorliegt.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="DateiformatCodeType">
+    <xs:annotation>
+      <xs:documentation>Der Datentyp zur Werteliste von Dateiformaten unter Angabe weiterer Informationen zur konkreten Angabe eines Wertes.</xs:documentation>
+    </xs:annotation>
+    <xs:simpleContent>
+      <xs:restriction base="xdomea:CodeType">
+        <xs:enumeration value="001">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>bmp - Windows Bitmap</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="002">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>csv - Comma Separated Values</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="003">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>doc - Microsoft Word for Windows Document</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="004">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>doc - Microsoft Word for MS-DOS Document</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="005">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>doc - Microsoft Word for Macintosh Document</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="006">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>eml - Outlook Express Electronic Mail</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="007">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>htm - Hypertext Markup Language</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="008">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>html - Hypertext Markup Language</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="009">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>jpe - JPEG File Interchange Format</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="010">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>jpeg - JPEG File Interchange Format</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="011">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>jpg - JPEG File Interchange Format</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="012">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>msg - Microsoft Outlook Email Message</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="013">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>odp - OpenDocument Presentation Format</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="014">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>ods - OpenDocument Spreadsheet Format</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="015">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>odt - OpenDocument Text Format</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="016">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>otp - OpenDocument Presentation Format Template</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="017">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>ots - OpenDocument Spreadsheet Format Template</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="018">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>pdf - Portable Document Format</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="019">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>png - Portable Network Graphics</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="020">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>ppt - Microsoft PowerPoint</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="021">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>ps - PostScript</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="022">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>rtf - Rich Text Format</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="023">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>tif - Tagged Image File Format</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="024">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>tiff - Tagged Image File Format</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="025">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>wps - Microsoft Works for Windows</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="026">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>xlc - Microsoft Excel Chart</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="027">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>xlm - Microsoft Excel Macro</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="028">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>xls - Binary Interchange File Format (BIFF) Worksheet</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="029">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>xlw - Binary Interchange File Format (BIFF) Workbook</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="030">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>xml - eXtensible Markup Language</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="031">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>xsd - XML Schema Definition</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="032">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>dot - Microsoft Word Template</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="033">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>pot - Microsoft Powerpoint Design Template</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="034">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>xlt - Mircosoft Excel Template</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="035">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>docx - Office Open XML Text</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="036">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>xlsx - Office Open XML Spreadsheet</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="037">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>pptx - Office Open XML Presentation</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="038">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>dotx - Office Open XML Text Template</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="039">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>xltx - Office Open XML Spreadsheet Template</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="040">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>potx - Office Open XML Presentation Template</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="041">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>dtd - Document Type Definition</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="042">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>mpp - Microsoft Project</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="043">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>ott - OpenDocument Text Format Template</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="044">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>pdf - Portable Document Format (Archival)</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="045">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>txt - Unicode Text File</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="100">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Sonstiges</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:attribute name="codeName" type="xs:string" use="required">
+          <xs:annotation>
+            <xs:documentation>Der Klartext zu dem angegebenen Schlüsselwert aus der konkreten Codelisten-Definition.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistAgencyName" type="xs:string" use="required" fixed="AG xdomea">
+          <xs:annotation>
+            <xs:documentation>Der Name der Organisation, die für die Codeliste verantwortlich ist.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistName" type="xs:string" use="required" fixed="Dateiformat">
+          <xs:annotation>
+            <xs:documentation>Der Name der Codeliste.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistVersionIdentifier" type="xs:token" use="required" fixed="2.2.0">
+          <xs:annotation>
+            <xs:documentation>Die Version der Codeliste.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="languageCode" type="xs:language" use="required" fixed="de">
+          <xs:annotation>
+            <xs:documentation>Die Sprache, in der die Codeliste vorliegt.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:restriction>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="DatenaustauschartCodeType">
+    <xs:annotation>
+      <xs:documentation>Der Datentyp zur Werteliste von Datenaustauscharten unter Angabe weiterer Informationen zur konkreten Angabe eines Wertes.</xs:documentation>
+    </xs:annotation>
+    <xs:simpleContent>
+      <xs:restriction base="xdomea:CodeType">
+        <xs:enumeration value="001">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>freigegebenes Verzeichnis</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="002">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Datenbanktabelle</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="003">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>WebDAV und http(s)</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:attribute name="codeName" type="xs:string" use="required">
+          <xs:annotation>
+            <xs:documentation>Der Klartext zu dem angegebenen Schlüsselwert aus der konkreten Codelisten-Definition.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistAgencyName" type="xs:string" use="required" fixed="AG xdomea">
+          <xs:annotation>
+            <xs:documentation>Der Name der Organisation, die für die Codeliste verantwortlich ist.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistName" type="xs:string" use="required" fixed="Datenaustauschart">
+          <xs:annotation>
+            <xs:documentation>Der Name der Codeliste.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistVersionIdentifier" type="xs:token" use="required" fixed="2.2.0">
+          <xs:annotation>
+            <xs:documentation>Die Version der Codeliste.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="languageCode" type="xs:language" use="required" fixed="de">
+          <xs:annotation>
+            <xs:documentation>Die Sprache, in der die Codeliste vorliegt.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:restriction>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="DatentypCodeType">
+    <xs:annotation>
+      <xs:documentation>Der Datentyp zur Werteliste von Datentypen unter Angabe weiterer Informationen zur konkreten Angabe eines Wertes.</xs:documentation>
+    </xs:annotation>
+    <xs:simpleContent>
+      <xs:restriction base="xdomea:CodeType">
+        <xs:enumeration value="001">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>anyURI</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="002">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>base64Binary</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="003">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>boolean</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="004">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>byte</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="005">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>date</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="006">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>dateTime</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="007">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>decimal</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="008">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>double</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="009">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>duration</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="010">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>ENTITIES</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="011">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>ENTITY</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="012">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>float</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="013">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>gDay</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="014">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>gMonth</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="015">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>gMonthDay</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="016">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>gYear</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="017">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>gYearMonth</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="018">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>hexBinary</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="019">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>ID</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="020">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>IDREF</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="021">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>IDREFS</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="022">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>int</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="023">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>integer</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="024">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>language</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="025">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>long</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="026">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Name</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="027">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>NCNAME</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="028">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>negativeInteger</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="029">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>NMTOKEN</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="030">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>NMTOKENS</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="031">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>nonNegativeInteger</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="032">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>nonPositiveInteger</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="033">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>normalizedString</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="034">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>NOTATION</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="035">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>positiveInteger</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="036">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>QName</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="037">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>short</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="038">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>string</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="039">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>time</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="040">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>token</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="041">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>unsignedByte</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="042">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>unsignedInt</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="043">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>unsignedLong</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="044">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>unsignedShort</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="045">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>anySimpleType</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:attribute name="codeName" type="xs:string" use="required">
+          <xs:annotation>
+            <xs:documentation>Der Klartext zu dem angegebenen Schlüsselwert aus der konkreten Codelisten-Definition.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistAgencyName" type="xs:string" use="required" fixed="AG xdomea">
+          <xs:annotation>
+            <xs:documentation>Der Name der Organisation, die für die Codeliste verantwortlich ist.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistName" type="xs:string" use="required" fixed="Datentyp">
+          <xs:annotation>
+            <xs:documentation>Der Name der Codeliste.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistVersionIdentifier" type="xs:token" use="required" fixed="2.2.0">
+          <xs:annotation>
+            <xs:documentation>Die Version der Codeliste.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="languageCode" type="xs:language" use="required" fixed="de">
+          <xs:annotation>
+            <xs:documentation>Die Sprache, in der die Codeliste vorliegt.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:restriction>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="KommunikationsartCodeType">
+    <xs:annotation>
+      <xs:documentation>Der Datentyp zur Werteliste von Kommunikationsarten unter Angabe weiterer Informationen zur konkreten Angabe eines Wertes.</xs:documentation>
+    </xs:annotation>
+    <xs:simpleContent>
+      <xs:restriction base="xdomea:CodeType">
+        <xs:enumeration value="001">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>E-Mail</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="002">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Telefon Festnetz</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="003">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Telefon mobil</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="004">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Fax</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="005">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Instant Messenger</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="006">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Pager</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="007">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Homepage</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="008">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Institution E-Mail</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="009">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Institution Telefon Festnetz</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="010">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Institution Fax</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="011">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Institution Homepage</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="012">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Sonstige</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:attribute name="codeName" type="xs:string" use="required">
+          <xs:annotation>
+            <xs:documentation>Der Klartext zu dem angegebenen Schlüsselwert aus der konkreten Codelisten-Definition.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistAgencyName" type="xs:string" use="required" fixed="AG xdomea">
+          <xs:annotation>
+            <xs:documentation>Der Name der Organisation, die für die Codeliste verantwortlich ist.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistName" type="xs:string" use="required" fixed="Kommunikationsart">
+          <xs:annotation>
+            <xs:documentation>Der Name der Codeliste.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistVersionIdentifier" type="xs:token" use="required" fixed="2.2.0">
+          <xs:annotation>
+            <xs:documentation>Die Version der Codeliste.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="languageCode" type="xs:language" use="required" fixed="de">
+          <xs:annotation>
+            <xs:documentation>Die Sprache, in der die Codeliste vorliegt.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:restriction>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="KompressionsverfahrenCodeType">
+    <xs:annotation>
+      <xs:documentation>Der Datentyp zur Werteliste von Kompressionsverfahren unter Angabe weiterer Informationen zur konkreten Angabe eines Wertes.</xs:documentation>
+    </xs:annotation>
+    <xs:simpleContent>
+      <xs:restriction base="xdomea:CodeType">
+        <xs:enumeration value="001">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>ZIP v2.0</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="002">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Gnu ZIP (GZIP) v4.3 / Tape ARchive (TAR)</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:attribute name="codeName" type="xs:string" use="required">
+          <xs:annotation>
+            <xs:documentation>Der Klartext zu dem angegebenen Schlüsselwert aus der konkreten Codelisten-Definition.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistAgencyName" type="xs:string" use="required" fixed="AG xdomea">
+          <xs:annotation>
+            <xs:documentation>Der Name der Organisation, die für die Codeliste verantwortlich ist.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistName" type="xs:string" use="required" fixed="Kompressionsverfahren">
+          <xs:annotation>
+            <xs:documentation>Der Name der Codeliste.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistVersionIdentifier" type="xs:token" use="required" fixed="2.2.0">
+          <xs:annotation>
+            <xs:documentation>Die Version der Codeliste.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="languageCode" type="xs:language" use="required" fixed="de">
+          <xs:annotation>
+            <xs:documentation>Die Sprache, in der die Codeliste vorliegt.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:restriction>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="KonfigurationsparameterCodeType">
+    <xs:annotation>
+      <xs:documentation>Der Datentyp zur Werteliste von Konfigurationsparametern unter Angabe weiterer Informationen zur konkreten Angabe eines Wertes.</xs:documentation>
+    </xs:annotation>
+    <xs:simpleContent>
+      <xs:restriction base="xdomea:CodeType">
+        <xs:enumeration value="001001">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Transportweg</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="002001">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Datenaustauschart</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="003001">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Ablageort</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="004001">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>LDAP_Name</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="004002">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>LDAP_Hostname</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="004003">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>LDAP_Port</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="004004">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>LDAP_Bind_DN</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="004005">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>LDAP_Password</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="004006">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>LDAP_Base_DN</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="004007">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>LDAP_Searchfilter</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="004008">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>LDAP_MaxResult</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="005001">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>SQL_Name</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="005002">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>SQL_Hostname</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="005003">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>SQL_Datenbank</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="005004">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>SQL_Tabelle</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="005005">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>SQL_Benutzername</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="005006">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>SQL_Passwort</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="005007">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>SQL_Query</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="006001">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>ADDR_Name</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="006002">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>ADDR_ATTR1</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="006003">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>ADDR_ATTR2</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="006004">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>ADDR_ATTR3</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="006005">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>ADDR_ATTR4</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="006006">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>ADDR_ATTR5</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="006007">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>ADDR_ATTR6</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="006008">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>ADDR_ATTR7</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="006009">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>ADDR_ATTR8</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="006010">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>ADDR_ATTR9</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="006011">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>ADDR_ATTR10</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="007001">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Standardablage</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="008001">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>komprimierter Datenaustausch</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="008002">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Kompressionsverfahren</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:attribute name="codeName" type="xs:string" use="required">
+          <xs:annotation>
+            <xs:documentation>Der Klartext zu dem angegebenen Schlüsselwert aus der konkreten Codelisten-Definition.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistAgencyName" type="xs:string" use="required" fixed="AG xdomea">
+          <xs:annotation>
+            <xs:documentation>Der Name der Organisation, die für die Codeliste verantwortlich ist.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistName" type="xs:string" use="required" fixed="Konfigurationsparameter">
+          <xs:annotation>
+            <xs:documentation>Der Name der Codeliste.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistVersionIdentifier" type="xs:token" use="required" fixed="2.2.0">
+          <xs:annotation>
+            <xs:documentation>Die Version der Codeliste.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="languageCode" type="xs:language" use="required" fixed="de">
+          <xs:annotation>
+            <xs:documentation>Die Sprache, in der die Codeliste vorliegt.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:restriction>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="KonfigurationsparameterGruppeCodeType">
+    <xs:annotation>
+      <xs:documentation>Der Datentyp zur Werteliste von Konfigurationsparametergruppen unter Angabe weiterer Informationen zur konkreten Angabe eines Wertes.</xs:documentation>
+    </xs:annotation>
+    <xs:simpleContent>
+      <xs:restriction base="xdomea:CodeType">
+        <xs:enumeration value="001">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Transportweg</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="002">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Datenaustauschart</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="003">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Ablageort</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="004">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>LDAP-Adressverzeichnis</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="005">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>SQL-Server-Adressverzeichnis</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="006">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>unbekanntes Adressverzeichnis</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="007">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Standardablage</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="008">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>komprimierter Datenaustausch</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:attribute name="codeName" type="xs:string" use="required">
+          <xs:annotation>
+            <xs:documentation>Der Klartext zu dem angegebenen Schlüsselwert aus der konkreten Codelisten-Definition.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistAgencyName" type="xs:string" use="required" fixed="AG xdomea">
+          <xs:annotation>
+            <xs:documentation>Der Name der Organisation, die für die Codeliste verantwortlich ist.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistName" type="xs:string" use="required" fixed="KonfigurationsparameterGruppe">
+          <xs:annotation>
+            <xs:documentation>Der Name der Codeliste.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistVersionIdentifier" type="xs:token" use="required" fixed="2.2.0">
+          <xs:annotation>
+            <xs:documentation>Die Version der Codeliste.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="languageCode" type="xs:language" use="required" fixed="de">
+          <xs:annotation>
+            <xs:documentation>Die Sprache, in der die Codeliste vorliegt.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:restriction>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="MediumCodeType">
+    <xs:annotation>
+      <xs:documentation>Der Datentyp zur Werteliste von Medientypen unter Angabe weiterer Informationen zur konkreten Angabe eines Wertes.</xs:documentation>
+    </xs:annotation>
+    <xs:simpleContent>
+      <xs:restriction base="xdomea:CodeType">
+        <xs:enumeration value="001">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Elektronisch: Das Schriftgutobjekt liegt ausschließlich in elektronischer Form vor.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="002">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Hybrid: Das Schriftgutobjekt liegt teilweise in elektronischer Form und teilweise als Papier vor.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="003">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Papier: Das Schriftgutobjekt liegt ausschließlich als Papier vor.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:attribute name="codeName" type="xs:string" use="required">
+          <xs:annotation>
+            <xs:documentation>Der Klartext zu dem angegebenen Schlüsselwert aus der konkreten Codelisten-Definition.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistAgencyName" type="xs:string" use="required" fixed="AG xdomea">
+          <xs:annotation>
+            <xs:documentation>Der Name der Organisation, die für die Codeliste verantwortlich ist.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistName" type="xs:string" use="required" fixed="Medium">
+          <xs:annotation>
+            <xs:documentation>Der Name der Codeliste.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistVersionIdentifier" type="xs:token" use="required" fixed="2.2.0">
+          <xs:annotation>
+            <xs:documentation>Die Version der Codeliste.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="languageCode" type="xs:language" use="required" fixed="de">
+          <xs:annotation>
+            <xs:documentation>Die Sprache, in der die Codeliste vorliegt.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:restriction>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="NachrichtentypCodeType">
+    <xs:annotation>
+      <xs:documentation>Der Datentyp zur Werteliste von Nachrichtentypen unter Angabe weiterer Informationen zur konkreten Angabe eines Wertes.</xs:documentation>
+    </xs:annotation>
+    <xs:simpleContent>
+      <xs:restriction base="xdomea:CodeType">
+        <xs:enumeration value="0101">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Information.Information</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0102">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Information.EmpfangBestaetigen</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0201">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Geschaeftsgang.Geschaeftsgang</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0202">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Geschaeftsgang.EmpfangBestaetigen</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0301">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Aktenplan.Aktenplan</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0302">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Aktenplan.EmpfangBestaetigen</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0401">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Abgabe.Abgabe</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0402">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Abgabe.ImportBestaetigen</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0501">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Aussonderung.Anbieteverzeichnis</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0502">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Anbietung.Bewertungsverzeichnis</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0503">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Aussonderung.Aussonderung</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0504">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Aussonderung.AnbietungEmpfangBestaetigen</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0505">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Aussonderung.BewertungEmpfangBestaetigen</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0506">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Aussonderung.AussonderungImportBestaetigen</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0601">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>FVDaten.DokumentAktualisieren</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0602">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>FVDaten.SGOAnsehen</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0603">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>FVDaten.SGOBearbeiten</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0604">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>FVDaten.SGOErstellen</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0605">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>FVDaten.SGOAblegen</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0606">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>FVDaten.SGODrucken</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0607">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>FVDaten.ProtokolleintragErstellen</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0608">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>FVDaten.SGOSuchen</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0609">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>FVDaten.MetadatenAnlegen</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0610">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>FVDaten.MetadatenAktualisieren</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0611">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>FVDaten.MetadatenAnsehen</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0612">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>FVDaten.MetadatenLoeschen</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0613">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>FVDaten.SGOLoeschenMarkieren</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0614">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>FVDaten.SGOLoeschmarkierungAufheben</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0615">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>FVDaten.SGOEndgueltigLoeschen</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0616">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>FVDaten.SGOLoeschstatusAbfragen</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0617">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>FVDaten.SGOUngueltigKennzeichnen</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0618">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>FVDaten.DatensatzLoeschen</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0619">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>FVDaten.BenachrichtigungAbrufen</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0620">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>FVDaten.VertretungAktivierenOderDeaktivieren</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0621">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>FVDaten.VertretungsstatusAbfragen</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0622">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>FVDaten.ZustaendigkeitAendern</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0623">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>FVDaten.GesamtprotokollAblegen</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0624">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>FVDaten.SGOZDAVerfuegen</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0625">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>FVDaten.SystemstatusAbfragen</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0626">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>FVDaten.KonfigurationsparameterErstellen</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0627">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>FVDaten.KonfigurationsparameterAktualisieren</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0628">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>FVDaten.KonfigurationsparameterAbrufen</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0629">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>FVDaten.EmpfangBestaetigen</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0630">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>FVDaten.ImportBestaetigen</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0631">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>FVDaten.PrimaerdokumentExportieren</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:attribute name="codeName" type="xs:string" use="required">
+          <xs:annotation>
+            <xs:documentation>Der Klartext zu dem angegebenen Schlüsselwert aus der konkreten Codelisten-Definition.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistAgencyName" type="xs:string" use="required" fixed="AG xdomea">
+          <xs:annotation>
+            <xs:documentation>Der Name der Organisation, die für die Codeliste verantwortlich ist.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistName" type="xs:string" use="required" fixed="Nachrichtentyp">
+          <xs:annotation>
+            <xs:documentation>Der Name der Codeliste.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistVersionIdentifier" type="xs:token" use="required" fixed="2.2.0">
+          <xs:annotation>
+            <xs:documentation>Die Version der Codeliste.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="languageCode" type="xs:language" use="required" fixed="de">
+          <xs:annotation>
+            <xs:documentation>Die Sprache, in der die Codeliste vorliegt.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:restriction>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="SchriftgutobjekttypCodeType">
+    <xs:annotation>
+      <xs:documentation>Der Datentyp zur Werteliste von Schriftgutobjekttypen unter Angabe weiterer Informationen zur konkreten Angabe eines Wertes.</xs:documentation>
+    </xs:annotation>
+    <xs:simpleContent>
+      <xs:restriction base="xdomea:CodeType">
+        <xs:enumeration value="001">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Akte</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="002">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Dokument</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="003">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Vorgang</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:attribute name="codeName" type="xs:string" use="required">
+          <xs:annotation>
+            <xs:documentation>Der Klartext zu dem angegebenen Schlüsselwert aus der konkreten Codelisten-Definition.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistAgencyName" type="xs:string" use="required" fixed="AG xdomea">
+          <xs:annotation>
+            <xs:documentation>Der Name der Organisation, die für die Codeliste verantwortlich ist.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistName" type="xs:string" use="required" fixed="Schriftgutobjekttyp">
+          <xs:annotation>
+            <xs:documentation>Der Name der Codeliste.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistVersionIdentifier" type="xs:token" use="required" fixed="2.2.0">
+          <xs:annotation>
+            <xs:documentation>Die Version der Codeliste.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="languageCode" type="xs:language" use="required" fixed="de">
+          <xs:annotation>
+            <xs:documentation>Die Sprache, in der die Codeliste vorliegt.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:restriction>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="SpezifischeFehlermeldung0601CodeType">
+    <xs:annotation>
+      <xs:documentation>Der Datentyp zur Werteliste von spezifischen Fehlermeldungen für die Nachricht 0601 unter Angabe weiterer Informationen zur konkreten Angabe eines Wertes.</xs:documentation>
+    </xs:annotation>
+    <xs:simpleContent>
+      <xs:restriction base="xdomea:CodeType">
+        <xs:enumeration value="0601001">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Die ID des Dokuments im DMS ist unbekannt/ungültig.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0601002">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Das Verzeichnis ist ungültig.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0601003">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Die URL ist ungültig.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0601004">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Datei kann nicht gefunden werden.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0601005">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Es kann keine neue Version erstellt werden.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0601006">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Der Name eines Metadatums enthält ungültige Zeichen.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0601007">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Der Wert eines Metadatums enthält ungültige Zeichen.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:attribute name="codeName" type="xs:string" use="required">
+          <xs:annotation>
+            <xs:documentation>Der Klartext zu dem angegebenen Schlüsselwert aus der konkreten Codelisten-Definition.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistAgencyName" type="xs:string" use="required" fixed="AG xdomea">
+          <xs:annotation>
+            <xs:documentation>Der Name der Organisation, die für die Codeliste verantwortlich ist.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistName" type="xs:string" use="required" fixed="0601.SpezifischeFehlermeldung">
+          <xs:annotation>
+            <xs:documentation>Der Name der Codeliste.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistVersionIdentifier" type="xs:token" use="required" fixed="2.2.0">
+          <xs:annotation>
+            <xs:documentation>Die Version der Codeliste.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="languageCode" type="xs:language" use="required" fixed="de">
+          <xs:annotation>
+            <xs:documentation>Die Sprache, in der die Codeliste vorliegt.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:restriction>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="SpezifischeFehlermeldung0602CodeType">
+    <xs:annotation>
+      <xs:documentation>Der Datentyp zur Werteliste von spezifischen Fehlermeldungen für die Nachricht 0602 unter Angabe weiterer Informationen zur konkreten Angabe eines Wertes.</xs:documentation>
+    </xs:annotation>
+    <xs:simpleContent>
+      <xs:restriction base="xdomea:CodeType">
+        <xs:enumeration value="0602001">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Die ID des Dokuments ist unbekannt/ungültig.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0602002">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Das Dokument kann nicht geöffnet werden (bspw. ist zum Dokumenttyp keine Applikation registriert oder der Server hat keinen Zugriff auf den Client).</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0602003">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Die Versionsnummer ist ungültig.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:attribute name="codeName" type="xs:string" use="required">
+          <xs:annotation>
+            <xs:documentation>Der Klartext zu dem angegebenen Schlüsselwert aus der konkreten Codelisten-Definition.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistAgencyName" type="xs:string" use="required" fixed="AG xdomea">
+          <xs:annotation>
+            <xs:documentation>Der Name der Organisation, die für die Codeliste verantwortlich ist.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistName" type="xs:string" use="required" fixed="0602.SpezifischeFehlermeldung">
+          <xs:annotation>
+            <xs:documentation>Der Name der Codeliste.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistVersionIdentifier" type="xs:token" use="required" fixed="2.2.0">
+          <xs:annotation>
+            <xs:documentation>Die Version der Codeliste.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="languageCode" type="xs:language" use="required" fixed="de">
+          <xs:annotation>
+            <xs:documentation>Die Sprache, in der die Codeliste vorliegt.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:restriction>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="SpezifischeFehlermeldung0603CodeType">
+    <xs:annotation>
+      <xs:documentation>Der Datentyp zur Werteliste von spezifischen Fehlermeldungen für die Nachricht 0603 unter Angabe weiterer Informationen zur konkreten Angabe eines Wertes.</xs:documentation>
+    </xs:annotation>
+    <xs:simpleContent>
+      <xs:restriction base="xdomea:CodeType">
+        <xs:enumeration value="0603001">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Die ID des Dokuments ist unbekannt/ungültig.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0603002">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Das Dokument kann nicht geöffnet werden (bspw. ist zum Dokumenttyp keine Applikation registriert).</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0603003">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Die Versionsnummer ist ungültig</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:attribute name="codeName" type="xs:string" use="required">
+          <xs:annotation>
+            <xs:documentation>Der Klartext zu dem angegebenen Schlüsselwert aus der konkreten Codelisten-Definition.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistAgencyName" type="xs:string" use="required" fixed="AG xdomea">
+          <xs:annotation>
+            <xs:documentation>Der Name der Organisation, die für die Codeliste verantwortlich ist.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistName" type="xs:string" use="required" fixed="0603.SpezifischeFehlermeldung">
+          <xs:annotation>
+            <xs:documentation>Der Name der Codeliste.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistVersionIdentifier" type="xs:token" use="required" fixed="2.2.0">
+          <xs:annotation>
+            <xs:documentation>Die Version der Codeliste.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="languageCode" type="xs:language" use="required" fixed="de">
+          <xs:annotation>
+            <xs:documentation>Die Sprache, in der die Codeliste vorliegt.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:restriction>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="SpezifischeFehlermeldung0604CodeType">
+    <xs:annotation>
+      <xs:documentation>Der Datentyp zur Werteliste von spezifischen Fehlermeldungen für die Nachricht 0604 unter Angabe weiterer Informationen zur konkreten Angabe eines Wertes.</xs:documentation>
+    </xs:annotation>
+    <xs:simpleContent>
+      <xs:restriction base="xdomea:CodeType">
+        <xs:enumeration value="0604001">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Die ID des Containerobjekts ist unbekannt/ungültig.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0604002">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Der Schriftgutobjekttyp ist nicht definiert.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0604003">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Das Schriftgutobjekt kann nicht angelegt werden.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0604004">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Das Objekt kann nicht geöffnet werden (bspw. ist zum Dokumenttyp keine Applikation registriert).</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0604005">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Der Name eines Metadatums enthält ungültige Zeichen.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0604006">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Der Wert eines Metadatums enthält ungültige Zeichen.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0604007">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Die Beschreibung eines Metadatums enthält ungültige Zeichen.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:attribute name="codeName" type="xs:string" use="required">
+          <xs:annotation>
+            <xs:documentation>Der Klartext zu dem angegebenen Schlüsselwert aus der konkreten Codelisten-Definition.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistAgencyName" type="xs:string" use="required" fixed="AG xdomea">
+          <xs:annotation>
+            <xs:documentation>Der Name der Organisation, die für die Codeliste verantwortlich ist.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistName" type="xs:string" use="required" fixed="0604.SpezifischeFehlermeldung">
+          <xs:annotation>
+            <xs:documentation>Der Name der Codeliste.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistVersionIdentifier" type="xs:token" use="required" fixed="2.2.0">
+          <xs:annotation>
+            <xs:documentation>Die Version der Codeliste.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="languageCode" type="xs:language" use="required" fixed="de">
+          <xs:annotation>
+            <xs:documentation>Die Sprache, in der die Codeliste vorliegt.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:restriction>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="SpezifischeFehlermeldung0605CodeType">
+    <xs:annotation>
+      <xs:documentation>Der Datentyp zur Werteliste von spezifischen Fehlermeldungen für die Nachricht 0605 unter Angabe weiterer Informationen zur konkreten Angabe eines Wertes.</xs:documentation>
+    </xs:annotation>
+    <xs:simpleContent>
+      <xs:restriction base="xdomea:CodeType">
+        <xs:enumeration value="0605001">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Die ID des Containers ist im DMS unbekannt/ungültig.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0605002">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Das Verzeichnis ist ungültig.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0605003">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Die URL ist ungültig.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0605004">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Datei kann nicht gefunden werden.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0605005">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Datei kann im DMS nicht abgelegt werden.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0605006">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Der Name eines Metadatums enthält ungültige Zeichen.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0605007">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Der Wert eines Metadatums enthält ungültige Zeichen.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0605008">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Die Beschreibung eines Metadatums enthält ungültige Zeichen.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:attribute name="codeName" type="xs:string" use="required">
+          <xs:annotation>
+            <xs:documentation>Der Klartext zu dem angegebenen Schlüsselwert aus der konkreten Codelisten-Definition.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistAgencyName" type="xs:string" use="required" fixed="AG xdomea">
+          <xs:annotation>
+            <xs:documentation>Der Name der Organisation, die für die Codeliste verantwortlich ist.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistName" type="xs:string" use="required" fixed="0605.SpezifischeFehlermeldung">
+          <xs:annotation>
+            <xs:documentation>Der Name der Codeliste.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistVersionIdentifier" type="xs:token" use="required" fixed="2.2.0">
+          <xs:annotation>
+            <xs:documentation>Die Version der Codeliste.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="languageCode" type="xs:language" use="required" fixed="de">
+          <xs:annotation>
+            <xs:documentation>Die Sprache, in der die Codeliste vorliegt.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:restriction>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="SpezifischeFehlermeldung0606CodeType">
+    <xs:annotation>
+      <xs:documentation>Der Datentyp zur Werteliste von spezifischen Fehlermeldungen für die Nachricht 0606 unter Angabe weiterer Informationen zur konkreten Angabe eines Wertes.</xs:documentation>
+    </xs:annotation>
+    <xs:simpleContent>
+      <xs:restriction base="xdomea:CodeType">
+        <xs:enumeration value="0606001">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Die ID des Objektes ist unbekannt/ungültig.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0606002">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Der angegebene Drucker existiert nicht.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0606003">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Der angegebene Drucker ist nicht bereit.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0606004">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Der Unterschriftgutobjekttyp existiert nicht.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0606005">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Der Druck ist fehlgeschlagen.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0606006">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Die Version des Dokuments existiert nicht.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:attribute name="codeName" type="xs:string" use="required">
+          <xs:annotation>
+            <xs:documentation>Der Klartext zu dem angegebenen Schlüsselwert aus der konkreten Codelisten-Definition.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistAgencyName" type="xs:string" use="required" fixed="AG xdomea">
+          <xs:annotation>
+            <xs:documentation>Der Name der Organisation, die für die Codeliste verantwortlich ist.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistName" type="xs:string" use="required" fixed="0606.SpezifischeFehlermeldung">
+          <xs:annotation>
+            <xs:documentation>Der Name der Codeliste.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistVersionIdentifier" type="xs:token" use="required" fixed="2.2.0">
+          <xs:annotation>
+            <xs:documentation>Die Version der Codeliste.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="languageCode" type="xs:language" use="required" fixed="de">
+          <xs:annotation>
+            <xs:documentation>Die Sprache, in der die Codeliste vorliegt.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:restriction>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="SpezifischeFehlermeldung0607CodeType">
+    <xs:annotation>
+      <xs:documentation>Der Datentyp zur Werteliste von spezifischen Fehlermeldungen für die Nachricht 0607 unter Angabe weiterer Informationen zur konkreten Angabe eines Wertes.</xs:documentation>
+    </xs:annotation>
+    <xs:simpleContent>
+      <xs:restriction base="xdomea:CodeType">
+        <xs:enumeration value="0607001">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Die ID ist unbekannt/ungültig.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0607002">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Die Protokolleintragsinformationen beinhalten ungültige Zeichen.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0607003">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Der Protokolleintrag kann nicht angelegt werden.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:attribute name="codeName" type="xs:string" use="required">
+          <xs:annotation>
+            <xs:documentation>Der Klartext zu dem angegebenen Schlüsselwert aus der konkreten Codelisten-Definition.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistAgencyName" type="xs:string" use="required" fixed="AG xdomea">
+          <xs:annotation>
+            <xs:documentation>Der Name der Organisation, die für die Codeliste verantwortlich ist.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistName" type="xs:string" use="required" fixed="0607.SpezifischeFehlermeldung">
+          <xs:annotation>
+            <xs:documentation>Der Name der Codeliste.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistVersionIdentifier" type="xs:token" use="required" fixed="2.2.0">
+          <xs:annotation>
+            <xs:documentation>Die Version der Codeliste.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="languageCode" type="xs:language" use="required" fixed="de">
+          <xs:annotation>
+            <xs:documentation>Die Sprache, in der die Codeliste vorliegt.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:restriction>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="SpezifischeFehlermeldung0608CodeType">
+    <xs:annotation>
+      <xs:documentation>Der Datentyp zur Werteliste von spezifischen Fehlermeldungen für die Nachricht 0608 unter Angabe weiterer Informationen zur konkreten Angabe eines Wertes.</xs:documentation>
+    </xs:annotation>
+    <xs:simpleContent>
+      <xs:restriction base="xdomea:CodeType">
+        <xs:enumeration value="0608001">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Suchtyp ist unbekannt/ungültig.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:attribute name="codeName" type="xs:string" use="required">
+          <xs:annotation>
+            <xs:documentation>Der Klartext zu dem angegebenen Schlüsselwert aus der konkreten Codelisten-Definition.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistAgencyName" type="xs:string" use="required" fixed="AG xdomea">
+          <xs:annotation>
+            <xs:documentation>Der Name der Organisation, die für die Codeliste verantwortlich ist.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistName" type="xs:string" use="required" fixed="0608.SpezifischeFehlermeldung">
+          <xs:annotation>
+            <xs:documentation>Der Name der Codeliste.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistVersionIdentifier" type="xs:token" use="required" fixed="2.2.0">
+          <xs:annotation>
+            <xs:documentation>Die Version der Codeliste.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="languageCode" type="xs:language" use="required" fixed="de">
+          <xs:annotation>
+            <xs:documentation>Die Sprache, in der die Codeliste vorliegt.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:restriction>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="SpezifischeFehlermeldung0609CodeType">
+    <xs:annotation>
+      <xs:documentation>Der Datentyp zur Werteliste von spezifischen Fehlermeldungen für die Nachricht 0609 unter Angabe weiterer Informationen zur konkreten Angabe eines Wertes.</xs:documentation>
+    </xs:annotation>
+    <xs:simpleContent>
+      <xs:restriction base="xdomea:CodeType">
+        <xs:enumeration value="0609001">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Die ID des Objektes ist unbekannt/ungültig.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0609002">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Der Name des Metadatums ist ungültig.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0609003">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Die Beschreibung des Metadatums ist ungültig.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0609004">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Der Datentyp des Metadatums existiert nicht.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0609005">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Der Wert des Metadatums ist ungültig/befindet sich außerhalb des Wertebereichs.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0609006">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Das Metadatum kann nicht angelegt werden.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0609007">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Der Datentyp für das Metadatum wurde nicht angegeben.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0609008">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Der Wert für das Metadatum wurde nicht angegeben.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:attribute name="codeName" type="xs:string" use="required">
+          <xs:annotation>
+            <xs:documentation>Der Klartext zu dem angegebenen Schlüsselwert aus der konkreten Codelisten-Definition.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistAgencyName" type="xs:string" use="required" fixed="AG xdomea">
+          <xs:annotation>
+            <xs:documentation>Der Name der Organisation, die für die Codeliste verantwortlich ist.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistName" type="xs:string" use="required" fixed="0609.SpezifischeFehlermeldung">
+          <xs:annotation>
+            <xs:documentation>Der Name der Codeliste.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistVersionIdentifier" type="xs:token" use="required" fixed="2.2.0">
+          <xs:annotation>
+            <xs:documentation>Die Version der Codeliste.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="languageCode" type="xs:language" use="required" fixed="de">
+          <xs:annotation>
+            <xs:documentation>Die Sprache, in der die Codeliste vorliegt.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:restriction>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="SpezifischeFehlermeldung0610CodeType">
+    <xs:annotation>
+      <xs:documentation>Der Datentyp zur Werteliste von spezifischen Fehlermeldungen für die Nachricht 0610 unter Angabe weiterer Informationen zur konkreten Angabe eines Wertes.</xs:documentation>
+    </xs:annotation>
+    <xs:simpleContent>
+      <xs:restriction base="xdomea:CodeType">
+        <xs:enumeration value="0610001">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Die ID des Objektes ist unbekannt/ungültig.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0610002">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Der Name des Metadatums ist ungültig.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0610003">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Die Beschreibung des Metadatums ist ungültig.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0610004">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Der Wert des Metadatums ist ungültig/befindet sich außerhalb des Wertebereichs.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0610005">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Das Metadatum kann nicht aktualisiert werden.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0610006">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Der Datentyp des Metadatums weicht vom vorhandenen Datentyp ab.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0610007">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Der Wert des Metadatums wurde nicht gesetzt.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:attribute name="codeName" type="xs:string" use="required">
+          <xs:annotation>
+            <xs:documentation>Der Klartext zu dem angegebenen Schlüsselwert aus der konkreten Codelisten-Definition.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistAgencyName" type="xs:string" use="required" fixed="AG xdomea">
+          <xs:annotation>
+            <xs:documentation>Der Name der Organisation, die für die Codeliste verantwortlich ist.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistName" type="xs:string" use="required" fixed="0610.SpezifischeFehlermeldung">
+          <xs:annotation>
+            <xs:documentation>Der Name der Codeliste.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistVersionIdentifier" type="xs:token" use="required" fixed="2.2.0">
+          <xs:annotation>
+            <xs:documentation>Die Version der Codeliste.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="languageCode" type="xs:language" use="required" fixed="de">
+          <xs:annotation>
+            <xs:documentation>Die Sprache, in der die Codeliste vorliegt.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:restriction>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="SpezifischeFehlermeldung0611CodeType">
+    <xs:annotation>
+      <xs:documentation>Der Datentyp zur Werteliste von spezifischen Fehlermeldungen für die Nachricht 0611 unter Angabe weiterer Informationen zur konkreten Angabe eines Wertes.</xs:documentation>
+    </xs:annotation>
+    <xs:simpleContent>
+      <xs:restriction base="xdomea:CodeType">
+        <xs:enumeration value="0611001">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Die UUID des Objektes ist ungültig/unbekannt.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0611002">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Der Name des Metadatums ist ungültig/unbekannt.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0611003">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Das Metadatum kann nicht ausgelesen werden.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0611004">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Die Beschreibung des Metadatums weicht von der vorhandenen Beschreibung ab.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0611005">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Der Datentyp des Metadatums weicht von dem vorhandenen Daten-typ ab.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0611006">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Der Wert des Metadatums weicht von dem vorhandenen Wert ab.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:attribute name="codeName" type="xs:string" use="required">
+          <xs:annotation>
+            <xs:documentation>Der Klartext zu dem angegebenen Schlüsselwert aus der konkreten Codelisten-Definition.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistAgencyName" type="xs:string" use="required" fixed="AG xdomea">
+          <xs:annotation>
+            <xs:documentation>Der Name der Organisation, die für die Codeliste verantwortlich ist.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistName" type="xs:string" use="required" fixed="0611.SpezifischeFehlermeldung">
+          <xs:annotation>
+            <xs:documentation>Der Name der Codeliste.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistVersionIdentifier" type="xs:token" use="required" fixed="2.2.0">
+          <xs:annotation>
+            <xs:documentation>Die Version der Codeliste.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="languageCode" type="xs:language" use="required" fixed="de">
+          <xs:annotation>
+            <xs:documentation>Die Sprache, in der die Codeliste vorliegt.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:restriction>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="SpezifischeFehlermeldung0612CodeType">
+    <xs:annotation>
+      <xs:documentation>Der Datentyp zur Werteliste von spezifischen Fehlermeldungen für die Nachricht 0612 unter Angabe weiterer Informationen zur konkreten Angabe eines Wertes.</xs:documentation>
+    </xs:annotation>
+    <xs:simpleContent>
+      <xs:restriction base="xdomea:CodeType">
+        <xs:enumeration value="0612001">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Die ID des Objektes ist ungültig/unbekannt.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0612002">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Der Name des Metadatums ist ungültig/unbekannt.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0612003">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Das Metadatum kann nicht gelöscht werden.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0612004">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Die Beschreibung des Metadatums unterscheidet sich von der vorhandenen: Metadatum nicht gelöscht.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0612005">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Der Datentyp des Metadatums unterscheidet sich von dem vorhandenen: Metadatum nicht gelöscht.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0612006">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Der Wert des Metadatums unterscheidet sich von dem vorhandenen: Metadatum nicht gelöscht.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:attribute name="codeName" type="xs:string" use="required">
+          <xs:annotation>
+            <xs:documentation>Der Klartext zu dem angegebenen Schlüsselwert aus der konkreten Codelisten-Definition.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistAgencyName" type="xs:string" use="required" fixed="AG xdomea">
+          <xs:annotation>
+            <xs:documentation>Der Name der Organisation, die für die Codeliste verantwortlich ist.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistName" type="xs:string" use="required" fixed="0612.SpezifischeFehlermeldung">
+          <xs:annotation>
+            <xs:documentation>Der Name der Codeliste.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistVersionIdentifier" type="xs:token" use="required" fixed="2.2.0">
+          <xs:annotation>
+            <xs:documentation>Die Version der Codeliste.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="languageCode" type="xs:language" use="required" fixed="de">
+          <xs:annotation>
+            <xs:documentation>Die Sprache, in der die Codeliste vorliegt.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:restriction>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="SpezifischeFehlermeldung0613CodeType">
+    <xs:annotation>
+      <xs:documentation>Der Datentyp zur Werteliste von spezifischen Fehlermeldungen für die Nachricht 0613 unter Angabe weiterer Informationen zur konkreten Angabe eines Wertes.</xs:documentation>
+    </xs:annotation>
+    <xs:simpleContent>
+      <xs:restriction base="xdomea:CodeType">
+        <xs:enumeration value="0613001">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Die ID des Schriftgutobjektes ist unbekannt/ungültig.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0613002">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Das Schriftgutobjekt kann nicht zum Löschen markiert werden (z. B. weil es zur Bearbeitung gesperrt ist).</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:attribute name="codeName" type="xs:string" use="required">
+          <xs:annotation>
+            <xs:documentation>Der Klartext zu dem angegebenen Schlüsselwert aus der konkreten Codelisten-Definition.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistAgencyName" type="xs:string" use="required" fixed="AG xdomea">
+          <xs:annotation>
+            <xs:documentation>Der Name der Organisation, die für die Codeliste verantwortlich ist.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistName" type="xs:string" use="required" fixed="0613.SpezifischeFehlermeldung">
+          <xs:annotation>
+            <xs:documentation>Der Name der Codeliste.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistVersionIdentifier" type="xs:token" use="required" fixed="2.2.0">
+          <xs:annotation>
+            <xs:documentation>Die Version der Codeliste.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="languageCode" type="xs:language" use="required" fixed="de">
+          <xs:annotation>
+            <xs:documentation>Die Sprache, in der die Codeliste vorliegt.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:restriction>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="SpezifischeFehlermeldung0614CodeType">
+    <xs:annotation>
+      <xs:documentation>Der Datentyp zur Werteliste von spezifischen Fehlermeldungen für die Nachricht 0614 unter Angabe weiterer Informationen zur konkreten Angabe eines Wertes.</xs:documentation>
+    </xs:annotation>
+    <xs:simpleContent>
+      <xs:restriction base="xdomea:CodeType">
+        <xs:enumeration value="0614001">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Die ID des Schriftgutobjektes ist unbekannt/ungültig.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0614002">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Das Schriftgutobjekt ist nicht zum Löschen markiert.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0614003">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Die Löschmarkierung kann nicht aufgehoben werden.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:attribute name="codeName" type="xs:string" use="required">
+          <xs:annotation>
+            <xs:documentation>Der Klartext zu dem angegebenen Schlüsselwert aus der konkreten Codelisten-Definition.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistAgencyName" type="xs:string" use="required" fixed="AG xdomea">
+          <xs:annotation>
+            <xs:documentation>Der Name der Organisation, die für die Codeliste verantwortlich ist.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistName" type="xs:string" use="required" fixed="0614.SpezifischeFehlermeldung">
+          <xs:annotation>
+            <xs:documentation>Der Name der Codeliste.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistVersionIdentifier" type="xs:token" use="required" fixed="2.2.0">
+          <xs:annotation>
+            <xs:documentation>Die Version der Codeliste.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="languageCode" type="xs:language" use="required" fixed="de">
+          <xs:annotation>
+            <xs:documentation>Die Sprache, in der die Codeliste vorliegt.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:restriction>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="SpezifischeFehlermeldung0615CodeType">
+    <xs:annotation>
+      <xs:documentation>Der Datentyp zur Werteliste von spezifischen Fehlermeldungen für die Nachricht 0615 unter Angabe weiterer Informationen zur konkreten Angabe eines Wertes.</xs:documentation>
+    </xs:annotation>
+    <xs:simpleContent>
+      <xs:restriction base="xdomea:CodeType">
+        <xs:enumeration value="0615001">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Die ID des Schriftgutobjektes ist unbekannt/ungültig.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0615002">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Das Schriftgutobjekt kann nicht gelöscht werden.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:attribute name="codeName" type="xs:string" use="required">
+          <xs:annotation>
+            <xs:documentation>Der Klartext zu dem angegebenen Schlüsselwert aus der konkreten Codelisten-Definition.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistAgencyName" type="xs:string" use="required" fixed="AG xdomea">
+          <xs:annotation>
+            <xs:documentation>Der Name der Organisation, die für die Codeliste verantwortlich ist.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistName" type="xs:string" use="required" fixed="0615.SpezifischeFehlermeldung">
+          <xs:annotation>
+            <xs:documentation>Der Name der Codeliste.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistVersionIdentifier" type="xs:token" use="required" fixed="2.2.0">
+          <xs:annotation>
+            <xs:documentation>Die Version der Codeliste.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="languageCode" type="xs:language" use="required" fixed="de">
+          <xs:annotation>
+            <xs:documentation>Die Sprache, in der die Codeliste vorliegt.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:restriction>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="SpezifischeFehlermeldung0616CodeType">
+    <xs:annotation>
+      <xs:documentation>Der Datentyp zur Werteliste von spezifischen Fehlermeldungen für die Nachricht 0616 unter Angabe weiterer Informationen zur konkreten Angabe eines Wertes.</xs:documentation>
+    </xs:annotation>
+    <xs:simpleContent>
+      <xs:restriction base="xdomea:CodeType">
+        <xs:enumeration value="0616001">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Die ID des Schriftgutobjektes ist unbekannt/ungültig.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0616002">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Der Status kann nicht abgefragt werden.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:attribute name="codeName" type="xs:string" use="required">
+          <xs:annotation>
+            <xs:documentation>Der Klartext zu dem angegebenen Schlüsselwert aus der konkreten Codelisten-Definition.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistAgencyName" type="xs:string" use="required" fixed="AG xdomea">
+          <xs:annotation>
+            <xs:documentation>Der Name der Organisation, die für die Codeliste verantwortlich ist.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistName" type="xs:string" use="required" fixed="0616.SpezifischeFehlermeldung">
+          <xs:annotation>
+            <xs:documentation>Der Name der Codeliste.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistVersionIdentifier" type="xs:token" use="required" fixed="2.2.0">
+          <xs:annotation>
+            <xs:documentation>Die Version der Codeliste.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="languageCode" type="xs:language" use="required" fixed="de">
+          <xs:annotation>
+            <xs:documentation>Die Sprache, in der die Codeliste vorliegt.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:restriction>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="SpezifischeFehlermeldung0617CodeType">
+    <xs:annotation>
+      <xs:documentation>Der Datentyp zur Werteliste von spezifischen Fehlermeldungen für die Nachricht 0617 unter Angabe weiterer Informationen zur konkreten Angabe eines Wertes.</xs:documentation>
+    </xs:annotation>
+    <xs:simpleContent>
+      <xs:restriction base="xdomea:CodeType">
+        <xs:enumeration value="0617001">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Die ID des Objektes ist unbekannt/ungültig.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0617002">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Das Schriftgutobjekt kann nicht als ungültig gekennzeichnet werden.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:attribute name="codeName" type="xs:string" use="required">
+          <xs:annotation>
+            <xs:documentation>Der Klartext zu dem angegebenen Schlüsselwert aus der konkreten Codelisten-Definition.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistAgencyName" type="xs:string" use="required" fixed="AG xdomea">
+          <xs:annotation>
+            <xs:documentation>Der Name der Organisation, die für die Codeliste verantwortlich ist.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistName" type="xs:string" use="required" fixed="0617.SpezifischeFehlermeldung">
+          <xs:annotation>
+            <xs:documentation>Der Name der Codeliste.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistVersionIdentifier" type="xs:token" use="required" fixed="2.2.0">
+          <xs:annotation>
+            <xs:documentation>Die Version der Codeliste.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="languageCode" type="xs:language" use="required" fixed="de">
+          <xs:annotation>
+            <xs:documentation>Die Sprache, in der die Codeliste vorliegt.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:restriction>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="SpezifischeFehlermeldung0618CodeType">
+    <xs:annotation>
+      <xs:documentation>Der Datentyp zur Werteliste von spezifischen Fehlermeldungen für die Nachricht 0618 unter Angabe weiterer Informationen zur konkreten Angabe eines Wertes.</xs:documentation>
+    </xs:annotation>
+    <xs:simpleContent>
+      <xs:restriction base="xdomea:CodeType">
+        <xs:enumeration value="0618001">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Die ID des Datensatzes ist im DMS unbekannt/ungültig.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0618002">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Mindestens ein Schriftgutobjekt kann nicht gelöscht werden.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:attribute name="codeName" type="xs:string" use="required">
+          <xs:annotation>
+            <xs:documentation>Der Klartext zu dem angegebenen Schlüsselwert aus der konkreten Codelisten-Definition.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistAgencyName" type="xs:string" use="required" fixed="AG xdomea">
+          <xs:annotation>
+            <xs:documentation>Der Name der Organisation, die für die Codeliste verantwortlich ist.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistName" type="xs:string" use="required" fixed="0618.SpezifischeFehlermeldung">
+          <xs:annotation>
+            <xs:documentation>Der Name der Codeliste.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistVersionIdentifier" type="xs:token" use="required" fixed="2.2.0">
+          <xs:annotation>
+            <xs:documentation>Die Version der Codeliste.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="languageCode" type="xs:language" use="required" fixed="de">
+          <xs:annotation>
+            <xs:documentation>Die Sprache, in der die Codeliste vorliegt.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:restriction>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="SpezifischeFehlermeldung0619CodeType">
+    <xs:annotation>
+      <xs:documentation>Der Datentyp zur Werteliste von spezifischen Fehlermeldungen für die Nachricht 0619 unter Angabe weiterer Informationen zur konkreten Angabe eines Wertes.</xs:documentation>
+    </xs:annotation>
+    <xs:simpleContent>
+      <xs:restriction base="xdomea:CodeType">
+        <xs:enumeration value="0619001">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Die Nachrichten können nicht abgefragt werden.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0619002">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Keine Nachricht vorhanden.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:attribute name="codeName" type="xs:string" use="required">
+          <xs:annotation>
+            <xs:documentation>Der Klartext zu dem angegebenen Schlüsselwert aus der konkreten Codelisten-Definition.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistAgencyName" type="xs:string" use="required" fixed="AG xdomea">
+          <xs:annotation>
+            <xs:documentation>Der Name der Organisation, die für die Codeliste verantwortlich ist.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistName" type="xs:string" use="required" fixed="0619.SpezifischeFehlermeldung">
+          <xs:annotation>
+            <xs:documentation>Der Name der Codeliste.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistVersionIdentifier" type="xs:token" use="required" fixed="2.2.0">
+          <xs:annotation>
+            <xs:documentation>Die Version der Codeliste.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="languageCode" type="xs:language" use="required" fixed="de">
+          <xs:annotation>
+            <xs:documentation>Die Sprache, in der die Codeliste vorliegt.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:restriction>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="SpezifischeFehlermeldung0620CodeType">
+    <xs:annotation>
+      <xs:documentation>Der Datentyp zur Werteliste von spezifischen Fehlermeldungen für die Nachricht 0620 unter Angabe weiterer Informationen zur konkreten Angabe eines Wertes.</xs:documentation>
+    </xs:annotation>
+    <xs:simpleContent>
+      <xs:restriction base="xdomea:CodeType">
+        <xs:enumeration value="0620001">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Benutzer/Rolle des zu Vertretenden ist unbekannt.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0620002">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Benutzer/Rolle des Vertreters ist unbekannt.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0620003">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Die Vertretung ist bereits aktiviert.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0620004">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Die Vertretung ist bereits deaktiviert.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0620005">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Die Vertretung kann nicht aktiviert werden.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0620006">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Die Vertretung kann nicht deaktiviert werden.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:attribute name="codeName" type="xs:string" use="required">
+          <xs:annotation>
+            <xs:documentation>Der Klartext zu dem angegebenen Schlüsselwert aus der konkreten Codelisten-Definition.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistAgencyName" type="xs:string" use="required" fixed="AG xdomea">
+          <xs:annotation>
+            <xs:documentation>Der Name der Organisation, die für die Codeliste verantwortlich ist.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistName" type="xs:string" use="required" fixed="0620.SpezifischeFehlermeldung">
+          <xs:annotation>
+            <xs:documentation>Der Name der Codeliste.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistVersionIdentifier" type="xs:token" use="required" fixed="2.2.0">
+          <xs:annotation>
+            <xs:documentation>Die Version der Codeliste.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="languageCode" type="xs:language" use="required" fixed="de">
+          <xs:annotation>
+            <xs:documentation>Die Sprache, in der die Codeliste vorliegt.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:restriction>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="SpezifischeFehlermeldung0621CodeType">
+    <xs:annotation>
+      <xs:documentation>Der Datentyp zur Werteliste von spezifischen Fehlermeldungen für die Nachricht 0621 unter Angabe weiterer Informationen zur konkreten Angabe eines Wertes.</xs:documentation>
+    </xs:annotation>
+    <xs:simpleContent>
+      <xs:restriction base="xdomea:CodeType">
+        <xs:enumeration value="0621001">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Benutzer/Rolle, für den/die der Status abgefragt werden soll, ist un-bekannt.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0621002">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Der Status kann nicht abgefragt werden.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:attribute name="codeName" type="xs:string" use="required">
+          <xs:annotation>
+            <xs:documentation>Der Klartext zu dem angegebenen Schlüsselwert aus der konkreten Codelisten-Definition.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistAgencyName" type="xs:string" use="required" fixed="AG xdomea">
+          <xs:annotation>
+            <xs:documentation>Der Name der Organisation, die für die Codeliste verantwortlich ist.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistName" type="xs:string" use="required" fixed="0621.SpezifischeFehlermeldung">
+          <xs:annotation>
+            <xs:documentation>Der Name der Codeliste.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistVersionIdentifier" type="xs:token" use="required" fixed="2.2.0">
+          <xs:annotation>
+            <xs:documentation>Die Version der Codeliste.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="languageCode" type="xs:language" use="required" fixed="de">
+          <xs:annotation>
+            <xs:documentation>Die Sprache, in der die Codeliste vorliegt.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:restriction>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="SpezifischeFehlermeldung0622CodeType">
+    <xs:annotation>
+      <xs:documentation>Der Datentyp zur Werteliste von spezifischen Fehlermeldungen für die Nachricht 0622 unter Angabe weiterer Informationen zur konkreten Angabe eines Wertes.</xs:documentation>
+    </xs:annotation>
+    <xs:simpleContent>
+      <xs:restriction base="xdomea:CodeType">
+        <xs:enumeration value="0622001">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>ID des Schriftgutobjektes nicht bekannt/ungültig.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0622002">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Neu zuständiger/zuständige Benutzer/Rolle ist unbekannt.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0622003">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Bisher zuständiger/zuständige Benutzer/Rolle ist unbekannt.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0622004">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Kennzeichen der aufnehmenden Aktenplaneinheit ist unbekannt.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0622005">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>ID der aufnehmenden Akte ist unbekannt.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0622006">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Kennzeichen der abgebenden Aktenplaneinheit ist unbekannt.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0622007">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>ID der abgebenden Akte ist unbekannt.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0622008">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Der Name eines Metadatums enthält ungültige Zeichen.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0622009">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Die Beschreibung des Metadatums enthält ungültige Zeichen.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0622010">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Der Wert eines Metadatums enthält ungültige Zeichen.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0622011">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Der Zuständigkeitswechsel kann nicht durchgeführt werden.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:attribute name="codeName" type="xs:string" use="required">
+          <xs:annotation>
+            <xs:documentation>Der Klartext zu dem angegebenen Schlüsselwert aus der konkreten Codelisten-Definition.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistAgencyName" type="xs:string" use="required" fixed="AG xdomea">
+          <xs:annotation>
+            <xs:documentation>Der Name der Organisation, die für die Codeliste verantwortlich ist.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistName" type="xs:string" use="required" fixed="0622.SpezifischeFehlermeldung">
+          <xs:annotation>
+            <xs:documentation>Der Name der Codeliste.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistVersionIdentifier" type="xs:token" use="required" fixed="2.2.0">
+          <xs:annotation>
+            <xs:documentation>Die Version der Codeliste.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="languageCode" type="xs:language" use="required" fixed="de">
+          <xs:annotation>
+            <xs:documentation>Die Sprache, in der die Codeliste vorliegt.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:restriction>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="SpezifischeFehlermeldung0623CodeType">
+    <xs:annotation>
+      <xs:documentation>Der Datentyp zur Werteliste von spezifischen Fehlermeldungen für die Nachricht 0623 unter Angabe weiterer Informationen zur konkreten Angabe eines Wertes.</xs:documentation>
+    </xs:annotation>
+    <xs:simpleContent>
+      <xs:restriction base="xdomea:CodeType">
+        <xs:enumeration value="0623001">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Die ID des Schriftgutobjektes ist unbekannt/ungültig.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0623002">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Das Verzeichnis ist ungültig.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0623003">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Die URL ist ungültig.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0623004">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Protokoll als Dateikann nicht abgelegt werden.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0623005">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Protokoll als xdomea-Geschäftsgang kann nicht abgelegt werden.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0623006">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Syntaxfehler in xdomea-Geschäftsgang-Daten.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0623007">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>HistorienProtokollinformationen konnten nicht angelegt werden.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:attribute name="codeName" type="xs:string" use="required">
+          <xs:annotation>
+            <xs:documentation>Der Klartext zu dem angegebenen Schlüsselwert aus der konkreten Codelisten-Definition.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistAgencyName" type="xs:string" use="required" fixed="AG xdomea">
+          <xs:annotation>
+            <xs:documentation>Der Name der Organisation, die für die Codeliste verantwortlich ist.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistName" type="xs:string" use="required" fixed="0623.SpezifischeFehlermeldung">
+          <xs:annotation>
+            <xs:documentation>Der Name der Codeliste.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistVersionIdentifier" type="xs:token" use="required" fixed="2.2.0">
+          <xs:annotation>
+            <xs:documentation>Die Version der Codeliste.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="languageCode" type="xs:language" use="required" fixed="de">
+          <xs:annotation>
+            <xs:documentation>Die Sprache, in der die Codeliste vorliegt.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:restriction>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="SpezifischeFehlermeldung0624CodeType">
+    <xs:annotation>
+      <xs:documentation>Der Datentyp zur Werteliste von spezifischen Fehlermeldungen für die Nachricht 0624 unter Angabe weiterer Informationen zur konkreten Angabe eines Wertes.</xs:documentation>
+    </xs:annotation>
+    <xs:simpleContent>
+      <xs:restriction base="xdomea:CodeType">
+        <xs:enumeration value="0624001">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>ID des Schriftgutobjektes nicht bekannt/ungültig.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0624002">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Die zdA-Verfügung kann nicht durchgeführt werden.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:attribute name="codeName" type="xs:string" use="required">
+          <xs:annotation>
+            <xs:documentation>Der Klartext zu dem angegebenen Schlüsselwert aus der konkreten Codelisten-Definition.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistAgencyName" type="xs:string" use="required" fixed="AG xdomea">
+          <xs:annotation>
+            <xs:documentation>Der Name der Organisation, die für die Codeliste verantwortlich ist.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistName" type="xs:string" use="required" fixed="0624.SpezifischeFehlermeldung">
+          <xs:annotation>
+            <xs:documentation>Der Name der Codeliste.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistVersionIdentifier" type="xs:token" use="required" fixed="2.2.0">
+          <xs:annotation>
+            <xs:documentation>Die Version der Codeliste.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="languageCode" type="xs:language" use="required" fixed="de">
+          <xs:annotation>
+            <xs:documentation>Die Sprache, in der die Codeliste vorliegt.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:restriction>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="SpezifischeFehlermeldung0625CodeType">
+    <xs:annotation>
+      <xs:documentation>Der Datentyp zur Werteliste von spezifischen Fehlermeldungen für die Nachricht 0625 unter Angabe weiterer Informationen zur konkreten Angabe eines Wertes.</xs:documentation>
+    </xs:annotation>
+    <xs:simpleContent>
+      <xs:restriction base="xdomea:CodeType">
+        <xs:enumeration value="0625001">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Die Systemstatus-ID ist unbekannt/ungültig.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0625002">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Der Status kann nicht abgefragt werden.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:attribute name="codeName" type="xs:string" use="required">
+          <xs:annotation>
+            <xs:documentation>Der Klartext zu dem angegebenen Schlüsselwert aus der konkreten Codelisten-Definition.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistAgencyName" type="xs:string" use="required" fixed="AG xdomea">
+          <xs:annotation>
+            <xs:documentation>Der Name der Organisation, die für die Codeliste verantwortlich ist.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistName" type="xs:string" use="required" fixed="0625.SpezifischeFehlermeldung">
+          <xs:annotation>
+            <xs:documentation>Der Name der Codeliste.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistVersionIdentifier" type="xs:token" use="required" fixed="2.2.0">
+          <xs:annotation>
+            <xs:documentation>Die Version der Codeliste.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="languageCode" type="xs:language" use="required" fixed="de">
+          <xs:annotation>
+            <xs:documentation>Die Sprache, in der die Codeliste vorliegt.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:restriction>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="SpezifischeFehlermeldung0626CodeType">
+    <xs:annotation>
+      <xs:documentation>Der Datentyp zur Werteliste von spezifischen Fehlermeldungen für die Nachricht 0626 unter Angabe weiterer Informationen zur konkreten Angabe eines Wertes.</xs:documentation>
+    </xs:annotation>
+    <xs:simpleContent>
+      <xs:restriction base="xdomea:CodeType">
+        <xs:enumeration value="0626001">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Der Name des Konfigurationsparameters ist ungültig.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0626002">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Der Wert des Konfigurationsparameters ist ungültig/liegt außerhalb des definierten Wertebereichs.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0626003">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Der Datentyp ist unbekannt.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:attribute name="codeName" type="xs:string" use="required">
+          <xs:annotation>
+            <xs:documentation>Der Klartext zu dem angegebenen Schlüsselwert aus der konkreten Codelisten-Definition.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistAgencyName" type="xs:string" use="required" fixed="AG xdomea">
+          <xs:annotation>
+            <xs:documentation>Der Name der Organisation, die für die Codeliste verantwortlich ist.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistName" type="xs:string" use="required" fixed="0626.SpezifischeFehlermeldung">
+          <xs:annotation>
+            <xs:documentation>Der Name der Codeliste.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistVersionIdentifier" type="xs:token" use="required" fixed="2.2.0">
+          <xs:annotation>
+            <xs:documentation>Die Version der Codeliste.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="languageCode" type="xs:language" use="required" fixed="de">
+          <xs:annotation>
+            <xs:documentation>Die Sprache, in der die Codeliste vorliegt.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:restriction>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="SpezifischeFehlermeldung0627CodeType">
+    <xs:annotation>
+      <xs:documentation>Der Datentyp zur Werteliste von spezifischen Fehlermeldungen für die Nachricht 0627 unter Angabe weiterer Informationen zur konkreten Angabe eines Wertes.</xs:documentation>
+    </xs:annotation>
+    <xs:simpleContent>
+      <xs:restriction base="xdomea:CodeType">
+        <xs:enumeration value="0627001">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Der Name des Konfigurationsparameters ist ungültig.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0627002">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Der Wert des Konfigurationsparameters ist ungültig/liegt außerhalb des definierten Wertebereichs.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0627003">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Der Konfigurationsparameter kann nicht aktualisiert werden (bspw. wegen fehlender Rechte).</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0627004">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Der Typ des Konfigurationsparameters entspricht nicht dem aktuellen Typ des Konfigurationsparameters.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:attribute name="codeName" type="xs:string" use="required">
+          <xs:annotation>
+            <xs:documentation>Der Klartext zu dem angegebenen Schlüsselwert aus der konkreten Codelisten-Definition.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistAgencyName" type="xs:string" use="required" fixed="AG xdomea">
+          <xs:annotation>
+            <xs:documentation>Der Name der Organisation, die für die Codeliste verantwortlich ist.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistName" type="xs:string" use="required" fixed="0627.SpezifischeFehlermeldung">
+          <xs:annotation>
+            <xs:documentation>Der Name der Codeliste.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistVersionIdentifier" type="xs:token" use="required" fixed="2.2.0">
+          <xs:annotation>
+            <xs:documentation>Die Version der Codeliste.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="languageCode" type="xs:language" use="required" fixed="de">
+          <xs:annotation>
+            <xs:documentation>Die Sprache, in der die Codeliste vorliegt.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:restriction>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="SpezifischeFehlermeldung0628CodeType">
+    <xs:annotation>
+      <xs:documentation>Der Datentyp zur Werteliste von spezifischen Fehlermeldungen für die Nachricht 0628 unter Angabe weiterer Informationen zur konkreten Angabe eines Wertes.</xs:documentation>
+    </xs:annotation>
+    <xs:simpleContent>
+      <xs:restriction base="xdomea:CodeType">
+        <xs:enumeration value="0628001">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Der Name des Konfigurationsparameters ist ungültig/unbekannt.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0628002">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Der Konfigurationsparameter kann nicht ausgelesen werden.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:attribute name="codeName" type="xs:string" use="required">
+          <xs:annotation>
+            <xs:documentation>Der Klartext zu dem angegebenen Schlüsselwert aus der konkreten Codelisten-Definition.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistAgencyName" type="xs:string" use="required" fixed="AG xdomea">
+          <xs:annotation>
+            <xs:documentation>Der Name der Organisation, die für die Codeliste verantwortlich ist.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistName" type="xs:string" use="required" fixed="0628.SpezifischeFehlermeldung">
+          <xs:annotation>
+            <xs:documentation>Der Name der Codeliste.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistVersionIdentifier" type="xs:token" use="required" fixed="2.2.0">
+          <xs:annotation>
+            <xs:documentation>Die Version der Codeliste.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="languageCode" type="xs:language" use="required" fixed="de">
+          <xs:annotation>
+            <xs:documentation>Die Sprache, in der die Codeliste vorliegt.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:restriction>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="SpezifischeFehlermeldung0631CodeType">
+    <xs:annotation>
+      <xs:documentation>Der Datentyp zur Werteliste von spezifischen Fehlermeldungen für die Nachricht 0631 unter Angabe weiterer Informationen zur konkreten Angabe eines Wertes.</xs:documentation>
+    </xs:annotation>
+    <xs:simpleContent>
+      <xs:restriction base="xdomea:CodeType">
+        <xs:enumeration value="0631001">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Die ID des Dokuments ist unbekannt/ungültig.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="0631002">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Die Versionsnummer ist ungültig.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:attribute name="codeName" type="xs:string" use="required">
+          <xs:annotation>
+            <xs:documentation>Der Klartext zu dem angegebenen Schlüsselwert aus der konkreten Codelisten-Definition.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistAgencyName" type="xs:string" use="required" fixed="AG xdomea">
+          <xs:annotation>
+            <xs:documentation>Der Name der Organisation, die für die Codeliste verantwortlich ist.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistName" type="xs:string" use="required" fixed="0631.SpezifischeFehlermeldung">
+          <xs:annotation>
+            <xs:documentation>Der Name der Codeliste.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistVersionIdentifier" type="xs:token" use="required" fixed="2.2.0">
+          <xs:annotation>
+            <xs:documentation>Die Version der Codeliste.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="languageCode" type="xs:language" use="required" fixed="de">
+          <xs:annotation>
+            <xs:documentation>Die Sprache, in der die Codeliste vorliegt.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:restriction>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="StaatCodeType">
+    <xs:annotation>
+      <xs:documentation>Der Datentyp zur Werteliste von Staaten unter Angabe weiterer Informationen zur konkreten Angabe eines Wertes. Genutzt wird hier die ISO-3166-1 (ALPHA2) Kennung.</xs:documentation>
+    </xs:annotation>
+    <xs:simpleContent>
+      <xs:restriction base="xdomea:CodeType">
+        <xs:attribute name="codeName" type="xs:string" use="required">
+          <xs:annotation>
+            <xs:documentation>Der Klartext zu dem angegebenen Schlüsselwert aus der konkreten Codelisten-Definition.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistAgencyName" type="xs:string" use="required" fixed="International Standardization for Organization (ISO)">
+          <xs:annotation>
+            <xs:documentation>Der Name der Organisation, die für die Codeliste verantwortlich ist.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistName" type="xs:string" use="required" fixed="ISO 3166-1 (ALPHA2) ">
+          <xs:annotation>
+            <xs:documentation>Der Name der Codeliste.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistUniformResourceIdentifier" type="xs:anyURI" use="required" fixed="http://www.iso.org">
+          <xs:annotation>
+            <xs:documentation>Der Uniform Resource Identifiert (URI), der festlegt, wo die Codeliste zu finden ist.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistVersionIdentifier" type="xs:token" use="required">
+          <xs:annotation>
+            <xs:documentation>Die verwendete Version der Codeliste. Es wird der Einsatz des aktuellsten Standes empfohlen.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="languageCode" type="xs:language" use="required">
+          <xs:annotation>
+            <xs:documentation>Die Sprache, in der die Codeliste vorliegt.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:restriction>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="TransportwegCodeType">
+    <xs:annotation>
+      <xs:documentation>Der Datentyp zur Werteliste von Transportwegen unter Angabe weiterer Informationen zur konkreten Angabe eines Wertes.</xs:documentation>
+    </xs:annotation>
+    <xs:simpleContent>
+      <xs:restriction base="xdomea:CodeType">
+        <xs:enumeration value="001">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Web Service</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="002">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Austauschverzeichnis</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="003">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Austauschdatenbank</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:attribute name="codeName" type="xs:string" use="required">
+          <xs:annotation>
+            <xs:documentation>Der Klartext zu dem angegebenen Schlüsselwert aus der konkreten Codelisten-Definition.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistAgencyName" type="xs:string" use="required" fixed="AG xdomea">
+          <xs:annotation>
+            <xs:documentation>Der Name der Organisation, die für die Codeliste verantwortlich ist.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistName" type="xs:string" use="required" fixed="Transportweg">
+          <xs:annotation>
+            <xs:documentation>Der Name der Codeliste.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistVersionIdentifier" type="xs:token" use="required" fixed="2.2.0">
+          <xs:annotation>
+            <xs:documentation>Die Version der Codeliste.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="languageCode" type="xs:language" use="required" fixed="de">
+          <xs:annotation>
+            <xs:documentation>Die Sprache, in der die Codeliste vorliegt.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:restriction>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="VertraulichkeitsstufeCodeType">
+    <xs:annotation>
+      <xs:documentation>Der Datentyp zur Werteliste von Vertraulichkeitsstufen unter Angabe weiterer Informationen zur konkreten Angabe eines Wertes.</xs:documentation>
+    </xs:annotation>
+    <xs:simpleContent>
+      <xs:restriction base="xdomea:CodeType">
+        <xs:enumeration value="001">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Geheim: Das Schriftgutobjekt ist als geheim eingestuft.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="002">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>NfD: Das Schriftgutobjekt ist als "nur für den Dienstgebrauch (nfD)" eingestuft.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="003">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Offen: Das Schriftgutobjekt ist nicht eingestuft.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="004">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Streng geheim: Das Schriftgutobjekt ist als streng geheim eingestuft.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:enumeration value="005">
+          <xs:annotation>
+            <xs:appinfo>
+              <codeName>Vertraulich: Das Schriftgutobjekt ist als vertraulich eingestuft.</codeName>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:enumeration>
+        <xs:attribute name="codeName" type="xs:string" use="required">
+          <xs:annotation>
+            <xs:documentation>Der Klartext zu dem angegebenen Schlüsselwert aus der konkreten Codelisten-Definition..</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistAgencyName" type="xs:string" use="required" fixed="AG xdomea">
+          <xs:annotation>
+            <xs:documentation>Der Name der Organisation, die für die Codeliste verantwortlich ist.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistName" type="xs:string" use="required" fixed="Vertraulichkeitsstufe">
+          <xs:annotation>
+            <xs:documentation>Der Name der Codeliste.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="codelistVersionIdentifier" type="xs:token" use="required" fixed="2.2.0">
+          <xs:annotation>
+            <xs:documentation>Die Version der Codeliste.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="languageCode" type="xs:language" use="required" fixed="de">
+          <xs:annotation>
+            <xs:documentation>Die Sprache, in der die Codeliste vorliegt.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:restriction>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:simpleType name="stringDateinameType">
+    <xs:annotation>
+      <xs:documentation>Der Datentyp zur Angabe eines Dateinamens nach dem Muster "UUID_Dateiname.Dateiformat".</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[0-9|A-F|a-f]{8}-[0-9|A-F|a-f]{4}-[0-9|A-F|a-f]{4}-[0-9|A-F|a-f]{4}-[0-9|A-F|a-f]{12}_.*\..*" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="stringUUIDType">
+    <xs:annotation>
+      <xs:documentation>Der Datentyp zur Angabe einer UUID.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[0-9|A-F|a-f]{8}-[0-9|A-F|a-f]{4}-[0-9|A-F|a-f]{4}-[0-9|A-F|a-f]{4}-[0-9|A-F|a-f]{12}" />
+    </xs:restriction>
+  </xs:simpleType>
+</xs:schema>
+

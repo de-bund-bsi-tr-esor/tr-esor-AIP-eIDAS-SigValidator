@@ -35,6 +35,7 @@ public enum Dispatcher
     public void dispatch( DispatcherArguments args ) throws FileNotFoundException
     {
         SyntaxValidationResult syntaxResult = syntaxValidator.validateSyntax( args.getInput() );
+        log( " finished syntax validation" );
         
         List<IndividualReportType> reportParts = new ArrayList<>();
         reportParts.add( syntaxResult.getSyntaxReport() );
@@ -47,8 +48,13 @@ public enum Dispatcher
             } );
         }
         
-        System.out.println( "finished validation" );
         JAXB.marshal( protocolAssembler.assembleProtocols( reportParts ), args.getOutput() );
+        log( " finished protocol assembling" );
+    }
+    
+    void log( String message )
+    {
+        System.out.println( "[Dispatcher] " + message );
     }
     
     <T extends ValidatorModule> T loadModule( Class<T> moduleClass )
@@ -60,7 +66,7 @@ public enum Dispatcher
         
         String vendor = module.getVendor();
         String version = module.getVersion();
-        System.out.println( MessageFormat.format( "loaded {0} by {1} in version {2}", moduleName, vendor, version ) );
+        log( MessageFormat.format( "loaded {0} by {1} in version {2}", moduleName, vendor, version ) );
         
         return module;
     }

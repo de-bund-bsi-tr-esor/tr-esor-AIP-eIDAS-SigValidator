@@ -40,7 +40,7 @@ public class Arguments implements DispatcherArguments
             descriptionKey = MessageBundle.CLI_USAGE_ECARD_URL, converter = URIConverter.class )
     private URI          eCardUrl;
     
-    @Parameter( order = 4, names = { "-h", "--help" }, descriptionKey = MessageBundle.CLI_USAGE_VERIFY )
+    @Parameter( order = 4, names = { "-v", "--verify" }, descriptionKey = MessageBundle.CLI_USAGE_VERIFY )
     private boolean      verify;
     
     @Parameter( order = 5, names = { "-h", "--help" }, help = true, descriptionKey = MessageBundle.CLI_USAGE_HELP )

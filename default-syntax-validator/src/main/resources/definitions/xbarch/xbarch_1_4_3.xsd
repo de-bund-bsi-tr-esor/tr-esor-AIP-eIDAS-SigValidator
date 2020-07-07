@@ -1,0 +1,2162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2012 rel. 2 sp1 (x64) (http://www.altova.com) by Benjamin SBB1567212 Martin (Hewlett-Packard GmbH) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.xbarch.de" xmlns:xbarch="http://www.xbarch.de" targetNamespace="http://www.xbarch.de" elementFormDefault="qualified" attributeFormDefault="unqualified" version="1.4.3">
+	<xs:element name="XBARCH" type="T_XBARCH"/>
+	<xs:complexType name="T_XBARCH" abstract="false">
+		<xs:annotation>
+			<xs:documentation>Gesamtheit der Metadaten eines Archivierungspaketes (AIP)</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="AIP" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Metadaten fuer die Bechreibung des Archival Information Package </xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="AIPID" type="xs:string">
+							<xs:annotation>
+								<xs:documentation>Eindeutige ID fuer das gesamte AIP</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="Beschreibung" type="xs:string" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>Beschreibung der Repräsentation zur Steuerung der Anzeige im Verzeichnissystem</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="Parent" type="xs:string" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>ID des AIP aus dem dieses AIP entstanden ist (Ursprungsrepräsentation)</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="Altsignaturen">
+							<xs:annotation>
+								<xs:documentation>Vorgesehen für Altsignaturen, die für die jeweiligen Datenträger  (Verfahren Militärarchiv) oder für alte Digitale Archivobjekt (DDR-Daten) vergeben wurden.</xs:documentation>
+							</xs:annotation>
+							<xs:complexType>
+								<xs:sequence maxOccurs="unbounded">
+									<xs:element name="Signatur" type="t_altsignatur"/>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+						<xs:element name="Type" type="xs:string" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>Typ des AIP (Dateisystemablage, Datenbank etc.)</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Archivsignatur" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Eindeutige Archivsignatur fuer das gesamte AIP </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Administrative_Daten">
+				<xs:annotation>
+					<xs:documentation>Administrative Beschreibung des organisatorischen Verfahrens </xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Ereignis_Typ" type="WL_Ereignis_Typ">
+							<xs:annotation>
+								<xs:documentation>Angabe des Zieles der Transaktion wie z.B. Aktenplan, Anbieteverzeichnis oder Aussonderungsdatei</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="Hash_SIP_Vorhanden" type="xs:boolean"/>
+						<xs:element name="Datum">
+							<xs:annotation>
+								<xs:documentation>Angabe des Datums der Transaktion im Format JJJJ-MM-TT. Gleichzeitig wird das Ziel der Transaktion spezifiziert.</xs:documentation>
+							</xs:annotation>
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="Datum_Anbietung" type="xs:date" nillable="true" minOccurs="0">
+										<xs:annotation>
+											<xs:documentation>Datum fuer die Anbietung des Aktenplanes und des Anbieteverzeichnisses (Behörde -&gt; Archiv)</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="Datum_Bewertung" type="xs:date" nillable="true" minOccurs="0">
+										<xs:annotation>
+											<xs:documentation>Datum fuer die Ruecksendung des Bewertungskataloges sowie des Bewertungs- verzeichnisses an die Behörde (Archiv -&gt; Behörde)</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="Datum_Abgabe" type="xs:date" nillable="true" minOccurs="0">
+										<xs:annotation>
+											<xs:documentation>Sendedatum der Aussonderungsdatei (Behoerde -&gt; Archiv)</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="Datum_Uebernahme" type="xs:date" minOccurs="0">
+										<xs:annotation>
+											<xs:documentation>Datum der Uebernahme in das Archiv (gilt nur für das Archiv)</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="Datum_Bewertungskatalog" type="xs:date" minOccurs="0">
+										<xs:annotation>
+											<xs:documentation>Datum, an dem der Bewertungskatalog (BArch -&gt; BMI) zugesandt wird</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+						<xs:element name="Transaktions_Nummer" type="xs:string" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>Eindeutige Transaktionsnummer für jeden Datentransfer</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="Behoerdenangaben">
+							<xs:annotation>
+								<xs:documentation>Angaben der abgebenden Behoerde</xs:documentation>
+							</xs:annotation>
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="Behoerdenbezeichnung_kurz" type="xs:string">
+										<xs:annotation>
+											<xs:documentation>Kurzbezeichnung der abgebenden Behoerde z.B. BMI</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="Behoerdenregistrierungsschluessel" type="xs:string">
+										<xs:annotation>
+											<xs:documentation>Numerischer Schluessel, unter dem das Profil der Behoerde  (Ansprechpartner, Email etc. ) beim BArch gespeichert ist. (Agency ID)</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="Behoerdenprofilschluessel" type="xs:string">
+										<xs:annotation>
+											<xs:documentation>Numerischer Schluessel, unter dem ein zu einer Behoerde passendes technisches  Profil beim BArch gespeichert ist (Profil-ID). Zu einer Behoerde koennen mehrere technische Profile angelegt werden.</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+						<xs:element name="Bemerkungen" type="xs:string" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>Element fuer zusaetzliche Anmerkungen</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="Kontakt_Informationen">
+							<xs:annotation>
+								<xs:documentation>Addressinformationen der Behoerde </xs:documentation>
+							</xs:annotation>
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="Name" type="xs:string">
+										<xs:annotation>
+											<xs:documentation>Name des zustaendigen Ansprechpartners in der Behoerde fuer diesen Prozess.</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="E-Mail" type="xs:string">
+										<xs:annotation>
+											<xs:documentation>Mail-Adresse des zustaendigen Ansprechpartners in der Behoerde fuer diesen Prozess (bei Erstabgabe und bei Aenderungen)</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Technische_Daten">
+				<xs:annotation>
+					<xs:documentation>Technische Beschreibung der Objekte (basierend auf PREMIS) und aller Massnahmen für deren dauerhafte Archivierung. (PREMIS Homepage: http://www.loc.gov/standards/premis/)</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="objekt" maxOccurs="unbounded">
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="objektIdentifikator" maxOccurs="unbounded">
+										<xs:annotation>
+											<xs:documentation>objectIdentifier: Jedes Datenobjekt im Archivierungsspeicher muss eindeutig identifizierbar sein, um mit beschreibenden, technischen und anderen Metadaten verbunden werden zu können. Eine Kennzeichnung des Objekts kann durch das Repositorium erzeugt werden bei der Aufnahme dieses Objekts in dieses System. Sie kann aber auch ausserhalb dieses Speichersystems erzeugt oder festgelegt und als Metadatum mit einem Objekt vorgelegt werden. Ebenso können Objektkennzeichnungen automatisch oder manuell generiert werden. Es wird empfohlen, dass Repositorien hauptsächlich von ihnen selbst automatisch generierte Objektkennzeichnungen benutzen. Dadurch soll sichergestellt werden, dass Objektkennzeichnungen einmalig und durch das Repositorium benutzbar sind. Extern festgelegte Objektkennzeichnungen können sekundär benutzt werden als Verbindung zu Informationen ausserhalb des Repositoriums. </xs:documentation>
+										</xs:annotation>
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="objektIdentifikatorTyp" type="xs:string">
+													<xs:annotation>
+														<xs:documentation>objectIdentifierType: Bezeichnung des Bereichs, für den der Objektidentifikator einmalig ist </xs:documentation>
+													</xs:annotation>
+												</xs:element>
+												<xs:element name="objektIdentifikatorWert" type="xs:string">
+													<xs:annotation>
+														<xs:documentation>objectIdentifierValue: Wert des Objektindentifikators </xs:documentation>
+													</xs:annotation>
+												</xs:element>
+											</xs:sequence>
+											<xs:anyAttribute namespace="http://www.w3.org/1999/xlink"/>
+										</xs:complexType>
+									</xs:element>
+									<xs:element name="archivierungsStatus" type="WL_Archivierungsstatus" minOccurs="0">
+										<xs:annotation>
+											<xs:documentation>preservationLevel: Manche Repositorien bieten vielfältige Archivierungsoptionen an, abhängig von Faktoren wie dem Wert oder der Einzigartigkeit des Materials, der Archivierbarkeit des Formats, dem Geldbetrag, den der Kunde zu zahlen bereit ist. usw. Die Archivierungsoption kann vom Repositorium festgesetzt oder vom Deponenten erbeten werden und dann als Metadatum vorgelegt werden. Wenn keine verschiedenen Archivierungsoptionen zur Verfügung stehen, soll der voreingestellte Wert 0 verwendet werden.  </xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="objektKategorie" type="WL_Objektkategorie">
+										<xs:annotation>
+											<xs:documentation>objectCategory: die Kategorie des Objekts, für das Metadaten verwendet werden. Es ist wahrscheinlich, dass Repositorien mit verschiedenartigen Objektkategorien (Representation, File und Bitstream) verschieden umgehen werden bezüglich Metadaten und Datenverwaltungsfunktionen.  </xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="objektTechnischeAttribute" minOccurs="0" maxOccurs="unbounded">
+										<xs:annotation>
+											<xs:documentation>objectCharacteristics: Technische Eigenschaften eines Files oder Bitstreams, die auf alle oder die meisten Formate zutreffen. Formatspezifische Eigenschaften werden in diesem Data Dictionary nicht berücksichtigt. Doch gibt es einige wichtige technische Eigenschaften, die Objekten jeden Formates eigen sind. </xs:documentation>
+										</xs:annotation>
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="kodierungsEbene" type="xs:nonNegativeInteger" minOccurs="0">
+													<xs:annotation>
+														<xs:documentation>compositionLevel: Ein Hinweis auf die Möglichkeit eines oder mehrerer Prozesse der Entschlüsselung oder Entbündelung auf dem Objekt. Eine Datei oder ein Bistream kann über Komprimierung, Verschlüsselung usw. codiert oder mit anderen Dateien oder Bitstreams zu grösseren Paketen geschnürt werden. Die Kenntnis der Reihenfolge dieser Vorgänge ist wichtig für eine eventuelle Wiederherstellung des ursprünglichen Objekts oder der ursprünglichen Objekte. Im Allgemeinen wird die Art der Zusammensetzung vom Repositorium angegeben, welches diesen Wert automatisch bereitstellen sollte. Falls das Objekt durch das Repositorium generiert wurde, kennt die Erstellungsroutine die Art der Zusammensetzung und kann dieses Metadatum zur Verfügung stellen. Falls das Objekt aber vom Repositorium übernommen wird, muss es die Art der Zusammensetzung über das Objekt selbst oder über extern bereitgestellte Metadaten zu identifizieren. </xs:documentation>
+													</xs:annotation>
+												</xs:element>
+												<xs:element name="datenIntegrität" minOccurs="0" maxOccurs="unbounded">
+													<xs:annotation>
+														<xs:documentation>fixity: Information zum Überprüfen eventuell nicht dokumentierter oder nicht berechtigter Änderungen am Objekt. Durch das Speichersystem automatisch berechnet und aufgezeichnet.</xs:documentation>
+													</xs:annotation>
+													<xs:complexType>
+														<xs:sequence>
+															<xs:element name="pruefsummenAlgorithmus" type="xs:string">
+																<xs:annotation>
+																	<xs:documentation>messageDigestAlgorithm: Der spezifische Algorithmus zur Berechnung des Hash-Wertes für das digitale Objekt. Pro Archiv soll ein Standard-Algorithmus verwendet werden; empfohlen werden entweder MD5 oder SHA-1. </xs:documentation>
+																</xs:annotation>
+															</xs:element>
+															<xs:element name="pruefsummeWert" type="xs:string">
+																<xs:annotation>
+																	<xs:documentation>messageDigest: Das Resultat des Hash-Algorithmus. Dieser Hash-Wert muss gespeichert werden, für Vergleiche bei zukünftigen Integritätsprüfungen.  </xs:documentation>
+																</xs:annotation>
+															</xs:element>
+															<xs:element name="pruefsummePruefer" type="xs:string" minOccurs="0">
+																<xs:annotation>
+																	<xs:documentation>messageDigestOrginator: Die Instanz, welche den originalen Hash-Wert berechnet hat. Ein Repositorium kann Dateien aufnehmen, deren Hash-Werte von der einreichenden Instanz berechnet wurden. Eine Prüfung stellt sicher, dass empfangene und gesendete Dateien identisch sind. Das Repositorium kann auch Dateien ohne Hash-Wert aufnehmen; dann muss es diesen bei der Übernahme berechnen. Es kann nützlich sein, zu wissen, wer den originalen Hash-Wert berechnet hat.   </xs:documentation>
+																</xs:annotation>
+															</xs:element>
+														</xs:sequence>
+													</xs:complexType>
+												</xs:element>
+												<xs:element name="datenmenge" minOccurs="0">
+													<xs:annotation>
+														<xs:documentation>size: Die Grösse der archivierten Datei oder des Bitstreams in Bytes. Dieses Element stellt sicher, dass aus dem Repositorium die korrekte Anzahl Bytes abgerufen wird und dass eine Anwendung über genügend Platz verfügt, um Dateien zu bewegen. Es könnte auch zur Berechnung von Speicherkosten verwendet werden.  </xs:documentation>
+													</xs:annotation>
+													<xs:complexType>
+														<xs:sequence>
+															<xs:element name="datenmengeEinheit" type="xs:string"/>
+															<xs:element name="datenmengeWert" type="xs:string"/>
+														</xs:sequence>
+													</xs:complexType>
+												</xs:element>
+												<xs:element name="format" minOccurs="0">
+													<xs:annotation>
+														<xs:documentation>format: Bezeichnung des Formats einer Datei oder einer Abfolge von Bits, wobei Format die Organisation der digitalen Information aufgrund vorgegebener spezifischer Eigenschaften bedeutet. Viele Massnahmen zur Erhaltung sind abhängig von detaillierter Kenntnis des Formats des digitalen Objektes. Eine genaue Angabe des Formats ist notwendig. Die durch einen Namen oder einen Verweis auf eine Format-Nachweisstelle erfasste Information muss ausreichend sein, um detailliertere Information über das Objekt zu erhalten.  Das Format einer Datei oder einer Abfolge von Bits sollte bei der Aufnahme ins Repositorium überprüft werden. Selbst wenn die abliefernde Stelle diese Information direkt durch Metadaten oder indirekt über die Dateinamenerweiterung mitliefert, wird empfohlen, das Format unabhängig davon nochmals zu analysieren. Falls das Format bei der Übernahme nicht bestimmt werden kann, soll festgehalten werden, dass das Format unbekannt ist. Das Archiv sollte sich anschliessend aber gleichwohl darum bemühen, das Format zu bestimmen, selbst wenn dies eine manuelle Intervention erfordert. Eine Abfolge von Bits innerhalb einer Datei kann andere Eigenschaften aufweisen als die Datei als ganzes. Ein Bitstream im LaTex-Format kann sich z.B. innerhalb einer SGML-Datei befinden, oder mehrere Bilder mit verschiedenen Farbtiefen können sich innerhalb der gleichen TIFF-Datei befinden. Das Format muss für jede Datei festgehalten werden. Wenn das Archiv das Bitstream-Format erkennt und es den Bitstream im Hinblick auf eine Archivierung anders behandeln möchte als die umfassende Datei, so kann das Format der eingebetteten Bitstreams ebenfalls festgehalten werden. 
+Aufgezeichnet werden sollte entweder formatDesignation oder formatRegistry. Beide sind fakultativ, aber da das Element „format„ obligatorisch ist, muss einer der beiden Einträge erfolgen. 
+ </xs:documentation>
+													</xs:annotation>
+													<xs:complexType>
+														<xs:sequence>
+															<xs:element name="erkennungsStatus" type="xs:string" minOccurs="0">
+																<xs:annotation>
+																	<xs:documentation>erkennungsstatus: Kennzeichnet die Qualitaet der Erkennung durch DROID.</xs:documentation>
+																</xs:annotation>
+															</xs:element>
+															<xs:element name="formatBezeichnung" minOccurs="0">
+																<xs:annotation>
+																	<xs:documentation>formatDesignation: Bezeichnet das Format des Objekts. Das Format oder Format-Profil sollte so spezifisch wie möglich angegeben werden. Ein Archiv (oder eine Format-Datenbank) kann dazu mehrteilige Formatbezeichnungen (Z.B. "TIFF_GeoTIFF" oder "WAVE_MPEG_BWF) verwenden. </xs:documentation>
+																</xs:annotation>
+																<xs:complexType>
+																	<xs:sequence>
+																		<xs:element name="formatName" type="xs:string">
+																			<xs:annotation>
+																				<xs:documentation>formatName: Bezeichnet das Format der Datei oder eines Bitstreams.</xs:documentation>
+																			</xs:annotation>
+																		</xs:element>
+																		<xs:element name="formatVersion" type="xs:string" minOccurs="0">
+																			<xs:annotation>
+																				<xs:documentation>formatVersion: Version des Formats in formatName. Viele anerkannte Formen von Formatnamen gehen nicht bis auf Stufe Version hinunter, z.B. MIME-Mediatypen. Falls das Format eine Versionsangabe besitzt, so muss diese angegeben werden, entweder in numerischer oder chronologischer Form. </xs:documentation>
+																			</xs:annotation>
+																		</xs:element>
+																		<xs:element name="mimeType" type="xs:string" minOccurs="0">
+																			<xs:annotation>
+																				<xs:documentation>mimeType: MimeType, soweit von Pronom geliefert. </xs:documentation>
+																			</xs:annotation>
+																		</xs:element>
+																		<xs:element name="textEncoding" type="xs:string" minOccurs="0">
+																			<xs:annotation>
+																				<xs:documentation>bei reinen Textdateien kann hierr das Encoding hinterlegt werden (16.05.2011)</xs:documentation>
+																			</xs:annotation>
+																		</xs:element>
+																	</xs:sequence>
+																</xs:complexType>
+															</xs:element>
+															<xs:element name="formatVerzeichnis" minOccurs="0" maxOccurs="unbounded">
+																<xs:annotation>
+																	<xs:documentation>formatRegistry: Identifiziert und/oder gibt zusätzliche Informationen zu einem Format durch Verweis auf einen Eintrag in einer Format-Datenbank. Wenn das Archiv Zugriff auf zentrale Format-Datenbanken hat, so ist es eine hervorragende Lösung, für die genauen Formateigenschaften auf diese Stellen zu verweisen. Die PREMIS-Arbeitsgruppe geht davon aus, dass eine Anzahl von Format-Datenbanken entstehen werden, welche die digitale Archivierung unterstützen. Der Vorschlag einer Global Digital Format Registry würde zu einer via Internet zugänglichen Datenbank führen, welche detaillierte Spezifikationen der Formate und Profile enthält.    </xs:documentation>
+																</xs:annotation>
+																<xs:complexType>
+																	<xs:sequence>
+																		<xs:element name="formatVerzeichnisName" type="xs:string">
+																			<xs:annotation>
+																				<xs:documentation>formatRegistryName: Bezeichnung der Format-Datenbank, auf welche verwiesen wird.  </xs:documentation>
+																			</xs:annotation>
+																		</xs:element>
+																		<xs:element name="formatVerzeichnisIdentifikator" type="xs:string">
+																			<xs:annotation>
+																				<xs:documentation>formatRegistryKey: Eindeutige Bezeichnung für einen Format-Eintrag in einer Format-Datenbank, auf welchen verwiesen wird.</xs:documentation>
+																			</xs:annotation>
+																		</xs:element>
+																		<xs:element name="formatVerzeichnisIdentifikatorErweitert" type="xs:string" minOccurs="0" maxOccurs="unbounded">
+																			<xs:annotation>
+																				<xs:documentation>sollten mehrere Formate erkannt werden, so koennen hier die weiteren Formate hinterlegt werden</xs:documentation>
+																			</xs:annotation>
+																		</xs:element>
+																		<xs:element name="formatVerzeichnisSchwerpunkt" type="WL_FormatVerzeichnisSchwerpunkt" minOccurs="0">
+																			<xs:annotation>
+																				<xs:documentation>formatRegistryRole: Das gleiche Format kann in verschiedenen Datenbank zu verschiedenen Zwecken verzeichnet sein. Eine Datenbank enthält z.B. detaillierte Informationen, eine andere gibt allgemeine Informationen an. Falls mehrere Datenbanken angesprochen werden, so dient dieser Eintrag dazu, sie von einander zu unterscheiden. </xs:documentation>
+																			</xs:annotation>
+																		</xs:element>
+																	</xs:sequence>
+																	<xs:anyAttribute namespace="http://www.w3.org/1999/xlink"/>
+																</xs:complexType>
+															</xs:element>
+														</xs:sequence>
+													</xs:complexType>
+												</xs:element>
+												<xs:element name="zugriffsSperren" minOccurs="0" maxOccurs="unbounded">
+													<xs:annotation>
+														<xs:documentation>inhibitors: Eigenschaften von Objekten, die die Nutzung eines Objekts verhindern. Um auf ein Objekt im Archiv zugreifen zu können, müssen die Art und Weise der Verschlüsselung sowie der Zugriffsschlüssel verfügbar sein. Es ist wahrscheinlicher, dass ein Objekt mit einer Zugriffssperre in das Archiv gelangt, als dass das Archiv dem Objekt nachträglich eine Sperre zufügt. Oft können Sperren auch beim Ingest übersehen werden. Es ist deshalb empfehlenswert, dass die Metadaten über die Zugriffssperren schon bei der Übergabe des Objekts an das Archiv beigefügt werden.</xs:documentation>
+													</xs:annotation>
+													<xs:complexType>
+														<xs:sequence>
+															<xs:element name="zugriffsSperrenTyp" type="xs:string">
+																<xs:annotation>
+																	<xs:documentation>inhibitorType: Die verwendete technische Methode zur Sperrung des Objekts. Gebräuchliche Verfahren zur Sperrung sind Verschlüsselungen und die Verwendung von Passwörtern. Bei verschlüsselten Objekten muss der Name des technischen Verfahrens angeben werden. Bei Verwendung des Data Encryption Standards wäre die korrekte Angabe „DES“ und nicht die allgemeinen Begriffe „Verschlüsselung“ oder „verschlüsselt“. </xs:documentation>
+																</xs:annotation>
+															</xs:element>
+															<xs:element name="zugriffsSperrenZiel" type="xs:string" minOccurs="0" maxOccurs="unbounded">
+																<xs:annotation>
+																	<xs:documentation>inhibitorTarget: Die von der Sperrung betroffenen Inhalte eines Objekts. Im Zweifelsfall sollte die Angabe „gesamter Inhalt“ verwendet werden.</xs:documentation>
+																</xs:annotation>
+															</xs:element>
+															<xs:element name="zugriffsSperrenSchlüssel" type="xs:string" minOccurs="0">
+																<xs:annotation>
+																	<xs:documentation>inhibitorKey: Der nötige Schlüssel/Passwort. Der Schlüssel sollte, wenn er bekannt ist, unbedingt gespeichert werden. Bei Objekten, bei denen die Sperrung aus wichtigen Gründen und zur unbedingten Geheimhaltung der Inhalte vorgenommen wurde, sollten die Schlüssel oder Passwörter nur an gesicherten Orten gespeichert werden.</xs:documentation>
+																</xs:annotation>
+															</xs:element>
+														</xs:sequence>
+													</xs:complexType>
+												</xs:element>
+												<xs:element name="wesentlicheEigenschaften" type="xs:string" minOccurs="0">
+													<xs:annotation>
+														<xs:documentation>significantProperties: Eigenschaften eines bestimmten Objekts, welche subjektiv als wichtig erachtet werden und daher beim Prozess des Archivierens erhalten bleiben sollen. Objekte können die technisch gleichen Eigenschaften besitzen, jedoch sollen nicht in allen Fällen diese Eigenschaften erhalten bleiben. Spezifische Eigenschaften können für alle Objekte einer bestimmten Klasse zutreffen. Das Repositorium kann z.B. entscheiden, dass bei allen PDF-Dateien bloss der Inhalt gespeichert werden soll. In andern Fällen, z.B. bei Medien, können die spezifischen Eigenschaften für jedes Objekt einmalig sein. Wenn diese Werte einmalig sind, so müssen sie entweder von der abliefernden Stelle mitgeliefert werden oder vom Personal des Repositoriums zur Verfügung gestellt werden. Signifikante Eigenschaften können objektive technische Eigenschaften sein, welche subjektiv als wichtig erachtet werden. Ein PDF enthält z.B. Links, welche nicht als wichtig betrachtet werden, und JavaScript, das wichtig ist. Oder für eine künftige Migration eines TIFF-Bildes ist es bedeutsam, dass die Linien und Farben in hoher Qualität erhalten bleiben. 
+Das Auflisten signifikanter Eigenschaften hat zur Folge, dass das Repositorium diese auch nach zukünftigen Migrationen erhalten will. Falls dennoch Veränderungen auftreten, so wird das Archiv diese vermerken. Es fehlt noch an Erfahrung mit digitaler Archivierung, um den besten Weg anzugeben, wie diese Information vermerkt wird. 
+Eine Möglichkeit ist die Verwendung der Information über die vorgenommenen Eingriffe an einem Objekt: Objekt A besitzt die signifikanten Eigenschaften Volumen und Zeit, welche als significantProperties von A verzeichnet sind. In der migrierten Version B wurden die Zeitangaben verändert, was zu einer Notiz im Ergebnisprotokoll des Migrationsvorgangs führt. In Zukunft wird nur noch Umfang als signifikante Eigenschaft von B aufgeführt.</xs:documentation>
+													</xs:annotation>
+												</xs:element>
+											</xs:sequence>
+										</xs:complexType>
+									</xs:element>
+									<xs:element name="erzeugendesProgram" minOccurs="0" maxOccurs="unbounded">
+										<xs:annotation>
+											<xs:documentation>creatingApplication: Information zur Produktiv-Applikation. Lösungshilfe bei Problemfällen im Fall von Konvertierung, z.B. uneinheitliches Verhalten von Objekten aus unterschiedlichen Versionen. Erfahrungsgemäss werden die Standards in den einzelnen Applikationen nicht zu 100% eingehalten (Typen von Variablen in SQL, Unicode bei Microsoft, etc.). Die Information soll für Objekte in der Verwaltung und für Objekte im Repositorium (nach einer Migration) nachgeführt werden. Sind mehrere Applikationen beteiligt, so sollen beide beschrieben werden (z.B. Word-Dokument in pdf gewandelt / Archivierung des pdf oder html-File erzeugt mit Dreamweaver / Snapshot für das Archiv erzeugt mit dem Web crawler Heritrix). 
+Die Information in diesen Feldern soll möglichst auf eine Datenbank (Registry) verweisen. 
+  </xs:documentation>
+										</xs:annotation>
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="erzeugendesProgramName" type="xs:string" minOccurs="0">
+													<xs:annotation>
+														<xs:documentation>creatingApplicationName: Bezeichnung der Produktiv-Applikation. Die Produktiv-Applikation ist die Applikation, mit welcher das Objekt erzeugt wurde (nicht die Applikation, die zur Speicherung verwendet wird wie z.B. ein storage management system).  </xs:documentation>
+													</xs:annotation>
+												</xs:element>
+												<xs:element name="erzeugendesProgramVersion" type="xs:string" minOccurs="0">
+													<xs:annotation>
+														<xs:documentation>creatingApplicationVersion: Version der Produktiv-Applikation  </xs:documentation>
+													</xs:annotation>
+												</xs:element>
+												<xs:element name="erzeugtAm" minOccurs="0">
+													<xs:annotation>
+														<xs:documentation>dateCreatedByApplication: Datum und Zeit, an welchem Objekt erzeugt wurde. Element hat den data type  dateTime, eine Untermenge der ISO 8601, Bsp. 2006-07-10T14:29:53+01:00. Der präziseste verfügbare Wert wird gespeichert, und zwar derjenige der ersten Erzeugung; Daten für Kopien werden unter Event gespeichert. Wenn für ein Objekt ein internes Erzeugungs- und ein Modifikationsdatum verfügbar sind, so sollte das Modifikationsdatum verwendet werden. 
+Bei Einsatz eines Webharvesters soll das Datum des Capturing gespeichert werden. 
+</xs:documentation>
+													</xs:annotation>
+													<xs:simpleType>
+														<xs:union memberTypes="xs:date xs:dateTime"/>
+													</xs:simpleType>
+												</xs:element>
+											</xs:sequence>
+										</xs:complexType>
+									</xs:element>
+									<xs:element name="urspruenglicherName" minOccurs="0">
+										<xs:annotation>
+											<xs:documentation>originalName: Der Name, den das Objekt bei der Übermittlung an das Archiv trägt, bevor er aus organisatorischen Gründen im Archiv geändert wird. Das Objekt kann außerhalb des Archivs unter einem anderen Namen bekannt sein als innerhalb des Archivs. Ein Nutzer könnte ein Objekt unter seinem ursprünglichen Namen anfordern. Auch zur Rekonstruktion von Linkstrukturen muss der originale Name bekannt sein. Die Angabe sollte von der Abgebenden Instanz an das Archiv übermittelt werden. Wenn die Abgabe automatisiert erfolgt, sollte die entsprechende Software den Objektnamen übermitteln. Wie genau die Angaben zum Speicherpfad sind (s. Bsp.) hängt von den Ansprüchen des Archivs ab. Dies ist der Name des Objekts der mit dem Submission Information Package geliefert wird. Dieselbe Datei kann in unterschiedlichen Kontexten verschiedene Namen tragen.</xs:documentation>
+										</xs:annotation>
+										<xs:complexType>
+											<xs:simpleContent>
+												<xs:extension base="xs:string">
+													<xs:anyAttribute namespace="http://www.w3.org/1999/xlink"/>
+												</xs:extension>
+											</xs:simpleContent>
+										</xs:complexType>
+									</xs:element>
+									<xs:element name="speicherung" minOccurs="0" maxOccurs="unbounded">
+										<xs:annotation>
+											<xs:documentation>storage: Information zur Speicherung eines Files im Speichersystem (wie und wo). Das Repositorium muss den Speicherort mit einem Speichermedium assoziieren können. In der Regel handelt es sich um einen Speicherort und ein Medium pro Objekt. Gibt es (bit-weise identische) Kopien, die - mit der Ausnahme des Mediums - als Einheit verwaltet werden, dann muss die Information wiederholbar sein. (Im Repositorium müssen auch diese Objekte als einzelne Objekte verwaltet werden)   </xs:documentation>
+										</xs:annotation>
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="speicherortAngabe" minOccurs="0">
+													<xs:annotation>
+														<xs:documentation>contentLocation: Information, die notwendig ist, um ein File oder einen Bitstream innerhalb eines Files zu finden. </xs:documentation>
+													</xs:annotation>
+													<xs:complexType>
+														<xs:sequence>
+															<xs:element name="speicherortAngabeTyp" type="xs:string">
+																<xs:annotation>
+																	<xs:documentation>contentLocationType: Bezeichnung des Bereichs, für den der Speicherortidentifikator einmalig ist. Es ist notwendig, das Schema für die Lokalisierung zu kennen. </xs:documentation>
+																</xs:annotation>
+															</xs:element>
+															<xs:element name="speicherortAngabeWert" type="xs:string">
+																<xs:annotation>
+																	<xs:documentation>contentLocationValue:  Wert des Speicherortidentifikators. Es kann sich um einen voll qualifizierten Pfad / Filenamen handeln oder um einen Zeiger auf weitere Information (resolution system), die vom Storage Management System auch benutzt wird. Bei Bitstreams oder Filestreams wird in der Regel Bezug auf den Anfang genommen. </xs:documentation>
+																</xs:annotation>
+															</xs:element>
+														</xs:sequence>
+														<xs:anyAttribute namespace="http://www.w3.org/1999/xlink"/>
+													</xs:complexType>
+												</xs:element>
+												<xs:element name="speicherMedium" type="xs:string">
+													<xs:annotation>
+														<xs:documentation>storageMedium: Diese Information ist notwendig für das Repositorium, um die Medienerneuerung oder Migration zu organisieren. In einigen Fällen kann das Speichermedium durch das Storage Management System im Repositorium unsichtbar gemacht werden. Die technologische Alterung/Veralterung muss aber auf jeden Fall durch das Repositorium kontrolliert und verwaltet werden können. 
+In einigen Fällen genügt es, das System zu bezeichnen, welches das Medium kennt (z.B. Tivoli Storage Manager) 
+ </xs:documentation>
+													</xs:annotation>
+												</xs:element>
+											</xs:sequence>
+										</xs:complexType>
+									</xs:element>
+									<xs:element name="signaturInformation" minOccurs="0" maxOccurs="unbounded">
+										<xs:annotation>
+											<xs:documentation>signatureInformation: Nötige Information zur Verwendung von digitalen Signaturen. Diese dienen der Authentisierung des Signierers und/oder der im Objekt enthaltenden Informationen. Ein Archiv kann Bestimmungen haben, die ein Signieren der eingehenden Objekte vorschreiben oder es speichert signierte Objekte, die einer späteren Gültigkeitsprüfung unterzogen werden müssen. Einige Komponenten des Elements signaturInformation stammen aus der Arbeit des W3C XML-Signature Syntax and Processing; siehe www.w3.org/TR/2002/REC-xmldsig-core-20020212/ für weitere Informationen über die Bedeutung der Elemente.</xs:documentation>
+										</xs:annotation>
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="signaturInformationKodierung" type="xs:string">
+													<xs:annotation>
+														<xs:documentation>signatureInformationEncoding: Die Kodierung, die für die Werte der Elemente signaturWert, schluesselInformation und zertifikatsInformation verwendet wird. Ohne Kenntnisse über ihre Kodierung können die Werte nicht korrekt interpretiert werden.</xs:documentation>
+													</xs:annotation>
+												</xs:element>
+												<xs:element name="signierer" type="xs:string" minOccurs="0">
+													<xs:annotation>
+														<xs:documentation>signer: Die Person, Institution oder Autorität, die für die Signierung verantwortlich ist. Die Information über den Signierer ist manchmal auch über die schlüsselInformation verfügbar, aber es ist übersichtlicher wenn die Angabe in diesem Element verzeichnet ist. Wenn der Signierer einen Eintrag unter „Agent“ hat, kann an dieser Stelle der agentIdentifikatorWert als Referenz verwendet werden.</xs:documentation>
+													</xs:annotation>
+												</xs:element>
+												<xs:element name="signaturMethode" type="xs:string">
+													<xs:annotation>
+														<xs:documentation>signatureMethod: Die Bezeichnung für die Verschlüsselungsmethode und den Hash-Algorithmus in der verwendeten Signatur. Die selben Algorithmen werden für die Gültigkeitsprüfung benötigt. Empfohlene Schreibweise: Verschlüsselungsalgorithmus – Hash-Algorithmus </xs:documentation>
+													</xs:annotation>
+												</xs:element>
+												<xs:element name="signaturWert" type="xs:string">
+													<xs:annotation>
+														<xs:documentation>signatureValue: Die digitale Signatur. Eine Prüfsumme, die mit einem einmaligen privaten Schlüssel erstellt wird. </xs:documentation>
+													</xs:annotation>
+												</xs:element>
+												<xs:element name="signaturGueltigkeitspruefungRegeln" type="xs:string">
+													<xs:annotation>
+														<xs:documentation>signatureValidationRules: Die Angabe der Operation, die bei der Gültigkeitsprüfung angewendet wird. Ein Archiv kann nicht von der Annahme ausgehen, dass alle Verfahren zur Prüfung von Signaturen in ferner Zukunft noch bekannt sind. Falls das Objekt vor der Signierung einer Normalisierung unterzogen wurde, sollte die Kanonikalisierungsmethode mit angegeben werden. 
+An dieser Stelle kann auch ein Verweis auf eine umfassende technische Dokumentation stehen.   </xs:documentation>
+													</xs:annotation>
+												</xs:element>
+												<xs:element name="signaturEigenschaften" minOccurs="0" maxOccurs="unbounded">
+													<xs:annotation>
+														<xs:documentation>signatureProperties: Zusätzliche Infomationen über die technische Generation der Signatur. Dieses Element kann eine Zeitangabe zur Bezeichnung der technischen Generation der Signatur, die Seriennummer der speziellen, zur Verschlüsselung verwendeten Hardware sowie andere wichtige Angaben zur technischen Generation der Signatur beinhalten.  </xs:documentation>
+													</xs:annotation>
+													<xs:complexType>
+														<xs:sequence>
+															<xs:any namespace="##any" processContents="lax"/>
+														</xs:sequence>
+													</xs:complexType>
+												</xs:element>
+												<xs:element name="schluesselInformation" minOccurs="0">
+													<xs:annotation>
+														<xs:documentation>keyInformation: Informationen über den öffentlichen Schlüssel des Signierers, die zur Prüfung der Signatur benötigt werden. Um die Gültigkeit einer Signatur zu prüfen, muss erneut der Hashwert des Objekts berechnet werden. Mit Hilfe des privaten Schlüssels wird dann überprüft, ob der signaturWert dem neu berechneten Hashwert entspricht. Das Archiv muss deshalb im Besitz des Wertes des öffentlichen Schlüssels (schlüsselWert) sein und zudem sicher sein, dass dieser öffentliche Schlüssel wirklich dem angegebenen Signierer gehört.</xs:documentation>
+													</xs:annotation>
+													<xs:complexType>
+														<xs:sequence>
+															<xs:element name="schluesselTyp" type="xs:string">
+																<xs:annotation>
+																	<xs:documentation>keyType: Die Art des Schlüssels, bezeichnet durch den Namen des Algorithmus, der zur Generierung des Schlüssels verwendet wurde.</xs:documentation>
+																</xs:annotation>
+															</xs:element>
+															<xs:element name="schluesselWert" type="xs:string">
+																<xs:annotation>
+																	<xs:documentation>keyValue: Der Wert des öffentlichen Schlüssels des Signierers. Der öffentliche Schlüssel könnte auch im X509 Zertifikat des Signierers enthalten sein. Da der schluesselWert aber sehr wichtig für Archivierung ist, ist es sinnvoll, ihn in einem seperaten Feld zu verzeichnen. Die Schlüssel können je nach Typ in ihrer Struktur und ihren Paramentern Unterschiede aufweisen. Es wird empfohlen, die Schlüsselwerte nach den Vorgaben des W3C XML-Signature Syntax and Processing (www.w3.org/TR/2002/REC-xmldsig-core-20020212/) zu verzeichnen.</xs:documentation>
+																</xs:annotation>
+															</xs:element>
+															<xs:element name="schluesselBeglaubigungsInformation" type="xs:string" minOccurs="0">
+																<xs:annotation>
+																	<xs:documentation>keyVerificationInformation: Zusätzliche Information, die dazu dient, die Zusammengehörigkeit des öffentlichen Schlüssels und des Signierers vertrauenswürdig zu bestätigen. Das Element könnte Angaben zu Zertifikaten oder Zertifikatsketten und oder Ungültigkeitserklärungen enthalten. Archive werden wahrscheinlich eine passende Struktur für das Feld keyVerificationInformation definieren wollen.</xs:documentation>
+																</xs:annotation>
+															</xs:element>
+														</xs:sequence>
+													</xs:complexType>
+												</xs:element>
+											</xs:sequence>
+										</xs:complexType>
+									</xs:element>
+									<xs:element name="objektBeziehungen" minOccurs="0" maxOccurs="unbounded">
+										<xs:annotation>
+											<xs:documentation>relationship: Informationen über die Beziehung zwischen einem Objekt zu anderen Objekten. Bei der Archivierung haben wir es mit komplexen Objekten zu tun, die sich aus anderen Objekten zusammensetzen. Das Element relationship und seine Unterelemente erlauben es, diese Beziehungen summarisch abzubilden.  </xs:documentation>
+										</xs:annotation>
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="objektBeziehungenTyp" type="WL_ObjektBeziehungenTyp">
+													<xs:annotation>
+														<xs:documentation>relationshipType: eine Grobkategorisierung der Art der Beziehung. Wir werden es zunächst nur mit strukturellen Beziehungen zu tun haben, die durch relationshipSubType näher charakterisiert werden. Deshalb wird vorgeschlagen, für relationshipType standardmässig „strukturell„ einzusetzen. Derivative Beziehungen ergeben sich, wenn Objekte migriert werden. </xs:documentation>
+													</xs:annotation>
+												</xs:element>
+												<xs:element name="objektBeziehungenUnterTyp" type="WL_ObjektBeziehungenUnterTyp">
+													<xs:annotation>
+														<xs:documentation>relationshipSubType: eine feinere Charakterisierung der Art der Beziehung; präzisiert „objektBeziehungenTyp„ . Vorschläge für die Werte: 
+has root: zusammengesetztes Objekt hat ein Root-Objekt, das z.B. die Struktur angibt 
+has data / is data of: bezeichnet Datenfiles 
+is parent of / is child of: bezeichnet Über- bzw. Unterordnung 
+has part / is part of: bezeichnet Zugehörigkeit von Objekten zu anderen 
+is derived of: bezeichnet Entstehung eines Objekts aus einem anderen  </xs:documentation>
+													</xs:annotation>
+												</xs:element>
+												<xs:element name="beziehungsObjektIdentifikator" maxOccurs="unbounded">
+													<xs:annotation>
+														<xs:documentation>relatedObjectIdentification: identifiziert das Objekt, zu dem die Beziehung besteht. </xs:documentation>
+													</xs:annotation>
+													<xs:complexType>
+														<xs:sequence>
+															<xs:element name="beziehungsObjektIdentifikatorTyp" type="xs:string">
+																<xs:annotation>
+																	<xs:documentation>relatedObjectIdentifierType: Bezeichnung des Bereichs, für den der Objektidentifikator einmalig ist. </xs:documentation>
+																</xs:annotation>
+															</xs:element>
+															<xs:element name="beziehungsObjektIdentifikatorWert" type="xs:string">
+																<xs:annotation>
+																	<xs:documentation>relatedObjectIdentifierValue: Wert des Objektidentifikators. </xs:documentation>
+																</xs:annotation>
+															</xs:element>
+															<xs:element name="beziehungsObjektStelle" type="xs:nonNegativeInteger">
+																<xs:annotation>
+																	<xs:documentation>relatedObjectSequence: die Reihenfolge des referenzierten Objekts in Bezug auf andere Objekte, die in der gleichen Beziehung stehen. Falls die Reihenfolge keine Rolle spielt, soll der Default-Wert 0 verwendet werden (kann voreingestellt werden).   </xs:documentation>
+																</xs:annotation>
+															</xs:element>
+														</xs:sequence>
+														<xs:attribute name="RelObjectXmlID" type="xs:IDREF" use="optional"/>
+														<xs:anyAttribute namespace="http://www.w3.org/1999/xlink"/>
+													</xs:complexType>
+												</xs:element>
+												<xs:element name="beziehungsEreignisIdentifikation" minOccurs="0" maxOccurs="unbounded">
+													<xs:annotation>
+														<xs:documentation>relatedEventIdentification: identifiziert einen Event, der mit der Beziehung in Zusammenhang steht. Die Beziehung kann auf Grund eines Events entstanden sein.  </xs:documentation>
+													</xs:annotation>
+													<xs:complexType>
+														<xs:sequence>
+															<xs:element name="beziehungsEreignisIdentifikatorTyp" type="xs:string">
+																<xs:annotation>
+																	<xs:documentation>relatedEventIdentifierType: Bezeichnung des Bereichs, für den der Eventidentifikator einmalig ist. soll standardmässig leer gelassen werden.  </xs:documentation>
+																</xs:annotation>
+															</xs:element>
+															<xs:element name="beziehungsEreignisIdentifikatorWert" type="xs:string">
+																<xs:annotation>
+																	<xs:documentation>relatedEventIdentifierValue: Wert des Eventidentifikators. soll standardmässig leer gelassen werden.  </xs:documentation>
+																</xs:annotation>
+															</xs:element>
+															<xs:element name="beziehungsEreignisStelle" type="xs:nonNegativeInteger">
+																<xs:annotation>
+																	<xs:documentation>relatedEventSequence: Angabe zur Abfolge der Ereignisse. Die Reihenfolge der Ereignisse kann über das Element „EreignisZeitpunkt“ der entsprechenden Ereignisse nachvolzogen werden.  </xs:documentation>
+																</xs:annotation>
+															</xs:element>
+														</xs:sequence>
+														<xs:attribute name="RelEventXmlID" type="xs:IDREF" use="optional"/>
+														<xs:anyAttribute namespace="http://www.w3.org/1999/xlink"/>
+													</xs:complexType>
+												</xs:element>
+											</xs:sequence>
+										</xs:complexType>
+									</xs:element>
+									<xs:element name="verknuepftesEreignisIdentifikator" minOccurs="0" maxOccurs="unbounded">
+										<xs:annotation>
+											<xs:documentation>linkingEventIdentifier: Referenz auf einen Vorgang, der mit dem Objekt verknüpft ist. Wird zur Verknüpfung mit Vorgängen (zB. Format-, oder Virenprüfung) benützt, die nicht mit Beziehungen zwischen Objekten zusammenhängen. </xs:documentation>
+										</xs:annotation>
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="verknuepftesEreignisIdentifikatorTyp" type="xs:string">
+													<xs:annotation>
+														<xs:documentation>linkingEventIdentifierType: Bezeichnung des Bereichs, für den der Eventidentifikator einmalig ist. </xs:documentation>
+													</xs:annotation>
+												</xs:element>
+												<xs:element name="verknuepftesEreignisIdentifikatorWert" type="xs:string">
+													<xs:annotation>
+														<xs:documentation>linkingEventIdentifierValue: Wert des Eventidentifikators </xs:documentation>
+													</xs:annotation>
+												</xs:element>
+											</xs:sequence>
+											<xs:attribute name="LinkEventXmlID" type="xs:IDREF" use="optional"/>
+											<xs:anyAttribute namespace="http://www.w3.org/1999/xlink"/>
+										</xs:complexType>
+									</xs:element>
+									<xs:element name="verknuepfteIntellektuelleEntitaetIdentifikator" minOccurs="0" maxOccurs="unbounded">
+										<xs:annotation>
+											<xs:documentation>linkingIntellectualEntityIdentifier: Referenz auf eine inhaltliche Einheit, die mit dem Objekt verknüpft ist. Wird zur Verknüpfung mit mit inhaltlichen Einheiten benützt, die mit dem Objekt verknüpft sind. Dies kann ein Link zu Metadaten oder einem sonstigen Stellvertreter sein. Die verknüpfte inhaltliche Einheit ist meist auf einer höheren Hierarchiestufe, zB. eine Sammlung / ein Bestand oder ein Elternobjekt. </xs:documentation>
+										</xs:annotation>
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="verknuepfteIntellektuelleEntitätIdentifikatorTyp" type="xs:string">
+													<xs:annotation>
+														<xs:documentation>linkingIntellectualEntityIdentifierType: Bezeichnung des Bereichs, für den der Identifikator der intellektuellen Entität einmalig ist. </xs:documentation>
+													</xs:annotation>
+												</xs:element>
+												<xs:element name="verknuepfteIntellektuelleEntitätIdentifikatorWert" type="xs:string">
+													<xs:annotation>
+														<xs:documentation>linkingIntellectualEntityIdentifierValue: Wert des Identifikators der intellektuellen Entität.</xs:documentation>
+													</xs:annotation>
+												</xs:element>
+											</xs:sequence>
+											<xs:anyAttribute namespace="http://www.w3.org/1999/xlink"/>
+										</xs:complexType>
+									</xs:element>
+									<xs:element name="verknuepfteTechnischeUmgebungIdentifikation" minOccurs="0" maxOccurs="unbounded">
+										<xs:annotation>
+											<xs:documentation>Referenz auf eine technische Umgebung, in der das Objekt darstellbar ist.</xs:documentation>
+										</xs:annotation>
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="verknuepfteTechnischeUmgebungIdentifikatorTyp" type="xs:string">
+													<xs:annotation>
+														<xs:documentation>Bezeichnung des Bereichs, für den der Identifikator der technischen Umgebung einmalig ist.</xs:documentation>
+													</xs:annotation>
+												</xs:element>
+												<xs:element name="verknuepfteTechnischeUmgebungIdentifikatorWert" type="xs:string">
+													<xs:annotation>
+														<xs:documentation>Wert des Identifikators der technischen Umgebungsbeschreibung.</xs:documentation>
+													</xs:annotation>
+												</xs:element>
+											</xs:sequence>
+											<xs:attribute name="LinkEnvironmentXmlID" type="xs:IDREF" use="optional"/>
+											<xs:anyAttribute namespace="http://www.w3.org/1999/xlink"/>
+										</xs:complexType>
+									</xs:element>
+									<xs:element name="initialName" type="xs:string" minOccurs="0">
+										<xs:annotation>
+											<xs:documentation>Dateiname vor Umbenennung falls eine Umbenennung aus technologischen Gründen während des Pre Ingest erfolgt ist</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+								</xs:sequence>
+								<xs:attribute name="type">
+									<xs:simpleType>
+										<xs:restriction base="xs:string">
+											<xs:enumeration value="file"/>
+										</xs:restriction>
+									</xs:simpleType>
+								</xs:attribute>
+								<xs:attribute name="xmlID" type="xs:ID"/>
+								<xs:attribute name="version" use="optional">
+									<xs:simpleType>
+										<xs:restriction base="xs:string">
+											<xs:enumeration value="1.1"/>
+										</xs:restriction>
+									</xs:simpleType>
+								</xs:attribute>
+							</xs:complexType>
+						</xs:element>
+						<xs:element name="technischeUmgebung" maxOccurs="unbounded">
+							<xs:annotation>
+								<xs:documentation>environment: Hardware/Software-Kombinationen, welche den Gebrauch des Objektes unterstützen. Die Ausgabe und Interaktion von und mit den Objekten werden durch eine bestimmte EDV-Umgebung ermöglicht. Herauslösung aus dem EDV-Kontext kann zur Unbrauchbarkeit führen. Wenn ein Repositorium Objekte nur auf Bit-Level archiviert, braucht es diese Information nicht. 
+Die Information sollte nicht lokal zu jedem Objekt, sondern allgemein in einer Registry erfasst werden. 
+Die Information kann von einer Representation auf die Files vererbt werden, muss also nicht für jedes File separat erfasst werden.
+</xs:documentation>
+							</xs:annotation>
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="technischeUmgebungIdentifikator" maxOccurs="unbounded">
+										<xs:annotation>
+											<xs:documentation>jede im Repositorium aufgezeichnete technische Umgebung muss eine eindeutige Kennzeichnung haben, mittels der sie mit Objekten und  Ereignissen verknüpft werden kann.</xs:documentation>
+										</xs:annotation>
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="technischeUmgebungIdentifikatorTyp" type="xs:string">
+													<xs:annotation>
+														<xs:documentation>Bezeichnung des Bereichs, für den der identifikator einmalig ist.</xs:documentation>
+													</xs:annotation>
+												</xs:element>
+												<xs:element name="technischeUmgebungIdentifikatorWert" type="xs:string">
+													<xs:annotation>
+														<xs:documentation>Wert des Ereignisidentifikators  </xs:documentation>
+													</xs:annotation>
+												</xs:element>
+											</xs:sequence>
+											<xs:anyAttribute namespace="http://www.w3.org/1999/xlink"/>
+										</xs:complexType>
+									</xs:element>
+									<xs:element name="technischeUmgebungEigenschaft" type="WL_TechnischeUmgebungEigenschaft" minOccurs="0">
+										<xs:annotation>
+											<xs:documentation>environmentCharacteristic: eine Umschreibung, bis zu welchem Umfang die beschriebene Umgebung die Zwecke erfüllt. Empfohlene Werte: 
+Nicht weiter spezifiziert: es wurde auch nicht versucht, weiter zu spezifizieren. 
+Funktionstüchtig: die Umgebung taugt für das Rendering. Es ist nicht bekannt, ob es die optimalen oder minimalen Anforderungen erfüllt.
+Minimum. Die minimalen Anforderungen
+Empfohlen: Umgebung für eine optimale Darstellung</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="technischeUmgebungZweck" type="WL_TechnischeUmgebungZweck" minOccurs="0" maxOccurs="unbounded">
+										<xs:annotation>
+											<xs:documentation>environmentPurpose: Benutzung, welche durch die Umgebung unterstützt wird. Unterschiedliche Systeme können für unterschiedliche Zwecke eingesetzt werden: z.B. für Modifikation, Editierung, Rendering. Die Information muss von der gleichen Stelle herkommen wie der Beschrieb der EDV-Umgebung (Überlieferer, Repositorium, Registry). Z.B. Rendering, Editierung, Konvertierung, Ausdruck, Veränderung etc.   </xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="technischeUmgebungAnmerkung" type="xs:string" minOccurs="0" maxOccurs="unbounded">
+										<xs:annotation>
+											<xs:documentation>environmentNote: zusätzliche Information zur Umgebung. Es ist möglich, dass zusätzliche Information und Erklärungen notwendig sind.  </xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="technischeUmgebungAbhaengigkeit" minOccurs="0" maxOccurs="unbounded">
+										<xs:annotation>
+											<xs:documentation>dependency: Information zu Komponenten (keine Software) oder Dateien, welche zum Rendering benötigt werden. Objekte, von denen das Rendering bzw. die Handhabung anderer Objekte abhängig sind, sollten auch archiviert werden. Dieses Feld verzeichnet weder Hard- oder Software noch Objekte, welche mit dem Objekt in einer strukturierten Beziehung stehen. 
+Es ist vom Repositorium abhängig, was unter Abhängigkeit verstanden wird. 
+Die Objekte, welche eine Abhängigkeit bewirken, können intern oder extern gespeichert werden. 
+  </xs:documentation>
+										</xs:annotation>
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="technischeUmgebungAbhaengigkeitName" type="xs:string" minOccurs="0" maxOccurs="unbounded">
+													<xs:annotation>
+														<xs:documentation>dependencyName: Bezeichnung für Zusatzobjekt. Die Bezeichnung ist nicht zwingend vom Schlüssel ableitbar.  </xs:documentation>
+													</xs:annotation>
+												</xs:element>
+												<xs:element name="technischeUmgebungAbhaengigkeitIdentifikation" minOccurs="0" maxOccurs="unbounded">
+													<xs:annotation>
+														<xs:documentation>dependencyIdentifier: eine eindeutige Bezeichnung zur Identifikation des Zusatzobjektes. Die Bezeichnung muss im Repositorium eindeutig sein, aber nicht unbedingt global.  </xs:documentation>
+													</xs:annotation>
+													<xs:complexType>
+														<xs:sequence>
+															<xs:element name="technischeUmgebungAbhaengigkeitIdentifikatorTyp" type="xs:string">
+																<xs:annotation>
+																	<xs:documentation>dependencyIdentifierType: Bezeichnung des Bereichs, für den der Identifikator des Zusatzobjekts einmalig ist. Nur notwendig, wenn der Schlüssel auf verschiedene Arten interpretiert werden kann   </xs:documentation>
+																</xs:annotation>
+															</xs:element>
+															<xs:element name="technischeUmgebungAbhaengigkeitIdentifikatorWert" type="xs:string">
+																<xs:annotation>
+																	<xs:documentation>dependencyIdentifierValue: Wert des Identifikators für das Zusatzobjekt. abhängig vom Typ des Identifikators.</xs:documentation>
+																</xs:annotation>
+															</xs:element>
+														</xs:sequence>
+													</xs:complexType>
+												</xs:element>
+											</xs:sequence>
+										</xs:complexType>
+									</xs:element>
+									<xs:element name="software" minOccurs="0" maxOccurs="unbounded">
+										<xs:annotation>
+											<xs:documentation>software: benötigte Software, um das Objekt zu benutzen oder zu rendern. Es sollte mindestens eine Software-Umgebung erfasst werden, die Wahl ist Sache des Repositoriums. Eine Software-Umgebung kann selber wieder weitere Abhängigkeiten aufweisen. 
+Empfohlen wird auch hier eine formale Registry (interne oder externe Datenbank).   </xs:documentation>
+										</xs:annotation>
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="softwareName" type="xs:string">
+													<xs:annotation>
+														<xs:documentation>swName: Hersteller und Titel der Software-Applikation. Zur besseren Verständlichkeit kann auch der Hersteller erfasst werden.  </xs:documentation>
+													</xs:annotation>
+												</xs:element>
+												<xs:element name="softwareVersion" type="xs:string" minOccurs="0">
+													<xs:annotation>
+														<xs:documentation>swVersion: Version(en) der Software. Ist keine Version verfügbar, so kann auch ein Software-Datum (Einführung im Markt) verwendet werden. </xs:documentation>
+													</xs:annotation>
+												</xs:element>
+												<xs:element name="softwareTyp" type="WL_SoftwareTyp">
+													<xs:annotation>
+														<xs:documentation>swType: Klasse oder Kategorie der Software. Es können mehrere verschiedene Software-Ebenen erforderlich sein. Empfohlene Werte: 
+Renderer: Applikation zur Ausgabe des Formates z.B. image viewer, video player, Java virtual maschine 
+Hilfstools: z.B. run tim libraries, plug-ins, compressionen/decompressionen, utilities 
+Betriebssysteme: 
+Treiber: 
+  </xs:documentation>
+													</xs:annotation>
+												</xs:element>
+												<xs:element name="softwareAnmerkungen" type="xs:string" minOccurs="0" maxOccurs="unbounded">
+													<xs:annotation>
+														<xs:documentation>swOtherInformation: Zusätzliche Erfordernisse oder Instruktionen. Kann auch URI sein, welcher auf interne / externe Dokumentation verweist.  </xs:documentation>
+													</xs:annotation>
+												</xs:element>
+												<xs:element name="softwareAbhaengigkeit" type="xs:string" minOccurs="0" maxOccurs="unbounded">
+													<xs:annotation>
+														<xs:documentation>swDependency: Name und soweit verfügbar Version der Softwarekomponenten, welche von der in softwareName referenzierten Software benötigt werden. z.B. ein Perl-Script (genannt in softwareName) läuft nur mit dem Perl-Module (genannt in softwareAbhaengigkeit). </xs:documentation>
+													</xs:annotation>
+												</xs:element>
+											</xs:sequence>
+										</xs:complexType>
+									</xs:element>
+									<xs:element name="hardware" minOccurs="0" maxOccurs="unbounded">
+										<xs:annotation>
+											<xs:documentation>hardware: Hardware, welche für die Software bzw. Benützeranforderungen (in den vorangegangenen Feldern) vorausgesetzt wird. Es sollte mindestens eine Hardware-Konfiguration genannt werden. 
+Empfohlen wird eine zentrale Registry. 
+</xs:documentation>
+										</xs:annotation>
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="hardwareName" type="xs:string">
+													<xs:annotation>
+														<xs:documentation>hwName: Hersteller, Modell und Version der Hardware. Der Hersteller sollte genannt werden, wenn dies zur besseren Verständlichkeit beiträgt. Sofern sachdienlich sind auch die Firmware oder andere Komponenten anzugeben.  </xs:documentation>
+													</xs:annotation>
+												</xs:element>
+												<xs:element name="hardwareTyp" type="WL_HardwareTyp">
+													<xs:annotation>
+														<xs:documentation>hwType: Klasse oder Kategorie der Hardware. Empfohlene Werte: 
+Prozessor 
+Memory 
+Peripheriegeräte 
+Speichergeräte </xs:documentation>
+													</xs:annotation>
+												</xs:element>
+												<xs:element name="hardwareAnmerkungen" type="xs:string" minOccurs="0" maxOccurs="unbounded">
+													<xs:annotation>
+														<xs:documentation>hwOtherInformation: Zusätzliche Erfordernisse oder Instruktionen für die Hardware. Eine Dokumentation zu den Ressourcen eines Rechners (Memory, Speicherplatz, Taktrate etc.) kann nützlich sein. Zur Installation / Betrieb einer Hardware können detailliertere Angaben sinnvoll sein. Kann auch URI sein, welcher auf interne / externe Dokumentation verweist.</xs:documentation>
+													</xs:annotation>
+												</xs:element>
+											</xs:sequence>
+										</xs:complexType>
+									</xs:element>
+								</xs:sequence>
+								<xs:attribute name="xmlID" type="xs:ID"/>
+								<xs:attribute name="version" use="optional">
+									<xs:simpleType>
+										<xs:restriction base="xs:string">
+											<xs:enumeration value="1.1"/>
+										</xs:restriction>
+									</xs:simpleType>
+								</xs:attribute>
+							</xs:complexType>
+						</xs:element>
+						<xs:element name="ereignis" minOccurs="0" maxOccurs="unbounded">
+							<xs:annotation>
+								<xs:documentation>Event</xs:documentation>
+							</xs:annotation>
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="ereignisIdentifikator">
+										<xs:annotation>
+											<xs:documentation>eventIdentifier: Jedes im Repositorium aufgezeichnete Ereignis muss eine eindeutige Kennzeichnung haben, mittels der es mit Objekten, Instanzen und anderen Ereignissen verknüpft werden kann. </xs:documentation>
+										</xs:annotation>
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="ereignisIdentifikatorTyp" type="xs:string">
+													<xs:annotation>
+														<xs:documentation>eventIdentifierType: Bezeichnung des Bereichs, für den der Ereignisidentifikator einmalig ist </xs:documentation>
+													</xs:annotation>
+												</xs:element>
+												<xs:element name="ereignisIdentifikatorWert" type="xs:string">
+													<xs:annotation>
+														<xs:documentation>eventIdentifierValue: Wert des Ereignisidentifikators  </xs:documentation>
+													</xs:annotation>
+												</xs:element>
+											</xs:sequence>
+											<xs:anyAttribute namespace="http://www.w3.org/1999/xlink"/>
+										</xs:complexType>
+									</xs:element>
+									<xs:element name="ereignis_Kategorie" type="WL_ereignis_Kategorie">
+										<xs:annotation>
+											<xs:documentation>eventType: Kategorie des Ereignisses. Die Kategorisierung der Ereignisse unterstützt die maschinelle Verarbeitung von Ereignissen, insbesondere beim Reporting. • Übernahme 
+ • Akzession 
+ • Daten-Komprimierung 
+ • Daten- Dekomprimierung 
+ • Kassation 
+ • Daten-Verschlüsselung 
+ • Daten-Entschlüsselung 
+ • Überprüfung der Authentizität 
+ • Überprüfen der Integrität 
+ • Ausgabe an Benutzer 
+ • hash-Wert berechnen 
+ • Daten-Migration 
+ • Normalisierung 
+ • Reproduktion 
+ • Validierung 
+ • Virenprüfung 
+   </xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="ereignisZeitpunkt">
+										<xs:annotation>
+											<xs:documentation>eventDateTime: Datum und Zeit bzw. Zeitdauer des Ereignisses. Datum-/Zeitformat gemäss ISO 8601. 2006-07-16T19:20:30+01:00 Zeitzone und Zeit möglichst genau aufzeichnen.   </xs:documentation>
+										</xs:annotation>
+										<xs:simpleType>
+											<xs:union memberTypes="xs:date xs:dateTime"/>
+										</xs:simpleType>
+									</xs:element>
+									<xs:element name="ereignisAnmerkungen" type="xs:string" minOccurs="0">
+										<xs:annotation>
+											<xs:documentation>eventDetail: zusätzliche Informationen zum Ereignis. eventDetail ist nicht für die maschinelle Verarbeitung gedacht. Es verzeichnet jegliche zusätzliche Information über das Ereignis.  </xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="ereignisResultatsInformation" minOccurs="0" maxOccurs="unbounded">
+										<xs:annotation>
+											<xs:documentation>eventOutcomeInformation: Archive können eine codierte Ergebnisliste für eventOutcome einrichten und zusätzliche Informationen in eventOutcomeDetail verzeichnen. Da Ereignisse mehr als ein Ergebnis haben können, sind die Informationen wiederholbar. </xs:documentation>
+										</xs:annotation>
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="ereignisResultat" type="WL_EreignisResultat" minOccurs="0">
+													<xs:annotation>
+														<xs:documentation>eventOutcome: Kategorie des Gesamtergebnisses auf der Ebene Erfolg-Teilerfolg-Fehlschlag. Die Codierung des Ergebnisses kann für die maschinelle Verarbeitung und Reporting nützlich sein. Das kontrollierte Vokabular sollte für die maschinelle Verarbeitung geeignet sein. Detailliertere Informationen können in eventOutcomeDetail verzeichnet werden. 
+Die Ereignisse sollten so detailliert definiert werden, dass jedes Ereignis ein einziges Ergebnis hat. 
+</xs:documentation>
+													</xs:annotation>
+												</xs:element>
+												<xs:element name="ereignisResultatAnmerkungen" minOccurs="0">
+													<xs:annotation>
+														<xs:documentation>eventOutcomeDetail: nicht codierte, detaillierte Beschreibung des Ergebnisses. Ergebnisse können so komplex sein, dass sie allein mit einem codierten Eintrag nicht genügend dokumentiert sind. Kann Error- oder Warnmeldungen oder Hinweise auf Log-Files verzeichnen. 
+Bei Authentizitätsprüfungen werden alle Anomalien oder Besonderheiten hier verzeichnet. 
+   </xs:documentation>
+													</xs:annotation>
+													<xs:complexType>
+														<xs:sequence>
+															<xs:any namespace="##any" processContents="lax"/>
+														</xs:sequence>
+													</xs:complexType>
+												</xs:element>
+											</xs:sequence>
+										</xs:complexType>
+									</xs:element>
+									<xs:element name="verknuepfterAgentIdentifikator" minOccurs="0" maxOccurs="unbounded">
+										<xs:annotation>
+											<xs:documentation>linkingAgentIdentifier: Informationen über bearbeitende Instanzen (Personen/Stellen/Programme) des Ereignis. Beziehungen zwischen Bearbeitern und Ereignissen müssen für digitale Daten oft extra dokumentiert werden. Die Instanz (Bearbeiter) sollte möglichst verzeichnet werden. </xs:documentation>
+										</xs:annotation>
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="verknuepfterAgentIdentifikatorTyp" type="xs:string">
+													<xs:annotation>
+														<xs:documentation>linkingAgentIdentifierType: Bezeichnung des Bereichs, für den der Identifikator der Instanz einmalig ist.</xs:documentation>
+													</xs:annotation>
+												</xs:element>
+												<xs:element name="verknuepfterAgentIdentifikatorWert" type="xs:string">
+													<xs:annotation>
+														<xs:documentation>linkingAgentIdentifierValue: Wert des Identifikators der Instanz </xs:documentation>
+													</xs:annotation>
+												</xs:element>
+												<xs:element name="verknuepfterAgentRolle" type="WL_VerknuepfterAgentRolle" minOccurs="0" maxOccurs="unbounded">
+													<xs:annotation>
+														<xs:documentation>linkingAgentRole: Rolle der Instanz im fraglichen Ereignis. Ereignisse können mehr als einen Bearbeiter haben. Die Rolle der Bearbeiter sollte dokumentiert sein. Ausführendes Programm 
+Bevollmächtigter 
+Durchführende Person 
+Prüfender 
+ </xs:documentation>
+													</xs:annotation>
+												</xs:element>
+											</xs:sequence>
+											<xs:attribute name="LinkAgentXmlID" type="xs:IDREF" use="optional"/>
+											<xs:anyAttribute namespace="http://www.w3.org/1999/xlink"/>
+										</xs:complexType>
+									</xs:element>
+									<xs:element name="verknuepftesObjektIdentifikator" minOccurs="0" maxOccurs="unbounded">
+										<xs:annotation>
+											<xs:documentation>linkingObjectIdentifier: Informationen über Objekte, die mit dem Ereignis verknüpft sind.  Beziehungen zwischen Objekten und Ereignissen müssen für digitale Daten oft extra dokumentiert werden.  </xs:documentation>
+										</xs:annotation>
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="verknuepftesObjektIdentifikatorTyp" type="xs:string">
+													<xs:annotation>
+														<xs:documentation>linkingObjectIdentifierType: Bezeichnung des Bereichs, für den der Objektidentifikator einmalig ist. </xs:documentation>
+													</xs:annotation>
+												</xs:element>
+												<xs:element name="verknuepftesObjektIdentifikatorWert" type="xs:string">
+													<xs:annotation>
+														<xs:documentation>linkingObjectIdentifierValue: Wert des Objektidentifikators   </xs:documentation>
+													</xs:annotation>
+												</xs:element>
+											</xs:sequence>
+											<xs:attribute name="LinkObjectXmlID" type="xs:IDREF" use="optional"/>
+											<xs:anyAttribute namespace="http://www.w3.org/1999/xlink"/>
+										</xs:complexType>
+									</xs:element>
+									<xs:element name="verknuepfteTechnischeUmgebungIdentifikator" minOccurs="0" maxOccurs="unbounded">
+										<xs:annotation>
+											<xs:documentation>Referenz auf eine technische Umgebung, in der das Objekt darstellbar ist.</xs:documentation>
+										</xs:annotation>
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="verknuepfteTechnischeUmgebungIdentifikatorTyp" type="xs:string">
+													<xs:annotation>
+														<xs:documentation>Bezeichnung des Bereichs, für den der Identifikator der technischen Umgebung einmalig ist.</xs:documentation>
+													</xs:annotation>
+												</xs:element>
+												<xs:element name="verknuepfteTechnischeUmgebungIdentifikatorWert" type="xs:string">
+													<xs:annotation>
+														<xs:documentation>Wert des Identifikators der technischen Umgebungsbeschreibung.</xs:documentation>
+													</xs:annotation>
+												</xs:element>
+											</xs:sequence>
+											<xs:attribute name="LinkEnvironmentXmlID" type="xs:IDREF" use="optional"/>
+											<xs:anyAttribute namespace="http://www.w3.org/1999/xlink"/>
+										</xs:complexType>
+									</xs:element>
+								</xs:sequence>
+								<xs:attribute name="xmlID" type="xs:ID"/>
+								<xs:attribute name="version" use="optional">
+									<xs:simpleType>
+										<xs:restriction base="xs:string">
+											<xs:enumeration value="1.1"/>
+										</xs:restriction>
+									</xs:simpleType>
+								</xs:attribute>
+							</xs:complexType>
+						</xs:element>
+						<xs:element name="agent" minOccurs="0" maxOccurs="unbounded">
+							<xs:annotation>
+								<xs:documentation>agent</xs:documentation>
+							</xs:annotation>
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="agentIdentifikator" maxOccurs="unbounded">
+										<xs:annotation xml:lang="de">
+											<xs:documentation>agentIdentifier: Zur Nachvollziehbarkeit der Archivierungshandlungen müssen die daran beteiligten Instanzen eindeutig identifiziert werden können. Alle Instanzen, die mit den archivierten Unterlagen zu tun haben, müssen auf diese Weise einmal eindeutig identifiziert werden. Der Aufwand hält sich also in Grenzen. Nötig ist zur Verlinkung von Ereignissen mit Akteuren auf jeden Fall ein eindeutiger Identifikator.  </xs:documentation>
+											<xs:documentation xml:lang="en">This is a test.</xs:documentation>
+										</xs:annotation>
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="agentIdentifikatorTyp" type="xs:string">
+													<xs:annotation>
+														<xs:documentation>agentIdentifierType: Bezeichnung des Bereichs, für den der Identifikator der Instanz einmalig ist. </xs:documentation>
+													</xs:annotation>
+												</xs:element>
+												<xs:element name="agentIdentifikatorWert" type="xs:string">
+													<xs:annotation>
+														<xs:documentation>agentIdentifierValue: Wert des Identifikators der Instanz  </xs:documentation>
+													</xs:annotation>
+												</xs:element>
+											</xs:sequence>
+											<xs:anyAttribute namespace="http://www.w3.org/1999/xlink"/>
+										</xs:complexType>
+									</xs:element>
+									<xs:element name="agentName" type="xs:string" minOccurs="0" maxOccurs="unbounded">
+										<xs:annotation>
+											<xs:documentation>agentName: Freier Text zur genaueren oder weiteren Identifikation der Instanz. Ist besser menschenlesbar als die kodierte Form unter agentIdentifikatorWert. Personenname; Softwarename     </xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="agentTyp" type="WL_AgentTyp" minOccurs="0">
+										<xs:annotation>
+											<xs:documentation>agentType: Eine Beschreibung des Typus der Instanz. Dient zur einfacheren Verwaltung der im System verzeichneten Instanzen. </xs:documentation>
+										</xs:annotation>
+									</xs:element>
+								</xs:sequence>
+								<xs:attribute name="xmlID" type="xs:ID"/>
+								<xs:attribute name="version" use="optional">
+									<xs:simpleType>
+										<xs:restriction base="xs:string">
+											<xs:enumeration value="1.1"/>
+										</xs:restriction>
+									</xs:simpleType>
+								</xs:attribute>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="XDOMEA_XBARCH" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Fachliche Beschreibung von Archivalien aus VBS/DMS </xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Akte">
+							<xs:annotation>
+								<xs:documentation>Die folgende Beschreibung enthält die Metadatenfelder für den Austausch von Akten, Vorgängen und Dokumenten. Dies betrifft im Wesentlichen die endgültige Abgabe von kompletten Akten bzw. Vorgängen zur Bearbeitung. Alle Felder sind optional, so dass die absendende Behörde jeweils festlegen kann, welche Informationen dem Empfänger mit der Übertragung zur Verfügung gestellt werden sollen. So kann auch der Anforderung nach einer ggf. erforderlichen Beschränkung der übertragenen Metadaten Rechnung getragen werden (z. B. auf Grund datenschutzrechtlicher oder sonstiger gesetzlicher Bestimmungen).</xs:documentation>
+							</xs:annotation>
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="ID_Aktenzeichen">
+										<xs:annotation>
+											<xs:documentation>Aktenzeichen der Behoerde. Kann als eindeutige ID verwendet werden, wenn AZ innerhalb der Behoerde wirklich eindeutig ist. </xs:documentation>
+										</xs:annotation>
+										<xs:complexType>
+											<xs:simpleContent>
+												<xs:extension base="xs:string"/>
+											</xs:simpleContent>
+										</xs:complexType>
+									</xs:element>
+									<xs:element name="Beschreibung" minOccurs="0">
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="Aktenzeichen" type="xs:string" minOccurs="0">
+													<xs:annotation>
+														<xs:documentation>Enthält entweder das Geschäftszeichen der Akte (incl. der Organisationseinheit) oder das Aktenzeichen der Akte je nach behördenspezifischen Organisationskonzept. </xs:documentation>
+													</xs:annotation>
+												</xs:element>
+												<xs:element name="Aktenbetreff" type="xs:string" minOccurs="0">
+													<xs:annotation>
+														<xs:documentation>inhaltliche Beschreibung der Akte</xs:documentation>
+													</xs:annotation>
+												</xs:element>
+												<xs:element name="Aktenplankennzeichen" type="xs:string" minOccurs="0">
+													<xs:annotation>
+														<xs:documentation>Ordnungsnummer eines Aktenplaneintrags</xs:documentation>
+													</xs:annotation>
+												</xs:element>
+												<xs:element name="Aktenplaneintrag" type="xs:string" minOccurs="0">
+													<xs:annotation>
+														<xs:documentation>Titel des Aktenplaneintrags</xs:documentation>
+													</xs:annotation>
+												</xs:element>
+												<xs:element name="Aktentyp" type="xs:string" minOccurs="0">
+													<xs:annotation>
+														<xs:documentation>Der Aktentyp wird hier beschrieben. Mögliche Werte können unter anderem sein: Sachakte, Fallakte,etc.. Eine Werteliste liegt derzeit nicht vor.</xs:documentation>
+													</xs:annotation>
+												</xs:element>
+												<xs:element name="Medium" type="xs:string" minOccurs="0">
+													<xs:annotation>
+														<xs:documentation>Dieses Feld beschreibt, ob es sich um ein Papier- oder elektronisches Dokument handelt. Mögliche Werte sind der Werteliste WL_Medium des Schema xdomea_wl_allgemein_x_x.xsd zu entnehmen. Relevant ist dieses Feld nur für einen möglichen Hinweis auf hybride Überlieferung.</xs:documentation>
+													</xs:annotation>
+												</xs:element>
+												<xs:element name="Laufzeit_von" type="xs:date" minOccurs="0">
+													<xs:annotation>
+														<xs:documentation>Zeitlicher Anfang der Akte: Anlagedatum des ältesten Vorgangs der Akte / Aktenschnittes</xs:documentation>
+													</xs:annotation>
+												</xs:element>
+												<xs:element name="Laufzeit_bis" type="xs:date" minOccurs="0">
+													<xs:annotation>
+														<xs:documentation>Zeitliches Ende der Akte: Datum der letzten zdA-Verfügung des jüngsten Vorgangs der Akte / des Aktenschnittes</xs:documentation>
+													</xs:annotation>
+												</xs:element>
+												<xs:element name="Aufbewahrungsdauer" type="xs:string" minOccurs="0">
+													<xs:annotation>
+														<xs:documentation>in Jahren</xs:documentation>
+													</xs:annotation>
+												</xs:element>
+												<xs:element name="Aktenfuehrende_Organisationseinheit" type="xs:string" minOccurs="0">
+													<xs:annotation>
+														<xs:documentation>Kürzel der aktenfuehrenden Organisationseinheit</xs:documentation>
+													</xs:annotation>
+												</xs:element>
+												<xs:element name="Aufbewahrungsende" type="xs:string" minOccurs="0">
+													<xs:annotation>
+														<xs:documentation>Endjahr der Aufbewahrungsdauer</xs:documentation>
+													</xs:annotation>
+												</xs:element>
+												<xs:element name="Bewertungsvorschlag" type="xs:string" minOccurs="0">
+													<xs:annotation>
+														<xs:documentation>Bewertungsvorschlag der Behoerde</xs:documentation>
+													</xs:annotation>
+												</xs:element>
+												<xs:element name="Aussonderungsart" type="WL_Aussonderungsart" minOccurs="0">
+													<xs:annotation>
+														<xs:documentation>A - Archivieren, B - Bewerten, V - Vernichten</xs:documentation>
+													</xs:annotation>
+												</xs:element>
+												<xs:element name="Akte_Bemerkung" type="xs:string" minOccurs="0">
+													<xs:annotation>
+														<xs:documentation>Zusätzliche Informationen</xs:documentation>
+													</xs:annotation>
+												</xs:element>
+												<xs:element name="Container_Externe_Daten" minOccurs="0" maxOccurs="unbounded">
+													<xs:annotation>
+														<xs:documentation>Hier besteht die Möglichkeit, ergänzende Metdaten aus dem abgebenden System  hinzuzufügen.</xs:documentation>
+													</xs:annotation>
+													<xs:complexType>
+														<xs:sequence>
+															<xs:element name="Externes_Element" minOccurs="0" maxOccurs="unbounded">
+																<xs:complexType>
+																	<xs:simpleContent>
+																		<xs:extension base="xs:string">
+																			<xs:attribute name="name" type="xs:string"/>
+																			<xs:attribute name="value" type="xs:string"/>
+																		</xs:extension>
+																	</xs:simpleContent>
+																</xs:complexType>
+															</xs:element>
+														</xs:sequence>
+													</xs:complexType>
+												</xs:element>
+											</xs:sequence>
+										</xs:complexType>
+									</xs:element>
+									<xs:element ref="Vorgang">
+										<xs:annotation>
+											<xs:documentation>Die folgende Beschreibung enthält die Metadatenfelder für den Austausch von Vorgängen und Dokumenten. Dies betrifft die  endgültige Abgabe von kompletten Vorgängen zur Bearbeitung. Alle Felder sind optional, so dass die absendende Behörde jeweils festlegen kann, welche Informationen dem Empfänger mit der Übertragung zur Verfügung gestellt werden sollen. So kann auch der Anforderung nach einer ggf. erforderlichen Beschränkung der übertragenen Metadaten Rechnung getragen werden (z. B. auf Grund datenschutzrechtlicher oder sonstiger gesetzlicher Bestimmungen).</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="Eindeutiger_Kennzeichner_Akte" type="xs:string">
+										<xs:annotation>
+											<xs:documentation> Kennzeichner aus dem Behoerdensystem der die eindeutige Identifikation der Struktur Akte, Vorgang, Dokument, Version ermoeglicht</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="SIARD_XBARCH" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Fachliche Beschreibung von Archivalien in Form von Datenbanken</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="DatenbankTitel" type="xs:string"/>
+						<xs:element name="DatenbankName" type="xs:string" minOccurs="0"/>
+						<xs:element name="Beschreibung" type="xs:string" minOccurs="0"/>
+						<xs:element name="Erhebungszeitraum_von" type="xs:date" minOccurs="0"/>
+						<xs:element name="Erhebungszeitraum_bis" type="xs:date" minOccurs="0"/>
+						<xs:element name="Fristvorgabe_personenbezogene_Daten" type="xs:string" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>Bei Datenbanken mit personenbezogenen Informationen wird hier das Datum erfasst, an dem sich die archivische Schutzfrist bemisst. Dies kann zum Beispiel das jüngste Geburts- oder Todesdatum der erfassten Personen sein.</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="Archivierungsdatum" type="xs:date" minOccurs="0"/>
+						<xs:element name="SIARD_Container">
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="IdentifikationVerknuepftesObjekt" minOccurs="0">
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="IdentifikationVerknuepftesObjektTyp" type="xs:string"/>
+												<xs:element name="IdentifikationVerknuepftesObjektWert" type="xs:string"/>
+											</xs:sequence>
+										</xs:complexType>
+									</xs:element>
+									<xs:element name="ID_Archivsignatur_SIARD_Container" type="xs:string"/>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+						<xs:element name="Dosssier" maxOccurs="unbounded">
+							<xs:annotation>
+								<xs:documentation>Hier werden beschreibende Informationen zur Datenbank hinterlegt (Schlüsselbeziehungen, inhaltliche Beshreibungen usw.).</xs:documentation>
+							</xs:annotation>
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="IdentifikationVerknuepftesObjekt" minOccurs="0">
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="IdentifikationVerknuepftesObjektTyp" type="xs:string"/>
+												<xs:element name="IdentifikationVerknuepftesObjektWert" type="xs:string"/>
+											</xs:sequence>
+										</xs:complexType>
+									</xs:element>
+									<xs:element name="DossierTitel" type="xs:string" minOccurs="0"/>
+									<xs:element name="Beschreibung" type="xs:string" minOccurs="0"/>
+									<xs:element name="ID_Archivsignatur_Dossier" type="xs:string"/>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+						<xs:element name="Verschlusssache" type="t_verschlusssache" minOccurs="0"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="IE_XBARCH" type="t_inhaltlicheEinheit" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Fachliche Beschreibung von Archivalien in Form unstrukturierter Daten (aus Filesystemablagen)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="schemaVersion" type="xs:string" use="required" fixed="1.3.4"/>
+		<!--Ende T_XDOMEA Typ -->
+	</xs:complexType>
+	<!--anfang JBM IE typ -->
+	<xs:complexType name="t_inhaltlicheEinheit">
+		<xs:sequence>
+			<xs:element name="IEID" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Eindeutige ID der inhaltlichen Einheit (GUID)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="title" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Titel der inhaltlichen Einheit</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="type" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Typ der inhaltlichen Einheit, z.B. Sachakte, Grundakte, Firmenakte,...</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="additionalDescriptiveMetadata" type="t_descriptions" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Typ spezifische beschreibende Verzeichnungsmetadaten</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="extDescriptiveMetadataItem" type="t_item" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Metadatendatei aus Ursprungssystem</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="item" type="t_item" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Primärobjekt fachliche Beschreibung</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="date" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Laufzeit der Verzeichniseinheit</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="dateStart" type="xs:date" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>„Laufzeit von“ der inhaltlichen Einheit </xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="dateEnd" type="xs:date" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>„Laufzeit bis" der inhaltlichen Einheit </xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="referenceNumber" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Aktenzeichen/Vorgangskennzeichen, vergeben von der aktenführenden Stelle</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="structure" type="t_structure" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Dieses Element kann für die Abbildung von Strukturen aus DMS (z.B. Register, Teilakten, Vorgänge) verwendet werden. Diese Informationen können zusätzlich in den externen Metadaten enthalten sein. Im Bundesarchiv wird dieses Element zur Zeit nicht benutzt (entsprechende Daten werden im Zweig XDOMEA_XBARCH abgebildet).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="description" type="xs:string" minOccurs="0"/>
+			<xs:element name="Verschlusssache" type="t_verschlusssache" minOccurs="0"/>
+			<xs:element name="ID_Archivsignatur_IE" type="xs:string"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="t_item">
+		<xs:annotation>
+			<xs:documentation>Taxonomieebene = Stück</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="title" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Titel der beschriebenen Einheit</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="creator" type="xs:string" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Ersteller</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="description" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Detailbeschreibung</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="dateCreated" type="xs:date" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Erstellungsdatum, auch im PREMIS Bereich für das technische Objekt angegeben</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="IID" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Eindeutiger fachlicher Bezeichner für das Stück (GUID)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="linkingObjectIdentifier">
+				<xs:annotation>
+					<xs:documentation>Verweis auf zugehöriges technisches Objekt im technical Bereich (PREMIS) (=GUID)</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="linkingObjectIdentifierType" type="xs:string">
+							<xs:annotation>
+								<xs:documentation>Typ des eindeutigen Bezeichners</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="linkingObjectIdentifierValue" type="xs:string">
+							<xs:annotation>
+								<xs:documentation>konkreter Wert des eindeutigen Bezeichners</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:sequence>
+					<xs:anyAttribute namespace="http://www.w3.org/1999/xlink"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="location" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Gibt die Lage der Datei (Pfad) im Filesystem an (relativ zu einem Basisverzeichnis)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="type" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Archivalientyp</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="additionalDescriptiveMetadata" type="t_descriptions" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Typ spezifische beschreibende Metadaten des Items</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="significantProperty" minOccurs="0" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="significantPropertyType" type="xs:string"/>
+						<xs:element name="significantPropertyAttribute" minOccurs="0" maxOccurs="unbounded">
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="name" type="xs:string"/>
+									<xs:element name="value" type="xs:string"/>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="linkingStructureIdentifier" type="xs:string" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Verweis auf den Strukturknoten, zu dem das Item gehoert</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ID_Archivsignatur_Item" type="xs:string"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="t_descriptions">
+		<xs:annotation>
+			<xs:documentation>Attribut WertpaarE</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="attribute" type="t_description" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Attribut Wertpaar</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="t_description">
+		<xs:annotation>
+			<xs:documentation>Attribut Wertpaar</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="name" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Attribut</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="value" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Wert</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="t_date">
+		<xs:annotation>
+			<xs:documentation>Datumsangaben für descriptiveMetadata-Ebenen</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Übertragungsdatum" type="xs:date" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Akzessionsdatum</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Verfügbarkeitsdatum" type="xs:date" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Angabe der Sperrfrist </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Erzeugungsdatum" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="ErzeugungsdatumStart" type="xs:date" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>Laufzeitbeginn</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="ErzeugungsdatumEnde" type="xs:date" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>Laufzeitende</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="t_altsignatur">
+		<xs:sequence>
+			<xs:element name="Altsignatur" type="xs:string"/>
+			<xs:element name="Beschreibung" type="xs:string" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="t_verschlusssache">
+		<xs:annotation>
+			<xs:documentation>Diese Metadaten werden nur fuer die Abgaben in das digitale Geheimarchiv benötigt. In allen uebrigen Faellen (eingestufte Dokumente in  eAkten aus Vorgangsbearbeitungssystemen) kann das Attribut "Vertraulichkeitsstufe" im Element "Dokument" verwendet werden.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Offenlegungsdatum" type="xs:date" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Datum der Offenlegung des Dokumentes.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="TagebuchnummerDerAbgebendenStelle" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>VS-Tagebuchnummer der abgebenden Stelle (kann im Einzelfall eine andere Stelle sein, als die herausgebende Stelle).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="VSGrad" type="WL_VSGRAD" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>siehe Werteliste</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="TagebuchnummerDesHerausgebers" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>VS-Tagebuchnummer der herausgebenden Stelle (kann im Einzelfall eine andere Stelle sein, als die abgebende Stelle).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="VSGradBeiHerausgabe" type="WL_VSGRAD" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Unterschiede zum aktuellen VS-Grad sind möglich, falls bereits eine erste Herabstufung erfolgt ist.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="t_structure">
+		<xs:sequence>
+			<xs:element name="title" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Titel des Strukturknotens</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="structureIdentifier" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Eindeutige Kennzeichnung des Strukturknotens innerhalb des XML</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="child" type="t_structure" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="WL_PREMIS">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="wl_version" type="xs:string" use="optional"/>
+				<xs:attribute name="wl_fassung" type="xs:string" use="optional"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="WL_String">
+		<xs:simpleContent>
+			<xs:extension base="xs:string"/>
+		</xs:simpleContent>
+	</xs:complexType>
+	<!--Wertelistentyp fuer EreignisTyp>-->
+	<xs:simpleType name="WL_Ereignis_Typ">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Anbieteliste"/>
+			<xs:enumeration value="Bewertungsverzeichnis"/>
+			<xs:enumeration value="Aussonderungsverzeichnis"/>
+			<xs:enumeration value="SIP"/>
+			<xs:enumeration value="AIP"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!--Wertelistentyp fuer Aussonderungsart-->
+	<xs:simpleType name="WL_Aussonderungsart">
+		<xs:annotation>
+			<xs:documentation>Diese Werteliste  ist vorgesehen fuer das Element Aussonderung.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="A"/>
+			<xs:enumeration value="V"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="WL_Archivierungsstatus">
+		<xs:annotation>
+			<xs:documentation>Diese Werteliste ist vorgesehen fuer das Element Archivierungsstatus.</xs:documentation>
+		</xs:annotation>
+		<xs:simpleContent>
+			<xs:restriction base="WL_PREMIS">
+				<xs:enumeration value="1"/>
+				<xs:enumeration value="2"/>
+				<xs:enumeration value="3"/>
+				<xs:attribute name="wl_version" type="xs:string" use="optional" fixed="1.0"/>
+				<xs:attribute name="wl_fassung" type="xs:string" use="optional" default="0"/>
+			</xs:restriction>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="WL_Objektkategorie">
+		<xs:annotation>
+			<xs:documentation>Diese Werteliste ist vorgesehen fuer das Element Objektkategorie.</xs:documentation>
+		</xs:annotation>
+		<xs:simpleContent>
+			<xs:restriction base="WL_PREMIS">
+				<xs:enumeration value="File"/>
+				<xs:attribute name="wl_version" type="xs:string" use="optional" fixed="1.0"/>
+				<xs:attribute name="wl_fassung" type="xs:string" use="optional" default="0"/>
+			</xs:restriction>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="WL_FormatVerzeichnisSchwerpunkt">
+		<xs:annotation>
+			<xs:documentation>Diese Werteliste ist vorgesehen fuer das Element formatVerzeichnisSchwerpunkt.</xs:documentation>
+		</xs:annotation>
+		<xs:simpleContent>
+			<xs:restriction base="WL_PREMIS">
+				<xs:enumeration value="Spezifikation"/>
+				<xs:enumeration value="Validation"/>
+				<xs:attribute name="wl_version" type="xs:string" use="optional" fixed="1.0"/>
+				<xs:attribute name="wl_fassung" type="xs:string" use="optional" default="0"/>
+			</xs:restriction>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="WL_ObjektBeziehungenTyp">
+		<xs:annotation>
+			<xs:documentation>Diese Werteliste ist vorgesehen fuer das Element objektBeziehungenTyp.</xs:documentation>
+		</xs:annotation>
+		<xs:simpleContent>
+			<xs:restriction base="WL_PREMIS">
+				<xs:enumeration value="strukturell"/>
+				<xs:enumeration value="derivativ"/>
+				<xs:attribute name="wl_version" type="xs:string" use="optional" fixed="1.0"/>
+				<xs:attribute name="wl_fassung" type="xs:string" use="optional" default="0"/>
+			</xs:restriction>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="WL_ObjektBeziehungenUnterTyp">
+		<xs:annotation>
+			<xs:documentation>Diese Werteliste ist vorgesehen fuer das ObjektBeziehungenUnterTyp.</xs:documentation>
+		</xs:annotation>
+		<xs:simpleContent>
+			<xs:restriction base="WL_PREMIS">
+				<xs:enumeration value="ist Teil von"/>
+				<xs:enumeration value="enthaelt Teil"/>
+				<xs:enumeration value="verweist auf"/>
+				<xs:enumeration value="ist Quelle von"/>
+				<xs:enumeration value="ist Produkt von"/>
+				<xs:attribute name="wl_version" type="xs:string" use="optional" fixed="1.0"/>
+				<xs:attribute name="wl_fassung" type="xs:string" use="optional" default="0"/>
+			</xs:restriction>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="WL_TechnischeUmgebungEigenschaft">
+		<xs:annotation>
+			<xs:documentation>Diese Werteliste ist vorgesehen fuer das Element technischeUmgebungEigenschaft.</xs:documentation>
+		</xs:annotation>
+		<xs:simpleContent>
+			<xs:restriction base="WL_PREMIS">
+				<xs:enumeration value="empfohlen"/>
+				<xs:enumeration value="minimal"/>
+				<xs:enumeration value="funktionstuechtig"/>
+				<xs:enumeration value="nicht spezifiziert"/>
+				<xs:enumeration value="extern"/>
+				<xs:attribute name="wl_version" type="xs:string" use="optional" fixed="1.0"/>
+				<xs:attribute name="wl_fassung" type="xs:string" use="optional" default="0"/>
+			</xs:restriction>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="WL_TechnischeUmgebungZweck">
+		<xs:annotation>
+			<xs:documentation>Diese Werteliste ist vorgesehen fuer das Element technischeUmgebungZweck. </xs:documentation>
+		</xs:annotation>
+		<xs:simpleContent>
+			<xs:restriction base="WL_PREMIS">
+				<xs:enumeration value="Darstellung"/>
+				<xs:enumeration value="Bearbeitung"/>
+				<xs:enumeration value="Umwandlung"/>
+				<xs:enumeration value="Pruefung PDF/A Konformitaet"/>
+				<xs:enumeration value="Nutzung"/>
+				<xs:enumeration value="Behoerde_Aussonderung"/>
+				<xs:enumeration value="Formatreparatur"/>
+				<xs:attribute name="wl_version" type="xs:string" use="optional" fixed="1.0"/>
+				<xs:attribute name="wl_fassung" type="xs:string" use="optional" default="0"/>
+			</xs:restriction>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="WL_HardwareTyp">
+		<xs:annotation>
+			<xs:documentation>Diese Werteliste ist vorgesehen fuer das Element hardwareTyp.</xs:documentation>
+		</xs:annotation>
+		<xs:simpleContent>
+			<xs:restriction base="WL_PREMIS">
+				<xs:enumeration value="Prozessor"/>
+				<xs:enumeration value="Arbeitsspeicher"/>
+				<xs:enumeration value="Speichergeraet"/>
+				<xs:enumeration value="Grafikkarte"/>
+				<xs:enumeration value="Soundkarte"/>
+				<xs:enumeration value="Eingabegeraet"/>
+				<xs:enumeration value="Ausgabegeraet"/>
+				<xs:enumeration value="Netzwerkkarte"/>
+				<xs:enumeration value="PC"/>
+				<xs:enumeration value="Server"/>
+				<xs:enumeration value="VBS-Server"/>
+				<xs:enumeration value="VBS-Client"/>
+				<xs:enumeration value="Client"/>
+			</xs:restriction>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="WL_SoftwareTyp">
+		<xs:annotation>
+			<xs:documentation>Diese Werteliste ist vorgesehen fuer das Element softwareTyp.</xs:documentation>
+		</xs:annotation>
+		<xs:simpleContent>
+			<xs:restriction base="WL_PREMIS">
+				<xs:enumeration value="Wiedergabeprogramm"/>
+				<xs:enumeration value="PDFA-Reparaturprogramm"/>
+				<xs:enumeration value="PDFA-Validierungsprogramm"/>
+				<xs:enumeration value="Dienstprogramm"/>
+				<xs:enumeration value="Betriebssystem"/>
+				<xs:enumeration value="Treiber"/>
+				<xs:enumeration value="Konvertierungsprogramm"/>
+				<xs:enumeration value="Emulator"/>
+				<xs:enumeration value="Textverarbeitungsprogramm"/>
+				<xs:enumeration value="Bildbearbeitungsprogramm"/>
+				<xs:enumeration value="Datenbankanwendung"/>
+				<xs:enumeration value="Tabellenkalkulationsprogramm"/>
+				<xs:enumeration value="Systemprogramm"/>
+				<xs:enumeration value="Multimediaprogramm"/>
+				<xs:enumeration value="Editor"/>
+				<xs:enumeration value="Vorgangsbearbeitungssystem"/>
+				<xs:attribute name="wl_version" type="xs:string" use="optional" fixed="1.0"/>
+				<xs:attribute name="wl_fassung" type="xs:string" use="optional" default="0"/>
+			</xs:restriction>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="WL_ereignis_Kategorie">
+		<xs:annotation>
+			<xs:documentation>Diese Werteliste ist vorgesehen fuer das Element ereignis_Kategorie.</xs:documentation>
+		</xs:annotation>
+		<xs:simpleContent>
+			<xs:restriction base="WL_PREMIS">
+				<xs:enumeration value="Erstellung_Aussonderungsdatei"/>
+				<xs:enumeration value="PDFA-Reparatur"/>
+				<xs:enumeration value="Uebernahme"/>
+				<xs:enumeration value="Akzession"/>
+				<xs:enumeration value="Daten-Komprimierung"/>
+				<xs:enumeration value="Daten-Dekomprimierung"/>
+				<xs:enumeration value="Kassation"/>
+				<xs:enumeration value="Daten-Verschluesselung"/>
+				<xs:enumeration value="Daten-Entschluesselung"/>
+				<xs:enumeration value="Ueberpruefung der Authentizitaet"/>
+				<xs:enumeration value="Uberpruefen der Integritaet"/>
+				<xs:enumeration value="Ausgabe an Benutzer"/>
+				<xs:enumeration value="hash-Wert berechnen"/>
+				<xs:enumeration value="Daten-Migration"/>
+				<xs:enumeration value="Normalisierung"/>
+				<xs:enumeration value="Reproduktion"/>
+				<xs:enumeration value="Validierung"/>
+				<xs:enumeration value="Virenpruefung"/>
+				<xs:attribute name="wl_version" type="xs:string" use="optional" fixed="1.0"/>
+				<xs:attribute name="wl_fassung" type="xs:string" use="optional" default="0"/>
+			</xs:restriction>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="WL_VerknuepfterAgentRolle">
+		<xs:annotation>
+			<xs:documentation>Diese Werteliste wird zur Zeit im Ingest nicht verwendet, da agent nicht verwendet wird.</xs:documentation>
+		</xs:annotation>
+		<xs:simpleContent>
+			<xs:restriction base="WL_PREMIS">
+				<xs:enumeration value="ausfuehrendes Programm"/>
+				<xs:enumeration value="bevollmaechtigte Person"/>
+				<xs:enumeration value="ausfuehrende Person"/>
+				<xs:enumeration value="pruefende Person"/>
+				<xs:enumeration value="datenuebermittelnde Institution"/>
+				<xs:attribute name="wl_version" type="xs:string" use="optional" fixed="1.0"/>
+				<xs:attribute name="wl_fassung" type="xs:string" use="optional" default="0"/>
+			</xs:restriction>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="WL_AgentTyp">
+		<xs:annotation>
+			<xs:documentation>Diese Werteliste wird zur Zeit im Ingest nicht verwendet, da agent nicht verwendet wird.</xs:documentation>
+		</xs:annotation>
+		<xs:simpleContent>
+			<xs:restriction base="WL_PREMIS">
+				<xs:enumeration value="Person"/>
+				<xs:enumeration value="Abteilung"/>
+				<xs:enumeration value="externe Firma"/>
+				<xs:enumeration value="Software-Programm"/>
+				<xs:enumeration value="externe Behörde"/>
+				<xs:enumeration value="externes Archiv"/>
+				<xs:enumeration value="Techniker im BMI"/>
+				<xs:enumeration value="Sachbearbeiterin BArch Ref. B2"/>
+				<xs:enumeration value="Techniker im BArch"/>
+				<xs:enumeration value="Techniker im BMVBS"/>
+				<xs:attribute name="wl_version" type="xs:string" use="optional" fixed="1.0"/>
+				<xs:attribute name="wl_fassung" type="xs:string" use="optional" default="0"/>
+			</xs:restriction>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="WL_EreignisResultat">
+		<xs:annotation>
+			<xs:documentation>Diese Werteliste ist vorgesehen fuer das Element ereignisResultat</xs:documentation>
+		</xs:annotation>
+		<xs:simpleContent>
+			<xs:restriction base="WL_PREMIS">
+				<xs:enumeration value="erfolgreich"/>
+				<xs:enumeration value="kritisch"/>
+				<xs:enumeration value="gescheitert"/>
+				<xs:attribute name="wl_version" type="xs:string" use="optional" fixed="1.0"/>
+				<xs:attribute name="wl_fassung" type="xs:string" use="optional" default="0"/>
+			</xs:restriction>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:simpleType name="WL_VSGRAD">
+		<xs:annotation>
+			<xs:documentation>Diese Werteliste enthaelt die Bezeichnung der verschiedenen Vertraulichkeitsstufen für Abgaben von eingestuften Dokumenten in das digitale Geheimarchiv.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="VS-NUR FUER DEN DIENSTGEBRAUCH"/>
+			<xs:enumeration value="VS-VERTRAULICH"/>
+			<xs:enumeration value="GEHEIM"/>
+			<xs:enumeration value="STRENG GEHEIM"/>
+			<xs:enumeration value="NATO RESTRICTED"/>
+			<xs:enumeration value="NATO CONFIDENTIAL"/>
+			<xs:enumeration value="NATO SECRET"/>
+			<xs:enumeration value="COSMIC TOP SECRET"/>
+			<xs:enumeration value="WEU RESTRICTED"/>
+			<xs:enumeration value="WEU CONFIDENTIAL"/>
+			<xs:enumeration value="WEU SECRET"/>
+			<xs:enumeration value="FOCAL TOP SECRET"/>
+			<xs:enumeration value="EURA NUR FUER DEN DIENSTGEBRAUCH"/>
+			<xs:enumeration value="EURA VERTRAULICH"/>
+			<xs:enumeration value="EURA GEHEIM"/>
+			<xs:enumeration value="EURA STRENG GEHEIM"/>
+			<xs:enumeration value="EUROCONTROL RESTRICTED"/>
+			<xs:enumeration value="EUROCONTROL CONFIDENTIAL"/>
+			<xs:enumeration value="EUROCONTROL SECRET"/>
+			<xs:enumeration value="EUROPOL RESTRICTED"/>
+			<xs:enumeration value="EUROPOL CONFIDENTIAL"/>
+			<xs:enumeration value="EUROPOL SECRET"/>
+			<xs:enumeration value="EUROPOL TOP SECRET"/>
+			<xs:enumeration value="RESTREINT UE"/>
+			<xs:enumeration value="CONFIDENTIEL UE"/>
+			<xs:enumeration value="SECRET UE"/>
+			<xs:enumeration value="TRES SECRET UE/EU TOP SECRET"/>
+			<xs:enumeration value="ESA RESTRICTED"/>
+			<xs:enumeration value="ESA CONFIDENTIAL"/>
+			<xs:enumeration value="ESA SECRET"/>
+			<xs:enumeration value="ESA TOP SECRET"/>
+			<xs:enumeration value="OCCAR RESTRICTED"/>
+			<xs:enumeration value="OCCAR CONFIDENTIAL"/>
+			<xs:enumeration value="OCCAR SECRET"/>
+			<xs:enumeration value="OCCAR TOP SECRET"/>
+			<xs:enumeration value="DIFFUSION"/>
+			<xs:enumeration value="CONFIDENTIEL RESTREINTE"/>
+			<xs:enumeration value="SECRET"/>
+			<xs:enumeration value="TRES SECRET"/>
+			<xs:enumeration value="ZA SLUXEBNO POLZVANE"/>
+			<xs:enumeration value="SEKRETNO"/>
+			<xs:enumeration value="STROGO SEKRETNO"/>
+			<xs:enumeration value="TIL TJENESTEBRUG"/>
+			<xs:enumeration value="FORTROLIGT"/>
+			<xs:enumeration value="HEMMELIGT"/>
+			<xs:enumeration value="YDERST HEMMELIGT"/>
+			<xs:enumeration value="AMETKONDLIK"/>
+			<xs:enumeration value="KONFIDENTSIAALNE"/>
+			<xs:enumeration value="SALAJANE"/>
+			<xs:enumeration value="KÄYTTÖ RAJOITETTUEI"/>
+			<xs:enumeration value="LUOTTAMUKSELLINEN"/>
+			<xs:enumeration value="SALAINEN"/>
+			<xs:enumeration value="ERITTÄIN SALAINEN"/>
+			<xs:enumeration value="CONFIDENTIELDEFENSE"/>
+			<xs:enumeration value="SECRETDEFENSE"/>
+			<xs:enumeration value="TRES SECRET DEFENSE"/>
+			<xs:enumeration value="PERIORISMENIS CHRISSEOS"/>
+			<xs:enumeration value="EMPISTEFTIKON"/>
+			<xs:enumeration value="APPORITON"/>
+			<xs:enumeration value="AKRROS APPORITON"/>
+			<xs:enumeration value="RESTRICTED"/>
+			<xs:enumeration value="CONFIDENTIAL"/>
+			<xs:enumeration value="SECRET"/>
+			<xs:enumeration value="TOP SECRET"/>
+			<xs:enumeration value="RISERVATO"/>
+			<xs:enumeration value="RISERVATISSIMO"/>
+			<xs:enumeration value="SEGRETO"/>
+			<xs:enumeration value="SEGRETISSIMO"/>
+			<xs:enumeration value="KONFIDENTIALI"/>
+			<xs:enumeration value="SLEPENI"/>
+			<xs:enumeration value="SEVISKI SLEPENI"/>
+			<xs:enumeration value="RIBOTO NAUDOJIMO"/>
+			<xs:enumeration value="KONFIDENCIALIAI"/>
+			<xs:enumeration value="SLAPTAI VISISKAI"/>
+			<xs:enumeration value="SLAPTAI"/>
+			<xs:enumeration value="DEPARTEMENTAAL VERTROUWELIJK"/>
+			<xs:enumeration value="CONFIDENTIEEL STG"/>
+			<xs:enumeration value="GEHEIM STG"/>
+			<xs:enumeration value="ZEER GEHEIM STG"/>
+			<xs:enumeration value="BEGRENSET"/>
+			<xs:enumeration value="KONFIDENSIELT"/>
+			<xs:enumeration value="HEMMELIG"/>
+			<xs:enumeration value="STRENGT HEMMELIG"/>
+			<xs:enumeration value="Для Служебного Пользования"/>
+			<xs:enumeration value="не подлежит оглашению"/>
+			<xs:enumeration value="Секретно"/>
+			<xs:enumeration value="Совершенно Секретно"/>
+			<xs:enumeration value="ZASTREZONE"/>
+			<xs:enumeration value="POUFNE"/>
+			<xs:enumeration value="TAINE"/>
+			<xs:enumeration value="SCISLE TAINE"/>
+			<xs:enumeration value="RESERVADO"/>
+			<xs:enumeration value="CONFIDENCIAL"/>
+			<xs:enumeration value="SECRETO"/>
+			<xs:enumeration value="MUITO SECRETO"/>
+			<xs:enumeration value="SECRET DE SERVICIU"/>
+			<xs:enumeration value="STRICT SECRET"/>
+			<xs:enumeration value="HEMLIG"/>
+			<xs:enumeration value="KVALIFICERAT HEMLIG"/>
+			<xs:enumeration value="HEMLIG RESTRICTED"/>
+			<xs:enumeration value="HEMLIG CONFIDENTIAL"/>
+			<xs:enumeration value="HEMLIG SECRET"/>
+			<xs:enumeration value="HEMLIG TOP SECRET"/>
+			<xs:enumeration value="TAJNE"/>
+			<xs:enumeration value="PRISNET TAJNE"/>
+			<xs:enumeration value="DIFUSION LIMITADA"/>
+			<xs:enumeration value="VYHRAZENE"/>
+			<xs:enumeration value="DUVRNE"/>
+			<xs:enumeration value="POISNI TAJNE"/>
+			<xs:enumeration value="TITKOS"/>
+			<xs:enumeration value="SZIGORUAN TITKOS"/>
+			<xs:enumeration value="HEMMELIG"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="WL_VSGRAD_DOKUMENT">
+		<xs:annotation>
+			<xs:documentation>Diese Werteliste enthaelt die Bezeichnung der verschiedenen Vertraulichkeitsstufen für eingestufte Dokumente in eAkten. In der Praxis koennen hier nur als VS-NfD eingestufte Dokumente vorkommen. Bei offenen Dokumenten bleibt das Feld leer.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="NfD"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:element name="Vorgang">
+		<xs:annotation>
+			<xs:documentation>Die folgende Beschreibung enthaelt die Metadatenfelder für den Austausch von Vorgaengen. Dies betrifft die  endgueltige Abgabe von kompletten Vorgaengen zur Bearbeitung. Alle Felder sind optional, so dass die absendende Behoerde jeweils festlegen kann, welche Informationen dem Empfaenger mit der Uebertragung zur Verfuegung gestellt werden sollen. So kann auch der Anforderung nach einer ggf. erforderlichen Beschraenkung der übertragenen Metadaten Rechnung getragen werden (z. B. auf Grund datenschutzrechtlicher oder sonstiger gesetzlicher Bestimmungen).</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="ID_Archivsignatur_Vorgang">
+					<xs:annotation>
+						<xs:documentation>BArch Signatur des Vorgangs, wird automatisch generiert.</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:simpleContent>
+							<xs:extension base="xs:string"/>
+						</xs:simpleContent>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="Beschreibung" minOccurs="0">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Geschaeftszeichen" type="xs:string" minOccurs="0">
+								<xs:annotation>
+									<xs:documentation>Das Geschäftszeichen setzt sich zusammen aus der Bezeichnung für die Organisationseinheit sowie dem Aktenzeichen und ggf. dem Vorgangskennzeichen.</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="Vorgangskennzeichen" type="xs:string" minOccurs="0"/>
+							<xs:element name="Vorgangsbetreff" type="xs:string" minOccurs="0">
+								<xs:annotation>
+									<xs:documentation>Inhaltliche Kurzbeschreibung des Vorgangs</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="Vorgangstyp" type="xs:string" minOccurs="0">
+								<xs:annotation>
+									<xs:documentation>Der Vorgangstyp wird hier beschrieben. Mögliche Werte können unter anderem sein: Genehmigungsverfahren, Widerspruchsverfahren, Kabinettsvorlage etc.. Eine Werteliste liegt derzeit nicht vor.</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="Medium" type="xs:string" minOccurs="0">
+								<xs:annotation>
+									<xs:documentation>Dieses Feld beschreibt, ob es sich um ein Papier- oder elektronisches Dokument handelt. Zulässige Werte sind z.B. Papier,elektronisch, hybrid. Relevant ist dieses Feld nur für einen möglichen Hinweis auf hybride Überlieferung.</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="Laufzeit_von" type="xs:date" minOccurs="0">
+								<xs:annotation>
+									<xs:documentation>Zeitlicher Anfang des Vorgangs: Anlagedatum des ältesten Dokumentes des Vorgangs.</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="Laufzeit_bis" type="xs:date" minOccurs="0">
+								<xs:annotation>
+									<xs:documentation>Zeitliches Ende des Vorgangs: Anlagedatum des jüngsten Dokumentes des Vorgangs.</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="Aufbewahrungsdauer" type="xs:string" minOccurs="0">
+								<xs:annotation>
+									<xs:documentation>in Jahren, plausibilisiert bei Import</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="Aktenfuehrende_Organisationseinheit" type="xs:string" minOccurs="0">
+								<xs:annotation>
+									<xs:documentation>Kurzbezeichnung der Aktenführenden Organisationseinheit</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="Bewertungsvorschlag" type="xs:string" minOccurs="0">
+								<xs:annotation>
+									<xs:documentation>Bewertungsvorschlag der Behörde</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="Aussonderungsart" type="WL_Aussonderungsart" minOccurs="0">
+								<xs:annotation>
+									<xs:documentation>A = Archivwürdig, B = Bewerten, V = Vernichten</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="Aufbewahrungsende" type="xs:string" minOccurs="0">
+								<xs:annotation>
+									<xs:documentation>Endjahr der Aufbewahrungsdauer</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="Vorgang_Bemerkung" type="xs:string" minOccurs="0">
+								<xs:annotation>
+									<xs:documentation>Zusätzliche Angaben </xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="Externes_Daten_Element" minOccurs="0" maxOccurs="unbounded">
+								<xs:annotation>
+									<xs:documentation>Hier besteht die Möglichkeit, ergänzende Metdaten aus dem abgebenden System  hinzuzufügen.</xs:documentation>
+								</xs:annotation>
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="Externes_Element" minOccurs="0" maxOccurs="unbounded">
+											<xs:complexType>
+												<xs:simpleContent>
+													<xs:extension base="xs:string">
+														<xs:attribute name="name" type="xs:string"/>
+														<xs:attribute name="value" type="xs:string"/>
+													</xs:extension>
+												</xs:simpleContent>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element ref="Dokument" maxOccurs="unbounded"/>
+				<xs:element name="Eindeutiger_Kennzeichner_Vorgang" type="xs:string">
+					<xs:annotation>
+						<xs:documentation> Kennzeichner aus dem Behördensystem, der die eindeutige Identifikation der Struktur Akte, Vorgang, Dokument, Version ermöglicht.</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="Verschlusssache" type="t_verschlusssache" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>Das Element enthält Metadatenfelder zur Beschreibung von Vorgängen, die eingestufte Dokumente enthalten.</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Dokument">
+		<xs:annotation>
+			<xs:documentation>Die folgende Beschreibung enthält die Metadatenfelder für den Austausch von Dokumenten.  </xs:documentation>
+			<xs:documentation>Alle Felder sind optional, so dass die absendende Behörde jeweils festlegen kann, welche Informationen dem Empfänger mit der Übertragung zur Verfügung gestellt werden sollen. So kann auch der Anforderung nach einer ggf. erforderlichen Beschränkung der übertragenen Metadaten Rechnung getragen werden (z. B. auf Grund datenschutzrechtlicher oder sonstiger gesetzlicher Bestimmungen). Neben den Metadaten kann auch das beschriebene Dokument in seinem ursprünglichen Format (z. B. PDF, Word, Excel, …) mit übermittelt werden. Darüber hinaus besteht die Möglichkeit, das beschriebene Dokument dem Datensatz in weiteren Formatvarianten beizufügen. </xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:annotation>
+					<xs:documentation>Hier kann der Inhalt des Dokumentes als Text hinterlegt werden.</xs:documentation>
+				</xs:annotation>
+				<xs:element name="ID_Archivsignatur_Dokument" type="xs:string">
+					<xs:annotation>
+						<xs:documentation>BArch Signatur des Dokuments, wird automatisch generiert.</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="IdentifikationVerknuepftesObjekt" minOccurs="0" maxOccurs="unbounded">
+					<xs:annotation>
+						<xs:documentation>Referenz zur technischen Beschreibung ein oder mehrerer Objekte (Dokumente). (Anmerkung: in XDOMEA war urspruenglich das Element "Primaerdokument" vorgesehen).</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="IdentifikationVerknuepftesObjektTyp" type="xs:string">
+								<xs:annotation>
+									<xs:documentation>linkingObjectIdentifierType: Bezeichnung des Bereichs, für den der Objektidentifikator einmalig ist. </xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="IdentifikatorVerknuepftesObjektWert" type="xs:string">
+								<xs:annotation>
+									<xs:documentation>linkingObjectIdentifierValue: Wert des Objektidentifikators. Verweis auf die Beschreibung des entsprechenden Primärdokuments (Datei).  </xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="Primaerdokument_Version" type="xs:string">
+								<xs:annotation>
+									<xs:documentation>Versionsnummer der Dateiformatierung. Eine neue Version entsteht nach einer Datenmigration in ein neues Dateiformat. Keine Inhaltliche Versionierung wie in Dokument/Version/Version_Nummer</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+						</xs:sequence>
+						<xs:attribute name="LinkObjectXmlID" type="xs:IDREF" use="optional"/>
+						<xs:anyAttribute namespace="http://www.w3.org/1999/xlink"/>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="Beschreibung" minOccurs="0">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Dokumenttyp" type="xs:string" minOccurs="0">
+								<xs:annotation>
+									<xs:documentation> Das Feld Dokumenttyp ist relevant beim Austausch von Dokumenten im Vorgangs- oder Aktenzusammenhang. Zulässige Werte sind z.B. Erlass, Vermerk, Bericht, Bescheid.</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="Posteingangsdatum" type="xs:date" minOccurs="0">
+								<xs:annotation>
+									<xs:documentation>Das Feld Posteingangsdatum ist relevant beim Austausch von Dokumenten im Vorgangs- oder Aktenzusammenhang. </xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="Postausgangsdatum" type="xs:date" minOccurs="0">
+								<xs:annotation>
+									<xs:documentation>Das Feld Postausgangsdatum ist relevant beim Austausch von Dokumenten im Vorgangs- oder Aktenzusammenhang.</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="Dokumentdatum" type="xs:date" minOccurs="0"/>
+							<xs:element name="Betreff" type="xs:string" minOccurs="0"/>
+							<xs:element name="Hier" type="xs:string" minOccurs="0">
+								<xs:annotation>
+									<xs:documentation>Wird gewöhnlich als "hier" verwendet, kann aber auch im Betreff enthalten sein.</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="Bezug" type="xs:string" minOccurs="0">
+								<xs:annotation>
+									<xs:documentation>Der konkrete Bezug wird hier angegeben z.B. Ihr Schreiben vom...</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="Anlagen" type="xs:string" minOccurs="0" maxOccurs="unbounded">
+								<xs:annotation>
+									<xs:documentation>Ein reines Textfeld mit der Information, dass und wieviele Anlagen vorhanden sind. Der Bezug auf die Anlage erfolgt nicht hier, sondern über den Dokumenttyp "Anlage" </xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="Geschaeftszeichen" type="xs:string" minOccurs="0">
+								<xs:annotation>
+									<xs:documentation>Eigenes Geschäftszeichen</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="Fremdes_Geschaeftszeichen" type="xs:string" minOccurs="0">
+								<xs:annotation>
+									<xs:documentation>Geschäftszeichen des Einsenders</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="Verweis" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+							<xs:element name="Dokumentersteller" type="xs:string" minOccurs="0"/>
+							<xs:element name="Medium" type="xs:string" minOccurs="0">
+								<xs:annotation>
+									<xs:documentation>Dieses Feld beschreibt, ob es sich um ein Papier- oder elektronisches Dokument handelt. Zulässige Werte sind z.B. papier,elektronisch, etc.. Relevant ist dieses Feld nur für einen möglichen Hinweis auf hybride Überlieferung.</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="Vertraulichkeitsstufe" type="xs:string" minOccurs="0">
+								<xs:annotation>
+									<xs:documentation>Zulässiger Wert ist nur NfD, bei offenen Dokumenten wird das Feld nicht befüllt.</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="Dokument_Bemerkung" type="xs:string" minOccurs="0">
+								<xs:annotation>
+									<xs:documentation>Zusaetzliche Angaben, ggf. Feld für OCR-Volltext-Informationen (Primärdaten)</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="Externes_Daten_Element" minOccurs="0" maxOccurs="unbounded">
+								<xs:annotation>
+									<xs:documentation>Hier besteht die Möglichkeit, ergänzende Metdaten aus dem abgebenden System  hinzuzufügen.</xs:documentation>
+								</xs:annotation>
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="Externes_Element" minOccurs="0" maxOccurs="unbounded">
+											<xs:complexType>
+												<xs:simpleContent>
+													<xs:extension base="xs:string">
+														<xs:attribute name="name" type="xs:string"/>
+														<xs:attribute name="value" type="xs:string"/>
+													</xs:extension>
+												</xs:simpleContent>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="Volltext" type="xs:string" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>Hier kann der Inhalt des Dokumentes als reiner Text hinterlegt werden.</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="Eindeutiger_Kennzeichner_Dokument" type="xs:string">
+					<xs:annotation>
+						<xs:documentation> Kennzeichner aus dem Behördensystem, der die eindeutige Identifikation der Struktur Akte, Vorgang, Dokument, Version ermöglicht.</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:simpleType name="containerExterneDaten">
+		<xs:restriction base="xs:string"/>
+	</xs:simpleType>
+</xs:schema>
