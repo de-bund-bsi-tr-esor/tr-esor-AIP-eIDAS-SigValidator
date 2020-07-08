@@ -16,6 +16,7 @@ import de.bund.bsi.tresor.xaip.validator.api.boundary.ValidatorModule;
 import de.bund.bsi.tresor.xaip.validator.api.entity.SyntaxValidationResult;
 import de.bund.bsi.tresor.xaip.validator.api.entity.XAIPValidatorException;
 import oasis.names.tc.dss_x._1_0.profiles.verificationreport.schema_.IndividualReportType;
+import oasis.names.tc.dss_x._1_0.profiles.verificationreport.schema_.VerificationReportType;
 
 /**
  * @author wolffs
@@ -35,7 +36,7 @@ public enum Dispatcher
     public void dispatch( DispatcherArguments args ) throws FileNotFoundException
     {
         SyntaxValidationResult syntaxResult = syntaxValidator.validateSyntax( args.getInput() );
-        log( " finished syntax validation" );
+        log( "finished syntax validation" );
         
         List<IndividualReportType> reportParts = new ArrayList<>();
         reportParts.add( syntaxResult.getSyntaxReport() );
@@ -48,8 +49,10 @@ public enum Dispatcher
             } );
         }
         
-        JAXB.marshal( protocolAssembler.assembleProtocols( reportParts ), args.getOutput() );
-        log( " finished protocol assembling" );
+        VerificationReportType verificationReport = protocolAssembler.assembleProtocols( reportParts );
+        log( "finished protocol assembling" );
+        
+        JAXB.marshal( verificationReport, args.getOutput() );
     }
     
     void log( String message )

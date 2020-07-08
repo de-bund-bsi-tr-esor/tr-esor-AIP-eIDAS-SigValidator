@@ -30,11 +30,11 @@ public class Arguments implements DispatcherArguments
     
     @Parameter( order = 1, names = { "-in", "--input" },
             descriptionKey = MessageBundle.CLI_USAGE_INPUT, converter = InputStreamConverter.class )
-    private InputStream  input;
+    private InputStream  input  = System.in;
     
     @Parameter( order = 2, names = { "-out", "--output" },
             descriptionKey = MessageBundle.CLI_USAGE_OUTPUT, converter = OutputStreamConverter.class )
-    private OutputStream output;
+    private OutputStream output = System.out;
     
     @Parameter( order = 3, names = { "-e", "--eCardUrl" },
             descriptionKey = MessageBundle.CLI_USAGE_ECARD_URL, converter = URIConverter.class )
@@ -44,6 +44,6 @@ public class Arguments implements DispatcherArguments
     private boolean      verify;
     
     @Parameter( order = 5, names = { "-h", "--help" }, help = true, descriptionKey = MessageBundle.CLI_USAGE_HELP )
-    private boolean      help = false;
+    private boolean      help;
     
 }

@@ -1,8 +1,6 @@
 package de.bund.bsi.tresor.xaip.validator.syntax;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +30,6 @@ import oasis.names.tc.dss_x._1_0.profiles.verificationreport.schema_.IndividualR
 @Getter
 public class DefaultSyntaxValidator implements SyntaxValidator
 {
-    // tr-esor-xaip-v1.2.xsd
     private static final String DEFINITION_DIRECTORY = "definitions";
     
     private final String        vendor               = "BSI";
@@ -41,8 +38,11 @@ public class DefaultSyntaxValidator implements SyntaxValidator
     @Override
     public SyntaxValidationResult validateSyntax( InputStream xaipCandidate )
     {
-        Result result = DefaultResult.ok().build();
         Optional<XAIPType> xaip = Optional.empty();
+        Result result = DefaultResult.ok()
+                .message( "xsd schema validation", ResultLanguage.ENGLISH )
+                .build();
+        
         try
         {
             JAXBContext jaxbContext = JAXBContext.newInstance( XAIPType.class );
@@ -88,12 +88,4 @@ public class DefaultSyntaxValidator implements SyntaxValidator
         
         return schemas;
     }
-    
-    public static void main( String[] args ) throws FileNotFoundException
-    {
-        InputStream in = new FileInputStream( "~/Dokumente/XAIP-Validator/validator/validRetention.xaip" );
-        DefaultSyntaxValidator foo = new DefaultSyntaxValidator();
-        foo.validateSyntax( in );
-    }
-    
 }
