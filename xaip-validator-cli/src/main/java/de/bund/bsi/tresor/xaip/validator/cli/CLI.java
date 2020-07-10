@@ -21,7 +21,8 @@ public final class CLI
                 .programName( MessageBundle.RESOURCE.getString( MessageBundle.CLI_NAME ) )
                 .build();
         
-        argv = new String[] { "-in", "/tmp/validRetention.xaip" };
+        // TODO remove this test
+        argv = new String[] { "-d", "-in", "/home/wolffs/Dokumente/XAIP-Validator/validator/validRetention.xaip" };
         
         try
         {

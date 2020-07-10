@@ -40,7 +40,7 @@ public class DefaultSyntaxValidator implements SyntaxValidator
     {
         Optional<XAIPType> xaip = Optional.empty();
         Result result = DefaultResult.ok()
-                .message( "xsd schema validation", ResultLanguage.ENGLISH )
+                .message( "synta validation", ResultLanguage.ENGLISH )
                 .build();
         
         try

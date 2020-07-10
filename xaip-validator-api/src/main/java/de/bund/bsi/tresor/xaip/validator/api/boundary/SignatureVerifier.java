@@ -1,9 +1,8 @@
 package de.bund.bsi.tresor.xaip.validator.api.boundary;
 
 import java.util.List;
-import java.util.Map;
 
-import de.bund.bsi.tresor.xaip.validator.api.entity.ValidationTarget;
+import de.bund.bsi.tresor.xaip.validator.api.entity.SignatureCredential;
 import oasis.names.tc.dss_x._1_0.profiles.verificationreport.schema_.IndividualReportType;
 
 /**
@@ -11,6 +10,5 @@ import oasis.names.tc.dss_x._1_0.profiles.verificationreport.schema_.IndividualR
  */
 public interface SignatureVerifier extends ValidatorModule
 {
-    // TODO change list type
-    List<IndividualReportType> verify( Map<ValidationTarget, List<?>> signatureLocations );
+    List<IndividualReportType> verify( List<SignatureCredential> signatures );
 }

@@ -13,6 +13,8 @@ public interface DispatcherArguments
     
     public boolean isVerify();
     
+    public boolean isVerbose();
+    
     public InputStream getInput();
     
     public OutputStream getOutput();

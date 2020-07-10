@@ -43,7 +43,10 @@ public class Arguments implements DispatcherArguments
     @Parameter( order = 4, names = { "-v", "--verify" }, descriptionKey = MessageBundle.CLI_USAGE_VERIFY )
     private boolean      verify;
     
-    @Parameter( order = 5, names = { "-h", "--help" }, help = true, descriptionKey = MessageBundle.CLI_USAGE_HELP )
+    @Parameter( order = 5, names = { "-d", "--debug", "--verbose" }, descriptionKey = MessageBundle.CLI_USAGE_VERBOSE )
+    private boolean      verbose;
+    
+    @Parameter( order = 6, names = { "-h", "--help" }, help = true, descriptionKey = MessageBundle.CLI_USAGE_HELP )
     private boolean      help;
     
 }
