@@ -16,6 +16,8 @@ public abstract class MessageBundle
     
     public static final String         CLI_NAME            = "cli.name";
     
+    public static final String         CLI_USAGE_CONFIG    = "cli.usage.config";
+    
     public static final String         CLI_USAGE_INPUT     = "cli.usage.input";
     
     public static final String         CLI_USAGE_OUTPUT    = "cli.usage.output";

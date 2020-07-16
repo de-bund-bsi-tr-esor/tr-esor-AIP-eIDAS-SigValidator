@@ -40,7 +40,7 @@ public class DefaultSyntaxValidator implements SyntaxValidator
     {
         Optional<XAIPType> xaip = Optional.empty();
         Result result = DefaultResult.ok()
-                .message( "synta validation", ResultLanguage.ENGLISH )
+                .message( "xaip is schema conform", ResultLanguage.ENGLISH )
                 .build();
         
         try
@@ -61,7 +61,7 @@ public class DefaultSyntaxValidator implements SyntaxValidator
         {
             e.printStackTrace();
             result = DefaultResult.error()
-                    .message( e.getMessage(), ResultLanguage.ENGLISH )
+                    .message( "xaip is not schema conform: " + e.getMessage(), ResultLanguage.ENGLISH )
                     .build();
         }
         

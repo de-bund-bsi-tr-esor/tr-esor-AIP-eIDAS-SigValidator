@@ -3,6 +3,7 @@ package de.bund.bsi.tresor.xaip.validator.cli;
 import com.beust.jcommander.JCommander;
 
 import de.bund.bsi.tresor.xaip.validator.cli.arguments.Arguments;
+import de.bund.bsi.tresor.xaip.validator.dispatcher.Dispatcher;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -22,7 +23,7 @@ public final class CLI
                 .build();
         
         // TODO remove this test
-        argv = new String[] { "-d", "-in", "/home/wolffs/Dokumente/XAIP-Validator/validator/validRetention.xaip" };
+        argv = new String[] { "-d", "-in", "/home/wolffs/Dokumente/XAIP-Validator/validator/signed.xaip" };
         
         try
         {

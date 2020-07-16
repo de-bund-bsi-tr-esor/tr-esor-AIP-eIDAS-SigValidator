@@ -9,5 +9,5 @@ import de.bund.bsi.tresor.xaip.validator.api.entity.SyntaxValidationResult;
  */
 public interface SyntaxValidator extends ValidatorModule
 {
-    SyntaxValidationResult validateSyntax( InputStream xaipCandidate );
+    public SyntaxValidationResult validateSyntax( InputStream xaipCandidate );
 }

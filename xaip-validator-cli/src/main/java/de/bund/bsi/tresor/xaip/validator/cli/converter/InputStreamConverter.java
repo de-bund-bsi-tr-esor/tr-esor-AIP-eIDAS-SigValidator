@@ -18,7 +18,7 @@ public class InputStreamConverter implements IStringConverter<InputStream>
     {
         try
         {
-            return value == null ? System.in : new FileInputStream( value );
+            return new FileInputStream( value );
         }
         catch ( FileNotFoundException e )
         {

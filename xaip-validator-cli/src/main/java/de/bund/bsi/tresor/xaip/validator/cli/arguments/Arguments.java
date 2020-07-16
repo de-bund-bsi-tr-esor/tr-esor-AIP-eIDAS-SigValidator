@@ -8,10 +8,10 @@ import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
 import com.beust.jcommander.converters.URIConverter;
 
-import de.bund.bsi.tresor.xaip.validator.cli.DispatcherArguments;
 import de.bund.bsi.tresor.xaip.validator.cli.MessageBundle;
 import de.bund.bsi.tresor.xaip.validator.cli.converter.InputStreamConverter;
 import de.bund.bsi.tresor.xaip.validator.cli.converter.OutputStreamConverter;
+import de.bund.bsi.tresor.xaip.validator.dispatcher.DispatcherArguments;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -28,11 +28,11 @@ public class Arguments implements DispatcherArguments
     @Parameter( descriptionKey = MessageBundle.CLI_INFO )
     private String       cliInfo;
     
-    @Parameter( order = 1, names = { "-in", "--input" },
+    @Parameter( order = 1, names = { "-i", "--in", "--input" },
             descriptionKey = MessageBundle.CLI_USAGE_INPUT, converter = InputStreamConverter.class )
     private InputStream  input  = System.in;
     
-    @Parameter( order = 2, names = { "-out", "--output" },
+    @Parameter( order = 2, names = { "-o", "--out", "--output" },
             descriptionKey = MessageBundle.CLI_USAGE_OUTPUT, converter = OutputStreamConverter.class )
     private OutputStream output = System.out;
     
@@ -48,5 +48,4 @@ public class Arguments implements DispatcherArguments
     
     @Parameter( order = 6, names = { "-h", "--help" }, help = true, descriptionKey = MessageBundle.CLI_USAGE_HELP )
     private boolean      help;
-    
 }

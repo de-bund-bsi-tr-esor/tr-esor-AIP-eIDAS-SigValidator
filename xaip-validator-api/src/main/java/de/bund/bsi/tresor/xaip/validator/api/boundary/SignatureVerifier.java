@@ -2,7 +2,7 @@ package de.bund.bsi.tresor.xaip.validator.api.boundary;
 
 import java.util.List;
 
-import de.bund.bsi.tresor.xaip.validator.api.entity.SignatureCredential;
+import oasis.names.tc.dss._1_0.core.schema.SignatureObject;
 import oasis.names.tc.dss_x._1_0.profiles.verificationreport.schema_.IndividualReportType;
 
 /**
@@ -10,5 +10,5 @@ import oasis.names.tc.dss_x._1_0.profiles.verificationreport.schema_.IndividualR
  */
 public interface SignatureVerifier extends ValidatorModule
 {
-    List<IndividualReportType> verify( List<SignatureCredential> signatures );
+    public List<IndividualReportType> verify( List<SignatureObject> signatures );
 }

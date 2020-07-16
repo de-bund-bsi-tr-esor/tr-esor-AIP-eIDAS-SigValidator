@@ -10,5 +10,5 @@ import oasis.names.tc.dss_x._1_0.profiles.verificationreport.schema_.Verificatio
  */
 public interface ProtocolAssembler extends ValidatorModule
 {
-    VerificationReportType assembleProtocols( Collection<IndividualReportType> protocols );
+    public VerificationReportType assembleProtocols( Collection<IndividualReportType> protocols );
 }
