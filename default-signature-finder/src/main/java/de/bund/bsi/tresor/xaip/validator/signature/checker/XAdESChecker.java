@@ -2,8 +2,6 @@ package de.bund.bsi.tresor.xaip.validator.signature.checker;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.Optional;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -26,23 +24,18 @@ public enum XAdESChecker
 {
     INSTANCE;
     
-    private final byte[] xmlMagicNumber                = "<?xml".getBytes( StandardCharsets.US_ASCII );
     private final String signatureNodesXPathExpression = "//Signature";
     
+    /**
+     * Checking if the data could be a XAdES by parsing the data and executing an xPathExpression to check if any &lt;Signature&gt; element
+     * is present. There is no need to check the namespace since the xmldsig specification states the namespace as optional. Also omitting
+     * the magic number check hence an xml is also valid without having the xml preamble.
+     * 
+     * @param data
+     *            the document data
+     * @return if the data could contain a XAdES
+     */
     public boolean isXAdES( byte[] data )
-    {
-        return false;
-    }
-    
-    boolean hasXmlMagicNumber( byte[] data )
-    {
-        byte[] slice = Arrays.copyOfRange( data, 0, xmlMagicNumber.length );
-        
-        return Arrays.equals( slice, xmlMagicNumber );
-    }
-    
-    // the specification states that the xmldsig namespace is optional
-    boolean hasXAdESRequirements( byte[] data )
     {
         try
         {

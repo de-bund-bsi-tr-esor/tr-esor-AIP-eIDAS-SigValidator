@@ -21,6 +21,7 @@ import de.bund.bsi.tresor.xaip.validator.signature.checker.PAdESChecker;
 import de.bund.bsi.tresor.xaip.validator.signature.checker.XAdESChecker;
 import lombok.Getter;
 import oasis.names.tc.dss._1_0.core.schema.SignatureObject;
+import oasis.names.tc.dss._1_0.core.schema.SignaturePtr;
 
 /**
  * @author wolffs
@@ -44,9 +45,16 @@ public class DefaultSignatureFinder implements SignatureFinder
         return resultList;
     }
     
-    List<SignatureObject> fromCredentialSection( CredentialsSectionType credentialSection )
+    /**
+     * Selecting the signatures from the XAIP-CredentialsSection.
+     * 
+     * @param credentialsSection
+     *            the credentialsSection
+     * @return the signature objects
+     */
+    List<SignatureObject> fromCredentialSection( CredentialsSectionType credentialsSection )
     {
-        return Optional.ofNullable( credentialSection )
+        return Optional.ofNullable( credentialsSection )
                 .map( CredentialsSectionType::getCredential )
                 .orElseGet( ArrayList::new )
                 .stream()
@@ -54,6 +62,13 @@ public class DefaultSignatureFinder implements SignatureFinder
                 .collect( toList() );
     }
     
+    /**
+     * Selecting possible signatures from the XAIP-DataObjectsSection.
+     * 
+     * @param dataSection
+     *            the dataSection
+     * @return the signature objects by converting potential signature data
+     */
     List<SignatureObject> fromDataObjectsSection( DataObjectsSectionType dataSection )
     {
         return dataSection.getDataObject().stream()
@@ -67,11 +82,31 @@ public class DefaultSignatureFinder implements SignatureFinder
                 .collect( toList() );
     }
     
-    public SignatureObject convert( byte[] data )
+    /**
+     * Converting raw binary data into a {@link SignatureObject}.
+     * 
+     * @param data
+     *            the binary data containing a signature
+     * @return the signature object
+     */
+    SignatureObject convert( byte[] data )
     {
-        return null;
+        SignaturePtr signaturePtr = new SignaturePtr();
+        signaturePtr.setWhichDocument( data );
+        
+        SignatureObject signature = new SignatureObject();
+        signature.setSignaturePtr( signaturePtr );
+        
+        return signature;
     }
     
+    /**
+     * Retrieving the binary data from a datah handler.
+     * 
+     * @param handler
+     *            the data handler
+     * @return the binary data
+     */
     byte[] asData( DataHandler handler )
     {
         try
@@ -83,6 +118,7 @@ public class DefaultSignatureFinder implements SignatureFinder
             // TODO exceptionhandling
             e.printStackTrace();
         }
+        
         return new byte[0];
     }
     
