@@ -23,7 +23,7 @@ public final class CLI
                 .build();
         
         // TODO remove this test
-        argv = new String[] { "-d", "-in", "/home/wolffs/Dokumente/XAIP-Validator/validator/signed.xaip" };
+        argv = new String[] { "-d", "-v", "-i", "/home/wolffs/Dokumente/XAIP-Validator/validator/CAdES.xaip" };
         
         try
         {

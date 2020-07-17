@@ -16,6 +16,7 @@ import de.bund.bsi.tr_esor.xaip._1.DataObjectType.BinaryData;
 import de.bund.bsi.tr_esor.xaip._1.DataObjectsSectionType;
 import de.bund.bsi.tr_esor.xaip._1.XAIPType;
 import de.bund.bsi.tresor.xaip.validator.api.boundary.SignatureFinder;
+import de.bund.bsi.tresor.xaip.validator.api.control.ModuleLogger;
 import de.bund.bsi.tresor.xaip.validator.signature.checker.CAdESChecker;
 import de.bund.bsi.tresor.xaip.validator.signature.checker.PAdESChecker;
 import de.bund.bsi.tresor.xaip.validator.signature.checker.XAdESChecker;
@@ -71,15 +72,25 @@ public class DefaultSignatureFinder implements SignatureFinder
      */
     List<SignatureObject> fromDataObjectsSection( DataObjectsSectionType dataSection )
     {
-        return dataSection.getDataObject().stream()
-                .map( DataObjectType::getBinaryData )
-                .map( BinaryData::getValue )
-                .map( this::asData )
-                .filter( data -> PAdESChecker.INSTANCE.isPAdES( data )
-                        || CAdESChecker.INSTANCE.isCAdES( data )
-                        || XAdESChecker.INSTANCE.isXAdES( data ) )
-                .map( this::convert )
-                .collect( toList() );
+        List<SignatureObject> results = new ArrayList<>();
+        for ( DataObjectType dataObject : dataSection.getDataObject() )
+        {
+            String id = dataObject.getDataObjectID();
+            byte[] data = Optional.ofNullable( dataObject.getBinaryData() )
+                    .map( BinaryData::getValue )
+                    .map( this::asData )
+                    .orElse( new byte[0] );
+            
+            ModuleLogger.verbose( "checking dataObject " + id );
+            if ( PAdESChecker.INSTANCE.isPAdES( data )
+                    || CAdESChecker.INSTANCE.isCAdES( data )
+                    || XAdESChecker.INSTANCE.isXAdES( data ) )
+            {
+                results.add( convert( data ) );
+            }
+        }
+        
+        return results;
     }
     
     /**
@@ -101,7 +112,7 @@ public class DefaultSignatureFinder implements SignatureFinder
     }
     
     /**
-     * Retrieving the binary data from a datah handler.
+     * Retrieving the binary data from a data handler.
      * 
      * @param handler
      *            the data handler
@@ -115,8 +126,7 @@ public class DefaultSignatureFinder implements SignatureFinder
         }
         catch ( IOException e )
         {
-            // TODO exceptionhandling
-            e.printStackTrace();
+            ModuleLogger.verbose( "could not retrieve data from dataObject", e );
         }
         
         return new byte[0];

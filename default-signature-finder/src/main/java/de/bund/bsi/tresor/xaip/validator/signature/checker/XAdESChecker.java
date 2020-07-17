@@ -17,6 +17,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import de.bund.bsi.tresor.xaip.validator.api.control.ModuleLogger;
+
 /**
  * @author wolffs
  */
@@ -24,7 +26,7 @@ public enum XAdESChecker
 {
     INSTANCE;
     
-    private final String signatureNodesXPathExpression = "//Signature";
+    private final String signatureNodesXPathExpression = "//*[local-name() = 'Signature']";
     
     /**
      * Checking if the data could be a XAdES by parsing the data and executing an xPathExpression to check if any &lt;Signature&gt; element
@@ -49,14 +51,18 @@ public enum XAdESChecker
             
             NodeList result = (NodeList) expr.evaluate( doc, XPathConstants.NODESET );
             
-            return Optional.ofNullable( result )
+            boolean isXAdES = Optional.ofNullable( result )
                     .map( NodeList::getLength )
                     .map( size -> size > 0 )
                     .orElse( false );
+            
+            ModuleLogger.verbose( isXAdES ? "data is XAdES" : "data is not XAdES" );
+            
+            return isXAdES;
         }
         catch ( IOException | ParserConfigurationException | SAXException | XPathExpressionException e )
         {
-            // TODO verbose logging
+            ModuleLogger.log( "data is not XAdES", e );
         }
         
         return false;

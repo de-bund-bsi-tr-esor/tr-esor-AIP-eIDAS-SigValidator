@@ -13,8 +13,10 @@ import de.bund.bsi.tresor.xaip.validator.api.boundary.SignatureFinder;
 import de.bund.bsi.tresor.xaip.validator.api.boundary.SignatureVerifier;
 import de.bund.bsi.tresor.xaip.validator.api.boundary.SyntaxValidator;
 import de.bund.bsi.tresor.xaip.validator.api.boundary.ValidatorModule;
+import de.bund.bsi.tresor.xaip.validator.api.control.ModuleLogger;
 import de.bund.bsi.tresor.xaip.validator.api.entity.SyntaxValidationResult;
 import de.bund.bsi.tresor.xaip.validator.api.entity.XAIPValidatorException;
+import oasis.names.tc.dss._1_0.core.schema.SignatureObject;
 import oasis.names.tc.dss_x._1_0.profiles.verificationreport.schema_.IndividualReportType;
 import oasis.names.tc.dss_x._1_0.profiles.verificationreport.schema_.VerificationReportType;
 
@@ -25,8 +27,6 @@ public enum Dispatcher
 {
     INSTANCE;
     
-    private VerboseLogger     logger;
-    
     private SignatureFinder   sigFinder;
     private SignatureVerifier sigVerifier;
     
@@ -35,11 +35,11 @@ public enum Dispatcher
     
     public void dispatch( DispatcherArguments args ) throws FileNotFoundException
     {
-        logger = new VerboseLogger( System.out, args.isVerbose() );
+        ModuleLogger.initConfig( args.isVerbose(), System.out );
         loadModules();
         
         SyntaxValidationResult syntaxResult = syntaxValidator.validateSyntax( args.getInput() );
-        logger.log( "finished syntax validation" );
+        ModuleLogger.log( "finished syntax validation" );
         
         IndividualReportType syntaxReport = syntaxResult.getSyntaxReport();
         
@@ -49,15 +49,17 @@ public enum Dispatcher
         if ( args.isVerify() )
         {
             syntaxResult.getXaip().ifPresent( xaip -> {
-                // TODO find
-                logger.log( "finished signature search" );
+                List<SignatureObject> signatures = sigFinder.findSignatures( xaip );
+                ModuleLogger.log( signatures.size() + " signatures found" );
+                ModuleLogger.log( "finished signature search" );
+                
                 // TODO verify
-                logger.log( "finished signature verification" );
+                ModuleLogger.log( "finished signature verification" );
             } );
         }
         
         VerificationReportType verificationReport = protocolAssembler.assembleProtocols( reportParts );
-        logger.log( "finished protocol assembling" );
+        ModuleLogger.log( "finished protocol assembling" );
         
         JAXB.marshal( verificationReport, args.getOutput() );
     }
@@ -65,7 +67,6 @@ public enum Dispatcher
     void loadModules()
     {
         sigFinder = loadModule( SignatureFinder.class );
-        
         sigVerifier = loadModule( SignatureVerifier.class );
         
         syntaxValidator = loadModule( SyntaxValidator.class );
@@ -81,7 +82,7 @@ public enum Dispatcher
         
         String vendor = module.getVendor();
         String version = module.getVersion();
-        logger.log( MessageFormat.format( "loaded {0} by {1} in version {2}", moduleName, vendor, version ) );
+        ModuleLogger.log( MessageFormat.format( "loaded {0} by {1} in version {2}", moduleName, vendor, version ) );
         
         return module;
     }

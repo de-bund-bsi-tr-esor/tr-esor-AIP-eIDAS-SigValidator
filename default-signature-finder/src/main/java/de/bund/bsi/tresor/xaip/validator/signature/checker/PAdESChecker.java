@@ -12,6 +12,8 @@ import org.apache.pdfbox.io.RandomAccessBuffer;
 import org.apache.pdfbox.pdfparser.PDFParser;
 import org.apache.pdfbox.pdmodel.PDDocument;
 
+import de.bund.bsi.tresor.xaip.validator.api.control.ModuleLogger;
+
 /**
  * @author wolffs
  */
@@ -31,7 +33,10 @@ public enum PAdESChecker
      */
     public boolean isPAdES( byte[] data )
     {
-        return hasPdfMagicNumber( data ) && hasPAdESRequirements( data );
+        boolean isPAdES = hasPdfMagicNumber( data ) && hasPAdESRequirements( data );
+        ModuleLogger.verbose( isPAdES ? "data is PAdES" : "data is not PAdES" );
+        
+        return isPAdES;
     }
     
     /**
@@ -76,7 +81,7 @@ public enum PAdESChecker
         }
         catch ( IOException e )
         {
-            // TODO verbose logging
+            ModuleLogger.verbose( "data is not PAdES", e );
         }
         
         return false;

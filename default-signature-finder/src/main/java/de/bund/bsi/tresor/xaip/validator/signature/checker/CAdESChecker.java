@@ -3,6 +3,8 @@ package de.bund.bsi.tresor.xaip.validator.signature.checker;
 import org.bouncycastle.asn1.cms.ContentInfo;
 import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
 
+import de.bund.bsi.tresor.xaip.validator.api.control.ModuleLogger;
+
 /**
  * @author wolffs
  */
@@ -23,11 +25,15 @@ public enum CAdESChecker
         try
         {
             ContentInfo cms = ContentInfo.getInstance( data );
-            return PKCSObjectIdentifiers.signedData.equals( cms.getContentType() );
+            
+            boolean isCAdES = PKCSObjectIdentifiers.signedData.equals( cms.getContentType() );
+            ModuleLogger.verbose( isCAdES ? "data is CAdES" : "data is not CAdES" );
+            
+            return isCAdES;
         }
         catch ( Exception e )
         {
-            // TODO verbose logging
+            ModuleLogger.verbose( "data is not CAdES", e );
         }
         
         return false;
