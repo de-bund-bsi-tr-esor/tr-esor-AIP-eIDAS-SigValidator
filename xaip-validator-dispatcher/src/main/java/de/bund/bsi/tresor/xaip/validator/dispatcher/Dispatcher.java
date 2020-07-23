@@ -55,6 +55,7 @@ public enum Dispatcher
                 
                 // TODO verify
                 ModuleLogger.log( "finished signature verification" );
+                sigVerifier.verify( signatures );
             } );
         }
         
