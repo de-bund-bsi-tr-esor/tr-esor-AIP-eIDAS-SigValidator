@@ -1,6 +1,5 @@
 package de.bund.bsi.tresor.xaip.validator.dispatcher;
 
-import java.io.FileNotFoundException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +20,10 @@ import oasis.names.tc.dss_x._1_0.profiles.verificationreport.schema_.IndividualR
 import oasis.names.tc.dss_x._1_0.profiles.verificationreport.schema_.VerificationReportType;
 
 /**
+ * Dispatcher element of the XAIPValidator. This is the control segment of the validator which implements the outer API functions of the
+ * validator. Those API calls will be prepared and redirected to the designated modules in a specific order to ensure a correct validation
+ * of the XAIP.
+ * 
  * @author wolffs
  */
 public enum Dispatcher
@@ -33,7 +36,15 @@ public enum Dispatcher
     private SyntaxValidator   syntaxValidator;
     private ProtocolAssembler protocolAssembler;
     
-    public void dispatch( DispatcherArguments args ) throws FileNotFoundException
+    /**
+     * Triggering and managing the XAIP validation by requesting the modules in a specific order and processing their responses. The
+     * {@link DispatcherArguments} are being used to configure and provide informations to the dispatcher which are being used by the
+     * dispatcher itself or being relayed to a specific module.
+     * 
+     * @param args
+     *            the dispatcher arguments
+     */
+    public void dispatch( DispatcherArguments args )
     {
         ModuleLogger.initConfig( args.isVerbose(), System.out );
         loadModules();
@@ -55,7 +66,7 @@ public enum Dispatcher
                 
                 // TODO verify
                 ModuleLogger.log( "finished signature verification" );
-                sigVerifier.verify( signatures );
+                reportParts.addAll( sigVerifier.verify( signatures ) );
             } );
         }
         
@@ -65,6 +76,9 @@ public enum Dispatcher
         JAXB.marshal( verificationReport, args.getOutput() );
     }
     
+    /**
+     * Loading all validator modules.
+     */
     void loadModules()
     {
         sigFinder = loadModule( SignatureFinder.class );
@@ -74,6 +88,15 @@ public enum Dispatcher
         protocolAssembler = loadModule( ProtocolAssembler.class );
     }
     
+    /**
+     * Loads a module implementation of the provided moduleClass.
+     * 
+     * @param <T>
+     *            type of the module
+     * @param moduleClass
+     *            class of the module interface
+     * @return the loaded module implementation
+     */
     <T extends ValidatorModule> T loadModule( Class<T> moduleClass )
     {
         String moduleName = moduleClass.getSimpleName();
