@@ -5,16 +5,21 @@ import static java.util.stream.Collectors.toList;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 import javax.activation.DataHandler;
 import javax.activation.FileDataSource;
-import javax.xml.bind.JAXB;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
+
+import org.w3c.dom.Node;
 
 import de.bund.bsi.tr_esor.api._1.S4_Service;
 import de.bund.bsi.tr_esor.xaip._1.DataObjectType;
@@ -49,7 +54,6 @@ public class DefaultSignatureVerifier implements SignatureVerifier
     {
         List<ResponseBaseType> results = signatures.stream()
                 .map( this::createRequest )
-                .peek( this::debug )
                 .map( this::verify )
                 .collect( toList() );
         
@@ -59,50 +63,88 @@ public class DefaultSignatureVerifier implements SignatureVerifier
             ModuleLogger.log( "lost " + missingSignatures + " signature documents on verification" );
         }
         
-        return null;
+        return results.stream()
+                .map( this::convertResponse )
+                .flatMap( List::stream )
+                .collect( toList() );
+    }
+    
+    private List<IndividualReportType> convertResponse( ResponseBaseType response )
+    {
+        List<IndividualReportType> resultList = new ArrayList<>();
+        
+        try
+        {
+            JAXBContext context = JAXBContext.newInstance( IndividualReportType.class );
+            Unmarshaller unmarshaller = context.createUnmarshaller();
+            for ( Object obj : response.getOptionalOutputs().getAny() )
+            {
+                if ( obj instanceof Node )
+                {
+                    JAXBElement<IndividualReportType> element = unmarshaller.unmarshal( (Node) obj, IndividualReportType.class );
+                    resultList.add( element.getValue() );
+                }
+            }
+        }
+        catch ( JAXBException e )
+        {
+            ModuleLogger.verbose( "could not process response of signature verification for requestId " + response.getRequestID(), e );
+        }
+        
+        return resultList;
     }
     
     private VerifyRequest createRequest( SignatureObject signatureObject )
     {
         VerifyRequest request = new VerifyRequest();
-        InputDocuments inputDocuments = new InputDocuments();
+        Optional<Object> obj = Optional.ofNullable( signatureObject.getSignaturePtr() )
+                .map( SignaturePtr::getWhichDocument );
         
-        Optional.ofNullable( signatureObject.getSignaturePtr() )
-                .map( SignaturePtr::getWhichDocument )
-                .ifPresentOrElse( sigDocument -> {
-                    DataObjectType dataObject = new DataObjectType();
-                    if ( sigDocument instanceof byte[] )
-                    {
-                        dataObject = parseBinaryData( (byte[]) sigDocument )
-                                .orElseThrow();
-                    }
-                    else if ( sigDocument instanceof DataObjectType )
-                    {
-                        dataObject = (DataObjectType) sigDocument;
-                    }
-                    
-                    SignaturePtr ptr = new SignaturePtr();
-                    ptr.setWhichDocument( dataObject );
-                    
-                    SignatureObject sigObj = new SignatureObject();
-                    sigObj.setSignaturePtr( ptr );
-                    
-                    Base64Data b64Data = new Base64Data();
-                    b64Data.setValue( dataObject.getBinaryData().getValue() );
-                    
-                    DocumentType document = new DocumentType();
-                    document.setBase64Data( b64Data );
-                    document.setID( dataObject.getDataObjectID() );
-                    
-                    inputDocuments.getDocumentOrTransformedDataOrDocumentHash().add( document );
-                    
-                    request.setSignatureObject( sigObj );
-                }, () -> request.setSignatureObject( signatureObject ) );
-        
-        request.setInputDocuments( inputDocuments );
+        if ( obj.isPresent() )
+        {
+            DataObjectType dataObject = parseDocument( obj.get() ).orElseThrow(); // TODO
+            
+            SignaturePtr ptr = new SignaturePtr();
+            ptr.setWhichDocument( dataObject );
+            
+            SignatureObject sigObj = new SignatureObject();
+            sigObj.setSignaturePtr( ptr );
+            
+            Base64Data b64Data = new Base64Data();
+            b64Data.setValue( dataObject.getBinaryData().getValue() );
+            
+            DocumentType document = new DocumentType();
+            document.setBase64Data( b64Data );
+            document.setID( dataObject.getDataObjectID() );
+            
+            InputDocuments inputDocuments = new InputDocuments();
+            inputDocuments.getDocumentOrTransformedDataOrDocumentHash().add( document );
+            
+            request.setSignatureObject( sigObj );
+            request.setInputDocuments( inputDocuments );
+        }
+        else
+        {
+            request.setSignatureObject( signatureObject );
+        }
         
         return request;
         
+    }
+    
+    Optional<DataObjectType> parseDocument( Object document )
+    {
+        Optional<DataObjectType> dataObject = Optional.empty();
+        if ( document instanceof byte[] )
+        {
+            dataObject = parseBinaryData( (byte[]) document );
+        }
+        else if ( document instanceof DataObjectType )
+        {
+            dataObject = Optional.of( (DataObjectType) document );
+        }
+        
+        return dataObject;
     }
     
     Optional<DataObjectType> parseBinaryData( byte[] binary )
@@ -140,10 +182,9 @@ public class DefaultSignatureVerifier implements SignatureVerifier
         if ( service == null )
         {
             // String wsdlLocation = Optional.ofNullable( config.getTresorUrl()).orElseThrow();
-            String wsdlLocation = "http://10.3.141.126:8080/archisafe/S4?wsdl";
+            String wsdlLocation = "http://10.3.141.126:8080/VerificationService/S4?wsdl";
             try
             {
-                // service = new VerifyConnector_Service( new URL( wsdlLocation ), new MTOMFeature() );
                 service = new S4_Service( new URL( wsdlLocation ) );
             }
             catch ( MalformedURLException e )
@@ -153,18 +194,5 @@ public class DefaultSignatureVerifier implements SignatureVerifier
         }
         
         return service.getS4().verify( request );
-    }
-    
-    // TODO remove
-    void debug( VerifyRequest req )
-    {
-        try ( OutputStream out = new FileOutputStream( "/tmp/req" + UUID.randomUUID() + ".xml" ) )
-        {
-            JAXB.marshal( req, out );
-        }
-        catch ( IOException e )
-        {
-            
-        }
     }
 }
