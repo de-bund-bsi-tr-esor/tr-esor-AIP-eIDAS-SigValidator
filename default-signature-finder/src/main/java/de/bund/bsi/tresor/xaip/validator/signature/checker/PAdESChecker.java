@@ -15,6 +15,8 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import de.bund.bsi.tresor.xaip.validator.api.control.ModuleLogger;
 
 /**
+ * Singleton to check data for possible PAdES.
+ * 
  * @author wolffs
  */
 public enum PAdESChecker

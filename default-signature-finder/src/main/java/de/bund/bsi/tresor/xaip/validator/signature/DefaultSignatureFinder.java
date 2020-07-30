@@ -25,6 +25,8 @@ import oasis.names.tc.dss._1_0.core.schema.SignatureObject;
 import oasis.names.tc.dss._1_0.core.schema.SignaturePtr;
 
 /**
+ * Implementation of the SignatureFindermodule from the XAIPValidator.
+ * 
  * @author wolffs
  */
 @Getter

@@ -6,6 +6,8 @@ import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
 import de.bund.bsi.tresor.xaip.validator.api.control.ModuleLogger;
 
 /**
+ * Singleton to check data for possible CAdES.
+ * 
  * @author wolffs
  */
 public enum CAdESChecker

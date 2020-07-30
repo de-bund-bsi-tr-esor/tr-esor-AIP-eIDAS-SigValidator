@@ -20,6 +20,8 @@ import org.xml.sax.SAXException;
 import de.bund.bsi.tresor.xaip.validator.api.control.ModuleLogger;
 
 /**
+ * Singleton to check data for possible XAdES.
+ * 
  * @author wolffs
  */
 public enum XAdESChecker

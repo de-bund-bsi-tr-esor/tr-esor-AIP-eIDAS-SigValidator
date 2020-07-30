@@ -15,7 +15,7 @@ import oasis.names.tc.dss_x._1_0.profiles.verificationreport.schema_.IndividualR
 import oasis.names.tc.dss_x._1_0.profiles.verificationreport.schema_.VerificationReportType;
 
 /**
- * Implementation of the ProtocolAssember module from the XAIPValidator.
+ * Implementation of the ProtocolAssembler module from the XAIPValidator.
  * 
  * @author wolffs
  */
