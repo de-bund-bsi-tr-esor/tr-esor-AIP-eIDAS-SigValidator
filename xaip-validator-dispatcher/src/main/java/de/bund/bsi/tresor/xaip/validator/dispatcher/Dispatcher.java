@@ -1,8 +1,16 @@
 package de.bund.bsi.tresor.xaip.validator.dispatcher;
 
+import static java.util.stream.Collectors.toMap;
+
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Properties;
 import java.util.ServiceLoader;
 
 import javax.xml.bind.JAXB;
@@ -47,7 +55,7 @@ public enum Dispatcher
     public void dispatch( DispatcherArguments args )
     {
         ModuleLogger.initConfig( args.isVerbose(), args.getLog() );
-        loadModules();
+        loadModules( args.getModuleConfig() );
         
         SyntaxValidationResult syntaxResult = syntaxValidator.validateSyntax( args.getInput() );
         ModuleLogger.log( "finished syntax validation" );
@@ -64,7 +72,6 @@ public enum Dispatcher
                 ModuleLogger.log( signatures.size() + " signatures found" );
                 ModuleLogger.log( "finished signature search" );
                 
-                // TODO verify
                 ModuleLogger.log( "finished signature verification" );
                 reportParts.addAll( sigVerifier.verify( signatures ) );
             } );
@@ -77,15 +84,18 @@ public enum Dispatcher
     }
     
     /**
-     * Loading all validator modules.
+     * Loading and configuring all validator modules.
+     * 
+     * @param configProperties
+     *            possible configuration properties
      */
-    void loadModules()
+    void loadModules( Map<String, String> configProperties )
     {
-        sigFinder = loadModule( SignatureFinder.class );
-        sigVerifier = loadModule( SignatureVerifier.class );
+        sigFinder = loadModule( SignatureFinder.class, "finder", configProperties );
+        sigVerifier = loadModule( SignatureVerifier.class, "verifier", configProperties );
         
-        syntaxValidator = loadModule( SyntaxValidator.class );
-        protocolAssembler = loadModule( ProtocolAssembler.class );
+        syntaxValidator = loadModule( SyntaxValidator.class, "validator", configProperties );
+        protocolAssembler = loadModule( ProtocolAssembler.class, "assembler", configProperties );
     }
     
     /**
@@ -97,7 +107,7 @@ public enum Dispatcher
      *            class of the module interface
      * @return the loaded module implementation
      */
-    <T extends ValidatorModule> T loadModule( Class<T> moduleClass )
+    <T extends ValidatorModule> T loadModule( Class<T> moduleClass, String paramPrefix, Map<String, String> configProperties )
     {
         String moduleName = moduleClass.getSimpleName();
         T module = ServiceLoader.load( moduleClass )
@@ -106,8 +116,48 @@ public enum Dispatcher
         
         String vendor = module.getVendor();
         String version = module.getVersion();
+        
+        configureModule( module, paramPrefix, vendor, configProperties );
+        
         ModuleLogger.log( MessageFormat.format( "loaded {0} by {1} in version {2}", moduleName, vendor, version ) );
         
         return module;
     }
+    
+    @SuppressWarnings( { "unchecked", "rawtypes" } )
+    <T extends ValidatorModule> void configureModule( T module, String paramPrefix, String vendor, Map<String, String> configProperties )
+    {
+        String moduleProperty = String.join( ".", paramPrefix, vendor ).toLowerCase();
+        String modulePropertyLocation = String.join( ".", moduleProperty, "conf" );
+        
+        Map<String, String> moduleConfigProperties = new HashMap<>();
+        if ( configProperties.containsKey( modulePropertyLocation ) )
+        {
+            String configLocation = Optional.ofNullable( configProperties.get( modulePropertyLocation ) )
+                    .orElseThrow( () -> new XAIPValidatorException( modulePropertyLocation + " does not point to a valid location" ) );
+            
+            try ( InputStream in = new FileInputStream( configLocation ) )
+            {
+                Properties externalConfig = new Properties();
+                externalConfig.load( in );
+                
+                moduleConfigProperties = (Map) externalConfig;
+            }
+            catch ( Exception e )
+            {
+                throw new XAIPValidatorException( "could not load external module configuration from " + configLocation, e );
+            }
+        }
+        else
+        {
+            moduleConfigProperties = configProperties.entrySet().stream()
+                    .filter( entry -> entry.getKey().toLowerCase().startsWith( moduleProperty ) )
+                    .collect( toMap( entry -> entry.getKey().substring( moduleProperty.length() + 1 ), entry -> entry.getValue() ) );
+        }
+        
+        ModuleLogger.verbose( "configuration for " + moduleProperty + ": " + moduleConfigProperties );
+        
+        module.configure( moduleConfigProperties );
+    }
+    
 }

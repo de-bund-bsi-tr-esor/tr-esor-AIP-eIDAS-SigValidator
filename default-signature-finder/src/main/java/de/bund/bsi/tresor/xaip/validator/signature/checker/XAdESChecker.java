@@ -64,7 +64,7 @@ public enum XAdESChecker
         }
         catch ( IOException | ParserConfigurationException | SAXException | XPathExpressionException e )
         {
-            ModuleLogger.log( "data is not XAdES", e );
+            ModuleLogger.verbose( "data is not XAdES", e );
         }
         
         return false;

@@ -34,7 +34,11 @@ public final class CLI
                 .build();
         
         // TODO remove this test
-        argv = new String[] { "-d", "-v", "-i", "/home/wolffs/Dokumente/XAIP-Validator/validator/PAdES.xaip" };
+        argv = new String[] {
+                // "-d",
+                "-v",
+                "-i", "/home/wolffs/Dokumente/XAIP-Validator/validator/PAdES.xaip",
+                "-Mverifier.bsi.wsdlUrl=http://10.3.141.126:8080/VerificationService/S4?wsdl" };
         
         try
         {

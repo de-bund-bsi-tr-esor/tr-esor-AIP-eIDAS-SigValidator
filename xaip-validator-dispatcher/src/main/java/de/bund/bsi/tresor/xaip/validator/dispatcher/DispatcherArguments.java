@@ -3,6 +3,7 @@ package de.bund.bsi.tresor.xaip.validator.dispatcher;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
+import java.util.Map;
 
 /**
  * Interface of arguments for the dispatcher.
@@ -49,5 +50,12 @@ public interface DispatcherArguments
      * @return the outputStream
      */
     public OutputStream getLog();
+    
+    /**
+     * Dispatcher argument for the individual modules the dispatcher is managing.
+     * 
+     * @return the module configuration properties
+     */
+    public Map<String, String> getModuleConfig();
     
 }

@@ -1,7 +1,6 @@
 package de.bund.bsi.tresor.xaip.validator.cli.converter;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.nio.file.Path;
@@ -54,7 +53,7 @@ public class OutputStreamConverter
             
             return output;
         }
-        catch ( FileNotFoundException e )
+        catch ( Exception e )
         {
             throw new XAIPValidatorException( "invalid output param " + value, e );
         }
@@ -70,6 +69,6 @@ public class OutputStreamConverter
      */
     public static Optional<OutputStream> systemOutput( String value )
     {
-        return (StringUtils.isNotBlank( value ) && value.equalsIgnoreCase( SYS_OUT )) ? Optional.of( System.out ) : Optional.empty();
+        return SYS_OUT.equalsIgnoreCase( value ) ? Optional.of( System.out ) : Optional.empty();
     }
 }
