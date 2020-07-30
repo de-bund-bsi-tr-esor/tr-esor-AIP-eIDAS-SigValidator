@@ -8,12 +8,15 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 
 import de.bund.bsi.tresor.xaip.validator.api.boundary.ProtocolAssembler;
+import de.bund.bsi.tresor.xaip.validator.api.control.ModuleLogger;
 import lombok.Getter;
 import oasis.names.tc.dss._1_0.core.schema.VerificationTimeInfoType;
 import oasis.names.tc.dss_x._1_0.profiles.verificationreport.schema_.IndividualReportType;
 import oasis.names.tc.dss_x._1_0.profiles.verificationreport.schema_.VerificationReportType;
 
 /**
+ * Implementation of the ProtocolAssember module from the XAIPValidator.
+ * 
  * @author wolffs
  */
 @Getter
@@ -44,7 +47,7 @@ public class DefaultProtocolAssembler implements ProtocolAssembler
         }
         catch ( DatatypeConfigurationException e )
         {
-            System.err.println( "could not add verifiction time info" );
+            ModuleLogger.verbose( "could not add verifiction time info", e );
         }
         
         return completeReport;
