@@ -25,6 +25,8 @@ import oasis.names.tc.dss._1_0.core.schema.Result;
 import oasis.names.tc.dss_x._1_0.profiles.verificationreport.schema_.IndividualReportType;
 
 /**
+ * Implementation of the SyntaxValidtor module from the XAIPValidator.
+ * 
  * @author wolffs
  */
 @Getter
@@ -71,6 +73,14 @@ public class DefaultSyntaxValidator implements SyntaxValidator
         return new SyntaxValidationResult( xaip, syntaxReport );
     }
     
+    /**
+     * Traversing through the directory and converting every file to a {@link StreamSource}
+     * 
+     * @param schemaDirectory
+     *            the directory containing all schema files
+     *            
+     * @return the schema sources
+     */
     List<Source> sources( File schemaDirectory )
     {
         List<Source> schemas = new ArrayList<>();
