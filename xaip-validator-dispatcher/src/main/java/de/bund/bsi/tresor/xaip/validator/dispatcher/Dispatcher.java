@@ -46,7 +46,7 @@ public enum Dispatcher
      */
     public void dispatch( DispatcherArguments args )
     {
-        ModuleLogger.initConfig( args.isVerbose(), System.out );
+        ModuleLogger.initConfig( args.isVerbose(), args.getLog() );
         loadModules();
         
         SyntaxValidationResult syntaxResult = syntaxValidator.validateSyntax( args.getInput() );

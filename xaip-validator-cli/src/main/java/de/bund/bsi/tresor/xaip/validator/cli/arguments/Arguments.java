@@ -10,7 +10,8 @@ import com.beust.jcommander.converters.URIConverter;
 
 import de.bund.bsi.tresor.xaip.validator.cli.MessageBundle;
 import de.bund.bsi.tresor.xaip.validator.cli.converter.InputStreamConverter;
-import de.bund.bsi.tresor.xaip.validator.cli.converter.OutputStreamConverter;
+import de.bund.bsi.tresor.xaip.validator.cli.converter.LogOutputStreamConverter;
+import de.bund.bsi.tresor.xaip.validator.cli.converter.ResultOutputStreamConverter;
 import de.bund.bsi.tresor.xaip.validator.dispatcher.DispatcherArguments;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -33,7 +34,7 @@ public class Arguments implements DispatcherArguments
     private InputStream  input  = System.in;
     
     @Parameter( order = 2, names = { "-o", "--out", "--output" },
-            descriptionKey = MessageBundle.CLI_USAGE_OUTPUT, converter = OutputStreamConverter.class )
+            descriptionKey = MessageBundle.CLI_USAGE_OUTPUT, converter = ResultOutputStreamConverter.class )
     private OutputStream output = System.out;
     
     @Parameter( order = 3, names = { "-e", "--eCardUrl" },
@@ -46,6 +47,10 @@ public class Arguments implements DispatcherArguments
     @Parameter( order = 5, names = { "-d", "--debug", "--verbose" }, descriptionKey = MessageBundle.CLI_USAGE_VERBOSE )
     private boolean      verbose;
     
-    @Parameter( order = 6, names = { "-h", "--help" }, help = true, descriptionKey = MessageBundle.CLI_USAGE_HELP )
+    @Parameter( order = 2, names = { "-l", "--log" },
+            descriptionKey = MessageBundle.CLI_USAGE_LOG, converter = LogOutputStreamConverter.class )
+    private OutputStream log;
+    
+    @Parameter( order = 7, names = { "-h", "--help" }, help = true, descriptionKey = MessageBundle.CLI_USAGE_HELP )
     private boolean      help;
 }

@@ -37,11 +37,17 @@ public interface DispatcherArguments
     public InputStream getInput();
     
     /**
-     * Dispatcher argument for the outputStream. The logger will use this stream to write the log entries also the validation result will be
-     * written to this stream.
+     * Dispatcher argument for the result outputStream. The validation result will be written to this stream.
      * 
      * @return the outputStream
      */
     public OutputStream getOutput();
+    
+    /**
+     * Dispatcher argument for the logger outputStream. The logger will use this stream to write the log entries.
+     * 
+     * @return the outputStream
+     */
+    public OutputStream getLog();
     
 }

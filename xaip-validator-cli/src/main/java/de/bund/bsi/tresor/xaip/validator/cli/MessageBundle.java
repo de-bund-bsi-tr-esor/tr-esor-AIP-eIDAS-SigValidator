@@ -5,6 +5,8 @@ import java.util.ResourceBundle;
 import lombok.Getter;
 
 /**
+ * Abstract class for managing the messagebundle. The messagebundle is being used to get informations over the usage of the CLI.
+ * 
  * @author wolffs
  */
 @Getter
@@ -28,5 +30,12 @@ public abstract class MessageBundle
     
     public static final String         CLI_USAGE_VERBOSE   = "cli.usage.verbose";
     
+    public static final String         CLI_USAGE_LOG       = "cli.usage.log";
+    
     public static final String         CLI_USAGE_HELP      = "cli.usage.help";
+    
+    public static final String         ARG_DEFAULT_LOG     = "arguments.default.log";
+    
+    public static final String         ARG_DEFAULT_OUTPUT  = "arguments.default.output";
+    
 }

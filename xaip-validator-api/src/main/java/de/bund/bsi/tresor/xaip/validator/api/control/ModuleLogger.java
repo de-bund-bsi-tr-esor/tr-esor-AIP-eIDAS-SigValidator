@@ -46,21 +46,25 @@ public class ModuleLogger
     
     public static void log( String message, Throwable e )
     {
-        String loggername = ModuleLogger.class.getName();
-        StackWalker walker = StackWalker.getInstance( RETAIN_CLASS_REFERENCE );
-        String callerName = walker.walk( stream -> stream.filter( frame -> !frame.getClassName().equals( loggername ) )
-                .findFirst()
-                .map( StackFrame::getClassName )
-                .orElse( loggername ) );
-        
-        PrintWriter writer = new PrintWriter( conf.getOutput() );
-        writer.format( "[%s] %s", callerName, message );
-        writer.append( System.lineSeparator() );
-        if ( e != null )
+        OutputStream out = conf.getOutput();
+        if ( out != null )
         {
-            e.printStackTrace( writer );
+            String loggername = ModuleLogger.class.getName();
+            StackWalker walker = StackWalker.getInstance( RETAIN_CLASS_REFERENCE );
+            String callerName = walker.walk( stream -> stream.filter( frame -> !frame.getClassName().equals( loggername ) )
+                    .findFirst()
+                    .map( StackFrame::getClassName )
+                    .orElse( loggername ) );
+            
+            PrintWriter writer = new PrintWriter( out );
+            writer.format( "[%s] %s", callerName, message );
+            writer.append( System.lineSeparator() );
+            if ( e != null )
+            {
+                e.printStackTrace( writer );
+            }
+            
+            writer.flush();
         }
-        
-        writer.flush();
     }
 }
