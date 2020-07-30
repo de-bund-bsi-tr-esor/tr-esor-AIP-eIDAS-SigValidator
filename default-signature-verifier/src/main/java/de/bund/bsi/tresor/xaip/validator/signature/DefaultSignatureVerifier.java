@@ -9,6 +9,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -21,6 +22,7 @@ import javax.xml.bind.Unmarshaller;
 
 import org.w3c.dom.Node;
 
+import de.bund.bsi.ecard.api._1.VerifyResponse;
 import de.bund.bsi.tr_esor.api._1.S4_Service;
 import de.bund.bsi.tr_esor.xaip._1.DataObjectType;
 import de.bund.bsi.tr_esor.xaip._1.DataObjectType.BinaryData;
@@ -38,6 +40,8 @@ import oasis.names.tc.dss._1_0.core.schema.VerifyRequest;
 import oasis.names.tc.dss_x._1_0.profiles.verificationreport.schema_.IndividualReportType;
 
 /**
+ * Implementation of the SignatureVerifier module from the XAIPValidator.
+ * 
  * @author wolffs
  */
 @Getter
@@ -47,14 +51,25 @@ public class DefaultSignatureVerifier implements SignatureVerifier
     private final String          version = "1.0.0";
     
     private S4_Service            service;
-    private DefaultVerifierConfig config  = new DefaultVerifierConfig();
+    private DefaultVerifierConfig config;
+    
+    /**
+     * Configuring this module by using the provided property map
+     * 
+     * @param config
+     *            the property map
+     */
+    public void configure( Map<String, String> config )
+    {
+        this.config = DefaultVerifierConfig.fromArguments( config );
+    }
     
     @Override
     public List<IndividualReportType> verify( List<SignatureObject> signatures )
     {
         List<ResponseBaseType> results = signatures.stream()
                 .map( this::createRequest )
-                .map( this::verify )
+                .map( this::requestVerification )
                 .collect( toList() );
         
         int missingSignatures = signatures.size() - results.size();
@@ -69,7 +84,15 @@ public class DefaultSignatureVerifier implements SignatureVerifier
                 .collect( toList() );
     }
     
-    private List<IndividualReportType> convertResponse( ResponseBaseType response )
+    /**
+     * Parsing the {@link VerifyResponse} from the {@link #requestVerification(VerifyRequest)} and extracting the
+     * {@link IndividualReportType}
+     * 
+     * @param response
+     *            the base response type of the {@link VerifyResponse}
+     * @return list of {@link IndividualReportType} retrieved from the response
+     */
+    List<IndividualReportType> convertResponse( ResponseBaseType response )
     {
         List<IndividualReportType> resultList = new ArrayList<>();
         
@@ -94,7 +117,7 @@ public class DefaultSignatureVerifier implements SignatureVerifier
         return resultList;
     }
     
-    private VerifyRequest createRequest( SignatureObject signatureObject )
+    VerifyRequest createRequest( SignatureObject signatureObject )
     {
         VerifyRequest request = new VerifyRequest();
         Optional<Object> obj = Optional.ofNullable( signatureObject.getSignaturePtr() )
@@ -177,12 +200,20 @@ public class DefaultSignatureVerifier implements SignatureVerifier
         return result;
     }
     
-    ResponseBaseType verify( VerifyRequest request )
+    /**
+     * Requesting the verification service by using the configured {@link DefaultVerifierConfig#wsdlUrl} and returning the result of this
+     * request. The service client will be created on the first call and reused after. When no wsdl was being provided an exception will be
+     * thrown instead.
+     * 
+     * @param request
+     *            the verification request
+     * @return the verification response
+     */
+    ResponseBaseType requestVerification( VerifyRequest request )
     {
         if ( service == null )
         {
-            // String wsdlLocation = Optional.ofNullable( config.getTresorUrl()).orElseThrow();
-            String wsdlLocation = "http://10.3.141.126:8080/VerificationService/S4?wsdl";
+            String wsdlLocation = config.getWsdlUrl().orElseThrow( () -> new XAIPValidatorException( "missing wsdl location" ) );
             try
             {
                 service = new S4_Service( new URL( wsdlLocation ) );
