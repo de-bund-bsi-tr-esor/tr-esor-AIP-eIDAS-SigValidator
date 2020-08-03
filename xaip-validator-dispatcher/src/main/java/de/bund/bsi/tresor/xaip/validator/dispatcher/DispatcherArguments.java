@@ -2,7 +2,6 @@ package de.bund.bsi.tresor.xaip.validator.dispatcher;
 
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.URI;
 import java.util.Map;
 
 /**
@@ -12,8 +11,6 @@ import java.util.Map;
  */
 public interface DispatcherArguments
 {
-    public URI getECardUrl();
-    
     /**
      * Dispatcher argument if the signatures of the provided XAIP should be validated. Using isVerify with a value of <code>false</code>
      * only the XAIP schema will be validated and the signature verification step is being skipped.

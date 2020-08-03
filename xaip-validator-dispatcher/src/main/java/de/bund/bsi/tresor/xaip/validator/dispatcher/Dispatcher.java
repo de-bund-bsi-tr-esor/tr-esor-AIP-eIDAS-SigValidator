@@ -47,7 +47,17 @@ public enum Dispatcher
     /**
      * Triggering and managing the XAIP validation by requesting the modules in a specific order and processing their responses. The
      * {@link DispatcherArguments} are being used to configure and provide informations to the dispatcher which are being used by the
-     * dispatcher itself or being relayed to a specific module.
+     * dispatcher itself or being relayed to a specific module.<br>
+     * The modules are called in the following order:<br>
+     * <ol>
+     * <li>SyntaxValidator
+     * <li>SignatureFinder
+     * <li>SignatureValidator (optional)
+     * <li>ProtocolAssembler
+     * </ol>
+     * 
+     * The signature validation will be triggered by the {@link DispatcherArguments#isVerify()} flag. Output will be generated on the
+     * configured logger stream {@link DispatcherArguments#getLog()} and the result stream {@link DispatcherArguments#getOutput()}.
      * 
      * @param args
      *            the dispatcher arguments
