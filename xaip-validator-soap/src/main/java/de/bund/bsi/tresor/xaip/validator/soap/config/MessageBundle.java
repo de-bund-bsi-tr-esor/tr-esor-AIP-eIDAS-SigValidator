@@ -28,4 +28,6 @@ public abstract class MessageBundle
     
     public static final String         SERVER_PROTOCOL = "server.protocol";
     
+    public static final String         SERVER_VERBOSE  = "server.verbose";
+    
 }

@@ -2,14 +2,12 @@ package de.bund.bsi.tresor.xaip.validator.cli.arguments;
 
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
 import com.beust.jcommander.DynamicParameter;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
-import com.beust.jcommander.converters.URIConverter;
 
 import de.bund.bsi.tresor.xaip.validator.cli.MessageBundle;
 import de.bund.bsi.tresor.xaip.validator.cli.converter.InputStreamConverter;
@@ -41,9 +39,9 @@ public class Arguments implements DispatcherArguments
             descriptionKey = MessageBundle.CLI_USAGE_OUTPUT, converter = ResultOutputStreamConverter.class )
     private OutputStream        output       = System.out;
     
-    @Parameter( order = 3, names = { "-e", "--eCardUrl" },
-            descriptionKey = MessageBundle.CLI_USAGE_ECARD_URL, converter = URIConverter.class )
-    private URI                 eCardUrl;
+    // @Parameter( order = 3, names = { "-e", "--eCardUrl" },
+    // descriptionKey = MessageBundle.CLI_USAGE_ECARD_URL, converter = URIConverter.class )
+    // private URI eCardUrl;
     
     @Parameter( order = 4, names = { "-v", "--verify" }, descriptionKey = MessageBundle.CLI_USAGE_VERIFY )
     private boolean             verify;

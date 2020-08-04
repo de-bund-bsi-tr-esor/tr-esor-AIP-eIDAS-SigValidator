@@ -15,6 +15,8 @@ import com.beust.jcommander.JCommander;
 
 import de.bund.bsi.tr_esor.api._1.S4;
 import de.bund.bsi.tr_esor.xaip._1.XAIPType;
+import de.bund.bsi.tresor.xaip.validator.api.control.ModuleLogger;
+import de.bund.bsi.tresor.xaip.validator.api.control.XAIPMarshaller;
 import de.bund.bsi.tresor.xaip.validator.soap.config.MessageBundle;
 import de.bund.bsi.tresor.xaip.validator.soap.config.ServerConfig;
 import oasis.names.tc.dss._1_0.core.schema.DocumentType;
@@ -37,10 +39,14 @@ public class Server
                 .programName( MessageBundle.RESOURCE.getString( MessageBundle.SERVER_NAME ) )
                 .build();
         
+        // TODO remove this test
+        args = new String[] { "-Mverifier.bsi.wsdlUrl=http://10.3.141.126:8080/VerificationService/S4?wsdl" };
+        
         try
         {
             jCommander.parse( args );
             
+            ModuleLogger.initConfig( config.isVerbose(), config.getLog() );
             if ( config.isHelp() )
             {
                 jCommander.usage();
@@ -48,33 +54,32 @@ public class Server
             else
             {
                 startServer( config );
-                System.out.println( "started server" );
             }
         }
         catch ( Exception e )
         {
-            e.printStackTrace();
+            ModuleLogger.initConfig( config.isVerbose(), config.getLog() );
+            ModuleLogger.log( "could not start server", e );
         }
         
         clientTest();
     }
     
-    @SuppressWarnings( "deprecation" )
     public static void startServer( ServerConfig config ) throws URISyntaxException
     {
         URI uri = new URI( config.getProtocol(), null, config.getHost(), config.getPort(), config.getPath(), null, null );
         
         String address = uri.toString();
-        Endpoint.publish( address, new XAIPValidator() );
+        Endpoint.publish( address, new XAIPValidator( config ) );
         
-        System.out.println( "using address: " + address );
+        ModuleLogger.log( "published server on address: " + address );
     }
     
     public static void clientTest()
     {
         try
         {
-            XAIPType xaip = JAXB.unmarshal( new File( "/home/wolffs/Dokumente/XAIP-Validator/validator/simple.xaip" ), XAIPType.class );
+            XAIPType xaip = JAXB.unmarshal( new File( "/home/wolffs/Dokumente/XAIP-Validator/validator/PAdES.xaip" ), XAIPType.class );
             System.out.println( "start client test" );
             
             Service service = Service.create(
@@ -85,8 +90,7 @@ public class Server
                     new QName( "http://www.bsi.bund.de/tr-esor/api/1.2", "S4" ),
                     S4.class );
             
-            JAXBElement<XAIPType> xaipInline = new JAXBElement<XAIPType>( new QName( "http://www.bsi.bund.de/tr-esor/xaip/1.2", "XAIP" ),
-                    XAIPType.class, xaip );
+            JAXBElement<XAIPType> xaipInline = XAIPMarshaller.element( xaip );
             
             InlineXMLType inline = new InlineXMLType();
             inline.setAny( xaipInline );

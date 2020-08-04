@@ -10,12 +10,12 @@ public class XAIPValidatorException extends RuntimeException
     
     public XAIPValidatorException( String message )
     {
-        super( message + " use -h for help" );
+        super( message );
     }
     
     public XAIPValidatorException( String message, Throwable reason )
     {
-        super( message + " use -h for help", reason );
+        super( message, reason );
     }
     
 }
