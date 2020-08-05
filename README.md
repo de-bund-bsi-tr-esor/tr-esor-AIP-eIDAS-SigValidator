@@ -1,5 +1,6 @@
-# Description
+![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)
 
+# XAIPValidator
 The XAIPValidator is a tool designed for the validation of an XML formatted Archival Information Package (XAIP). Using a modular structure and plugin mechanism, the validator is validating the XAIP by using those modules which can vary by their implementation.
 
 Validation will be done step by step in following order:
@@ -10,9 +11,31 @@ Validation will be done step by step in following order:
 4. Calling SignatureVerificationModule
 5. Calling ProtocolAssemblerModule
 
+## Getting Started
 
+> ToDo
 
-# CLI
+`java -jar xaip-validator.jar -Mverifier.bsi.wsdlUrl=http://localhost:8080/s4?wsdl -v -in /tmp/sample.xaip`
+
+## Prerequisites
+> ToDo
+
+## Installing
+> ToDo
+
+## Components
+The XAIPValidator consists of multiple modules.
+
+CLI		\
+		  Dispatcher
+SERVER	/	+- SyntaxValidator
+			+- SignatureFinder
+			+- SignatureVerifier
+			+- ProtocolAssembler
+
+### CLI
+
+**Description:** The cli version of the XAIPValidator is being used for validation of XAIP's via the command line.
 
 **Usage:** `java -jar xaip-validator.jar [OPTION [ARG]*]*`
 
@@ -23,7 +46,7 @@ Validation will be done step by step in following order:
 	Passing a configuration for a module. This Option is optional since the need for a configuation is defined by the specific module implementation.
 	Providing a configuration can be done by either directly setting a specific configuration or passing a complete configuration file. In both cases the arguments have to match a specific pattern to identify the module  the configuration applies to:
     
-    $MODULE.$VENDOR.$PROPERTY
+	$MODULE.$VENDOR.$PROPERTY
 	
 	Modules : finder,verifier,validator,assembler
 	Vendor  : vendor name of the module (eg. bsi)
@@ -57,9 +80,9 @@ Validation will be done step by step in following order:
 	Printing the manual of the validator
 ```
 
+### SERVER
 
-
-# SERVER
+**Description:** The server version of the XAIPValidator is being used to provide a soap service implementing the verify function of the eCard api.
 
 **Usage:** `java -jar xaip-validator-soap.jar [OPTION [ARG]*]*`
 
@@ -100,4 +123,3 @@ Validation will be done step by step in following order:
 -h, --help
 	Printing the manual of the validator
 ```
-
