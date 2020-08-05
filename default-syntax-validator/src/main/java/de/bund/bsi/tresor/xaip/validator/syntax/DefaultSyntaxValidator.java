@@ -25,7 +25,7 @@ import oasis.names.tc.dss._1_0.core.schema.Result;
 import oasis.names.tc.dss_x._1_0.profiles.verificationreport.schema_.IndividualReportType;
 
 /**
- * Implementation of the SyntaxValidtor module from the XAIPValidator.
+ * Implementation of the SyntaxValidator module from the XAIPValidator.
  * 
  * @author wolffs
  */

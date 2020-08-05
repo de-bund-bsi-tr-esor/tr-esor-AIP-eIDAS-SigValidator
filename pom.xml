@@ -51,4 +51,61 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <id>verify-style</id>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <logViolationsToConsole>true</logViolationsToConsole>
+                    <checkstyleRules>
+                        <module name="Checker">
+                            <module name="FileLength">
+                                <property name="max"
+                                    value="2000" />
+                                <property name="fileExtensions"
+                                    value="java" />
+                            </module>
+                            <module name="FileTabCharacter" />
+                            <module name="TreeWalker">
+                                <module name="StaticVariableName" />
+                                <module name="TypeName" />
+                                <module name="JavadocType" />
+                                <module name="JavadocMethod">
+                                    <property name="scope"
+                                        value="protected" />
+                                    <property
+                                        name="allowUndeclaredRTE"
+                                        value="true" />
+                                </module>
+                                <module name="MethodLength">
+                                    <property name="tokens"
+                                        value="METHOD_DEF" />
+                                    <property name="max"
+                                        value="60" />
+                                </module>
+                                <module name="MethodLength">
+                                    <property name="tokens"
+                                        value="CTOR_DEF" />
+                                    <property name="max"
+                                        value="15" />
+                                </module>
+                            </module>
+                        </module>
+                    </checkstyleRules>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

@@ -54,7 +54,7 @@ public class DefaultResult
     /**
      * Definition of the result Majors specified in TR-ESOR
      * 
-     * @author pennerd
+     * @author wolffs
      */
     public static enum Major
     {
@@ -87,7 +87,7 @@ public class DefaultResult
     /**
      * Definition of the result Minors specified in TR-ESOR
      * 
-     * @author pennerd
+     * @author wolffs
      */
     public static enum Minor
     {
