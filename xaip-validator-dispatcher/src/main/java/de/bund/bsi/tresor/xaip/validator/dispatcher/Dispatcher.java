@@ -117,7 +117,7 @@ public enum Dispatcher
      *            class of the module interface
      * @return the loaded module implementation
      */
-    <T extends ValidatorModule> T loadModule( Class<T> moduleClass, String paramPrefix, Map<String, String> configProperties )
+    <T extends ValidatorModule> T loadModule( Class<T> moduleClass, String moduleProperty, Map<String, String> configProperties )
     {
         String moduleName = moduleClass.getSimpleName();
         T module = ServiceLoader.load( moduleClass )
@@ -127,7 +127,7 @@ public enum Dispatcher
         String vendor = module.getVendor();
         String version = module.getVersion();
         
-        configureModule( module, paramPrefix, vendor, configProperties );
+        configureModule( module, moduleProperty, configProperties );
         
         ModuleLogger.log( MessageFormat.format( "loaded {0} by {1} in version {2}", moduleName, vendor, version ) );
         
@@ -135,10 +135,9 @@ public enum Dispatcher
     }
     
     @SuppressWarnings( { "unchecked", "rawtypes" } )
-    <T extends ValidatorModule> void configureModule( T module, String paramPrefix, String vendor, Map<String, String> configProperties )
+    <T extends ValidatorModule> void configureModule( T module, String moduleProperty, Map<String, String> configProperties )
     {
-        String moduleProperty = String.join( ".", paramPrefix, vendor ).toLowerCase();
-        String modulePropertyLocation = String.join( ".", moduleProperty, "conf" );
+        String modulePropertyLocation = moduleProperty + ".conf";
         
         Map<String, String> moduleConfigProperties = new HashMap<>();
         if ( configProperties.containsKey( modulePropertyLocation ) )
@@ -161,7 +160,7 @@ public enum Dispatcher
         else
         {
             moduleConfigProperties = configProperties.entrySet().stream()
-                    .filter( entry -> entry.getKey().toLowerCase().startsWith( moduleProperty ) )
+                    .filter( entry -> entry.getKey().toLowerCase().startsWith( moduleProperty + "." ) )
                     .collect( toMap( entry -> entry.getKey().substring( moduleProperty.length() + 1 ), entry -> entry.getValue() ) );
         }
         
