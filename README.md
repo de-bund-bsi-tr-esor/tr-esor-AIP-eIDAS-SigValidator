@@ -18,7 +18,7 @@ Validation will be done step by step in following order:
 `java -jar xaip-validator.jar -Mverifier.bsi.wsdlUrl=http://localhost:8080/s4?wsdl -v -in /tmp/sample.xaip`
 
 ## Prerequisites
-> ToDo
+- Java 11
 
 ## Installing
 > ToDo
@@ -26,12 +26,7 @@ Validation will be done step by step in following order:
 ## Components
 The XAIPValidator consists of multiple modules.
 
-CLI		\
-		  Dispatcher
-SERVER	/	+- SyntaxValidator
-			+- SignatureFinder
-			+- SignatureVerifier
-			+- ProtocolAssembler
+> ToDo insert picture
 
 ### CLI
 
@@ -46,25 +41,22 @@ SERVER	/	+- SyntaxValidator
 	Passing a configuration for a module. This Option is optional since the need for a configuation is defined by the specific module implementation.
 	Providing a configuration can be done by either directly setting a specific configuration or passing a complete configuration file. In both cases the arguments have to match a specific pattern to identify the module  the configuration applies to:
     
-	$MODULE.$VENDOR.$PROPERTY
+	$MODULE.$PROPERTY
 	
 	Modules : finder,verifier,validator,assembler
-	Vendor  : vendor name of the module (eg. bsi)
 	Property: either the keyword `conf` which is reserved to load the configuration from a file followed by this property or any configuration keyword the specific module implementation offers
-	
-	Compared to the $MODULE and $VENDOR, the $PROPERTY is caseSensitive!
 
 	Examples: 
-		-Mverifier.bsi.config=/tmp/example.properties
-		-Mverifier.bsi.wsdlUrl=http://localhost:8080/s4?wsdl
+		-Mverifier.conf=/tmp/example.properties
+		-Mverifier.wsdlUrl=http://localhost:8080/s4?wsdl
 
 -i, --in, --input <file>
 	Source of the XAIP to validate. This can be an external <file> or the standard inputstream when omitting this option.
-	Example: -in /tmp/sample.xaip
+	Example: -i /tmp/sample.xaip
 	
 -o, --out, --output <file>
 	Destination of the validation result. The <file> argument can be a directory or a file. If the destination does not exist it will be created. In case the destination directory/file exists it needs to be writeable. Omitting this option will print the result to the standard output.
-	Example: -out /tmp/results/result_aoid_12345.xml
+	Example: -o /tmp/results/result_aoid_12345.xml
 	
 -v, --verify
 	This flag is being used to trigger the signature verification in addition to the syntax validation which is always enabled by default.
@@ -82,7 +74,7 @@ SERVER	/	+- SyntaxValidator
 
 ### SERVER
 
-**Description:** The server version of the XAIPValidator is being used to provide a soap service implementing the verify function of the eCard api.
+**Description:** The server version of the XAIPValidator is being used to provide a soap service implementing the verify function of the eCard api. This api can be used to send a verifyRequest containing an XAIP which will be validated in the following steps.
 
 **Usage:** `java -jar xaip-validator-soap.jar [OPTION [ARG]*]*`
 
@@ -93,17 +85,14 @@ SERVER	/	+- SyntaxValidator
 	Passing a configuration for a module. This Option is optional since the need for a configuation is defined by the specific module implementation.
 	Providing a configuration can be done by either directly setting a specific configuration or passing a complete configuration file. In both cases the arguments have to match a specific pattern to identify the module  the configuration applies to:
     
-    $MODULE.$VENDOR.$PROPERTY
+    $MODULE.$PROPERTY
 	
 	Modules : finder,verifier,validator,assembler
-	Vendor  : vendor name of the module (eg. bsi)
 	Property: either the keyword `conf` which is reserved to load the configuration from a file followed by this property or any configuration keyword the specific module implementation offers
-	
-	Compared to the $MODULE and $VENDOR, the $PROPERTY is caseSensitive!
 
 	Examples: 
-		-Mverifier.bsi.config=/tmp/example.properties
-		-Mverifier.bsi.wsdlUrl=http://localhost:8080/s4?wsdl
+		-Mverifier.conf=/tmp/example.properties
+		-Mverifier.wsdlUrl=http://localhost:8080/s4?wsdl
 
 -p, --port <port>
 	Port the server should be published to, 8080 by default

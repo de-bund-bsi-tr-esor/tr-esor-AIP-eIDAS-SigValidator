@@ -68,6 +68,7 @@
                     </execution>
                 </executions>
                 <configuration>
+                    <suppressionsLocation>checkstyle-suppressions.xml</suppressionsLocation>
                     <logViolationsToConsole>true</logViolationsToConsole>
                     <checkstyleRules>
                         <module name="Checker">

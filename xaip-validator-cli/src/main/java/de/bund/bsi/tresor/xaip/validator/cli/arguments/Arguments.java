@@ -11,8 +11,7 @@ import com.beust.jcommander.Parameters;
 
 import de.bund.bsi.tresor.xaip.validator.cli.MessageBundle;
 import de.bund.bsi.tresor.xaip.validator.cli.converter.InputStreamConverter;
-import de.bund.bsi.tresor.xaip.validator.cli.converter.LogOutputStreamConverter;
-import de.bund.bsi.tresor.xaip.validator.cli.converter.ResultOutputStreamConverter;
+import de.bund.bsi.tresor.xaip.validator.cli.converter.OutputStreamConverter;
 import de.bund.bsi.tresor.xaip.validator.dispatcher.DispatcherArguments;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -36,23 +35,19 @@ public class Arguments implements DispatcherArguments
     private InputStream         input        = System.in;
     
     @Parameter( order = 2, names = { "-o", "--out", "--output" },
-            descriptionKey = MessageBundle.CLI_USAGE_OUTPUT, converter = ResultOutputStreamConverter.class )
+            descriptionKey = MessageBundle.CLI_USAGE_OUTPUT, converter = OutputStreamConverter.class )
     private OutputStream        output       = System.out;
     
-    // @Parameter( order = 3, names = { "-e", "--eCardUrl" },
-    // descriptionKey = MessageBundle.CLI_USAGE_ECARD_URL, converter = URIConverter.class )
-    // private URI eCardUrl;
-    
-    @Parameter( order = 4, names = { "-v", "--verify" }, descriptionKey = MessageBundle.CLI_USAGE_VERIFY )
+    @Parameter( order = 3, names = { "-v", "--verify" }, descriptionKey = MessageBundle.CLI_USAGE_VERIFY )
     private boolean             verify;
     
-    @Parameter( order = 5, names = { "-d", "--debug", "--verbose" }, descriptionKey = MessageBundle.CLI_USAGE_VERBOSE )
+    @Parameter( order = 4, names = { "-d", "--debug", "--verbose" }, descriptionKey = MessageBundle.CLI_USAGE_VERBOSE )
     private boolean             verbose;
     
-    @Parameter( order = 6, names = { "-l", "--log" },
-            descriptionKey = MessageBundle.CLI_USAGE_LOG, converter = LogOutputStreamConverter.class )
-    private OutputStream        log          = System.out;     // TODO FIXME
+    @Parameter( order = 5, names = { "-l", "--log" },
+            descriptionKey = MessageBundle.CLI_USAGE_LOG, converter = OutputStreamConverter.class )
+    private OutputStream        log          = System.err;
     
-    @Parameter( order = 7, names = { "-h", "--help" }, help = true, descriptionKey = MessageBundle.CLI_USAGE_HELP )
+    @Parameter( order = 6, names = { "-h", "--help" }, help = true, descriptionKey = MessageBundle.CLI_USAGE_HELP )
     private boolean             help;
 }

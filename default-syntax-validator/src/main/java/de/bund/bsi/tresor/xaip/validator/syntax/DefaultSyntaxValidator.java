@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.xml.XMLConstants;
@@ -20,6 +21,7 @@ import de.bund.bsi.tresor.xaip.validator.api.boundary.SyntaxValidator;
 import de.bund.bsi.tresor.xaip.validator.api.entity.DefaultResult;
 import de.bund.bsi.tresor.xaip.validator.api.entity.DefaultResult.ResultLanguage;
 import de.bund.bsi.tresor.xaip.validator.api.entity.SyntaxValidationResult;
+import de.bund.bsi.tresor.xaip.validator.api.entity.XAIPValidatorException;
 import lombok.Getter;
 import oasis.names.tc.dss._1_0.core.schema.Result;
 import oasis.names.tc.dss_x._1_0.profiles.verificationreport.schema_.IndividualReportType;
@@ -32,10 +34,18 @@ import oasis.names.tc.dss_x._1_0.profiles.verificationreport.schema_.IndividualR
 @Getter
 public class DefaultSyntaxValidator implements SyntaxValidator
 {
-    private static final String DEFINITION_DIRECTORY = "definitions";
+    private static final String SCHEMA_DIR_PROPERTY = "schemaDir";
     
-    private final String        vendor               = "BSI";
-    private final String        version              = "1.0.0";
+    private final String        vendor              = "BSI";
+    private final String        version             = "1.0.0";
+    private String              schemaDir;
+    
+    @Override
+    public void configure( Map<String, String> properties )
+    {
+        schemaDir = Optional.ofNullable( properties.get( "schemaDir" ) )
+                .orElseThrow( () -> new XAIPValidatorException( "missing property " + SCHEMA_DIR_PROPERTY ) );
+    }
     
     @Override
     public SyntaxValidationResult validateSyntax( InputStream xaipCandidate )
@@ -50,10 +60,8 @@ public class DefaultSyntaxValidator implements SyntaxValidator
             JAXBContext jaxbContext = JAXBContext.newInstance( XAIPType.class );
             Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
             
-            File schemaDirectory = new File( DefaultSyntaxValidator.class.getClassLoader().getResource( DEFINITION_DIRECTORY ).getFile() );
-            
             SchemaFactory schemaFactory = SchemaFactory.newInstance( XMLConstants.W3C_XML_SCHEMA_NS_URI );
-            Schema schema = schemaFactory.newSchema( sources( schemaDirectory ).stream().toArray( Source[]::new ) );
+            Schema schema = schemaFactory.newSchema( sources( new File( schemaDir ) ).stream().toArray( Source[]::new ) );
             
             jaxbUnmarshaller.setSchema( schema );
             JAXBElement<XAIPType> element = jaxbUnmarshaller.unmarshal( new StreamSource( xaipCandidate ), XAIPType.class );

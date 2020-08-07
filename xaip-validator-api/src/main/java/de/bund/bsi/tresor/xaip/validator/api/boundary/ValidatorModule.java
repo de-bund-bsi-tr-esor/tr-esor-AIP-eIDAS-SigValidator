@@ -32,21 +32,17 @@ public interface ValidatorModule
      * <br/>
      * Arguments being passed to the XAIPValidator will have the following structure:<br/>
      * <br/>
-     * <b>Format:</b> <code>$MODULE.$VENDOR.$PROPERTY=$VALUE</code><br/>
-     * <b>Example:</b> <code>verifier.bsi.wsdlUrl=http://localhost:8080/s4?wsdl</code><br/>
+     * <b>Format:</b> <code>$MODULE.$PROPERTY=$VALUE</code><br/>
+     * <b>Example:</b> <code>verifier.wsdlUrl=http://localhost:8080/s4?wsdl</code><br/>
      * <br/>
      * <li><b>$MODULE:</b> name of the module (finder,verifier,validator,assembler)
-     * <li><b>$VENDOR:</b> name of the {@link #getVendor()}
      * <li><b>$PROPERTY:</b> property name which occurs as key in the properties map
      * <li><b>$VALUE:</b> value mapped to the property name/key <br/>
-     * <br/>
-     * Compared to the <code>$MODULE</code> and <code>$VENDOR</code> check, the <code>$PROPERTY</code> and <code>$VALUE</code> will stay
-     * caseSensitive.<br/>
      * <br/>
      * <i>Please refrain from using a property with the key <code>conf</code> since this keyword is reserved to specify a location of a
      * property file containing the complete property map of this configuration.</i><br/>
      * <br/>
-     * <b>Example:</b><code>verifier.bsi.conf=/tmp/verifier.properties</code><br/>
+     * <b>Example:</b><code>verifier.conf=/tmp/verifier.properties</code><br/>
      * <b>/tmp/verifier.properties:</b><br/>
      * <code>wsdlUrl=http://localhost:8080/s4?wsdl</code><br/>
      * <code>user=admin</code><br/>
