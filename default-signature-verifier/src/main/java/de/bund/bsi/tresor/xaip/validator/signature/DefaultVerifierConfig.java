@@ -33,9 +33,9 @@ public class DefaultVerifierConfig
     public static DefaultVerifierConfig fromArguments( Map<String, String> arguments )
     {
         var config = new DefaultVerifierConfig();
-        config.setWsdlUrl( Optional.ofNullable( arguments.get( "wsdlUrl" ) ) );
-        config.setUser( Optional.ofNullable( arguments.get( "user" ) ) );
-        config.setPassword( Optional.ofNullable( arguments.get( "pass" ) ) );
+        config.setWsdlUrl( Optional.ofNullable( arguments.get( "verifier.wsdlUrl" ) ) );
+        config.setUser( Optional.ofNullable( arguments.get( "verifier.user" ) ) );
+        config.setPassword( Optional.ofNullable( arguments.get( "verifier.pass" ) ) );
         
         return config;
     }

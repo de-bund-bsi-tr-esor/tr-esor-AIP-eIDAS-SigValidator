@@ -1,16 +1,9 @@
 package de.bund.bsi.tresor.xaip.validator.dispatcher;
 
-import static java.util.stream.Collectors.toMap;
-
-import java.io.FileInputStream;
-import java.io.InputStream;
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.Properties;
 import java.util.ServiceLoader;
 
 import javax.xml.bind.JAXB;
@@ -101,11 +94,11 @@ public enum Dispatcher
      */
     void loadModules( Map<String, String> configProperties )
     {
-        sigFinder = loadModule( SignatureFinder.class, "finder", configProperties );
-        sigVerifier = loadModule( SignatureVerifier.class, "verifier", configProperties );
+        sigFinder = loadModule( SignatureFinder.class, configProperties );
+        sigVerifier = loadModule( SignatureVerifier.class, configProperties );
         
-        syntaxValidator = loadModule( SyntaxValidator.class, "validator", configProperties );
-        protocolAssembler = loadModule( ProtocolAssembler.class, "assembler", configProperties );
+        syntaxValidator = loadModule( SyntaxValidator.class, configProperties );
+        protocolAssembler = loadModule( ProtocolAssembler.class, configProperties );
     }
     
     /**
@@ -115,9 +108,11 @@ public enum Dispatcher
      *            type of the module
      * @param moduleClass
      *            class of the module interface
+     * @param configProperties
+     *            the configuration data
      * @return the loaded module implementation
      */
-    <T extends ValidatorModule> T loadModule( Class<T> moduleClass, String moduleProperty, Map<String, String> configProperties )
+    <T extends ValidatorModule> T loadModule( Class<T> moduleClass, Map<String, String> configProperties )
     {
         String moduleName = moduleClass.getSimpleName();
         T module = ServiceLoader.load( moduleClass )
@@ -127,46 +122,10 @@ public enum Dispatcher
         String vendor = module.getVendor();
         String version = module.getVersion();
         
-        configureModule( module, moduleProperty, configProperties );
+        module.configure( configProperties );
         
         ModuleLogger.log( MessageFormat.format( "loaded {0} by {1} in version {2}", moduleName, vendor, version ) );
         
         return module;
     }
-    
-    @SuppressWarnings( { "unchecked", "rawtypes" } )
-    <T extends ValidatorModule> void configureModule( T module, String moduleProperty, Map<String, String> configProperties )
-    {
-        String modulePropertyLocation = moduleProperty + ".conf";
-        
-        Map<String, String> moduleConfigProperties = new HashMap<>();
-        if ( configProperties.containsKey( modulePropertyLocation ) )
-        {
-            String configLocation = Optional.ofNullable( configProperties.get( modulePropertyLocation ) )
-                    .orElseThrow( () -> new XAIPValidatorException( modulePropertyLocation + " does not point to a valid location" ) );
-            
-            try ( InputStream in = new FileInputStream( configLocation ) )
-            {
-                Properties externalConfig = new Properties();
-                externalConfig.load( in );
-                
-                moduleConfigProperties = (Map) externalConfig;
-            }
-            catch ( Exception e )
-            {
-                throw new XAIPValidatorException( "could not load external module configuration from " + configLocation, e );
-            }
-        }
-        else
-        {
-            moduleConfigProperties = configProperties.entrySet().stream()
-                    .filter( entry -> entry.getKey().toLowerCase().startsWith( moduleProperty + "." ) )
-                    .collect( toMap( entry -> entry.getKey().substring( moduleProperty.length() + 1 ), entry -> entry.getValue() ) );
-        }
-        
-        ModuleLogger.verbose( "configuration for " + moduleProperty + ": " + moduleConfigProperties );
-        
-        module.configure( moduleConfigProperties );
-    }
-    
 }
