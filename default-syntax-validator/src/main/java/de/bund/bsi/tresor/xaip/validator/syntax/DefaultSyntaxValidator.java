@@ -43,7 +43,7 @@ public class DefaultSyntaxValidator implements SyntaxValidator
     @Override
     public void configure( Map<String, String> properties )
     {
-        schemaDir = Optional.ofNullable( properties.get( "schemaDir" ) )
+        schemaDir = Optional.ofNullable( properties.get( "validator.schemaDir" ) )
                 .orElseThrow( () -> new XAIPValidatorException( "missing property " + SCHEMA_DIR_PROPERTY ) );
     }
     

@@ -1,5 +1,11 @@
 package de.bund.bsi.tresor.xaip.validator.cli;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.util.Map;
+import java.util.Properties;
+
 import com.beust.jcommander.JCommander;
 
 import de.bund.bsi.tresor.xaip.validator.api.control.ModuleLogger;
@@ -33,17 +39,10 @@ public final class CLI
                 .programName( MessageBundle.RESOURCE.getString( MessageBundle.CLI_NAME ) )
                 .build();
         
-        // TODO remove this test
-        // argv = new String[] {
-        // "-d",
-        // // "-v",
-        // "-i", "/home/wolffs/Dokumente/XAIP-Validator/validator/PAdES.xaip",
-        // // "-Mverifier.wsdlUrl=http://10.3.141.126:8080/VerificationService/S4?wsdl"
-        // };
-        
         try
         {
             jCommander.parse( argv );
+            mergeConfig( args );
             
             if ( args.isHelp() )
             {
@@ -58,6 +57,21 @@ public final class CLI
         catch ( Exception e )
         {
             ModuleLogger.log( "finished validation with errors", e );
+        }
+    }
+    
+    @SuppressWarnings( { "rawtypes", "unchecked" } )
+    private static void mergeConfig( Arguments args ) throws IOException
+    {
+        if ( args.getConfig() != null && Files.isReadable( args.getConfig() ) )
+        {
+            Properties config = new Properties();
+            try ( InputStream configData = Files.newInputStream( args.getConfig() ) )
+            {
+                config.load( configData );
+                config.putAll( args.getModuleConfig() );
+                args.setModuleConfig( (Map) config );
+            }
         }
     }
 }
