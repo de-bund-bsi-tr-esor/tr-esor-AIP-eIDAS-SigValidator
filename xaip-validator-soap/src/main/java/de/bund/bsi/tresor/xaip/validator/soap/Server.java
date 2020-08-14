@@ -30,6 +30,14 @@ import oasis.names.tc.dss._1_0.core.schema.VerifyRequest;
  */
 public class Server
 {
+    /**
+     * Main method for starting the local soap server.
+     * 
+     * @param args
+     *            the server arguments
+     * @throws Exception
+     *             when anything happens
+     */
     public static void main( String[] args ) throws Exception
     {
         ServerConfig config = new ServerConfig();
@@ -40,7 +48,7 @@ public class Server
                 .build();
         
         // TODO remove this test
-        args = new String[] { "-Mverifier.bsi.wsdlUrl=http://10.3.141.126:8080/VerificationService/S4?wsdl" };
+        // args = new String[] { "-Mverifier.bsi.wsdlUrl=http://10.3.141.126:8080/VerificationService/S4?wsdl" };
         
         try
         {
@@ -65,6 +73,14 @@ public class Server
         clientTest();
     }
     
+    /**
+     * Starting the server by using the provided configuration
+     * 
+     * @param config
+     *            the configuration
+     * @throws URISyntaxException
+     *             if any part of the config does not provide a valid URI part
+     */
     public static void startServer( ServerConfig config ) throws URISyntaxException
     {
         URI uri = new URI( config.getProtocol(), null, config.getHost(), config.getPort(), config.getPath(), null, null );
@@ -75,6 +91,9 @@ public class Server
         ModuleLogger.log( "published server on address: " + address );
     }
     
+    /**
+     * TODO remove
+     */
     public static void clientTest()
     {
         try
