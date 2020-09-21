@@ -1,5 +1,6 @@
 package de.bund.bsi.tresor.xaip.validator.dispatcher;
 
+import java.io.OutputStream;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +19,7 @@ import de.bund.bsi.tresor.xaip.validator.api.entity.SyntaxValidationResult;
 import de.bund.bsi.tresor.xaip.validator.api.entity.XAIPValidatorException;
 import oasis.names.tc.dss._1_0.core.schema.SignatureObject;
 import oasis.names.tc.dss_x._1_0.profiles.verificationreport.schema_.IndividualReportType;
+import oasis.names.tc.dss_x._1_0.profiles.verificationreport.schema_.ObjectFactory;
 import oasis.names.tc.dss_x._1_0.profiles.verificationreport.schema_.VerificationReportType;
 
 /**
@@ -30,6 +32,8 @@ import oasis.names.tc.dss_x._1_0.profiles.verificationreport.schema_.Verificatio
 public enum Dispatcher
 {
     INSTANCE;
+    
+    private ObjectFactory     objectFactory = new ObjectFactory();
     
     private SignatureFinder   sigFinder;
     private SignatureVerifier sigVerifier;
@@ -83,7 +87,7 @@ public enum Dispatcher
         VerificationReportType verificationReport = protocolAssembler.assembleProtocols( reportParts );
         ModuleLogger.log( "finished protocol assembling" );
         
-        JAXB.marshal( verificationReport, args.getOutput() );
+        writeReport( verificationReport, args.getOutput() );
     }
     
     /**
@@ -128,4 +132,18 @@ public enum Dispatcher
         
         return module;
     }
+    
+    /**
+     * Writes the report.
+     * 
+     * @param verificationReport
+     *            report
+     * @param outputStream
+     *            output destination
+     */
+    void writeReport( VerificationReportType verificationReport, OutputStream outputStream )
+    {
+        JAXB.marshal( objectFactory.createVerificationReport( verificationReport ), outputStream );
+    }
+    
 }
