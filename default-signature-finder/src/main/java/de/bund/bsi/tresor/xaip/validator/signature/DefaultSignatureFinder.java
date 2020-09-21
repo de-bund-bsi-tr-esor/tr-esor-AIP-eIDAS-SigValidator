@@ -75,20 +75,24 @@ public class DefaultSignatureFinder implements SignatureFinder
     List<SignatureObject> fromDataObjectsSection( DataObjectsSectionType dataSection )
     {
         List<SignatureObject> results = new ArrayList<>();
-        for ( DataObjectType dataObject : dataSection.getDataObject() )
+        
+        if ( dataSection != null && dataSection.getDataObject() != null )
         {
-            String id = dataObject.getDataObjectID();
-            byte[] data = Optional.ofNullable( dataObject.getBinaryData() )
-                    .map( BinaryData::getValue )
-                    .map( this::asData )
-                    .orElse( new byte[0] );
-            
-            ModuleLogger.verbose( "checking dataObject " + id );
-            if ( PAdESChecker.INSTANCE.isPAdES( data )
-                    || CAdESChecker.INSTANCE.isCAdES( data )
-                    || XAdESChecker.INSTANCE.isXAdES( data ) )
+            for ( DataObjectType dataObject : dataSection.getDataObject() )
             {
-                results.add( convert( data ) );
+                String id = dataObject.getDataObjectID();
+                byte[] data = Optional.ofNullable( dataObject.getBinaryData() )
+                        .map( BinaryData::getValue )
+                        .map( this::asData )
+                        .orElse( new byte[0] );
+                
+                ModuleLogger.verbose( "checking dataObject " + id );
+                if ( PAdESChecker.INSTANCE.isPAdES( data )
+                        || CAdESChecker.INSTANCE.isCAdES( data )
+                        || XAdESChecker.INSTANCE.isXAdES( data ) )
+                {
+                    results.add( convert( data ) );
+                }
             }
         }
         

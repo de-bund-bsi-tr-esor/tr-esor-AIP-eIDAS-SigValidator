@@ -57,8 +57,8 @@ public enum PAdESChecker
     }
     
     /**
-     * Parsing the provided data as a pdf document and checking if the dictionaries <code>SIG</code> and <code>DSS</code> are present.
-     * Having both dictionaries indicates a possible PAdES signature.
+     * Parsing the provided data as a pdf document and checking if the dictionaries <code>SIG</code> or <code>DSS</code> are present. Having
+     * one of the dictionaries indicates a possible PAdES signature.
      * 
      * @param data
      *            the document data
@@ -77,7 +77,7 @@ public enum PAdESChecker
                 List<COSObject> dssObjects = document.getObjectsByType( "DSS" );
                 List<COSObject> sigObjects = document.getObjectsByType( COSName.SIG );
                 
-                return !(dssObjects.isEmpty() || sigObjects.isEmpty());
+                return !dssObjects.isEmpty() || !sigObjects.isEmpty();
             }
             
         }
