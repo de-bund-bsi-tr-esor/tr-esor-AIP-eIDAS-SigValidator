@@ -28,6 +28,7 @@ import de.bund.bsi.tr_esor.xaip._1.DataObjectsSectionType;
 import de.bund.bsi.tr_esor.xaip._1.XAIPType;
 import de.bund.bsi.tresor.xaip.validator.api.control.ModuleLogger;
 import oasis.names.tc.dss._1_0.core.schema.SignatureObject;
+import oasis.names.tc.dss._1_0.core.schema.Timestamp;
 
 /**
  * @author bendlera
@@ -83,6 +84,7 @@ class DefaultSignatureFinderTest
         
         List<SignatureObject> signatures = defaultSignatureFinder.findSignatures( xaipType );
         
+        assertEquals( 2, signatures.size() );
         assertEquals( credentialsSectionId, signatures.get( 0 ).getSignature().getId() );
         assertArrayEquals( signedPdfFile, (byte[]) signatures.get( 1 ).getSignaturePtr().getWhichDocument() );
     }
@@ -94,37 +96,60 @@ class DefaultSignatureFinderTest
     @Test
     void testFromCredentialSection()
     {
-        String id = "12345";
+        String signatureId = "12345";
+        Timestamp timestamp = new Timestamp();
+        timestamp.setRFC3161TimeStampToken( "timestamp".getBytes() );
         
         DefaultSignatureFinder defaultSignatureFinder = new DefaultSignatureFinder();
         
-        List<SignatureObject> result = defaultSignatureFinder.fromCredentialSection( createCredentialsSectionType( id ) );
+        CredentialsSectionType credentialsSectionType = createCredentialsSectionType( signatureId );
+        credentialsSectionType.getCredential().add( createCredentialTypeWithTimestamp( timestamp ) );
         
-        assertEquals( id, result.get( 0 ).getSignature().getId() );
+        List<SignatureObject> result = defaultSignatureFinder
+                .fromCredentialSection( credentialsSectionType );
+        
+        assertEquals( 2, result.size() );
+        assertEquals( signatureId, result.get( 0 ).getSignature().getId() );
+        assertEquals( timestamp, result.get( 1 ).getTimestamp() );
     }
     
     /**
      * Creates {@link CredentialsSectionType}.
      * 
-     * @param id
+     * @param signatureId
      *            SignatureType-ID
      * @return new instance
      */
-    CredentialsSectionType createCredentialsSectionType( String id )
+    private CredentialsSectionType createCredentialsSectionType( String signatureId )
     {
         SignatureType signatureType = new SignatureType();
-        signatureType.setId( id );
-        
+        signatureType.setId( signatureId );
         SignatureObject signatureObject = new SignatureObject();
         signatureObject.setSignature( signatureType );
-        
-        CredentialType credentialType = new CredentialType();
-        credentialType.setSignatureObject( signatureObject );
+        CredentialType signatureCredentialType = new CredentialType();
+        signatureCredentialType.setSignatureObject( signatureObject );
         
         CredentialsSectionType credentialsSectionType = new CredentialsSectionType();
-        credentialsSectionType.getCredential().add( credentialType );
+        credentialsSectionType.getCredential().add( signatureCredentialType );
         
         return credentialsSectionType;
+    }
+    
+    /**
+     * Creates {@link CredentialType} with {@link Timestamp} .
+     * 
+     * @param timestamp
+     *            timestamp
+     * @return new instance
+     */
+    private CredentialType createCredentialTypeWithTimestamp( Timestamp timestamp )
+    {
+        SignatureObject timestampSignatureObject = new SignatureObject();
+        timestampSignatureObject.setTimestamp( timestamp );
+        CredentialType timestampCredentialType = new CredentialType();
+        timestampCredentialType.setSignatureObject( timestampSignatureObject );
+        
+        return timestampCredentialType;
     }
     
     /**
