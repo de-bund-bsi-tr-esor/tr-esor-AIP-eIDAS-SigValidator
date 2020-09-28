@@ -61,7 +61,7 @@ public final class CLI
     }
     
     @SuppressWarnings( { "rawtypes", "unchecked" } )
-    private static void mergeConfig( Arguments args ) throws IOException
+    static void mergeConfig( Arguments args ) throws IOException
     {
         if ( args.getConfig() != null && Files.isReadable( args.getConfig() ) )
         {
