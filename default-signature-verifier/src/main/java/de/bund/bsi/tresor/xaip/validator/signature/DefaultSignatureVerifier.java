@@ -216,7 +216,10 @@ public class DefaultSignatureVerifier implements SignatureVerifier
             String wsdlLocation = config.getWsdlUrl().orElseThrow( () -> new XAIPValidatorException( "missing wsdl location" ) );
             try
             {
-                service = new S4_Service( new URL( wsdlLocation ) );
+                URL wsdlUrl = new URL( wsdlLocation );
+                service = TokenSupplier.supplyToken( config )
+                        .map( token -> new S4_Service( wsdlUrl, new IdentityTokenHeaderFeature( token ) ) )
+                        .orElseGet( () -> new S4_Service( wsdlUrl ) );
             }
             catch ( MalformedURLException e )
             {
