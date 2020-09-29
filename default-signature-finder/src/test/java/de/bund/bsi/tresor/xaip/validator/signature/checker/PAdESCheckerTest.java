@@ -75,8 +75,6 @@ class PAdESCheckerTest
     void testHasPAdESRequirementsCaseNoPdf()
     {
         assertFalse( PAdESChecker.INSTANCE.hasPAdESRequirements( "%PDF-1.7".getBytes( StandardCharsets.UTF_8 ) ) );
-        String errorMessage = new String( loggerOutput.toByteArray(), StandardCharsets.UTF_8 );
-        assertTrue( errorMessage.contains( "data is not PAdES" ) );
     }
     
 }

@@ -42,7 +42,7 @@
                 <configuration>
                     <archive>
                         <manifestEntries>
-                            <Automatic-Module-Name>${project.groupId}.${project.artifactId}</Automatic-Module-Name>
+                            <Automatic-Module-Name>${project.groupId}.default_signature_verifier</Automatic-Module-Name>
                         </manifestEntries>
                     </archive>
                 </configuration>
