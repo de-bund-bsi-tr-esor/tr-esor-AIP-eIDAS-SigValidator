@@ -145,10 +145,11 @@ public class DefaultSignatureFinder implements SignatureFinder
             for ( Iterator<Entry<String, DataObjectReferenceType>> iterator = dataReferences.entrySet().iterator(); iterator.hasNext(); )
             {
                 Entry<String, DataObjectReferenceType> entry = iterator.next();
-                byte[] data;
+                
                 try
                 {
-                    data = Files.readAllBytes( Paths.get( entry.getValue().getURI() ) );
+                    ModuleLogger.verbose( "checking dataObjectReference " + entry.getKey() );
+                    byte[] data = Files.readAllBytes( Paths.get( entry.getValue().getURI() ) );
                     if ( PAdESChecker.INSTANCE.isPAdES( data )
                             || CAdESChecker.INSTANCE.isCAdES( data )
                             || XAdESChecker.INSTANCE.isXAdES( data ) )
