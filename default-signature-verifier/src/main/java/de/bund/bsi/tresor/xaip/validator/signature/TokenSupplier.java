@@ -1,6 +1,5 @@
 package de.bund.bsi.tresor.xaip.validator.signature;
 
-import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -12,6 +11,8 @@ import java.util.Base64;
 import java.util.Optional;
 
 /**
+ * Supplier implementation of the optional identityToken which is being used as an additional header for the ECM requests.
+ * 
  * @author wolffs
  */
 public class TokenSupplier
@@ -25,6 +26,13 @@ public class TokenSupplier
     // String umUrl = "https://protectr.procilon.test/UserManager/v1/login";
     // String idpUrl = "https://protectr.procilon.test/idp/profile/SAML2/SOAP/ECP";
     
+    /**
+     * Supplies an identityToken when the optional configuration for the provider is present in the configuration.
+     * 
+     * @param config
+     *            the configuration
+     * @return the identityToken if the requirements are met
+     */
     public static Optional<String> supplyToken( DefaultVerifierConfig config )
     {
         if ( config.getUser().isPresent()
@@ -63,7 +71,7 @@ public class TokenSupplier
                 
                 return Optional.ofNullable( client.send( login, BodyHandlers.ofString() ).body() );
             }
-            catch ( IOException | InterruptedException e )
+            catch ( Exception e )
             {
                 throw new RuntimeException( "error on idToken retrieval", e );
             }

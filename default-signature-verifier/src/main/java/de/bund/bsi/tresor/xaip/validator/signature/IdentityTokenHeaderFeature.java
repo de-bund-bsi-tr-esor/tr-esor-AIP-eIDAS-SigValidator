@@ -25,6 +25,12 @@ public class IdentityTokenHeaderFeature extends AbstractFeature
     
     private String            tokenBase64;
     
+    /**
+     * Creating a feature which provides an additional header for the identityToken
+     * 
+     * @param tokenBase64
+     *            the base64 encoded idToken
+     */
     public IdentityTokenHeaderFeature( String tokenBase64 )
     {
         this.tokenBase64 = tokenBase64;
