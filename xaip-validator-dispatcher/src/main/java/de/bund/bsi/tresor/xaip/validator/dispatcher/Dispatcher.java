@@ -15,6 +15,7 @@ import de.bund.bsi.tresor.xaip.validator.api.boundary.SignatureVerifier;
 import de.bund.bsi.tresor.xaip.validator.api.boundary.SyntaxValidator;
 import de.bund.bsi.tresor.xaip.validator.api.boundary.ValidatorModule;
 import de.bund.bsi.tresor.xaip.validator.api.control.ModuleLogger;
+import de.bund.bsi.tresor.xaip.validator.api.entity.DefaultResult;
 import de.bund.bsi.tresor.xaip.validator.api.entity.SyntaxValidationResult;
 import de.bund.bsi.tresor.xaip.validator.api.entity.XAIPValidatorException;
 import oasis.names.tc.dss._1_0.core.schema.SignatureObject;
@@ -75,22 +76,35 @@ public enum Dispatcher
         
         if ( args.isVerify() )
         {
-            syntaxResult.getXaip().ifPresent( xaip -> {
-                List<IndividualReportType> verifiedDataReferences = sigFinder.verifyDataReference( xaip );
-                
+            boolean dataReferencesValid = false;
+            if ( syntaxResult.getXaip().isPresent() )
+            {
+                List<IndividualReportType> verifiedDataReferences = sigFinder.verifyDataReference( syntaxResult.getXaip().get() );
+                ModuleLogger.log( "finished data reference search" );
                 ModuleLogger.log( verifiedDataReferences.size() + " data references found" );
                 
                 reportParts.addAll( verifiedDataReferences );
-            } );
-            
-            syntaxResult.getXaip().ifPresent( xaip -> {
-                List<SignatureObject> signatures = sigFinder.findSignatures( xaip );
-                ModuleLogger.log( signatures.size() + " signatures found" );
-                ModuleLogger.log( "finished signature search" );
+                dataReferencesValid = verifiedDataReferences.stream()
+                        .filter( r -> !r.getResult().getResultMajor().equals( DefaultResult.Major.OK.getURI() ) ).findFirst().isEmpty();
                 
-                ModuleLogger.log( "finished signature verification" );
-                reportParts.addAll( sigVerifier.verify( signatures ) );
-            } );
+                if ( !dataReferencesValid )
+                {
+                    ModuleLogger.log( "invalid data reference found" );
+                }
+            }
+            
+            if ( dataReferencesValid )
+            {
+                syntaxResult.getXaip().ifPresent( xaip -> {
+                    List<SignatureObject> signatures = sigFinder.findSignatures( xaip );
+                    ModuleLogger.log( signatures.size() + " signatures found" );
+                    ModuleLogger.log( "finished signature search" );
+                    
+                    reportParts.addAll( sigVerifier.verify( signatures ) );
+                    ModuleLogger.log( "finished signature verification" );
+                } );
+            }
+            
         }
         
         VerificationReportType verificationReport = protocolAssembler.assembleProtocols( reportParts );
