@@ -86,7 +86,7 @@ public class LXAIPChecker
         }
         catch ( NoSuchAlgorithmException e )
         {
-            return createDataReference( id + ": Algorithm is not supported by used Java: " + e.getMessage() );
+            return createDataReference( id + ": Algorithm is not supported by JVM: " + e.getMessage() );
         }
         catch ( IOException e )
         {
@@ -146,9 +146,13 @@ public class LXAIPChecker
     DigestAlgorithm parseAlgorithm( DataObjectReferenceType dataObjectReference ) throws LXAIPCheckerException
     {
         String algorithmUri = dataObjectReference.getDigestMethod().getAlgorithm();
+        if ( dataObjectReference.getDigestMethod() == null )
+        {
+            throw new LXAIPCheckerException( "No element DigestMethod found." );
+        }
         
         return DigestAlgorithm.fromXmlSyntax( algorithmUri )
-                .orElseThrow( () -> new LXAIPCheckerException( "Algorithm " + algorithmUri + " is not supported." ) );
+                .orElseThrow( () -> new LXAIPCheckerException( "Algorithm '" + algorithmUri + "' is not supported." ) );
     }
     
     /**

@@ -166,13 +166,13 @@ class DefaultSignatureFinderTest
         
         DefaultSignatureFinder defaultSignatureFinder = new DefaultSignatureFinder();
         
-        assertEquals( Collections.emptyList(), defaultSignatureFinder.fromDataObjectsSection( null ) );
+        assertEquals( Collections.emptyList(), defaultSignatureFinder.fromDataObjectsSection( null, null ) );
         
-        assertEquals( Collections.emptyList(), defaultSignatureFinder.fromDataObjectsSection( new DataObjectsSectionType() ) );
+        assertEquals( Collections.emptyList(), defaultSignatureFinder.fromDataObjectsSection( new DataObjectsSectionType(), null ) );
         
         DataObjectsSectionType dataObjectsSectionType = createDataObjectsSectionType( dataObjectId, Optional.empty() );
         
-        assertEquals( Collections.emptyList(), defaultSignatureFinder.fromDataObjectsSection( dataObjectsSectionType ) );
+        assertEquals( Collections.emptyList(), defaultSignatureFinder.fromDataObjectsSection( dataObjectsSectionType, null ) );
         
         try
         {
@@ -184,7 +184,7 @@ class DefaultSignatureFinderTest
             fail( "data could not loaded", e );
         }
         
-        assertEquals( Collections.emptyList(), defaultSignatureFinder.fromDataObjectsSection( dataObjectsSectionType ) );
+        assertEquals( Collections.emptyList(), defaultSignatureFinder.fromDataObjectsSection( dataObjectsSectionType, null ) );
         
         try
         {
@@ -196,7 +196,7 @@ class DefaultSignatureFinderTest
             fail( "data could not loaded", e );
         }
         
-        assertEquals( 1, defaultSignatureFinder.fromDataObjectsSection( dataObjectsSectionType ).size() );
+        assertEquals( 1, defaultSignatureFinder.fromDataObjectsSection( dataObjectsSectionType, null ).size() );
     }
     
     /**

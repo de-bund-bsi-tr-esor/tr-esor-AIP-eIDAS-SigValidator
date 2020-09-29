@@ -11,7 +11,7 @@ import java.util.Optional;
 enum DigestAlgorithm
 {
     SHA224( "SHA-224", "http://www.w3.org/2001/04/xmldsig-more#sha224" ),
-    SHA256( "SHA3-256", "http://www.w3.org/2001/04/xmlenc#sha256" ),
+    SHA256( "SHA-256", "http://www.w3.org/2001/04/xmlenc#sha256" ),
     SHA384( "SHA-384", "http://www.w3.org/2001/04/xmldsig-more#sha384" ),
     SHA512( "SHA-512", "http://www.w3.org/2001/04/xmlenc#sha512" ),
     

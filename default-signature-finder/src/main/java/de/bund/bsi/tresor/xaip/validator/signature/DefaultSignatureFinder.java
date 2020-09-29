@@ -140,25 +140,28 @@ public class DefaultSignatureFinder implements SignatureFinder
             }
         }
         
-        for ( Iterator<Entry<String, DataObjectReferenceType>> iterator = dataReferences.entrySet().iterator(); iterator.hasNext(); )
+        if ( dataReferences != null )
         {
-            Entry<String, DataObjectReferenceType> entry = iterator.next();
-            byte[] data;
-            try
+            for ( Iterator<Entry<String, DataObjectReferenceType>> iterator = dataReferences.entrySet().iterator(); iterator.hasNext(); )
             {
-                data = Files.readAllBytes( Paths.get( entry.getValue().getURI() ) );
-                if ( PAdESChecker.INSTANCE.isPAdES( data )
-                        || CAdESChecker.INSTANCE.isCAdES( data )
-                        || XAdESChecker.INSTANCE.isXAdES( data ) )
+                Entry<String, DataObjectReferenceType> entry = iterator.next();
+                byte[] data;
+                try
                 {
-                    results.add( convert( data ) );
+                    data = Files.readAllBytes( Paths.get( entry.getValue().getURI() ) );
+                    if ( PAdESChecker.INSTANCE.isPAdES( data )
+                            || CAdESChecker.INSTANCE.isCAdES( data )
+                            || XAdESChecker.INSTANCE.isXAdES( data ) )
+                    {
+                        results.add( convert( data ) );
+                    }
                 }
+                catch ( IOException e )
+                {
+                    ModuleLogger.verbose( "reading dataObjectReference " + entry.getKey() + " failed", e );
+                }
+                
             }
-            catch ( IOException e )
-            {
-                ModuleLogger.verbose( "reading dataObjectReference " + entry.getKey() + " failed", e );
-            }
-            
         }
         
         return results;
