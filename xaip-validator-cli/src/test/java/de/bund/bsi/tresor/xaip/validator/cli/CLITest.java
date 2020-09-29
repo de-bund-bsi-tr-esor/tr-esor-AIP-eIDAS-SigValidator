@@ -44,8 +44,6 @@ public class CLITest
         args.setModuleConfig( moduleConfig );
     }
     
-    // prio: moduleConfig > external
-    
     /**
      * Testing if the external configuration is being properly merged with the module configuration from the command line. The priority is
      * cmdArgs(args.getModuleConfig) > confArgs(args.getConfig)
