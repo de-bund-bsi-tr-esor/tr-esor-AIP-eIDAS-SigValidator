@@ -20,6 +20,7 @@ import org.etsi.uri._02918.v1_2.DataObjectReferenceType;
 
 import de.bund.bsi.tr_esor.xaip._1.XAIPType;
 import de.bund.bsi.tresor.xaip.validator.api.boundary.SyntaxValidator;
+import de.bund.bsi.tresor.xaip.validator.api.control.ModuleLogger;
 import de.bund.bsi.tresor.xaip.validator.api.entity.DefaultResult;
 import de.bund.bsi.tresor.xaip.validator.api.entity.DefaultResult.ResultLanguage;
 import de.bund.bsi.tresor.xaip.validator.api.entity.SyntaxValidationResult;
@@ -72,7 +73,7 @@ public class DefaultSyntaxValidator implements SyntaxValidator
         }
         catch ( Exception e )
         {
-            e.printStackTrace();
+            ModuleLogger.verbose( "syntax validation errors", e );
             result = DefaultResult.error()
                     .message( "xaip is not schema conform: " + e.getMessage(), ResultLanguage.ENGLISH )
                     .build();

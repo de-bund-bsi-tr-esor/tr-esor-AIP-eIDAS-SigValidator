@@ -8,7 +8,7 @@ package de.bund.bsi.tresor.xaip.validator.signature.lxaip;
 class LXAIPCheckerException extends Exception
 {
     
-    private static final long serialVersionUID = -7911422775033306759L;
+    private static final long serialVersionUID = -6324794193611159488L;
     
     /**
      * Creating a new exception with a simple message

@@ -1,6 +1,7 @@
 package de.bund.bsi.tresor.xaip.validator.dispatcher;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -41,7 +42,7 @@ class DispatcherTest
         }
         catch ( SAXException | IOException | ParserConfigurationException e )
         {
-            
+            fail( "test fails", e );
         }
     }
     
