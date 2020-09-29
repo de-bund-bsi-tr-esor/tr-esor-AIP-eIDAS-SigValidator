@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayOutputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -64,7 +65,7 @@ class PAdESCheckerTest
     @Test
     void testIsPAdESCaseNoPdf()
     {
-        assertFalse( PAdESChecker.INSTANCE.isPAdES( "file".getBytes() ) );
+        assertFalse( PAdESChecker.INSTANCE.isPAdES( "filecontent".getBytes( StandardCharsets.UTF_8 ) ) );
     }
     
     /**
