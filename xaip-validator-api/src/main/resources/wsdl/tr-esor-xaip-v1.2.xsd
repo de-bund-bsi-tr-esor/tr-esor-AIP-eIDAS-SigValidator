@@ -1,318 +1,192 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xs:schema xmlns:xaip="http://www.bsi.bund.de/tr-esor/xaip/1.2"
-	xmlns:xs="http://www.w3.org/2001/XMLSchema"
-	xmlns:ds="http://www.w3.org/2000/09/xmldsig#"
-	xmlns:xades="http://uri.etsi.org/01903/v1.3.2#"
-	xmlns:ers="urn:ietf:params:xml:ns:ers"
-	xmlns:vr="urn:oasis:names:tc:dss-x:1.0:profiles:verificationreport:schema#"
-	xmlns:dss="urn:oasis:names:tc:dss:1.0:core:schema"
-	xmlns:ec="http://www.bsi.bund.de/ecard/api/1.1"
-	xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion"
-	xmlns:xmime="http://www.w3.org/2005/05/xmlmime"
-	targetNamespace="http://www.bsi.bund.de/tr-esor/xaip/1.2"
-	elementFormDefault="qualified" attributeFormDefault="unqualified">
-
-	<xs:import namespace="http://www.w3.org/2000/09/xmldsig#"
-		schemaLocation="./deps/xmldsig-core-schema.xsd" />
-	<xs:import namespace="http://uri.etsi.org/01903/v1.3.2#"
-		schemaLocation="./deps/XAdES-1-3-2.xsd" />
-	<xs:import namespace="urn:ietf:params:xml:ns:ers"
-		schemaLocation="./deps/xml-ers-rfc6283.xsd" />
-	<xs:import namespace="urn:oasis:names:tc:dss-x:1.0:profiles:verificationreport:schema#"
-		schemaLocation="./deps/oasis-dssx-1.0-profiles-verification-report-cs1.xsd" />
-	<xs:import namespace="urn:oasis:names:tc:dss:1.0:core:schema"
-		schemaLocation="./deps/oasis-dss-core-schema-v1.0-os.xsd" />
-	<xs:import namespace="http://www.bsi.bund.de/ecard/api/1.1"
-		schemaLocation="./deps/eCard.xsd" />
-	<xs:import namespace="urn:oasis:names:tc:SAML:2.0:assertion"
-		schemaLocation="./deps/saml-schema-assertion-2.0.xsd" />
-
-
- 	<!--============================================================-->
-	<!-- Version 1.2 vom 31.01.2015                             	-->
+<xs:schema xmlns:xaip="http://www.bsi.bund.de/tr-esor/xaip/1.2" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xades="http://uri.etsi.org/01903/v1.3.2#" xmlns:ers="urn:ietf:params:xml:ns:ers" xmlns:vr="urn:oasis:names:tc:dss-x:1.0:profiles:verificationreport:schema#" xmlns:dss="urn:oasis:names:tc:dss:1.0:core:schema" xmlns:ec="http://www.bsi.bund.de/ecard/api/1.1" xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" xmlns:xmime="http://www.w3.org/2005/05/xmlmime" targetNamespace="http://www.bsi.bund.de/tr-esor/xaip/1.2" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:import namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="./deps/xmldsig-core-schema.xsd"/>
+	<xs:import namespace="http://uri.etsi.org/01903/v1.3.2#" schemaLocation="./deps/XAdES-1-3-2.xsd"/>
+	<xs:import namespace="urn:ietf:params:xml:ns:ers" schemaLocation="./deps/xml-ers-rfc6283.xsd"/>
+	<xs:import namespace="urn:oasis:names:tc:dss-x:1.0:profiles:verificationreport:schema#" schemaLocation="./deps/oasis-dssx-1.0-profiles-verification-report-cs1.xsd"/>
+	<xs:import namespace="urn:oasis:names:tc:dss:1.0:core:schema" schemaLocation="./deps/oasis-dss-core-schema-v1.0-os.xsd"/>
+	<xs:import namespace="http://www.bsi.bund.de/ecard/api/1.1" schemaLocation="./deps/eCard.xsd"/>
+	<xs:import namespace="urn:oasis:names:tc:SAML:2.0:assertion" schemaLocation="./deps/saml-schema-assertion-2.0.xsd"/>
+	<xs:import namespace="http://www.w3.org/2005/05/xmlmime" schemaLocation="./deps/xmlmime.xsd"/>
 	<!--============================================================-->
-
-
- 	<!--============================================================-->
+	<!-- Version 1.2 (+xml-mime) vom 20.12.2018                    	-->
+	<!--============================================================-->
+	<!--============================================================-->
 	<!-- XAIP gesamt -->
 	<!--============================================================-->
 	<xs:element name="XAIP" type="xaip:XAIPType"/>
-	
 	<xs:complexType name="XAIPType">
 		<xs:sequence>
-			<xs:element name="packageHeader" 
-				type="xaip:packageHeaderType">
-			</xs:element>
-			<xs:element name="metaDataSection"
-				type="xaip:metaDataSectionType" maxOccurs="1" minOccurs="0">
-			</xs:element>
-			<xs:element name="dataObjectsSection"
-				type="xaip:dataObjectsSectionType" maxOccurs="1" minOccurs="0">
-			</xs:element>
-			<xs:element name="credentialsSection"
-				type="xaip:credentialsSectionType" maxOccurs="1" minOccurs="0">
-			</xs:element>
+			<xs:element name="packageHeader" type="xaip:packageHeaderType"/>
+			<xs:element name="metaDataSection" type="xaip:metaDataSectionType" minOccurs="0"/>
+			<xs:element name="dataObjectsSection" type="xaip:dataObjectsSectionType" minOccurs="0"/>
+			<xs:element name="credentialsSection" type="xaip:credentialsSectionType" minOccurs="0"/>
 		</xs:sequence>
 	</xs:complexType>
-
-	
 	<!--============================================================-->
 	<!-- packageHeaderType -->
 	<!--============================================================-->
-
 	<xs:complexType name="packageHeaderType">
 		<xs:sequence>
-			<xs:element name="AOID" type="xs:string" 
-				maxOccurs="1" minOccurs="0">
-			</xs:element>
-			<xs:element name="packageInfo" type="xs:string" 
-				minOccurs="0">
-			</xs:element>
-			<xs:element name="versionManifest" type="xaip:versionManifestType" 
-				maxOccurs="unbounded" minOccurs="1">
-			</xs:element>
-			<xs:element ref="ds:CanonicalizationMethod" 
-				maxOccurs="1" minOccurs="0"> 
-			</xs:element>
-			<xs:element name="extension" type="xaip:extensionType"
-				maxOccurs="1" minOccurs="0">
-			</xs:element>
+			<xs:element name="AOID" type="xs:string" minOccurs="0"/>
+			<xs:element name="packageInfo" type="xs:string" minOccurs="0"/>
+			<xs:element name="versionManifest" type="xaip:versionManifestType" maxOccurs="unbounded"/>
+			<xs:element ref="ds:CanonicalizationMethod" minOccurs="0"/>
+			<xs:element name="extension" type="xaip:extensionType" minOccurs="0"/>
 		</xs:sequence>
 		<xs:attribute name="packageID" type="xs:ID" use="required"/>
 	</xs:complexType>
-	
 	<xs:complexType name="extensionType">
 		<xs:sequence>
-			<xs:any processContents="lax" minOccurs="0" maxOccurs="unbounded" />
+			<xs:any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
 		</xs:sequence>
 	</xs:complexType>
-	
-	
 	<xs:complexType name="versionManifestType">
 		<xs:sequence>
-			<xs:element name="versionInfo" type="xs:string" 
-				maxOccurs="1" minOccurs="0">
-			</xs:element>
-			<xs:element name="preservationInfo" type="xaip:preservationInfoType" />
-			<xs:element name="submissionInfo" type="xaip:submissionInfoType" 
-				maxOccurs="1" minOccurs="0">
-			</xs:element>
-			<xs:element name="packageInfoUnit" type="xaip:packageInfoUnitType" 
-				maxOccurs="unbounded" minOccurs="1">
-			</xs:element>	
-			<xs:element name="extension" type="xaip:extensionType" 
-				maxOccurs="1" minOccurs="0">
-			</xs:element>
+			<xs:element name="versionInfo" type="xs:string" minOccurs="0"/>
+			<xs:element name="preservationInfo" type="xaip:preservationInfoType"/>
+			<xs:element name="submissionInfo" type="xaip:submissionInfoType" minOccurs="0"/>
+			<xs:element name="packageInfoUnit" type="xaip:packageInfoUnitType" maxOccurs="unbounded"/>
+			<xs:element name="extension" type="xaip:extensionType" minOccurs="0"/>
 		</xs:sequence>
 		<xs:attribute name="VersionID" type="xs:ID" use="required"/>
 	</xs:complexType>
-
 	<xs:complexType name="preservationInfoType">
 		<xs:sequence>
-			<xs:element name="retentionPeriod" type="xs:date" />
-			<xs:element name="status" type="xs:string" 
-				maxOccurs="1" minOccurs="0">
-			</xs:element>
-			<xs:element name="extension" type="xaip:extensionType"
-				maxOccurs="1" minOccurs="0">
-			</xs:element>
+			<xs:element name="retentionPeriod" type="xs:date"/>
+			<xs:element name="status" type="xs:string" minOccurs="0"/>
+			<xs:element name="extension" type="xaip:extensionType" minOccurs="0"/>
 		</xs:sequence>
 	</xs:complexType>
-
 	<xs:complexType name="otherContentType">
 		<xs:complexContent>
 			<xs:extension base="xs:anyType">
-				<xs:attribute name="Type" type="xs:anyURI" />
+				<xs:attribute name="Type" type="xs:anyURI"/>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
-
 	<xs:complexType name="submissionInfoType">
 		<xs:sequence>
-			<xs:element name="clientID" type="saml:NameIDType">
-			</xs:element>
-			<xs:element name="submissionUnit" type="saml:NameIDType" 
-				maxOccurs="1" minOccurs="0">
-			</xs:element>
-			<xs:element name="submissionAuthor" type="saml:NameIDType" 
-				maxOccurs="1" minOccurs="0">
-			</xs:element>
-			<xs:element name="submissionTime" type="xs:dateTime"
-				maxOccurs="1" minOccurs="0">
-			</xs:element>
-			<xs:element name="extension" type="xaip:extensionType"
-				maxOccurs="1" minOccurs="0">
-			</xs:element>
+			<xs:element name="clientID" type="saml:NameIDType"/>
+			<xs:element name="submissionUnit" type="saml:NameIDType" minOccurs="0"/>
+			<xs:element name="submissionAuthor" type="saml:NameIDType" minOccurs="0"/>
+			<xs:element name="submissionTime" type="xs:dateTime" minOccurs="0"/>
+			<xs:element name="extension" type="xaip:extensionType" minOccurs="0"/>
 		</xs:sequence>
 	</xs:complexType>
-
 	<xs:complexType name="packageInfoUnitType">
 		<xs:sequence>
-			<xs:element name="unitType" type="xs:string"
-				minOccurs="0">
-			</xs:element>
-			<xs:element name="textInfo" type="xs:string"
-				minOccurs="0">
-			</xs:element>
-			<xs:element name="protectedObjectPointer" type="xs:IDREF"
-				minOccurs="1" maxOccurs="unbounded">
-			</xs:element>
-			<xs:element name="unprotectedObjectPointer" type="xs:IDREF"
-				minOccurs="0" maxOccurs="unbounded">
-			</xs:element>
-			<xs:element name="packageInfoUnit" type="xaip:packageInfoUnitType" 
-				minOccurs="0" maxOccurs="unbounded">
-			</xs:element>
-			<xs:element name="extension" type="xaip:extensionType" 
-				maxOccurs="1" minOccurs="0">
-			</xs:element>
+			<xs:element name="unitType" type="xs:string" minOccurs="0"/>
+			<xs:element name="textInfo" type="xs:string" minOccurs="0"/>
+			<xs:element name="protectedObjectPointer" type="xs:IDREF" maxOccurs="unbounded"/>
+			<xs:element name="unprotectedObjectPointer" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="packageInfoUnit" type="xaip:packageInfoUnitType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="extension" type="xaip:extensionType" minOccurs="0"/>
 		</xs:sequence>
 		<xs:attribute name="packageUnitID" type="xs:ID" use="required"/>
 	</xs:complexType>
-
-
 	<!--============================================================-->
 	<!-- MetadataSection -->
 	<!--============================================================-->
-
 	<xs:complexType name="metaDataSectionType">
 		<xs:sequence>
-			<xs:element ref="xaip:metaDataObject" 
-				maxOccurs="unbounded" minOccurs="1">
-			</xs:element>
+			<xs:element ref="xaip:metaDataObject" maxOccurs="unbounded"/>
 		</xs:sequence>
 	</xs:complexType>
-	
-	<xs:element name="metaDataObject" type="xaip:metaDataObjectType" />
-
+	<xs:element name="metaDataObject" type="xaip:metaDataObjectType"/>
 	<xs:complexType name="metaDataObjectType">
-		<xs:complexContent>	
+		<xs:complexContent>
 			<xs:extension base="xs:anyType">
 				<xs:attribute name="metaDataID" type="xs:ID" use="required"/>
-				<xs:attribute name="dataObjectID" type="xs:IDREF" use="required" />
-				<xs:attribute name="category" type="xs:string" />
-				<xs:attribute name="classification" type="xs:string" />
-				<xs:attribute name="type" type="xs:string" />
+				<xs:attribute name="dataObjectID" type="xs:IDREFS" use="required"/>
+				<xs:attribute name="category" type="xs:string"/>
+				<xs:attribute name="classification" type="xs:string"/>
+				<xs:attribute name="type" type="xs:string"/>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
-	
 	<xs:element name="dataObjectCheckSum" type="xaip:checkSumType"/>
-
 	<!--============================================================-->
 	<!-- DataObjectsSection -->
 	<!--============================================================-->
-
 	<xs:complexType name="dataObjectsSectionType">
 		<xs:sequence>
-			<xs:element ref="xaip:dataObject" 
-				maxOccurs="unbounded" minOccurs="1">
-			</xs:element>
+			<xs:element ref="xaip:dataObject" maxOccurs="unbounded"/>
 		</xs:sequence>
 	</xs:complexType>
-	
-	<xs:element name="dataObject" type="xaip:dataObjectType" />
-	
+	<xs:element name="dataObject" type="xaip:dataObjectType"/>
 	<xs:complexType name="dataObjectType">
 		<xs:sequence>
 			<xs:choice>
 				<xs:element name="binaryData">
-					<xs:complexType>
+					<xs:complexType xmime:expectedContentTypes="*/*">
 						<xs:simpleContent>
-							<xs:extension base="xs:base64Binary" xmime:expectedContentTypes="application/octet-stream">
-								<xs:attribute name="MimeType" type="xs:string" use="optional" />
+							<xs:extension base="xs:base64Binary">
+								<xs:attribute name="MimeType" type="xs:string" use="optional"/>
 							</xs:extension>
 						</xs:simpleContent>
 					</xs:complexType>
 				</xs:element>
-				<xs:element name="xmlData" type="dss:AnyType" />
+				<xs:element name="xmlData" type="dss:AnyType"/>
 			</xs:choice>
-			<xs:element name="checkSum" type="xaip:checkSumType"
-				minOccurs="0">
-			</xs:element>
-			<xs:element name="transformInfo"
-				type="xaip:tranformInfoType" minOccurs="0">
-			</xs:element>
+			<xs:element name="checkSum" type="xaip:checkSumType" minOccurs="0"/>
+			<xs:element name="transformInfo" type="xaip:tranformInfoType" minOccurs="0"/>
 		</xs:sequence>
 		<xs:attribute name="dataObjectID" type="xs:ID" use="required"/>
 	</xs:complexType>
-
-
 	<xs:complexType name="checkSumType">
 		<xs:sequence>
-			<xs:element name="checkSumAlgorithm" type="xs:anyURI" />
-			<xs:element name="checkSum" type="xs:hexBinary" />
+			<xs:element name="checkSumAlgorithm" type="xs:anyURI"/>
+			<xs:element name="checkSum" type="xs:hexBinary"/>
 		</xs:sequence>
 	</xs:complexType>
-
 	<xs:complexType name="tranformInfoType">
 		<xs:sequence>
-			<xs:element name="transformObject" type="xaip:transformObjectType" 
-				maxOccurs="unbounded">
-			</xs:element>
+			<xs:element name="transformObject" type="xaip:transformObjectType" maxOccurs="unbounded"/>
 		</xs:sequence>
 	</xs:complexType>
-
-
 	<xs:complexType name="transformObjectType">
 		<xs:sequence>
-			<xs:element name="transformAlgorithm" type="xs:anyURI" />
-			<xs:element name="Parameters" type="xs:anyType"
-				maxOccurs="1" minOccurs="0">
-			</xs:element>
+			<xs:element name="transformAlgorithm" type="xs:anyURI"/>
+			<xs:element name="Parameters" type="xs:anyType" minOccurs="0"/>
 		</xs:sequence>
 		<xs:attribute name="transformObjectID" type="xs:ID" use="required"/>
-		<xs:attribute name="order" type="xs:string" />
+		<xs:attribute name="order" type="xs:string"/>
 	</xs:complexType>
-
-
-
 	<!--============================================================-->
 	<!-- CredentialsSection -->
 	<!--============================================================-->
-
 	<xs:complexType name="credentialsSectionType">
 		<xs:sequence>
-			<xs:element ref="xaip:credential" 
-				maxOccurs="unbounded" minOccurs="1">
-			</xs:element>
+			<xs:element ref="xaip:credential" maxOccurs="unbounded"/>
 		</xs:sequence>
 	</xs:complexType>
-	
-	<xs:element name="credential" type="xaip:credentialType" />
-
+	<xs:element name="credential" type="xaip:credentialType"/>
 	<xs:complexType name="credentialType">
 		<xs:choice>
-			<xs:element ref="dss:SignatureObject" />
-			<xs:element name="certificateValues" type="xades:CertificateValuesType" />
-			<xs:element name="revocationValues" type="xades:RevocationValuesType" />
-			<xs:element ref="xaip:evidenceRecord" />
-			<xs:element ref="vr:VerificationReport" />
-			<xs:element name="other" type="xaip:extensionType" />
+			<xs:element ref="dss:SignatureObject"/>
+			<xs:element name="certificateValues" type="xades:CertificateValuesType"/>
+			<xs:element name="revocationValues" type="xades:RevocationValuesType"/>
+			<xs:element ref="xaip:evidenceRecord"/>
+			<xs:element ref="vr:VerificationReport"/>
+			<xs:element name="other" type="xaip:extensionType"/>
 		</xs:choice>
-		<xs:attribute name="relatedObjects" type="xs:IDREFS" />
+		<xs:attribute name="relatedObjects" type="xs:IDREFS"/>
 		<xs:attribute name="credentialID" type="xs:ID" use="required"/>
 	</xs:complexType>
-
-	<xs:element name="evidenceRecord" type="xaip:EvidenceRecordType" />
-
-	<xs:complexType name="EvidenceRecordType" >
+	<xs:element name="evidenceRecord" type="xaip:EvidenceRecordType"/>
+	<xs:complexType name="EvidenceRecordType">
 		<xs:complexContent>
 			<xs:extension base="ec:EvidenceRecordType">
-				<xs:attribute name="AOID" type="xs:string" />	
-				<xs:attribute name="VersionID" type="xs:string" />	
+				<xs:attribute name="AOID" type="xs:string"/>
+				<xs:attribute name="VersionID" type="xs:string"/>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
-
-
-
- 	<!--============================================================-->
+	<!--============================================================-->
 	<!-- Delta-XAIP -->
 	<!--============================================================-->
-
-	<xs:element name="DXAIP" type="xaip:DXAIPType" />
-	
+	<xs:element name="DXAIP" type="xaip:DXAIPType"/>
 	<xs:complexType name="DXAIPType">
 		<xs:complexContent>
 			<xs:extension base="xaip:XAIPType">
@@ -322,16 +196,13 @@
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
-
 	<xs:complexType name="updateSectionType">
 		<xs:sequence>
-			<xs:element name="prevVersion" type="xs:string" />
-			<xs:element name="placeHolder" type="xaip:placeHolderType" maxOccurs="unbounded" minOccurs="0" />
+			<xs:element name="prevVersion" type="xs:string"/>
+			<xs:element name="placeHolder" type="xaip:placeHolderType" minOccurs="0" maxOccurs="unbounded"/>
 		</xs:sequence>
 	</xs:complexType>
-
 	<xs:complexType name="placeHolderType">
-			<xs:attribute name="objectID" type="xs:ID" use="required" />
+		<xs:attribute name="objectID" type="xs:ID" use="required"/>
 	</xs:complexType>
-
 </xs:schema>

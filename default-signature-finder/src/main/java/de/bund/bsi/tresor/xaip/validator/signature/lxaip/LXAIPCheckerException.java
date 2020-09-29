@@ -1,0 +1,36 @@
+package de.bund.bsi.tresor.xaip.validator.signature.lxaip;
+
+/**
+ * Exception for the case that the LXAIP verification fails.
+ * 
+ * @author bendlera
+ */
+class LXAIPCheckerException extends Exception
+{
+    
+    private static final long serialVersionUID = -7911422775033306759L;
+    
+    /**
+     * Creating a new exception with a simple message
+     * 
+     * @param message
+     *            the message
+     */
+    public LXAIPCheckerException( String message )
+    {
+        super( message );
+    }
+    
+    /**
+     * Creating a new exception with a cause
+     * 
+     * @param message
+     *            the message
+     * @param cause
+     *            the cause
+     */
+    public LXAIPCheckerException( String message, Throwable cause )
+    {
+        super( message, cause );
+    }
+}

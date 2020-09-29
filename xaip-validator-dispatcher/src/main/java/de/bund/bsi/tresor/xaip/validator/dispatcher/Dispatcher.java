@@ -28,6 +28,7 @@ import oasis.names.tc.dss_x._1_0.profiles.verificationreport.schema_.Verificatio
  * of the XAIP.
  * 
  * @author wolffs
+ * @author bendlera
  */
 public enum Dispatcher
 {
@@ -74,6 +75,14 @@ public enum Dispatcher
         
         if ( args.isVerify() )
         {
+            syntaxResult.getXaip().ifPresent( xaip -> {
+                List<IndividualReportType> verifiedDataReferences = sigFinder.verifyDataReference( xaip );
+                
+                ModuleLogger.log( verifiedDataReferences.size() + " data references found" );
+                
+                reportParts.addAll( verifiedDataReferences );
+            } );
+            
             syntaxResult.getXaip().ifPresent( xaip -> {
                 List<SignatureObject> signatures = sigFinder.findSignatures( xaip );
                 ModuleLogger.log( signatures.size() + " signatures found" );
