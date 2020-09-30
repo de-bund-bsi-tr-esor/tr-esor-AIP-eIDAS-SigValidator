@@ -20,6 +20,9 @@ public class DefaultVerifierConfig
 {
     public Optional<String> wsdlUrl  = Optional.empty();
     
+    // support for ecm identityToken
+    public Optional<String> umUrl    = Optional.empty();
+    public Optional<String> idpUrl   = Optional.empty();
     public Optional<String> user     = Optional.empty();
     public Optional<String> password = Optional.empty();
     
@@ -34,8 +37,11 @@ public class DefaultVerifierConfig
     {
         var config = new DefaultVerifierConfig();
         config.setWsdlUrl( Optional.ofNullable( arguments.get( "verifier.wsdlUrl" ) ) );
+        
         config.setUser( Optional.ofNullable( arguments.get( "verifier.user" ) ) );
         config.setPassword( Optional.ofNullable( arguments.get( "verifier.pass" ) ) );
+        config.setUmUrl( Optional.ofNullable( arguments.get( "verifier.umUrl" ) ) );
+        config.setIdpUrl( Optional.ofNullable( arguments.get( "verifier.idpUrl" ) ) );
         
         return config;
     }
