@@ -27,10 +27,7 @@ import de.bund.bsi.tr_esor.xaip._1.DataObjectsSectionType;
 import de.bund.bsi.tr_esor.xaip._1.XAIPType;
 import de.bund.bsi.tresor.xaip.validator.api.boundary.SignatureFinder;
 import de.bund.bsi.tresor.xaip.validator.api.control.ModuleLogger;
-import de.bund.bsi.tresor.xaip.validator.signature.checker.CAdESChecker;
 import de.bund.bsi.tresor.xaip.validator.signature.checker.LXAIPChecker;
-import de.bund.bsi.tresor.xaip.validator.signature.checker.PAdESChecker;
-import de.bund.bsi.tresor.xaip.validator.signature.checker.XAdESChecker;
 import de.bund.bsi.tresor.xaip.validator.signature.entity.DataReference;
 import lombok.Getter;
 import oasis.names.tc.dss._1_0.core.schema.AnyType;
@@ -108,13 +105,13 @@ public class DefaultSignatureFinder implements SignatureFinder
     }
     
     /**
-     * Selecting possible signatures from the XAIP-DataObjectsSection.
+     * Selecting data from the DataObjectsSection.
      * 
      * @param dataSection
      *            the dataSection
      * @param dataReferences
      *            dataReferences
-     * @return the signature objects by converting potential signature data
+     * @return the data
      */
     List<SignatureObject> fromDataObjectsSection( DataObjectsSectionType dataSection, Map<String, DataObjectReferenceType> dataReferences )
     {
@@ -129,14 +126,8 @@ public class DefaultSignatureFinder implements SignatureFinder
                         .map( BinaryData::getValue )
                         .map( this::asData )
                         .orElse( new byte[0] );
-                
                 ModuleLogger.verbose( "checking dataObject " + id );
-                if ( PAdESChecker.INSTANCE.isPAdES( data )
-                        || CAdESChecker.INSTANCE.isCAdES( data )
-                        || XAdESChecker.INSTANCE.isXAdES( data ) )
-                {
-                    results.add( convert( data ) );
-                }
+                results.add( convert( data ) );
             }
         }
         
@@ -150,12 +141,7 @@ public class DefaultSignatureFinder implements SignatureFinder
                 {
                     ModuleLogger.verbose( "checking dataObjectReference " + entry.getKey() );
                     byte[] data = Files.readAllBytes( Paths.get( entry.getValue().getURI() ) );
-                    if ( PAdESChecker.INSTANCE.isPAdES( data )
-                            || CAdESChecker.INSTANCE.isCAdES( data )
-                            || XAdESChecker.INSTANCE.isXAdES( data ) )
-                    {
-                        results.add( convert( data ) );
-                    }
+                    results.add( convert( data ) );
                 }
                 catch ( IOException e )
                 {

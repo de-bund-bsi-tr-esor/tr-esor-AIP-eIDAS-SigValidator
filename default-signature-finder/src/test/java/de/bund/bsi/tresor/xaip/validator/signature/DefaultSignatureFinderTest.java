@@ -170,10 +170,7 @@ class DefaultSignatureFinderTest
         
         assertEquals( Collections.emptyList(), defaultSignatureFinder.fromDataObjectsSection( new DataObjectsSectionType(), null ) );
         
-        DataObjectsSectionType dataObjectsSectionType = createDataObjectsSectionType( dataObjectId, Optional.empty() );
-        
-        assertEquals( Collections.emptyList(), defaultSignatureFinder.fromDataObjectsSection( dataObjectsSectionType, null ) );
-        
+        DataObjectsSectionType dataObjectsSectionType = new DataObjectsSectionType();
         try
         {
             dataObjectsSectionType = createDataObjectsSectionType( dataObjectId,
@@ -181,10 +178,10 @@ class DefaultSignatureFinderTest
         }
         catch ( URISyntaxException e )
         {
-            fail( "data could not loaded", e );
+            fail( "test data could not loaded", e );
         }
         
-        assertEquals( Collections.emptyList(), defaultSignatureFinder.fromDataObjectsSection( dataObjectsSectionType, null ) );
+        assertEquals( 1, defaultSignatureFinder.fromDataObjectsSection( dataObjectsSectionType, null ).size() );
         
         try
         {
@@ -204,20 +201,20 @@ class DefaultSignatureFinderTest
      * 
      * @param dataObjectId
      *            id
-     * @param signedData
-     *            signed data
+     * @param data
+     *            data
      * @return new instance
      */
-    private DataObjectsSectionType createDataObjectsSectionType( String dataObjectId, Optional<File> signedData )
+    private DataObjectsSectionType createDataObjectsSectionType( String dataObjectId, Optional<File> data )
     {
         DataObjectsSectionType dataObjectsSectionType = new DataObjectsSectionType();
         
         BinaryData signedPdf = new BinaryData();
         
-        if ( signedData.isPresent() )
+        if ( data.isPresent() )
         {
             signedPdf.setMimeType( "application/octet-stream" );
-            signedPdf.setValue( new DataHandler( new FileDataSource( signedData.get() ) ) );
+            signedPdf.setValue( new DataHandler( new FileDataSource( data.get() ) ) );
         }
         
         DataObjectType dataObjectType;
