@@ -3,11 +3,21 @@ package de.bund.bsi.tresor.xaip.validator.signature;
 import static java.util.stream.Collectors.toList;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 
 import javax.activation.DataHandler;
+import javax.xml.bind.JAXBElement;
+
+import org.etsi.uri._02918.v1_2.DataObjectReferenceType;
 
 import de.bund.bsi.tr_esor.xaip._1.CredentialType;
 import de.bund.bsi.tr_esor.xaip._1.CredentialsSectionType;
@@ -20,32 +30,64 @@ import de.bund.bsi.tresor.xaip.validator.api.control.ModuleLogger;
 import de.bund.bsi.tresor.xaip.validator.signature.checker.CAdESChecker;
 import de.bund.bsi.tresor.xaip.validator.signature.checker.PAdESChecker;
 import de.bund.bsi.tresor.xaip.validator.signature.checker.XAdESChecker;
+import de.bund.bsi.tresor.xaip.validator.signature.lxaip.DataReference;
+import de.bund.bsi.tresor.xaip.validator.signature.lxaip.LXAIPChecker;
 import lombok.Getter;
+import oasis.names.tc.dss._1_0.core.schema.AnyType;
 import oasis.names.tc.dss._1_0.core.schema.SignatureObject;
 import oasis.names.tc.dss._1_0.core.schema.SignaturePtr;
+import oasis.names.tc.dss_x._1_0.profiles.verificationreport.schema_.IndividualReportType;
 
 /**
  * Implementation of the SignatureFindermodule from the XAIPValidator.
  * 
  * @author wolffs
+ * @author bendlera
  */
 @Getter
 public class DefaultSignatureFinder implements SignatureFinder
 {
-    private final String vendor  = "BSI";
-    private final String version = "1.0.0";
+    private final String                               vendor              = "BSI";
+    private final String                               version             = "1.0.0";
+    
+    private final Map<String, DataObjectReferenceType> foundDataReferences = new LinkedHashMap<>();
     
     @Override
     public List<SignatureObject> findSignatures( XAIPType xaip )
     {
         List<SignatureObject> credentialSection = fromCredentialSection( xaip.getCredentialsSection() );
-        List<SignatureObject> dataObjectsSection = fromDataObjectsSection( xaip.getDataObjectsSection() );
+        List<SignatureObject> dataObjectsSection = fromDataObjectsSection( xaip.getDataObjectsSection(), foundDataReferences );
         
         List<SignatureObject> resultList = new ArrayList<>();
         resultList.addAll( credentialSection );
         resultList.addAll( dataObjectsSection );
         
         return resultList;
+    }
+    
+    @Override
+    public List<IndividualReportType> verifyDataReference( XAIPType xaip )
+    {
+        List<IndividualReportType> results = new LinkedList<>();
+        if ( xaip.getDataObjectsSection() != null && !xaip.getDataObjectsSection().getDataObject().isEmpty() )
+        {
+            Map<DataObjectType, DataObjectReferenceType> dataReferences = findDataReferences( xaip.getDataObjectsSection() );
+            
+            for ( Iterator<Map.Entry<DataObjectType, DataObjectReferenceType>> iterator = dataReferences.entrySet().iterator(); iterator
+                    .hasNext(); )
+            {
+                Entry<DataObjectType, DataObjectReferenceType> entry = iterator.next();
+                DataReference dataReference = new LXAIPChecker().verify( entry.getKey().getDataObjectID(), entry.getValue() );
+                IndividualReportType individualReport = dataReference.getIndividualReportType();
+                results.add( individualReport );
+                if ( dataReference.getDataObjectReference().isPresent() )
+                {
+                    foundDataReferences.put( entry.getKey().getDataObjectID(), dataReference.getDataObjectReference().get() );
+                }
+            }
+        }
+        
+        return results;
     }
     
     /**
@@ -70,25 +112,56 @@ public class DefaultSignatureFinder implements SignatureFinder
      * 
      * @param dataSection
      *            the dataSection
+     * @param dataReferences
+     *            dataReferences
      * @return the signature objects by converting potential signature data
      */
-    List<SignatureObject> fromDataObjectsSection( DataObjectsSectionType dataSection )
+    List<SignatureObject> fromDataObjectsSection( DataObjectsSectionType dataSection, Map<String, DataObjectReferenceType> dataReferences )
     {
         List<SignatureObject> results = new ArrayList<>();
-        for ( DataObjectType dataObject : dataSection.getDataObject() )
+        
+        if ( dataSection != null && dataSection.getDataObject() != null )
         {
-            String id = dataObject.getDataObjectID();
-            byte[] data = Optional.ofNullable( dataObject.getBinaryData() )
-                    .map( BinaryData::getValue )
-                    .map( this::asData )
-                    .orElse( new byte[0] );
-            
-            ModuleLogger.verbose( "checking dataObject " + id );
-            if ( PAdESChecker.INSTANCE.isPAdES( data )
-                    || CAdESChecker.INSTANCE.isCAdES( data )
-                    || XAdESChecker.INSTANCE.isXAdES( data ) )
+            for ( DataObjectType dataObject : dataSection.getDataObject() )
             {
-                results.add( convert( data ) );
+                String id = dataObject.getDataObjectID();
+                byte[] data = Optional.ofNullable( dataObject.getBinaryData() )
+                        .map( BinaryData::getValue )
+                        .map( this::asData )
+                        .orElse( new byte[0] );
+                
+                ModuleLogger.verbose( "checking dataObject " + id );
+                if ( PAdESChecker.INSTANCE.isPAdES( data )
+                        || CAdESChecker.INSTANCE.isCAdES( data )
+                        || XAdESChecker.INSTANCE.isXAdES( data ) )
+                {
+                    results.add( convert( data ) );
+                }
+            }
+        }
+        
+        if ( dataReferences != null )
+        {
+            for ( Iterator<Entry<String, DataObjectReferenceType>> iterator = dataReferences.entrySet().iterator(); iterator.hasNext(); )
+            {
+                Entry<String, DataObjectReferenceType> entry = iterator.next();
+                
+                try
+                {
+                    ModuleLogger.verbose( "checking dataObjectReference " + entry.getKey() );
+                    byte[] data = Files.readAllBytes( Paths.get( entry.getValue().getURI() ) );
+                    if ( PAdESChecker.INSTANCE.isPAdES( data )
+                            || CAdESChecker.INSTANCE.isCAdES( data )
+                            || XAdESChecker.INSTANCE.isXAdES( data ) )
+                    {
+                        results.add( convert( data ) );
+                    }
+                }
+                catch ( IOException e )
+                {
+                    ModuleLogger.verbose( "reading dataObjectReference " + entry.getKey() + " failed", e );
+                }
+                
             }
         }
         
@@ -132,6 +205,33 @@ public class DefaultSignatureFinder implements SignatureFinder
         }
         
         return new byte[0];
+    }
+    
+    /**
+     * Extracts the DataObjectReference elements.
+     * 
+     * @param dataSection
+     *            the dataSection
+     * @return DataObjectReferences
+     */
+    Map<DataObjectType, DataObjectReferenceType> findDataReferences( DataObjectsSectionType dataSection )
+    {
+        Map<DataObjectType, DataObjectReferenceType> result = new LinkedHashMap<>();
+        for ( DataObjectType dataObject : dataSection.getDataObject() )
+        {
+            Optional<AnyType> xmlData = Optional.ofNullable( dataObject.getXmlData() );
+            if ( xmlData.isPresent() && !xmlData.get().getAny().isEmpty() )
+            {
+                JAXBElement<?> xmlDataContent = (JAXBElement<?>) xmlData.get().getAny().get( 0 );
+                
+                if ( xmlDataContent.getValue() instanceof DataObjectReferenceType )
+                {
+                    result.put( dataObject, (DataObjectReferenceType) xmlDataContent.getValue() );
+                }
+            }
+        }
+        
+        return result;
     }
     
 }

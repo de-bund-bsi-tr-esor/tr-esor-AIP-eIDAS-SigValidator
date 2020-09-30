@@ -4,11 +4,13 @@ import java.util.List;
 
 import de.bund.bsi.tr_esor.xaip._1.XAIPType;
 import oasis.names.tc.dss._1_0.core.schema.SignatureObject;
+import oasis.names.tc.dss_x._1_0.profiles.verificationreport.schema_.IndividualReportType;
 
 /**
  * API for the SignatureFinderModule.
  * 
  * @author wolffs
+ * @author bendlera
  */
 public interface SignatureFinder extends ValidatorModule
 {
@@ -22,4 +24,13 @@ public interface SignatureFinder extends ValidatorModule
      * @return signatureObjects created from found signatures of a type specified by the implementor
      */
     public List<SignatureObject> findSignatures( XAIPType xaip );
+    
+    /**
+     * Verifying data references in a LXAIP. Each data reference should result into an {@link IndividualReportType}.
+     * 
+     * @param xaip
+     *            the xaip to scan for data references
+     * @return the verification result in form of an {@link IndividualReportType}s
+     */
+    public List<IndividualReportType> verifyDataReference( XAIPType xaip );
 }

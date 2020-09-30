@@ -1,0 +1,40 @@
+<esor:XAIP xmlns:esor="http://www.bsi.bund.de/tr-esor/xaip/1.2"
+	xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:dss="urn:oasis:names:tc:dss:1.0:core:schema"
+	xmlns:asic="http://uri.etsi.org/02918/v1.2.1#">
+	<esor:packageHeader packageID="p373f9w50-69dc-4x77-9ea6-96e91j75bfc4">
+		<esor:AOID>50387ca1-4497-40fa-acfa-1186732f1001</esor:AOID>
+		<esor:versionManifest VersionID="V001">
+			<esor:preservationInfo>
+				<esor:retentionPeriod>2100-01-01+01:00</esor:retentionPeriod>
+			</esor:preservationInfo>
+			<esor:submissionInfo>
+				<esor:clientID>esor12client</esor:clientID>
+				<esor:submissionTime>2020-09-29T14:43:26.898+01:00</esor:submissionTime>
+			</esor:submissionInfo>
+			<esor:packageInfoUnit packageUnitID="_idx_DO-01_V001">
+				<esor:protectedObjectPointer>DO-01</esor:protectedObjectPointer>
+				<esor:unprotectedObjectPointer>CR-01</esor:unprotectedObjectPointer>
+			</esor:packageInfoUnit>
+		</esor:versionManifest>
+		<ds:CanonicalizationMethod xmlns:ds="http://www.w3.org/2000/09/xmldsig#"
+			Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" />
+	</esor:packageHeader>
+	<esor:dataObjectsSection>
+		<esor:dataObject dataObjectID="DO-01">
+			<esor:xmlData>
+				<asic:DataObjectReference MimeType="" Rootfile="true"
+					URI="file:///file.ext">
+					<ds:DigestMethod Algorithm="http://www.w3.org/2007/05/xmldsig-more#sha3-256" />
+					<ds:DigestValue>MA==</ds:DigestValue>
+				</asic:DataObjectReference>
+			</esor:xmlData>
+		</esor:dataObject>
+	</esor:dataObjectsSection>
+	<esor:credentialsSection>
+		<esor:credential credentialID="CR-01" relatedObjects="DO-01">
+			<dss:SignatureObject>
+				<dss:Base64Signature>c2lnbmF0dXJlCg==</dss:Base64Signature>
+			</dss:SignatureObject>
+		</esor:credential>
+	</esor:credentialsSection>
+</esor:XAIP>

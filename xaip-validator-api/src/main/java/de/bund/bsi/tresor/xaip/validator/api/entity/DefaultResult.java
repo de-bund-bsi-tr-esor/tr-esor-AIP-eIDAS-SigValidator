@@ -133,7 +133,9 @@ public class DefaultResult
         NO_TIMESTAMP_GENERATED_WARNING( "/resultminor/sal#noTimestampGenerated",
                 "Für dieses Dokument wurde bisher kein Zeitstempel erstellt." ),
         
-        XAIP_NOK_SIG( "/resultminor/arl/XAIP_NOK_SIG", "Prüfung der Signatur nach Ketten- oder Schalenmodell ist fehlgeschlagen." );
+        XAIP_NOK_SIG( "/resultminor/arl/XAIP_NOK_SIG", "Prüfung der Signatur nach Ketten- oder Schalenmodell ist fehlgeschlagen." ),
+        
+        NO_DATA_ACCESS_WARNING( "/resultminor/arl/noDataAccessWarning", "Auf referenzierte Datei konnte nicht zugegriffen werden." );
         
         private final String uri;
         
