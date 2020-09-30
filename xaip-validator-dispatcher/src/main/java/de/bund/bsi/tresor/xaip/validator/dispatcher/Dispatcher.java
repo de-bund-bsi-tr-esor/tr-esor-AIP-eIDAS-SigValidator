@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
+import java.util.function.Predicate;
 
 import javax.xml.bind.JAXB;
 
@@ -76,35 +77,30 @@ public enum Dispatcher
         
         if ( args.isVerify() )
         {
-            boolean dataReferencesValid = false;
-            if ( syntaxResult.getXaip().isPresent() )
-            {
-                List<IndividualReportType> verifiedDataReferences = sigFinder.verifyDataReference( syntaxResult.getXaip().get() );
+            syntaxResult.getXaip().ifPresent( xaip -> {
+                List<IndividualReportType> verifiedDataReferences = sigFinder.verifyDataReference( xaip );
+                reportParts.addAll( verifiedDataReferences );
+                
                 ModuleLogger.log( "finished data reference search" );
                 ModuleLogger.log( verifiedDataReferences.size() + " data references found" );
                 
-                reportParts.addAll( verifiedDataReferences );
-                dataReferencesValid = verifiedDataReferences.stream()
-                        .filter( r -> !r.getResult().getResultMajor().equals( DefaultResult.Major.OK.getURI() ) ).findFirst().isEmpty();
+                boolean hasValidDataReferences = verifiedDataReferences.stream()
+                        .anyMatch( Predicate.not( r -> r.getResult().getResultMajor().equals( DefaultResult.Major.OK.getURI() ) ) );
                 
-                if ( !dataReferencesValid )
+                if ( !hasValidDataReferences )
                 {
                     ModuleLogger.log( "invalid data reference found" );
                 }
-            }
-            
-            if ( dataReferencesValid )
-            {
-                syntaxResult.getXaip().ifPresent( xaip -> {
+                else
+                {
                     List<SignatureObject> signatures = sigFinder.findSignatures( xaip );
                     ModuleLogger.log( signatures.size() + " signatures found" );
                     ModuleLogger.log( "finished signature search" );
                     
                     reportParts.addAll( sigVerifier.verify( signatures ) );
                     ModuleLogger.log( "finished signature verification" );
-                } );
-            }
-            
+                }
+            } );
         }
         
         VerificationReportType verificationReport = protocolAssembler.assembleProtocols( reportParts );

@@ -1,4 +1,4 @@
-package de.bund.bsi.tresor.xaip.validator.signature.lxaip;
+package de.bund.bsi.tresor.xaip.validator.signature.checker;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -13,6 +13,9 @@ import org.junit.jupiter.api.Test;
 import org.w3._2000._09.xmldsig_.DigestMethodType;
 
 import de.bund.bsi.tresor.xaip.validator.api.entity.DefaultResult;
+import de.bund.bsi.tresor.xaip.validator.signature.entity.DataReference;
+import de.bund.bsi.tresor.xaip.validator.signature.entity.DigestAlgorithm;
+import de.bund.bsi.tresor.xaip.validator.signature.entity.LXAIPCheckerException;
 
 /**
  * @author bendlera
@@ -20,28 +23,27 @@ import de.bund.bsi.tresor.xaip.validator.api.entity.DefaultResult;
  */
 class LXAIPCheckerTest
 {
+    private LXAIPChecker uut = LXAIPChecker.INSTANCE;
     
     /**
      * Test method for
-     * {@link de.bund.bsi.tresor.xaip.validator.signature.lxaip.LXAIPChecker#calculateDigest(java.lang.String, org.etsi.uri._02918.v1_2.DataObjectReferenceType)}.
+     * {@link de.bund.bsi.tresor.xaip.validator.signature.checker.LXAIPChecker#calculateDigest(java.lang.String, org.etsi.uri._02918.v1_2.DataObjectReferenceType)}.
      */
     @Test
-    void testCalculateDigest()
+    void testVerify()
     {
         String workingDir = System.getProperty( "user.dir" );
         String uri = "file:///" + workingDir + "/src/test/resources/text.txt";
         
         DigestMethodType digestMethod = new DigestMethodType();
-        digestMethod.setAlgorithm( DigestAlgorithm.SHA256.getXMLURI() );
+        digestMethod.setAlgorithm( DigestAlgorithm.SHA256.getXmlUri() );
         
         DataObjectReferenceType dataObjectReference = new DataObjectReferenceType();
         dataObjectReference.setURI( uri );
         dataObjectReference.setDigestMethod( digestMethod );
         dataObjectReference.setDigestValue( Hex.decode( "ed7002b439e9ac845f22357d822bac1444730fbdb6016d3ec9432297b9ec9f73" ) );
         
-        LXAIPChecker lxaipChecker = new LXAIPChecker();
-        
-        DataReference actual = lxaipChecker.calculateDigest( "ID", dataObjectReference );
+        DataReference actual = uut.verify( "ID", dataObjectReference );
         
         assertTrue( actual.getDataObjectReference().isPresent() );
         assertEquals( dataObjectReference, actual.getDataObjectReference().get() );
@@ -50,25 +52,23 @@ class LXAIPCheckerTest
     
     /**
      * Test method for
-     * {@link de.bund.bsi.tresor.xaip.validator.signature.lxaip.LXAIPChecker#calculateDigest(java.lang.String, org.etsi.uri._02918.v1_2.DataObjectReferenceType)}.
+     * {@link de.bund.bsi.tresor.xaip.validator.signature.checker.LXAIPChecker#calculateDigest(java.lang.String, org.etsi.uri._02918.v1_2.DataObjectReferenceType)}.
      */
     @Test
-    void testCalculateDigestCaseDigestDiffer()
+    void testVerifyDiffer()
     {
         String workingDir = System.getProperty( "user.dir" );
         String uri = "file:///" + workingDir + "/src/test/resources/text.txt";
         
         DigestMethodType digestMethod = new DigestMethodType();
-        digestMethod.setAlgorithm( DigestAlgorithm.SHA256.getXMLURI() );
+        digestMethod.setAlgorithm( DigestAlgorithm.SHA256.getXmlUri() );
         
         DataObjectReferenceType dataObjectReference = new DataObjectReferenceType();
         dataObjectReference.setURI( uri );
         dataObjectReference.setDigestMethod( digestMethod );
         dataObjectReference.setDigestValue( Hex.decode( "ed7002b439e9ac845f22357d833bac1555830fbdb6016d3ec9432297b9ec9f73" ) );
         
-        LXAIPChecker lxaipChecker = new LXAIPChecker();
-        
-        DataReference actual = lxaipChecker.calculateDigest( "ID", dataObjectReference );
+        DataReference actual = uut.verify( "ID", dataObjectReference );
         
         assertTrue( actual.getDataObjectReference().isEmpty() );
         assertEquals( DefaultResult.Major.ERROR.getURI(), actual.getIndividualReportType().getResult().getResultMajor() );
@@ -77,7 +77,7 @@ class LXAIPCheckerTest
     
     /**
      * Test method for
-     * {@link de.bund.bsi.tresor.xaip.validator.signature.lxaip.LXAIPChecker#parseUri(org.etsi.uri._02918.v1_2.DataObjectReferenceType)}.
+     * {@link de.bund.bsi.tresor.xaip.validator.signature.checker.LXAIPChecker#parseUri(org.etsi.uri._02918.v1_2.DataObjectReferenceType)}.
      */
     @Test
     void testParseUri()
@@ -88,16 +88,14 @@ class LXAIPCheckerTest
         DataObjectReferenceType dataObjectReference = new DataObjectReferenceType();
         dataObjectReference.setURI( uri );
         
-        LXAIPChecker lxaipChecker = new LXAIPChecker();
-        
-        URI actual = assertDoesNotThrow( () -> lxaipChecker.parseUri( dataObjectReference ) );
+        URI actual = assertDoesNotThrow( () -> uut.parseUri( dataObjectReference ) );
         
         assertEquals( URI.create( uri ), actual );
     }
     
     /**
      * Test method for
-     * {@link de.bund.bsi.tresor.xaip.validator.signature.lxaip.LXAIPChecker#parseUri(org.etsi.uri._02918.v1_2.DataObjectReferenceType)}.
+     * {@link de.bund.bsi.tresor.xaip.validator.signature.checker.LXAIPChecker#parseUri(org.etsi.uri._02918.v1_2.DataObjectReferenceType)}.
      */
     @Test
     void testParseUriCaseUnsuportedScheme()
@@ -107,28 +105,25 @@ class LXAIPCheckerTest
         DataObjectReferenceType dataObjectReference = new DataObjectReferenceType();
         dataObjectReference.setURI( uri );
         
-        LXAIPChecker lxaipChecker = new LXAIPChecker();
-        
-        assertThrows( LXAIPCheckerException.class, () -> lxaipChecker.parseUri( dataObjectReference ), "URI scheme https not supported" );
+        assertThrows( LXAIPCheckerException.class, () -> uut.parseUri( dataObjectReference ),
+                "URI scheme https not supported" );
     }
     
     /**
      * Test method for
-     * {@link de.bund.bsi.tresor.xaip.validator.signature.lxaip.LXAIPChecker#parseUri(org.etsi.uri._02918.v1_2.DataObjectReferenceType)}.
+     * {@link de.bund.bsi.tresor.xaip.validator.signature.checker.LXAIPChecker#parseUri(org.etsi.uri._02918.v1_2.DataObjectReferenceType)}.
      */
     @Test
     void testParseUriCaseNoValue()
     {
         DataObjectReferenceType dataObjectReference = new DataObjectReferenceType();
         
-        LXAIPChecker lxaipChecker = new LXAIPChecker();
-        
-        assertThrows( LXAIPCheckerException.class, () -> lxaipChecker.parseUri( dataObjectReference ), "Attribute uri has no value." );
+        assertThrows( LXAIPCheckerException.class, () -> uut.parseUri( dataObjectReference ), "Attribute uri has no value." );
     }
     
     /**
      * Test method for
-     * {@link de.bund.bsi.tresor.xaip.validator.signature.lxaip.LXAIPChecker#parseUri(org.etsi.uri._02918.v1_2.DataObjectReferenceType)}.
+     * {@link de.bund.bsi.tresor.xaip.validator.signature.checker.LXAIPChecker#parseUri(org.etsi.uri._02918.v1_2.DataObjectReferenceType)}.
      */
     @Test
     void testParseUriCaseParserError()
@@ -136,14 +131,12 @@ class LXAIPCheckerTest
         DataObjectReferenceType dataObjectReference = new DataObjectReferenceType();
         dataObjectReference.setURI( "#file<:>//../file" );
         
-        LXAIPChecker lxaipChecker = new LXAIPChecker();
-        
-        assertThrows( LXAIPCheckerException.class, () -> lxaipChecker.parseUri( dataObjectReference ) );
+        assertThrows( LXAIPCheckerException.class, () -> uut.parseUri( dataObjectReference ) );
     }
     
     /**
      * Test method for
-     * {@link de.bund.bsi.tresor.xaip.validator.signature.lxaip.LXAIPChecker#parseAlgorithm(org.etsi.uri._02918.v1_2.DataObjectReferenceType)}.
+     * {@link de.bund.bsi.tresor.xaip.validator.signature.checker.LXAIPChecker#parseAlgorithm(org.etsi.uri._02918.v1_2.DataObjectReferenceType)}.
      */
     @Test
     void testParseAlgorithm()
@@ -152,57 +145,50 @@ class LXAIPCheckerTest
     }
     
     /**
-     * Test method for {@link de.bund.bsi.tresor.xaip.validator.signature.lxaip.LXAIPChecker#convertUri(java.net.URI)}.
+     * Test method for {@link de.bund.bsi.tresor.xaip.validator.signature.checker.LXAIPChecker#convertUri(java.net.URI)}.
      */
     @Test
     void testConvertUri()
     {
-        LXAIPChecker lxaipChecker = new LXAIPChecker();
-        
         String workingDir = System.getProperty( "user.dir" );
         URI uri = URI.create( "file:///" + workingDir + "/src/test/resources/text.txt" );
         
-        assertDoesNotThrow( () -> lxaipChecker.convertUri( uri ) );
+        assertDoesNotThrow( () -> uut.convertUri( uri ) );
     }
     
     /**
-     * Test method for {@link de.bund.bsi.tresor.xaip.validator.signature.lxaip.LXAIPChecker#convertUri(java.net.URI)}.
+     * Test method for {@link de.bund.bsi.tresor.xaip.validator.signature.checker.LXAIPChecker#convertUri(java.net.URI)}.
      */
     @Test
     void testConvertUriCaseInvalidUri()
     {
-        LXAIPChecker lxaipChecker = new LXAIPChecker();
-        
         URI uri = URI.create( "file://src/test/resources/text.txt" );
         
-        assertThrows( LXAIPCheckerException.class, () -> lxaipChecker.convertUri( uri ), "URI could not converted to path." );
+        assertThrows( LXAIPCheckerException.class, () -> uut.convertUri( uri ), "URI could not converted to path." );
     }
     
     /**
-     * Test method for {@link de.bund.bsi.tresor.xaip.validator.signature.lxaip.LXAIPChecker#convertUri(java.net.URI)}.
+     * Test method for {@link de.bund.bsi.tresor.xaip.validator.signature.checker.LXAIPChecker#convertUri(java.net.URI)}.
      */
     @Test
     void testConvertUriCaseFileNotExists()
     {
-        LXAIPChecker lxaipChecker = new LXAIPChecker();
-        
         String workingDir = System.getProperty( "user.dir" );
         URI uri = URI.create( "file:///" + workingDir + "/src/test/resources/notExistingfile.extension" );
         
-        assertThrows( LXAIPCheckerException.class, () -> lxaipChecker.convertUri( uri ),
+        assertThrows( LXAIPCheckerException.class, () -> uut.convertUri( uri ),
                 "File " + workingDir + "/src/test/resources/notExistingfile.extension does not exists." );
     }
     
     /**
-     * Test method for {@link de.bund.bsi.tresor.xaip.validator.signature.lxaip.LXAIPChecker#createDataReference(java.lang.String)}.
+     * Test method for {@link de.bund.bsi.tresor.xaip.validator.signature.checker.LXAIPChecker#createDataReference(java.lang.String)}.
      */
     @Test
     void testCreateDataReference()
     {
         String messageText = "error";
         
-        LXAIPChecker lxaipChecker = new LXAIPChecker();
-        DataReference dataReference = lxaipChecker.createDataReference( messageText );
+        DataReference dataReference = uut.createDataReference( messageText );
         
         assertTrue( dataReference.getDataObjectReference().isEmpty() );
         assertEquals( DefaultResult.Major.ERROR.getURI(), dataReference.getIndividualReportType().getResult().getResultMajor() );

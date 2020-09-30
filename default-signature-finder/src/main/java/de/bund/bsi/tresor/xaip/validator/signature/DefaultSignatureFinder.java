@@ -28,10 +28,10 @@ import de.bund.bsi.tr_esor.xaip._1.XAIPType;
 import de.bund.bsi.tresor.xaip.validator.api.boundary.SignatureFinder;
 import de.bund.bsi.tresor.xaip.validator.api.control.ModuleLogger;
 import de.bund.bsi.tresor.xaip.validator.signature.checker.CAdESChecker;
+import de.bund.bsi.tresor.xaip.validator.signature.checker.LXAIPChecker;
 import de.bund.bsi.tresor.xaip.validator.signature.checker.PAdESChecker;
 import de.bund.bsi.tresor.xaip.validator.signature.checker.XAdESChecker;
-import de.bund.bsi.tresor.xaip.validator.signature.lxaip.DataReference;
-import de.bund.bsi.tresor.xaip.validator.signature.lxaip.LXAIPChecker;
+import de.bund.bsi.tresor.xaip.validator.signature.entity.DataReference;
 import lombok.Getter;
 import oasis.names.tc.dss._1_0.core.schema.AnyType;
 import oasis.names.tc.dss._1_0.core.schema.SignatureObject;
@@ -72,14 +72,14 @@ public class DefaultSignatureFinder implements SignatureFinder
         if ( xaip.getDataObjectsSection() != null && !xaip.getDataObjectsSection().getDataObject().isEmpty() )
         {
             Map<DataObjectType, DataObjectReferenceType> dataReferences = findDataReferences( xaip.getDataObjectsSection() );
-            
             for ( Iterator<Map.Entry<DataObjectType, DataObjectReferenceType>> iterator = dataReferences.entrySet().iterator(); iterator
                     .hasNext(); )
             {
                 Entry<DataObjectType, DataObjectReferenceType> entry = iterator.next();
-                DataReference dataReference = new LXAIPChecker().verify( entry.getKey().getDataObjectID(), entry.getValue() );
-                IndividualReportType individualReport = dataReference.getIndividualReportType();
-                results.add( individualReport );
+                
+                DataReference dataReference = LXAIPChecker.INSTANCE.verify( entry.getKey().getDataObjectID(), entry.getValue() );
+                results.add( dataReference.getIndividualReportType() );
+                
                 if ( dataReference.getDataObjectReference().isPresent() )
                 {
                     foundDataReferences.put( entry.getKey().getDataObjectID(), dataReference.getDataObjectReference().get() );
@@ -161,7 +161,6 @@ public class DefaultSignatureFinder implements SignatureFinder
                 {
                     ModuleLogger.verbose( "reading dataObjectReference " + entry.getKey() + " failed", e );
                 }
-                
             }
         }
         

@@ -1,13 +1,12 @@
-package de.bund.bsi.tresor.xaip.validator.signature.lxaip;
+package de.bund.bsi.tresor.xaip.validator.signature.entity;
 
 /**
  * Exception for the case that the LXAIP verification fails.
  * 
  * @author bendlera
  */
-class LXAIPCheckerException extends Exception
+public class LXAIPCheckerException extends Exception
 {
-    
     private static final long serialVersionUID = -6324794193611159488L;
     
     /**

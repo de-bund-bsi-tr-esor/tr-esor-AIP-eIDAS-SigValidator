@@ -1,5 +1,7 @@
 package de.bund.bsi.tresor.xaip.validator.api.boundary;
 
+import static java.util.Collections.emptyList;
+
 import java.util.List;
 
 import de.bund.bsi.tr_esor.xaip._1.XAIPType;
@@ -32,5 +34,8 @@ public interface SignatureFinder extends ValidatorModule
      *            the xaip to scan for data references
      * @return the verification result in form of an {@link IndividualReportType}s
      */
-    public List<IndividualReportType> verifyDataReference( XAIPType xaip );
+    default public List<IndividualReportType> verifyDataReference( XAIPType xaip )
+    {
+        return emptyList();
+    };
 }

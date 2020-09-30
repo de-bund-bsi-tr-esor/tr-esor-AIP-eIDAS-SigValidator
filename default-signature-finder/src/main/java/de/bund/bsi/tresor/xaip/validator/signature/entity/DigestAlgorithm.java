@@ -1,22 +1,32 @@
-package de.bund.bsi.tresor.xaip.validator.signature.lxaip;
+package de.bund.bsi.tresor.xaip.validator.signature.entity;
 
 import java.util.Arrays;
 import java.util.Optional;
+
+import org.apache.commons.lang3.StringUtils;
+
+import lombok.Getter;
 
 /**
  * Digest algorithm mapping for xml uri to Java Security Standard Algorithm Name.
  * 
  * @author bendlera
  */
-enum DigestAlgorithm
+@Getter
+public enum DigestAlgorithm
 {
     SHA224( "SHA-224", "http://www.w3.org/2001/04/xmldsig-more#sha224" ),
+    
     SHA256( "SHA-256", "http://www.w3.org/2001/04/xmlenc#sha256" ),
+    
     SHA384( "SHA-384", "http://www.w3.org/2001/04/xmldsig-more#sha384" ),
+    
     SHA512( "SHA-512", "http://www.w3.org/2001/04/xmlenc#sha512" ),
     
     SHA3_256( "SHA3-256", "http://www.w3.org/2007/05/xmldsig-more#sha3-256" ),
+    
     SHA3_384( "SHA3-384", "http://www.w3.org/2007/05/xmldsig-more#sha3-384" ),
+    
     SHA3_512( "SHA3-512", "http://www.w3.org/2007/05/xmldsig-more#sha3-512" );
     
     private String javaName;
@@ -37,24 +47,6 @@ enum DigestAlgorithm
     }
     
     /**
-     * @return the Java Security Standard Algorithm Name
-     */
-    public String getJavaName()
-    {
-        return javaName;
-    }
-    
-    /**
-     * Returns the xml uri of the algorithm
-     * 
-     * @return the xml uri
-     */
-    public String getXMLURI()
-    {
-        return xmlUri;
-    }
-    
-    /**
      * Finding the {@link DigestAlgorithm} of the xml uri.
      * 
      * @param xmlUri
@@ -63,14 +55,9 @@ enum DigestAlgorithm
      */
     public static Optional<DigestAlgorithm> fromXmlSyntax( String xmlUri )
     {
-        if ( xmlUri == null || xmlUri.isEmpty() )
-        {
-            return Optional.empty();
-        }
-        
-        return Arrays.asList( DigestAlgorithm.values() ).stream()
-                .filter( alg -> alg.getXMLURI().equals( xmlUri ) )
-                .findAny();
+        return StringUtils.isBlank( xmlUri ) ? Optional.empty()
+                : Arrays.asList( DigestAlgorithm.values() ).stream()
+                        .filter( alg -> alg.getXmlUri().equals( xmlUri ) )
+                        .findAny();
     }
-    
 }

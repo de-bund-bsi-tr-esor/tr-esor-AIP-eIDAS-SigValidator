@@ -1,4 +1,4 @@
-package de.bund.bsi.tresor.xaip.validator.signature.lxaip;
+package de.bund.bsi.tresor.xaip.validator.signature.checker;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,12 +11,18 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Optional;
 
+import org.apache.commons.lang3.StringUtils;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.etsi.uri._02918.v1_2.DataObjectReferenceType;
+import org.w3._2000._09.xmldsig_.DigestMethodType;
 
 import de.bund.bsi.tresor.xaip.validator.api.entity.DefaultResult;
 import de.bund.bsi.tresor.xaip.validator.api.entity.DefaultResult.Minor;
 import de.bund.bsi.tresor.xaip.validator.api.entity.DefaultResult.ResultLanguage;
+import de.bund.bsi.tresor.xaip.validator.signature.entity.DataReference;
+import de.bund.bsi.tresor.xaip.validator.signature.entity.DigestAlgorithm;
+import de.bund.bsi.tresor.xaip.validator.signature.entity.LXAIPCheckerException;
+import oasis.names.tc.dss._1_0.core.schema.Result;
 import oasis.names.tc.dss_x._1_0.profiles.verificationreport.schema_.IndividualReportType;
 
 /**
@@ -26,11 +32,12 @@ import oasis.names.tc.dss_x._1_0.profiles.verificationreport.schema_.IndividualR
  * @author bendlera
  *
  */
-public class LXAIPChecker
+public enum LXAIPChecker
 {
+    INSTANCE;
     
     /**
-     * Searchs and verifies digest.
+     * Searches and verifies digest.
      * 
      * @param id
      *            ID
@@ -40,20 +47,6 @@ public class LXAIPChecker
      */
     public DataReference verify( String id, DataObjectReferenceType dataObjectReference )
     {
-        return calculateDigest( id, dataObjectReference );
-    }
-    
-    /**
-     * Calculates the digest of the referenced file.
-     * 
-     * @param id
-     *            ID
-     * @param dataObjectReference
-     *            the dataObjectReference
-     * @return URI and report
-     */
-    DataReference calculateDigest( String id, DataObjectReferenceType dataObjectReference )
-    {
         try
         {
             URI uri = parseUri( dataObjectReference );
@@ -62,20 +55,21 @@ public class LXAIPChecker
             
             try ( InputStream inputStream = Files.newInputStream( path ) )
             {
-                MessageDigest messageDigest = MessageDigest.getInstance( algorithm.getJavaName(),
-                        new BouncyCastleProvider() );
+                MessageDigest messageDigest = MessageDigest.getInstance( algorithm.getJavaName(), new BouncyCastleProvider() );
                 
-                byte[] buffer = new byte[8192];
                 int readCount = 0;
+                byte[] buffer = new byte[8192];
                 while ( (readCount = inputStream.read( buffer )) != -1 )
                 {
                     messageDigest.update( buffer, 0, readCount );
                 }
+                
                 byte[] digest = messageDigest.digest();
                 if ( Arrays.equals( digest, dataObjectReference.getDigestValue() ) )
                 {
                     IndividualReportType individualReport = new IndividualReportType();
                     individualReport.setResult( DefaultResult.ok().build() );
+                    
                     return new DataReference( Optional.ofNullable( dataObjectReference ), individualReport );
                 }
                 else
@@ -109,7 +103,7 @@ public class LXAIPChecker
      */
     URI parseUri( DataObjectReferenceType dataObjectReference ) throws LXAIPCheckerException
     {
-        if ( dataObjectReference.getURI() != null && !dataObjectReference.getURI().isBlank() )
+        if ( StringUtils.isNotBlank( dataObjectReference.getURI() ) )
         {
             try
             {
@@ -145,11 +139,10 @@ public class LXAIPChecker
      */
     DigestAlgorithm parseAlgorithm( DataObjectReferenceType dataObjectReference ) throws LXAIPCheckerException
     {
-        String algorithmUri = dataObjectReference.getDigestMethod().getAlgorithm();
-        if ( dataObjectReference.getDigestMethod() == null )
-        {
-            throw new LXAIPCheckerException( "No element DigestMethod found." );
-        }
+        String algorithmUri = Optional.ofNullable( dataObjectReference )
+                .map( DataObjectReferenceType::getDigestMethod )
+                .map( DigestMethodType::getAlgorithm )
+                .orElseThrow( () -> new LXAIPCheckerException( "No element DigestMethod found." ) );
         
         return DigestAlgorithm.fromXmlSyntax( algorithmUri )
                 .orElseThrow( () -> new LXAIPCheckerException( "Algorithm '" + algorithmUri + "' is not supported." ) );
@@ -173,13 +166,13 @@ public class LXAIPChecker
             {
                 return path;
             }
+            
             throw new LXAIPCheckerException( "File " + path.toAbsolutePath().toString() + " does not exists." );
         }
         catch ( IllegalArgumentException e )
         {
             throw new LXAIPCheckerException( "URI could not converted to path." );
         }
-        
     }
     
     /**
@@ -191,9 +184,14 @@ public class LXAIPChecker
      */
     DataReference createDataReference( String messageText )
     {
+        Result result = DefaultResult.error()
+                .minor( Minor.NO_DATA_ACCESS_WARNING )
+                .message( messageText, ResultLanguage.ENGLISH )
+                .build();
+        
         IndividualReportType individualReport = new IndividualReportType();
-        individualReport.setResult( DefaultResult.error().minor( Minor.NO_DATA_ACCESS_WARNING )
-                .message( messageText, ResultLanguage.ENGLISH ).build() );
+        individualReport.setResult( result );
+        
         return new DataReference( Optional.empty(), individualReport );
     }
     
