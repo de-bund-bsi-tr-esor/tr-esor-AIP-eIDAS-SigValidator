@@ -15,6 +15,7 @@
         <module>default-signature-verifier</module>
         <module>default-protocol-assembler</module>
         <module>xaip-validator-cli</module>
+        <module>xaip-validator-soap</module>
         <module>xaip-validator-api</module>
         <module>xaip-validator-dispatcher</module>
     </modules>
