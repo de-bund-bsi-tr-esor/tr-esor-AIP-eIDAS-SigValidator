@@ -145,25 +145,24 @@ The XAIPValidator consists of multiple modules.
 
 **Configurations:**
 
-|      ConfigName      | Example          | Description                                       |
-|----------------------|------------------|---------------------------------------------------|
-| validator.schemaDir  | /tmp/xaip-schema | schema directory containing all xaip schema files |
+| ConfigName            | Example          | Description                                       |
+|-----------------------|------------------|---------------------------------------------------|
+| *validator.schemaDir  | /tmp/xaip-schema | schema directory containing all xaip schema files |
 
+\* - required configuration
 
 ### Default Verifier
 
 **Description:** Sending the found signature objects to a configured verification service and retrieving the response
 
-|    ConfigName    |                          Example                          |              Description             |
-|:----------------:|:---------------------------------------------------------:|:------------------------------------:|
-| verifier.wsdlUrl |       https://host:port/VerificationService/S4?wsdl       | url of the verification service wsdl |
-|:----------------:|:---------------------------------------------------------:|:------------------------------------:|
-| verifier.user    | umsysadmin                                                | uid for the token creation           |
-| verifier.pass    | someSecret                                                | password of the user                 |
-| verifier.umUrl   | https://protectr.procilon.test/UserManager/v1/login       | loginUrl of the procilon userManager |
-| verifier.idpUrl  | https://protectr.procilon.test/idp/profile/SAML2/SOAP/ECP | idpUrl of the procilon idp           |
+**Configurations:**
 
+| ConfigName        | Example                                                   | Description                          |
+|-------------------|-----------------------------------------------------------|--------------------------------------|
+| *verifier.wsdlUrl | https://host:port/VerificationService/S4?wsdl             | url of the verification service wsdl |
+|  verifier.user    | umsysadmin                                                | uid for the token creation           |
+|  verifier.pass    | someSecret                                                | password of the user                 |
+|  verifier.umUrl   | https://protectr.procilon.test/UserManager/v1/login       | loginUrl of the procilon userManager |
+|  verifier.idpUrl  | https://protectr.procilon.test/idp/profile/SAML2/SOAP/ECP | idpUrl of the procilon idp           |
 
-**Usage:** `java -cp "target/xaip-validator-soap-1.0.1-2.jar:target/dependency/*" de.bund.bsi.tresor.xaip.validator.soap.Server [OPTION [ARG]*]*`
-
-**Options:**
+\* - required configuration
