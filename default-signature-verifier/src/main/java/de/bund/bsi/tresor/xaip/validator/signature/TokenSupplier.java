@@ -23,9 +23,6 @@ public class TokenSupplier
     
     private static final String TYPE_PAOS_XML        = "application/vnd.paos+xml";
     
-    // String umUrl = "https://protectr.procilon.test/UserManager/v1/login";
-    // String idpUrl = "https://protectr.procilon.test/idp/profile/SAML2/SOAP/ECP";
-    
     /**
      * Supplies an identityToken when the optional configuration for the provider is present in the configuration.
      * 

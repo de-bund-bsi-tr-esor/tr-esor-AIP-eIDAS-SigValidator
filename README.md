@@ -23,8 +23,12 @@ mvn clean package
 # CLI
 java -jar xaip-validator-cli/target/xaip-validator-cli.jar -i ~/Dokumente/XAIP-Validator/validator/PAdES.xaip -Mvalidator.schemaDir=default-syntax-validator/src/main/resources/definitions
 
+cd xaip-validator-soap
+
+mvn dependency:copy-dependencies
+
 # SOAP Server
-java -cp "target/xaip-validator-soap-0.0.1-SNAPSHOT.jar:target/dependency/*" de.bund.bsi.tresor.xaip.validator.soap.Server -Mvalidator.schemaDir=default-syntax-validator/src/main/resources/definition -Mverifier.wsdlUrl="https://host/VerificationService/S4?wsdl"
+java -cp "target/xaip-validator-soap-1.0.1-2.jar:target/dependency/*" de.bund.bsi.tresor.xaip.validator.soap.Server -Mvalidator.schemaDir=default-syntax-validator/src/main/resources/definition -Mverifier.wsdlUrl="https://host:port/VerificationService/S4?wsdl"
 ```
 
 ## Prerequisites
@@ -92,11 +96,11 @@ The XAIPValidator consists of multiple modules.
 	Printing the manual of the validator
 ```
 
-### SERVER
+### Server
 
 **Description:** The server version of the XAIPValidator is being used to provide a soap service implementing the verify function of the eCard api. This api can be used to send a verifyRequest containing an XAIP which will be validated in the following steps.
 
-**Usage:** `java -jar xaip-validator-soap.jar [OPTION [ARG]*]*`
+**Usage:** `java -cp "target/xaip-validator-soap-1.0.1-2.jar:target/dependency/*" de.bund.bsi.tresor.xaip.validator.soap.Server [OPTION [ARG]*]*`
 
 **Options:**
 
@@ -132,3 +136,34 @@ The XAIPValidator consists of multiple modules.
 -h, --help
 	Printing the manual of the validator
 ```
+
+## Modules
+
+### Default Validator
+
+**Description:** Validating the XAIP using the provided schema files (XSD's)
+
+**Configurations:**
+
+|      ConfigName      | Example          | Description                                       |
+|----------------------|------------------|---------------------------------------------------|
+| validator.schemaDir  | /tmp/xaip-schema | schema directory containing all xaip schema files |
+
+
+### Default Verifier
+
+**Description:** Sending the found signature objects to a configured verification service and retrieving the response
+
+|    ConfigName    |                          Example                          |              Description             |
+|:----------------:|:---------------------------------------------------------:|:------------------------------------:|
+| verifier.wsdlUrl |       https://host:port/VerificationService/S4?wsdl       | url of the verification service wsdl |
+|:----------------:|:---------------------------------------------------------:|:------------------------------------:|
+| verifier.user    | umsysadmin                                                | uid for the token creation           |
+| verifier.pass    | someSecret                                                | password of the user                 |
+| verifier.umUrl   | https://protectr.procilon.test/UserManager/v1/login       | loginUrl of the procilon userManager |
+| verifier.idpUrl  | https://protectr.procilon.test/idp/profile/SAML2/SOAP/ECP | idpUrl of the procilon idp           |
+
+
+**Usage:** `java -cp "target/xaip-validator-soap-1.0.1-2.jar:target/dependency/*" de.bund.bsi.tresor.xaip.validator.soap.Server [OPTION [ARG]*]*`
+
+**Options:**
