@@ -84,10 +84,10 @@ public enum Dispatcher
                 ModuleLogger.log( "finished data reference search" );
                 ModuleLogger.log( verifiedDataReferences.size() + " data references found" );
                 
-                boolean hasValidDataReferences = verifiedDataReferences.stream()
+                boolean hasInvalidDataReferences = verifiedDataReferences.stream()
                         .anyMatch( Predicate.not( r -> r.getResult().getResultMajor().equals( DefaultResult.Major.OK.getURI() ) ) );
                 
-                if ( !hasValidDataReferences )
+                if ( hasInvalidDataReferences )
                 {
                     ModuleLogger.log( "invalid data reference found" );
                 }
