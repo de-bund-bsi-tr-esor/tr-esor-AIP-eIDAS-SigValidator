@@ -4,6 +4,7 @@ import static java.util.Collections.emptyList;
 
 import java.util.List;
 
+import de.bund.bsi.tr_esor.vr._1.XAIPValidityType;
 import de.bund.bsi.tr_esor.xaip._1.XAIPType;
 import oasis.names.tc.dss._1_0.core.schema.SignatureObject;
 import oasis.names.tc.dss_x._1_0.profiles.verificationreport.schema_.IndividualReportType;
@@ -34,7 +35,7 @@ public interface SignatureFinder extends ValidatorModule
      *            the xaip to scan for data references
      * @return the verification result in form of an {@link IndividualReportType}s
      */
-    default public List<IndividualReportType> verifyDataReference( XAIPType xaip )
+    default public List<XAIPValidityType> verifyDataReference( XAIPType xaip )
     {
         return emptyList();
     };

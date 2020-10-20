@@ -7,6 +7,7 @@ import java.util.GregorianCalendar;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 
+import de.bund.bsi.tr_esor.vr._1.XAIPValidityType;
 import de.bund.bsi.tresor.xaip.validator.api.boundary.ProtocolAssembler;
 import de.bund.bsi.tresor.xaip.validator.api.control.ModuleLogger;
 import lombok.Getter;
@@ -26,8 +27,12 @@ public class DefaultProtocolAssembler implements ProtocolAssembler
     private final String version = "1.0.0";
     
     @Override
-    public VerificationReportType assembleProtocols( Collection<IndividualReportType> protocols )
+    public VerificationReportType assembleProtocols( Collection<XAIPValidityType> protocols )
     {
+        XAIPValidityType foo = new XAIPValidityType();
+        foo.setFormatOK( value );
+        foo.set
+        
         var completeReport = new VerificationReportType();
         for ( IndividualReportType report : protocols )
         {

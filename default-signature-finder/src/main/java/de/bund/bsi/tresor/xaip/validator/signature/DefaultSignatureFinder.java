@@ -47,6 +47,7 @@ public class DefaultSignatureFinder implements SignatureFinder
     private final String                               vendor              = "BSI";
     private final String                               version             = "1.0.0";
     
+    // TODO FIXME this is currently enforcing a state on this class
     private final Map<String, DataObjectReferenceType> foundDataReferences = new LinkedHashMap<>();
     
     @Override
@@ -62,9 +63,15 @@ public class DefaultSignatureFinder implements SignatureFinder
         return resultList;
     }
     
+    /*
+     * TODO FIXME looks like this should be done in the syntax validator module instead here. by moving his method can be removed from the
+     * interface too and would also remove the state by the "foundDataReferences"
+     */
     @Override
     public List<IndividualReportType> verifyDataReference( XAIPType xaip )
     {
+        // TODO report
+        
         List<IndividualReportType> results = new LinkedList<>();
         if ( xaip.getDataObjectsSection() != null && !xaip.getDataObjectsSection().getDataObject().isEmpty() )
         {
@@ -218,5 +225,4 @@ public class DefaultSignatureFinder implements SignatureFinder
         
         return result;
     }
-    
 }

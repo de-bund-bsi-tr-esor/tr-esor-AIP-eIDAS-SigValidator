@@ -97,6 +97,8 @@ public class DefaultResult
         
         PARAMETER_ERROR( "/resultminor/al/common#parameterError", null ),
         
+        PRESERVATION_PERIOD_EXPIRED( "/resultminor/preservationPeriodExpired", "Der Archivierungszeitraum ist abgelaufen." ),
+        
         EXISTING_AOID( "/resultminor/arl/existingAOID", "Die im Rahmen des ArchiveSubmissionRequest übergebene AOID existiert bereits." ),
         
         EXISTING_PACKAGE_INFO_WARNING( "/resultminor/arl/existingPackageInfoWarning",
@@ -127,6 +129,9 @@ public class DefaultResult
         UNKNOWN_AOID( "/resultminor/arl/unknownAOID", "Die übergebene AOID existiert nicht." ),
         
         UNKNOWN_VERSION_ID( "/resultminor/arl/unknownVersionID", "Die übergebene VersionID ist im entsprechenden XAIP nicht bekannt." ),
+        
+        UNKNOWN_CANONICALIZATION_METHOD( "/resultminor/unknownCanonicalizationMethod",
+                "Die verwendete Kanonisierungsmethode ist in diesem fachlichen Kontext unbekannt." ),
         
         INVALID_SIGNATURE( "/resultminor/sal#invalidSignature", "Die Signatur ist ungültig." ),
         

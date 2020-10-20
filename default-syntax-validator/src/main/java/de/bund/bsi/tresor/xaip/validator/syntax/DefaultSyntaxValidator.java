@@ -18,6 +18,7 @@ import javax.xml.validation.SchemaFactory;
 
 import org.etsi.uri._02918.v1_2.DataObjectReferenceType;
 
+import de.bund.bsi.tr_esor.vr._1.XAIPValidityType;
 import de.bund.bsi.tr_esor.xaip._1.XAIPType;
 import de.bund.bsi.tresor.xaip.validator.api.boundary.SyntaxValidator;
 import de.bund.bsi.tresor.xaip.validator.api.control.ModuleLogger;
@@ -25,9 +26,11 @@ import de.bund.bsi.tresor.xaip.validator.api.entity.DefaultResult;
 import de.bund.bsi.tresor.xaip.validator.api.entity.DefaultResult.ResultLanguage;
 import de.bund.bsi.tresor.xaip.validator.api.entity.SyntaxValidationResult;
 import de.bund.bsi.tresor.xaip.validator.api.entity.XAIPValidatorException;
+import de.bund.bsi.tresor.xaip.validator.syntax.validators.MetaDataValidator;
+import de.bund.bsi.tresor.xaip.validator.syntax.validators.PackageHeaderValidator;
 import lombok.Getter;
 import oasis.names.tc.dss._1_0.core.schema.Result;
-import oasis.names.tc.dss_x._1_0.profiles.verificationreport.schema_.IndividualReportType;
+import oasis.names.tc.dss_x._1_0.profiles.verificationreport.schema_.VerificationResultType;
 
 /**
  * Implementation of the SyntaxValidator module from the XAIPValidator.
@@ -37,11 +40,14 @@ import oasis.names.tc.dss_x._1_0.profiles.verificationreport.schema_.IndividualR
 @Getter
 public class DefaultSyntaxValidator implements SyntaxValidator
 {
-    private static final String SCHEMA_DIR_PROPERTY = "schemaDir";
+    private static final String    SCHEMA_DIR_PROPERTY = "schemaDir";
     
-    private final String        vendor              = "BSI";
-    private final String        version             = "1.0.0";
-    private String              schemaDir;
+    private final String           vendor              = "BSI";
+    private final String           version             = "1.0.0";
+    private String                 schemaDir;
+    
+    private MetaDataValidator      metaValidator       = MetaDataValidator.INSTANCE;
+    private PackageHeaderValidator packageValidator    = PackageHeaderValidator.INSTANCE;
     
     @Override
     public void configure( Map<String, String> properties )
@@ -50,10 +56,13 @@ public class DefaultSyntaxValidator implements SyntaxValidator
                 .orElseThrow( () -> new XAIPValidatorException( "missing property " + SCHEMA_DIR_PROPERTY ) );
     }
     
+    // TODO :too fking much -> check format of every single thing and add those details
+    
     @Override
     public SyntaxValidationResult validateSyntax( InputStream xaipCandidate )
     {
-        Optional<XAIPType> xaip = Optional.empty();
+        Optional<XAIPType> optXaip = Optional.empty();
+        XAIPValidityType syntaxResult = new XAIPValidityType();
         Result result = DefaultResult.ok()
                 .message( "xaip is schema conform", ResultLanguage.ENGLISH )
                 .build();
@@ -68,7 +77,10 @@ public class DefaultSyntaxValidator implements SyntaxValidator
             
             jaxbUnmarshaller.setSchema( schema );
             JAXBElement<XAIPType> element = jaxbUnmarshaller.unmarshal( new StreamSource( xaipCandidate ), XAIPType.class );
-            xaip = Optional.ofNullable( element.getValue() );
+            optXaip = Optional.ofNullable( element.getValue() );
+            
+            syntaxResult.setPackageHeader( packageValidator.validatePackageHeader( optXaip.map( XAIPType::getPackageHeader ) ) );
+            syntaxResult.setMetaDataSection( metaValidator.validateMetaDataSection( optXaip.map( XAIPType::getMetaDataSection ) ) );
             
         }
         catch ( Exception e )
@@ -79,10 +91,14 @@ public class DefaultSyntaxValidator implements SyntaxValidator
                     .build();
         }
         
-        IndividualReportType syntaxReport = new IndividualReportType();
-        syntaxReport.setResult( result );
+        VerificationResultType formatResult = new VerificationResultType();
+        formatResult.setResultMajor( result.getResultMajor() );
+        formatResult.setResultMajor( result.getResultMinor() );
+        formatResult.setResultMessage( result.getResultMessage() );
         
-        return new SyntaxValidationResult( xaip, syntaxReport );
+        syntaxResult.setFormatOK( formatResult );
+        
+        return new SyntaxValidationResult( optXaip, syntaxResult );
     }
     
     /**

@@ -10,6 +10,7 @@ import java.util.function.Predicate;
 
 import javax.xml.bind.JAXB;
 
+import de.bund.bsi.tr_esor.vr._1.XAIPValidityType;
 import de.bund.bsi.tresor.xaip.validator.api.boundary.ProtocolAssembler;
 import de.bund.bsi.tresor.xaip.validator.api.boundary.SignatureFinder;
 import de.bund.bsi.tresor.xaip.validator.api.boundary.SignatureVerifier;
@@ -70,15 +71,16 @@ public enum Dispatcher
         SyntaxValidationResult syntaxResult = syntaxValidator.validateSyntax( args.getInput() );
         ModuleLogger.log( "finished syntax validation" );
         
-        IndividualReportType syntaxReport = syntaxResult.getSyntaxReport();
+        // TODO add partial checks of sig finder & validator to this report
+        XAIPValidityType xaipReport = syntaxResult.getSyntaxReport();
         
         List<IndividualReportType> reportParts = new ArrayList<>();
-        reportParts.add( syntaxReport );
+        reportParts.add( xaipReport );
         
         if ( args.isVerify() )
         {
             syntaxResult.getXaip().ifPresent( xaip -> {
-                List<IndividualReportType> verifiedDataReferences = sigFinder.verifyDataReference( xaip );
+                List<XAIPValidityType> verifiedDataReferences = sigFinder.verifyDataReference( xaip );
                 reportParts.addAll( verifiedDataReferences );
                 
                 ModuleLogger.log( "finished data reference search" );

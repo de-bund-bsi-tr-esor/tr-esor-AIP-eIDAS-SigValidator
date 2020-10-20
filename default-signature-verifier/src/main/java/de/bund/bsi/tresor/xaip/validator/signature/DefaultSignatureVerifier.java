@@ -24,6 +24,7 @@ import org.w3c.dom.Node;
 
 import de.bund.bsi.ecard.api._1.VerifyResponse;
 import de.bund.bsi.tr_esor.api._1.S4_Service;
+import de.bund.bsi.tr_esor.vr._1.CredentialValidityType;
 import de.bund.bsi.tr_esor.xaip._1.DataObjectType;
 import de.bund.bsi.tr_esor.xaip._1.DataObjectType.BinaryData;
 import de.bund.bsi.tresor.xaip.validator.api.boundary.SignatureVerifier;
@@ -65,7 +66,7 @@ public class DefaultSignatureVerifier implements SignatureVerifier
     }
     
     @Override
-    public List<IndividualReportType> verify( List<SignatureObject> signatures )
+    public List<CredentialValidityType> verify( List<SignatureObject> signatures )
     {
         List<ResponseBaseType> results = signatures.stream()
                 .map( this::createRequest )
@@ -92,9 +93,10 @@ public class DefaultSignatureVerifier implements SignatureVerifier
      *            the base response type of the {@link VerifyResponse}
      * @return list of {@link IndividualReportType} retrieved from the response
      */
-    List<IndividualReportType> convertResponse( ResponseBaseType response )
+    List<CredentialValidityType> convertResponse( ResponseBaseType response )
     {
-        List<IndividualReportType> resultList = new ArrayList<>();
+        List<CredentialValidityType> resultList = new ArrayList<>();
+        // TODO edit credentialValidity
         
         try
         {
