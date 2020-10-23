@@ -48,7 +48,6 @@ public class DefaultResult
         {
             return langCode;
         }
-        
     }
     
     /**
@@ -91,6 +90,11 @@ public class DefaultResult
      */
     public static enum Minor
     {
+        CHECKSUM_ALG_NOT_SUPPORTED( "/resultminor/checkSumAlgorithmNotSupportedWarning",
+                "Der angegebene Checksum Algorithmus wird nicht unterstützt." ),
+        
+        INVALID_CHECKSUM( "/resultminor/checkSumInvalid", "Die Checksumme ist ungültig." ),
+        
         NO_PERMISSION( "/resultminor/al/common#noPermission", null ),
         
         INTERNAL_ERROR( "/resultminor/al/common#internalError", null ),

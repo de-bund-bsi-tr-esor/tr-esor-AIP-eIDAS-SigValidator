@@ -9,14 +9,24 @@ import de.bund.bsi.tr_esor.vr._1.CredentialValidityType;
 import de.bund.bsi.tr_esor.vr._1.CredentialsSectionValidityType;
 import de.bund.bsi.tr_esor.xaip._1.CredentialType;
 import de.bund.bsi.tr_esor.xaip._1.CredentialsSectionType;
+import de.bund.bsi.tresor.xaip.validator.api.boundary.SignatureVerifier;
 
 /**
+ * Validator for any validations concerning data inside the {@link CredentialsSectionType}
+ * 
  * @author wolffs
  */
 public enum CredentialSectionValidator
 {
     INSTANCE;
     
+    /**
+     * Complete validation of the credential section and all sub elements
+     * 
+     * @param credentialsSection
+     *            the credential section
+     * @return the validation result
+     */
     public CredentialsSectionValidityType validateCredentialsSection( CredentialsSectionType credentialsSection )
     {
         CredentialsSectionValidityType result = new CredentialsSectionValidityType();
@@ -31,13 +41,18 @@ public enum CredentialSectionValidator
         return result;
     }
     
+    /**
+     * Validating a credential. The report is being added after the {@link SignatureVerifier} module
+     * 
+     * @param credential
+     *            the credential
+     * @return the validation result
+     */
     public CredentialValidityType validateCredential( CredentialType credential )
     {
         CredentialValidityType result = new CredentialValidityType();
         result.setCredentialID( credential.getCredentialID() );
         // result.setRelatedObjects( value ); TODO xpath
-        
-        // the reports are being added later via the verification module
         
         return result;
     }

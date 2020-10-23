@@ -22,6 +22,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor( access = AccessLevel.PRIVATE )
 public final class CLI
 {
+    
     /**
      * Starting the application and using the arguments to configure the validator which is being done by passing them to the dispatcher.
      * The command with the least amount of informations provided is the schema validation of an XAIP, which is being retrieved from an

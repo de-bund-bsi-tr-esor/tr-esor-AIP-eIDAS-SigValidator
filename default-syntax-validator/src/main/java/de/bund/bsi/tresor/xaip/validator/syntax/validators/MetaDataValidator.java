@@ -4,55 +4,52 @@ import static java.util.stream.Collectors.toList;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.EnumSet;
+import java.util.List;
 import java.util.Optional;
 
 import de.bund.bsi.tr_esor.vr._1.MetaDataObjectValidityType;
 import de.bund.bsi.tr_esor.vr._1.MetaDataSectionValidityType;
+import de.bund.bsi.tr_esor.xaip._1.CheckSumType;
+import de.bund.bsi.tr_esor.xaip._1.DataObjectType;
+import de.bund.bsi.tr_esor.xaip._1.DataObjectsSectionType;
 import de.bund.bsi.tr_esor.xaip._1.MetaDataObjectType;
 import de.bund.bsi.tr_esor.xaip._1.MetaDataSectionType;
+import de.bund.bsi.tresor.xaip.validator.api.control.ModuleLogger;
+import de.bund.bsi.tresor.xaip.validator.api.control.VerificationUtil;
+import de.bund.bsi.tresor.xaip.validator.api.control.XAIPUtil;
 import de.bund.bsi.tresor.xaip.validator.api.entity.DefaultResult;
+import de.bund.bsi.tresor.xaip.validator.api.entity.DefaultResult.Builder;
+import de.bund.bsi.tresor.xaip.validator.api.entity.DefaultResult.Minor;
 import de.bund.bsi.tresor.xaip.validator.api.entity.DefaultResult.ResultLanguage;
-import de.bund.bsi.tresor.xaip.validator.api.entity.VerificationConverter;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import de.bund.bsi.tresor.xaip.validator.api.entity.xaip.Category;
+import de.bund.bsi.tresor.xaip.validator.api.entity.xaip.Classification;
 import oasis.names.tc.dss_x._1_0.profiles.verificationreport.schema_.VerificationResultType;
 
 /**
+ * Validator for any validations concerning data inside the {@link MetaDataSectionType}
+ * 
  * @author wolffs
  */
 public enum MetaDataValidator
 {
     INSTANCE;
     
-    @Getter
-    @AllArgsConstructor
-    enum Category
+    /**
+     * Complete validation of the metaData section which includes all subElements
+     * 
+     * @param metaDataSection
+     *            the metaData section to validate
+     * @param dataSection
+     *            the dataObjectsSection for the dataChecksum verification
+     * @return the metaData section validation result
+     */
+    public MetaDataSectionValidityType validateMetaDataSection( Optional<MetaDataSectionType> metaDataSection,
+            DataObjectsSectionType dataSection )
     {
-        DMD( EnumSet.of( Classification.DESCRIPTION, Classification.OTHER ) ),
-        
-        REP( EnumSet.of( Classification.SYNTAX, Classification.DED, Classification.OTHER ) ),
-        
-        PDI( EnumSet.of( Classification.REFERENCE, Classification.CONTEXT, Classification.PROVENANCE, Classification.OTHER ) ),
-        
-        OTHER( EnumSet.allOf( Classification.class ) );
-        
-        private EnumSet<Classification> classifications;
-    }
-    
-    enum Classification
-    {
-        CONTEXT, DESCRIPTION, DED, REFERENCE, SYNTAX, OTHER, PROVENANCE;
-    }
-    
-    public MetaDataSectionValidityType validateMetaDataSection( Optional<MetaDataSectionType> metaDataSection )
-    {
-        
         MetaDataSectionValidityType result = new MetaDataSectionValidityType();
-        metaDataSection
-                .map( section -> section.getMetaDataObject().stream()
-                        .map( this::validateMetaDataObject )
-                        .collect( toList() ) )
+        metaDataSection.map( section -> section.getMetaDataObject().stream()
+                .map( meta -> validateMetaDataObject( meta, dataSection ) )
+                .collect( toList() ) )
                 .orElse( new ArrayList<>() )
                 .stream()
                 .forEach( result.getMetaDataObject()::add );
@@ -60,20 +57,90 @@ public enum MetaDataValidator
         return result;
     }
     
-    public MetaDataObjectValidityType validateMetaDataObject( MetaDataObjectType metaData )
+    /**
+     * Validating a metaData object
+     * 
+     * @param metaData
+     *            the metaData to validate
+     * @param dataSection
+     *            the dataObjectsSection for the dataChecksum verification
+     * @return the validation result
+     */
+    public MetaDataObjectValidityType validateMetaDataObject( MetaDataObjectType metaData, DataObjectsSectionType dataSection )
     {
+        String oid = metaData.getDataObjectID().stream()
+                .findFirst()
+                .map( String.class::cast )
+                .orElse( null ); // TODO test if this is ok
+        
         MetaDataObjectValidityType result = new MetaDataObjectValidityType();
         result.setMetaDataID( metaData.getMetaDataID() );
-        // result.setDataObjectID( value ); TODO report only contains one oid and not a list?! (required!)
+        result.setDataObjectID( oid );
         
-        // result.setDataObjectCheckSum( value ); TODO
         validateCategory( metaData.getCategory() ).ifPresent( result::setCategory );
         validateClassification( metaData.getCategory(), metaData.getClassification() ).ifPresent( result::setClassification );
+        
+        // result.setDataObjectCheckSum( value ); // FIXME bug in spec
         // result.setContent(); omitted since this is only relevant under specific profiles, see BSI TR-ESOR VR
         
         return result;
     }
     
+    /**
+     * Verifies the provided checksum with the referenced dataObject
+     * 
+     * @param checksum
+     *            the checksum
+     * @param dataSection
+     *            the dataObjectsSection
+     * @param dataRefs
+     *            the dataReferences
+     * @return the verificationResult
+     */
+    public Optional<VerificationResultType> validateDataChecksum( CheckSumType checksum, DataObjectsSectionType dataSection,
+            List<Object> dataRefs )
+    {
+        List<Object> references = Optional.ofNullable( dataRefs ).orElse( new ArrayList<>() );
+        if ( references.size() > 1 )
+        {
+            ModuleLogger.log( "WARN - dataChecksum verification found multiple dataRef pointer but can only verify single dataRefs" );
+        }
+        
+        return references.stream()
+                .findFirst()
+                .map( ref -> {
+                    Builder builder = DefaultResult.error();
+                    Optional<DataObjectType> dataObject = Optional.empty();
+                    
+                    if ( ref instanceof String )
+                    {
+                        dataObject = XAIPUtil.findDataObjectById( dataSection, (String) ref );
+                    }
+                    else if ( ref instanceof DataObjectType )
+                    {
+                        dataObject = Optional.of( (DataObjectType) ref );
+                    }
+                    else
+                    {
+                        builder.minor( Minor.PARAMETER_ERROR )
+                                .message( "dataRef is not pointing to a valid dataObject", ResultLanguage.ENGLISH );
+                    }
+                    
+                    return dataObject.map( XAIPUtil::retrieveContent )
+                            .map( content -> VerificationUtil.verifyChecksum( content, checksum ) )
+                            .orElse( VerificationUtil.verificationResult( builder.build() ) );
+                    
+                } );
+    }
+    
+    /**
+     * Validating the metaData category. Since this field is optional an can be empty, an optional will be returned and contains a result
+     * when a category is provided
+     * 
+     * @param category
+     *            the category
+     * @return the validation result when a category was provided
+     */
     public Optional<VerificationResultType> validateCategory( String category )
     {
         return Optional.ofNullable( category )
@@ -81,9 +148,21 @@ public enum MetaDataValidator
                         .map( Category::name )
                         .anyMatch( category::equals ) )
                 .map( valid -> valid ? DefaultResult.ok().build() : DefaultResult.error().build() )
-                .map( VerificationConverter::fromResult );
+                .map( VerificationUtil::verificationResult );
     }
     
+    /**
+     * Validating the metaData classification. This is an optional field and it's validity depends also on the provided category. Since this
+     * field is optional and can be empty, an optional will be returned and contains a result when a classification is provided. Therefore
+     * providing a classification but no category will lead to an error result but providing a category but no classification will return an
+     * empty optional.
+     * 
+     * @param category
+     *            the depending category
+     * @param classification
+     *            the classification
+     * @return the validation result when a classification was provided
+     */
     public Optional<VerificationResultType> validateClassification( String category, String classification )
     {
         Optional<Category> optCat = Arrays.stream( Category.values() )
@@ -102,6 +181,6 @@ public enum MetaDataValidator
                                                 .build() )
                                 .orElse( DefaultResult.error().message( "missing category", ResultLanguage.ENGLISH ).build() ) )
                         .orElse( DefaultResult.error().build() ) )
-                .map( VerificationConverter::fromResult );
+                .map( VerificationUtil::verificationResult );
     }
 }

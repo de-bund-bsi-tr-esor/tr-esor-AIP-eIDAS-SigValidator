@@ -1,7 +1,5 @@
 package de.bund.bsi.tresor.xaip.validator.signature;
 
-import static java.util.stream.Collectors.toList;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -10,6 +8,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -29,8 +28,10 @@ import de.bund.bsi.tr_esor.xaip._1.DataObjectType;
 import de.bund.bsi.tr_esor.xaip._1.DataObjectType.BinaryData;
 import de.bund.bsi.tresor.xaip.validator.api.boundary.SignatureVerifier;
 import de.bund.bsi.tresor.xaip.validator.api.control.ModuleLogger;
+import de.bund.bsi.tresor.xaip.validator.api.control.VerificationUtil;
 import de.bund.bsi.tresor.xaip.validator.api.entity.XAIPValidatorException;
 import lombok.Getter;
+import oasis.names.tc.dss._1_0.core.schema.AnyType;
 import oasis.names.tc.dss._1_0.core.schema.Base64Data;
 import oasis.names.tc.dss._1_0.core.schema.DocumentType;
 import oasis.names.tc.dss._1_0.core.schema.InputDocuments;
@@ -38,6 +39,7 @@ import oasis.names.tc.dss._1_0.core.schema.ResponseBaseType;
 import oasis.names.tc.dss._1_0.core.schema.SignatureObject;
 import oasis.names.tc.dss._1_0.core.schema.SignaturePtr;
 import oasis.names.tc.dss._1_0.core.schema.VerifyRequest;
+import oasis.names.tc.dss_x._1_0.profiles.verificationreport.schema_.DetailedSignatureReportType;
 import oasis.names.tc.dss_x._1_0.profiles.verificationreport.schema_.IndividualReportType;
 
 /**
@@ -66,23 +68,21 @@ public class DefaultSignatureVerifier implements SignatureVerifier
     }
     
     @Override
-    public List<CredentialValidityType> verify( List<SignatureObject> signatures )
+    public List<CredentialValidityType> verify( Map<String, SignatureObject> signaturesByCredId )
     {
-        List<ResponseBaseType> results = signatures.stream()
-                .map( this::createRequest )
-                .map( this::requestVerification )
-                .collect( toList() );
-        
-        int missingSignatures = signatures.size() - results.size();
-        if ( missingSignatures > 0 )
+        List<CredentialValidityType> resultList = new ArrayList<>();
+        for ( Entry<String, SignatureObject> entry : signaturesByCredId.entrySet() )
         {
-            ModuleLogger.log( "lost " + missingSignatures + " signature documents on verification" );
+            String credId = entry.getKey();
+            SignatureObject signatureObject = entry.getValue();
+            
+            VerifyRequest request = createRequest( signatureObject );
+            ResponseBaseType verification = requestVerification( request );
+            
+            resultList.addAll( convertResponse( credId, verification ) );
         }
         
-        return results.stream()
-                .map( this::convertResponse )
-                .flatMap( List::stream )
-                .collect( toList() );
+        return resultList;
     }
     
     /**
@@ -93,10 +93,9 @@ public class DefaultSignatureVerifier implements SignatureVerifier
      *            the base response type of the {@link VerifyResponse}
      * @return list of {@link IndividualReportType} retrieved from the response
      */
-    List<CredentialValidityType> convertResponse( ResponseBaseType response )
+    List<CredentialValidityType> convertResponse( String credId, ResponseBaseType response )
     {
         List<CredentialValidityType> resultList = new ArrayList<>();
-        // TODO edit credentialValidity
         
         try
         {
@@ -107,7 +106,28 @@ public class DefaultSignatureVerifier implements SignatureVerifier
                 if ( obj instanceof Node )
                 {
                     JAXBElement<IndividualReportType> element = unmarshaller.unmarshal( (Node) obj, IndividualReportType.class );
-                    resultList.add( element.getValue() );
+                    IndividualReportType report = element.getValue();
+                    
+                    List<Object> details = Optional.ofNullable( report.getDetails() )
+                            .map( AnyType::getAny )
+                            .orElse( new ArrayList<>() );
+                    
+                    for ( Object detail : details )
+                    {
+                        CredentialValidityType result = new CredentialValidityType();
+                        result.setCredentialID( credId );
+                        
+                        if ( detail instanceof DetailedSignatureReportType )
+                        {
+                            result.setDetailedSignatureReport( (DetailedSignatureReportType) detail );
+                        }
+                        else
+                        {
+                            result.setOther( VerificationUtil.verificationResult( report.getResult() ) );
+                        }
+                        
+                        resultList.add( result );
+                    }
                 }
             }
         }
@@ -154,7 +174,6 @@ public class DefaultSignatureVerifier implements SignatureVerifier
         }
         
         return request;
-        
     }
     
     Optional<DataObjectType> parseDocument( Object document )

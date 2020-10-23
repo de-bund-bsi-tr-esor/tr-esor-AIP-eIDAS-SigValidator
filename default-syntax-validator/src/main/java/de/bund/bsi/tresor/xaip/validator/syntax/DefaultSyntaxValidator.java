@@ -19,6 +19,7 @@ import javax.xml.validation.SchemaFactory;
 import org.etsi.uri._02918.v1_2.DataObjectReferenceType;
 
 import de.bund.bsi.tr_esor.vr._1.XAIPValidityType;
+import de.bund.bsi.tr_esor.xaip._1.DataObjectsSectionType;
 import de.bund.bsi.tr_esor.xaip._1.XAIPType;
 import de.bund.bsi.tresor.xaip.validator.api.boundary.SyntaxValidator;
 import de.bund.bsi.tresor.xaip.validator.api.control.ModuleLogger;
@@ -79,8 +80,11 @@ public class DefaultSyntaxValidator implements SyntaxValidator
             JAXBElement<XAIPType> element = jaxbUnmarshaller.unmarshal( new StreamSource( xaipCandidate ), XAIPType.class );
             optXaip = Optional.ofNullable( element.getValue() );
             
+            DataObjectsSectionType dataSection = optXaip.map( XAIPType::getDataObjectsSection ).orElse( null );
+            
             syntaxResult.setPackageHeader( packageValidator.validatePackageHeader( optXaip.map( XAIPType::getPackageHeader ) ) );
-            syntaxResult.setMetaDataSection( metaValidator.validateMetaDataSection( optXaip.map( XAIPType::getMetaDataSection ) ) );
+            syntaxResult.setMetaDataSection(
+                    metaValidator.validateMetaDataSection( optXaip.map( XAIPType::getMetaDataSection ), dataSection ) );
             
         }
         catch ( Exception e )

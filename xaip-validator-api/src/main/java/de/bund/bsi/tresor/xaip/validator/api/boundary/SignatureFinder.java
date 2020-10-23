@@ -1,19 +1,14 @@
 package de.bund.bsi.tresor.xaip.validator.api.boundary;
 
-import static java.util.Collections.emptyList;
+import java.util.Map;
 
-import java.util.List;
-
-import de.bund.bsi.tr_esor.vr._1.XAIPValidityType;
 import de.bund.bsi.tr_esor.xaip._1.XAIPType;
 import oasis.names.tc.dss._1_0.core.schema.SignatureObject;
-import oasis.names.tc.dss_x._1_0.profiles.verificationreport.schema_.IndividualReportType;
 
 /**
  * API for the SignatureFinderModule.
  * 
  * @author wolffs
- * @author bendlera
  */
 public interface SignatureFinder extends ValidatorModule
 {
@@ -26,17 +21,5 @@ public interface SignatureFinder extends ValidatorModule
      *            the xaip to scan for signatures
      * @return signatureObjects created from found signatures of a type specified by the implementor
      */
-    public List<SignatureObject> findSignatures( XAIPType xaip );
-    
-    /**
-     * Verifying data references in a LXAIP. Each data reference should result into an {@link IndividualReportType}.
-     * 
-     * @param xaip
-     *            the xaip to scan for data references
-     * @return the verification result in form of an {@link IndividualReportType}s
-     */
-    default public List<XAIPValidityType> verifyDataReference( XAIPType xaip )
-    {
-        return emptyList();
-    };
+    public Map<String, SignatureObject> findSignatures( XAIPType xaip );
 }

@@ -14,16 +14,17 @@ import de.bund.bsi.tr_esor.vr._1.VersionManifestValidityType;
 import de.bund.bsi.tr_esor.xaip._1.PackageHeaderType;
 import de.bund.bsi.tr_esor.xaip._1.PreservationInfoType;
 import de.bund.bsi.tr_esor.xaip._1.VersionManifestType;
+import de.bund.bsi.tresor.xaip.validator.api.control.VerificationUtil;
 import de.bund.bsi.tresor.xaip.validator.api.entity.DefaultResult;
 import de.bund.bsi.tresor.xaip.validator.api.entity.DefaultResult.Minor;
 import de.bund.bsi.tresor.xaip.validator.api.entity.DefaultResult.ResultLanguage;
-import de.bund.bsi.tresor.xaip.validator.api.entity.VerificationConverter;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import de.bund.bsi.tresor.xaip.validator.api.entity.xaip.Canonicalization;
 import oasis.names.tc.dss._1_0.core.schema.Result;
 import oasis.names.tc.dss_x._1_0.profiles.verificationreport.schema_.VerificationResultType;
 
 /**
+ * Validator for any validations concerning data inside the {@link PackageHeaderType}
+ * 
  * @author wolffs
  */
 public enum PackageHeaderValidator
@@ -32,26 +33,22 @@ public enum PackageHeaderValidator
     
     public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ISO_DATE;
     
-    @Getter
-    @RequiredArgsConstructor
-    enum Canonicalization
-    {
-        CANONIC_XML( "http://www.w3.org/TR/2001/REC-xml-c14n-20010315" ),
-        
-        EXCLUSIVE_XML( "https://www.w3.org/TR/2002/REC-xml-exc-c14n" );
-        
-        private final String url;
-    }
-    
+    /**
+     * Validating the package header and all sub elements
+     * 
+     * @param packageHeader
+     *            the packageHeader
+     * @return the validation result
+     */
     public PackageHeaderValidityType validatePackageHeader( Optional<PackageHeaderType> packageHeader )
     {
         PackageHeaderValidityType result = new PackageHeaderValidityType();
         packageHeader.ifPresent( header -> {
             result.setAOID( header.getAOID() );
             result.setPackageID( header.getPackageID() );
+            // result.setExtension( value ); omitted in the current profile, see BSI TR-ESOR-VR
             
             validateCanonicalization( header.getCanonicalizationMethod() ).ifPresent( result::setCanonicalizationMethod );
-            // TODO result.setExtension( value );
             
             header.getVersionManifest().stream()
                     .map( this::validateVersionManifest )
@@ -61,17 +58,31 @@ public enum PackageHeaderValidator
         return result;
     }
     
+    /**
+     * Validating the version manifest
+     * 
+     * @param versionManifest
+     *            the version manifest
+     * @return the validation result
+     */
     public VersionManifestValidityType validateVersionManifest( VersionManifestType versionManifest )
     {
         VersionManifestValidityType result = new VersionManifestValidityType();
         result.setVersionID( versionManifest.getVersionID() );
         result.setPreservationInfo( validatePreservation( Optional.ofNullable( versionManifest.getPreservationInfo() ) ) );
-        // TODO result.setSubmissionInfo( value ); does not make sense to verify this on clients
-        // TODO result.setExtension( value );
+        // result.setSubmissionInfo( value ); does not make sense to verify this on client side
+        // result.setExtension( value ); omitted in the current profile, see BSI TR-ESOR-VR
         
         return result;
     }
     
+    /**
+     * Validating the preservation information
+     * 
+     * @param preservationInfo
+     *            the preservation info
+     * @return the validation result
+     */
     public VerificationResultType validatePreservation( Optional<PreservationInfoType> preservationInfo )
     {
         Result result = preservationInfo
@@ -88,12 +99,16 @@ public enum PackageHeaderValidator
                         .message( "missing preservation info", ResultLanguage.ENGLISH )
                         .build() );
         
-        return VerificationConverter.fromResult( result );
+        return VerificationUtil.verificationResult( result );
     }
     
     /**
+     * Validating the canonicalization method which is an optional element. When an non empty element was provided it will be validated and
+     * the result contains a verification result. Not providing an element will return an empty optional instead.
+     * 
      * @param canonicalizationMethod
-     * @return
+     *            the canonicalization method
+     * @return the validation result when an element was provided
      */
     public Optional<VerificationResultType> validateCanonicalization( CanonicalizationMethodType canonicalizationMethod )
     {
@@ -115,7 +130,7 @@ public enum PackageHeaderValidator
                                 .build();
                     }
                     
-                    return VerificationConverter.fromResult( result );
+                    return VerificationUtil.verificationResult( result );
                 } );
     }
     
