@@ -57,7 +57,7 @@ public final class CLI
         }
         catch ( Exception e )
         {
-            ModuleLogger.log( "finished validation with errors", e );
+            ModuleLogger.log( "\nfinished validation with errors", e );
         }
     }
     

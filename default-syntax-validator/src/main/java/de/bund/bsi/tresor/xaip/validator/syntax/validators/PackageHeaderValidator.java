@@ -119,14 +119,14 @@ public enum PackageHeaderValidator
                         .anyMatch( cm::startsWith ) )
                 .map( validMethod -> {
                     Result result = DefaultResult.ok()
-                            .message( "using valid algorithm" + canonicalizationMethod.getAlgorithm(), ResultLanguage.ENGLISH )
+                            .message( "using valid algorithm " + canonicalizationMethod.getAlgorithm(), ResultLanguage.ENGLISH )
                             .build();
                     
                     if ( !validMethod )
                     {
                         result = DefaultResult.error()
                                 .minor( Minor.UNKNOWN_CANONICALIZATION_METHOD )
-                                .message( "using invalid algorithm" + canonicalizationMethod.getAlgorithm(), ResultLanguage.ENGLISH )
+                                .message( "using invalid algorithm " + canonicalizationMethod.getAlgorithm(), ResultLanguage.ENGLISH )
                                 .build();
                     }
                     

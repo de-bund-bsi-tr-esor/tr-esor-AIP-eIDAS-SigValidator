@@ -155,6 +155,7 @@ public enum Dispatcher
         catch ( JAXBException e )
         {
             ModuleLogger.verbose( "could not marshal verificationReport to the provided outputStream", e );
+            throw new RuntimeException();
         }
     }
     

@@ -27,13 +27,12 @@ public enum CredentialSectionValidator
      *            the credential section
      * @return the validation result
      */
-    public CredentialsSectionValidityType validateCredentialsSection( CredentialsSectionType credentialsSection )
+    public CredentialsSectionValidityType validateCredentialsSection( Optional<CredentialsSectionType> credentialsSection )
     {
         CredentialsSectionValidityType result = new CredentialsSectionValidityType();
-        Optional.ofNullable( credentialsSection )
-                .map( section -> section.getCredential().stream()
-                        .map( this::validateCredential )
-                        .collect( toList() ) )
+        credentialsSection.map( section -> section.getCredential().stream()
+                .map( this::validateCredential )
+                .collect( toList() ) )
                 .orElse( new ArrayList<>() )
                 .stream()
                 .forEach( result.getCredential()::add );
