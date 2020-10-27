@@ -1,10 +1,9 @@
-package de.bund.bsi.tresor.xaip.validator.signature.entity;
+package de.bund.bsi.tresor.xaip.validator.api.entity.xaip;
 
 import java.util.Arrays;
 import java.util.Optional;
 
-import org.apache.commons.lang3.StringUtils;
-
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
@@ -13,6 +12,7 @@ import lombok.Getter;
  * @author bendlera
  */
 @Getter
+@AllArgsConstructor
 public enum DigestAlgorithm
 {
     SHA224( "SHA-224", "http://www.w3.org/2001/04/xmldsig-more#sha224" ),
@@ -29,22 +29,8 @@ public enum DigestAlgorithm
     
     SHA3_512( "SHA3-512", "http://www.w3.org/2007/05/xmldsig-more#sha3-512" );
     
-    private String javaName;
-    private String xmlUri;
-    
-    /**
-     * Defining a java name - xml uri pair of algorithm
-     * 
-     * @param java
-     *            the java name of the algorithm
-     * @param xmlUri
-     *            the xml uri of the algorithm
-     */
-    DigestAlgorithm( String javaName, String xmlUri )
-    {
-        this.javaName = javaName;
-        this.xmlUri = xmlUri;
-    }
+    private final String javaName;
+    private final String xmlUri;
     
     /**
      * Finding the {@link DigestAlgorithm} of the xml uri.
@@ -55,9 +41,8 @@ public enum DigestAlgorithm
      */
     public static Optional<DigestAlgorithm> fromXmlSyntax( String xmlUri )
     {
-        return StringUtils.isBlank( xmlUri ) ? Optional.empty()
-                : Arrays.asList( DigestAlgorithm.values() ).stream()
-                        .filter( alg -> alg.getXmlUri().equals( xmlUri ) )
-                        .findAny();
+        return Arrays.stream( values() )
+                .filter( alg -> alg.getXmlUri().equals( xmlUri ) )
+                .findAny();
     }
 }

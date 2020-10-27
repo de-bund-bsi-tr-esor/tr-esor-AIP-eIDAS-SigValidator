@@ -6,21 +6,22 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
-import java.util.function.Predicate;
 
-import javax.xml.bind.JAXB;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 
+import de.bund.bsi.tr_esor.vr._1.CredentialValidityType;
+import de.bund.bsi.tr_esor.vr._1.XAIPValidityType;
 import de.bund.bsi.tresor.xaip.validator.api.boundary.ProtocolAssembler;
 import de.bund.bsi.tresor.xaip.validator.api.boundary.SignatureFinder;
 import de.bund.bsi.tresor.xaip.validator.api.boundary.SignatureVerifier;
 import de.bund.bsi.tresor.xaip.validator.api.boundary.SyntaxValidator;
 import de.bund.bsi.tresor.xaip.validator.api.boundary.ValidatorModule;
 import de.bund.bsi.tresor.xaip.validator.api.control.ModuleLogger;
-import de.bund.bsi.tresor.xaip.validator.api.entity.DefaultResult;
 import de.bund.bsi.tresor.xaip.validator.api.entity.SyntaxValidationResult;
 import de.bund.bsi.tresor.xaip.validator.api.entity.XAIPValidatorException;
 import oasis.names.tc.dss._1_0.core.schema.SignatureObject;
-import oasis.names.tc.dss_x._1_0.profiles.verificationreport.schema_.IndividualReportType;
 import oasis.names.tc.dss_x._1_0.profiles.verificationreport.schema_.ObjectFactory;
 import oasis.names.tc.dss_x._1_0.profiles.verificationreport.schema_.VerificationReportType;
 
@@ -70,40 +71,22 @@ public enum Dispatcher
         SyntaxValidationResult syntaxResult = syntaxValidator.validateSyntax( args.getInput() );
         ModuleLogger.log( "finished syntax validation" );
         
-        IndividualReportType syntaxReport = syntaxResult.getSyntaxReport();
-        
-        List<IndividualReportType> reportParts = new ArrayList<>();
-        reportParts.add( syntaxReport );
+        XAIPValidityType xaipReport = syntaxResult.getSyntaxReport();
+        List<CredentialValidityType> credentialReports = new ArrayList<>();
         
         if ( args.isVerify() )
         {
             syntaxResult.getXaip().ifPresent( xaip -> {
-                List<IndividualReportType> verifiedDataReferences = sigFinder.verifyDataReference( xaip );
-                reportParts.addAll( verifiedDataReferences );
+                Map<String, SignatureObject> signatures = sigFinder.findSignatures( xaip );
+                ModuleLogger.log( signatures.size() + " signatures found" );
+                ModuleLogger.log( "finished signature search" );
                 
-                ModuleLogger.log( "finished data reference search" );
-                ModuleLogger.log( verifiedDataReferences.size() + " data references found" );
-                
-                boolean hasInvalidDataReferences = verifiedDataReferences.stream()
-                        .anyMatch( Predicate.not( r -> r.getResult().getResultMajor().equals( DefaultResult.Major.OK.getURI() ) ) );
-                
-                if ( hasInvalidDataReferences )
-                {
-                    ModuleLogger.log( "invalid data reference found" );
-                }
-                else
-                {
-                    List<SignatureObject> signatures = sigFinder.findSignatures( xaip );
-                    ModuleLogger.log( signatures.size() + " signatures found" );
-                    ModuleLogger.log( "finished signature search" );
-                    
-                    reportParts.addAll( sigVerifier.verify( signatures ) );
-                    ModuleLogger.log( "finished signature verification" );
-                }
+                credentialReports.addAll( sigVerifier.verify( signatures ) );
+                ModuleLogger.log( "finished signature verification" );
             } );
         }
         
-        VerificationReportType verificationReport = protocolAssembler.assembleProtocols( reportParts );
+        VerificationReportType verificationReport = protocolAssembler.assembleProtocols( xaipReport, credentialReports );
         ModuleLogger.log( "finished protocol assembling" );
         
         writeReport( verificationReport, args.getOutput() );
@@ -162,7 +145,18 @@ public enum Dispatcher
      */
     void writeReport( VerificationReportType verificationReport, OutputStream outputStream )
     {
-        JAXB.marshal( objectFactory.createVerificationReport( verificationReport ), outputStream );
+        try
+        {
+            JAXBContext context = JAXBContext.newInstance( VerificationReportType.class, XAIPValidityType.class );
+            Marshaller marshaller = context.createMarshaller();
+            
+            marshaller.marshal( objectFactory.createVerificationReport( verificationReport ), outputStream );
+        }
+        catch ( JAXBException e )
+        {
+            ModuleLogger.verbose( "could not marshal verificationReport to the provided outputStream", e );
+            throw new RuntimeException();
+        }
     }
     
 }
