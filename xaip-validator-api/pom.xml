@@ -57,11 +57,9 @@
                         </goals>
                         <phase>generate-sources</phase>
                         <configuration>
-                            <schemaDirectory>src/main/resources</schemaDirectory>
+                            <schemaDirectory>src/main/resources/xsd</schemaDirectory>
                             <schemaIncludes>
-                                <include>xsd/en_31916201v010101.xsd</include>
-                                <!-- TODO add without generating errors -->
-                                <!-- <include>wsdl/tr-esor-verification-report-v1.2-corrected-2016-07-08.xsd</include> -->
+                                <include>en_31916201v010101.xsd</include>
                             </schemaIncludes>
                             <catalog>src/main/resources/catalog.xml</catalog>
                             <addIfExistsToEpisodeSchemaBindings>true</addIfExistsToEpisodeSchemaBindings>

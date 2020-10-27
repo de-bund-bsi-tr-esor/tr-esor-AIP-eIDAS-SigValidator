@@ -18,10 +18,19 @@ import oasis.names.tc.dss._1_0.core.schema.Result;
 import oasis.names.tc.dss_x._1_0.profiles.verificationreport.schema_.VerificationResultType;
 
 /**
+ * Utility class for the xaip verification
+ * 
  * @author wolffs
  */
 public class VerificationUtil
 {
+    /**
+     * Transforming a {@link Result} into a {@link VerificationResultType}
+     * 
+     * @param result
+     *            the result
+     * @return the verificationResult
+     */
     public static VerificationResultType verificationResult( Result result )
     {
         VerificationResultType verificationResult = new VerificationResultType();
@@ -32,6 +41,15 @@ public class VerificationUtil
         return verificationResult;
     }
     
+    /**
+     * Creating the checksum of the provided content against the given checksum and returns a verificationResult
+     * 
+     * @param content
+     *            the content
+     * @param checksum
+     *            the checksum to validate against
+     * @return the verification result
+     */
     public static VerificationResultType verifyChecksum( InputStream content, CheckSumType checksum )
     {
         Builder result = DigestAlgorithm.fromXmlSyntax( checksum.getCheckSumAlgorithm() )

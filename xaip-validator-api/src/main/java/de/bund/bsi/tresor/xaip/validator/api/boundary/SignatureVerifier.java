@@ -25,7 +25,7 @@ public interface SignatureVerifier extends ValidatorModule
      * Verifying the provided signatures which were found by the {@link SignatureFinder} module. Each signature should result into an
      * {@link CredentialValidityType}.
      * 
-     * @param signatures
+     * @param signaturesByCredId
      *            any xaip signature which can be provided the {@link SignatureFinder}
      * @return the verification result in form of an {@link IndividualReportType}s
      */
