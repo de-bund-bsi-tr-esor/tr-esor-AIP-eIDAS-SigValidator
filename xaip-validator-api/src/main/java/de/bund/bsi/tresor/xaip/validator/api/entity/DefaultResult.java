@@ -48,7 +48,6 @@ public class DefaultResult
         {
             return langCode;
         }
-        
     }
     
     /**
@@ -91,11 +90,18 @@ public class DefaultResult
      */
     public static enum Minor
     {
+        CHECKSUM_ALG_NOT_SUPPORTED( "/resultminor/checkSumAlgorithmNotSupportedWarning",
+                "Der angegebene Checksum Algorithmus wird nicht unterstützt." ),
+        
+        INVALID_CHECKSUM( "/resultminor/checkSumInvalid", "Die Checksumme ist ungültig." ),
+        
         NO_PERMISSION( "/resultminor/al/common#noPermission", null ),
         
         INTERNAL_ERROR( "/resultminor/al/common#internalError", null ),
         
         PARAMETER_ERROR( "/resultminor/al/common#parameterError", null ),
+        
+        PRESERVATION_PERIOD_EXPIRED( "/resultminor/preservationPeriodExpired", "Der Archivierungszeitraum ist abgelaufen." ),
         
         EXISTING_AOID( "/resultminor/arl/existingAOID", "Die im Rahmen des ArchiveSubmissionRequest übergebene AOID existiert bereits." ),
         
@@ -127,6 +133,9 @@ public class DefaultResult
         UNKNOWN_AOID( "/resultminor/arl/unknownAOID", "Die übergebene AOID existiert nicht." ),
         
         UNKNOWN_VERSION_ID( "/resultminor/arl/unknownVersionID", "Die übergebene VersionID ist im entsprechenden XAIP nicht bekannt." ),
+        
+        UNKNOWN_CANONICALIZATION_METHOD( "/resultminor/unknownCanonicalizationMethod",
+                "Die verwendete Kanonisierungsmethode ist in diesem fachlichen Kontext unbekannt." ),
         
         INVALID_SIGNATURE( "/resultminor/sal#invalidSignature", "Die Signatur ist ungültig." ),
         

@@ -20,7 +20,7 @@ import org.apache.cxf.annotations.SchemaValidation;
 
 import de.bund.bsi.tr_esor.api._1.S4;
 import de.bund.bsi.tr_esor.xaip._1.XAIPType;
-import de.bund.bsi.tresor.xaip.validator.api.control.XAIPMarshaller;
+import de.bund.bsi.tresor.xaip.validator.api.control.XAIPUtil;
 import de.bund.bsi.tresor.xaip.validator.api.entity.XAIPValidatorException;
 import de.bund.bsi.tresor.xaip.validator.dispatcher.Dispatcher;
 import de.bund.bsi.tresor.xaip.validator.soap.config.DispatcherArgs;
@@ -109,7 +109,7 @@ public class XAIPValidator implements S4
     VerificationReportType dispatch( XAIPType xaip )
     {
         ByteArrayOutputStream xaipProvider = new ByteArrayOutputStream();
-        JAXB.marshal( XAIPMarshaller.element( xaip ), xaipProvider );
+        JAXB.marshal( XAIPUtil.asElement( xaip ), xaipProvider );
         
         ByteArrayOutputStream resultOutput = new ByteArrayOutputStream();
         DispatcherArgs args = DispatcherArgs.builder()
