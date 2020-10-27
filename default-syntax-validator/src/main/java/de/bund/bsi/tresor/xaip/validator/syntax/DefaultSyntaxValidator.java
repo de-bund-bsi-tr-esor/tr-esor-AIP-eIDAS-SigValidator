@@ -98,13 +98,16 @@ public class DefaultSyntaxValidator implements SyntaxValidator
         List<Source> schemas = new ArrayList<>();
         for ( File file : schemaDirectory.listFiles() )
         {
-            if ( file.isDirectory() )
+            if ( !file.isHidden() )
             {
-                schemas.addAll( sources( file ) );
-            }
-            else
-            {
-                schemas.add( new StreamSource( file ) );
+                if ( file.isDirectory() )
+                {
+                    schemas.addAll( sources( file ) );
+                }
+                else if ( file.getName().endsWith( ".xsd" ) )
+                {
+                    schemas.add( new StreamSource( file ) );
+                }
             }
         }
         
