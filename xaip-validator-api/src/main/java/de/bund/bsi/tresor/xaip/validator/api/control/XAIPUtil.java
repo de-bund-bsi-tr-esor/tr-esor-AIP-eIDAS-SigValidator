@@ -1,7 +1,5 @@
 package de.bund.bsi.tresor.xaip.validator.api.control;
 
-import static java.util.function.Predicate.not;
-
 import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -74,13 +72,14 @@ public class XAIPUtil
         return Optional.ofNullable( dataObject )
                 .map( DataObjectType::getXmlData )
                 .map( AnyType::getAny )
-                .filter( not( List::isEmpty ) )
-                .flatMap( list -> list.stream()
-                        .map( JAXBElement.class::cast )
-                        .map( JAXBElement::getValue )
-                        .filter( DataObjectReferenceType.class::isInstance )
-                        .map( DataObjectReferenceType.class::cast )
-                        .findAny() );
+                .stream()
+                .flatMap( List::stream )
+                .filter( JAXBElement.class::isInstance )
+                .map( JAXBElement.class::cast )
+                .map( JAXBElement::getValue )
+                .filter( DataObjectReferenceType.class::isInstance )
+                .map( DataObjectReferenceType.class::cast )
+                .findAny();
     }
     
     /**

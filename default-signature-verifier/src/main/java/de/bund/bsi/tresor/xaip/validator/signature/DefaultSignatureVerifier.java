@@ -3,6 +3,7 @@ package de.bund.bsi.tresor.xaip.validator.signature;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -18,6 +19,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.ws.soap.SOAPFaultException;
 
 import org.w3c.dom.Node;
 
@@ -29,6 +31,8 @@ import de.bund.bsi.tr_esor.xaip._1.DataObjectType.BinaryData;
 import de.bund.bsi.tresor.xaip.validator.api.boundary.SignatureVerifier;
 import de.bund.bsi.tresor.xaip.validator.api.control.ModuleLogger;
 import de.bund.bsi.tresor.xaip.validator.api.control.VerificationUtil;
+import de.bund.bsi.tresor.xaip.validator.api.entity.DefaultResult;
+import de.bund.bsi.tresor.xaip.validator.api.entity.DefaultResult.ResultLanguage;
 import de.bund.bsi.tresor.xaip.validator.api.entity.XAIPValidatorException;
 import lombok.Getter;
 import oasis.names.tc.dss._1_0.core.schema.AnyType;
@@ -36,6 +40,7 @@ import oasis.names.tc.dss._1_0.core.schema.Base64Data;
 import oasis.names.tc.dss._1_0.core.schema.DocumentType;
 import oasis.names.tc.dss._1_0.core.schema.InputDocuments;
 import oasis.names.tc.dss._1_0.core.schema.ResponseBaseType;
+import oasis.names.tc.dss._1_0.core.schema.Result;
 import oasis.names.tc.dss._1_0.core.schema.SignatureObject;
 import oasis.names.tc.dss._1_0.core.schema.SignaturePtr;
 import oasis.names.tc.dss._1_0.core.schema.VerifyRequest;
@@ -76,10 +81,24 @@ public class DefaultSignatureVerifier implements SignatureVerifier
             String credId = entry.getKey();
             SignatureObject signatureObject = entry.getValue();
             
-            VerifyRequest request = createRequest( signatureObject );
-            ResponseBaseType verification = requestVerification( request );
-            
-            resultList.addAll( convertResponse( credId, verification ) );
+            try
+            {
+                VerifyRequest request = createRequest( signatureObject );
+                ResponseBaseType verification = requestVerification( request );
+                
+                resultList.addAll( convertResponse( credId, verification ) );
+            }
+            catch ( SOAPFaultException e )
+            {
+                ModuleLogger.verbose( "verification error for credential " + credId, e );
+                Result errorResult = DefaultResult.error().message( e.getMessage(), ResultLanguage.ENGLISH ).build();
+                
+                CredentialValidityType verificationError = new CredentialValidityType();
+                verificationError.setCredentialID( credId );
+                verificationError.setOther( VerificationUtil.verificationResult( errorResult ) );
+                
+                resultList.add( verificationError );
+            }
         }
         
         return resultList;
@@ -182,6 +201,18 @@ public class DefaultSignatureVerifier implements SignatureVerifier
         if ( document instanceof byte[] )
         {
             dataObject = parseBinaryData( (byte[]) document );
+        }
+        else if ( document instanceof InputStream )
+        {
+            try ( InputStream stream = (InputStream) document )
+            {
+                dataObject = parseBinaryData( stream.readAllBytes() );
+            }
+            catch ( IOException e )
+            {
+                ModuleLogger.log( "WARN - failed to parse data" );
+                ModuleLogger.verbose( "could not parse data", e );
+            }
         }
         else if ( document instanceof DataObjectType )
         {

@@ -88,4 +88,21 @@ public class VerificationUtil
         
         return verificationResult( result.build() );
     }
+    
+    /**
+     * Transforming a {@link VerificationResultType} into a {@link Result}
+     * 
+     * @param vr
+     *            the result type
+     * @return the result
+     */
+    public static Result result( VerificationResultType vr )
+    {
+        Result result = new Result();
+        result.setResultMajor( vr.getResultMajor() );
+        result.setResultMessage( vr.getResultMessage() );
+        result.setResultMinor( vr.getResultMinor() );
+        
+        return result;
+    }
 }

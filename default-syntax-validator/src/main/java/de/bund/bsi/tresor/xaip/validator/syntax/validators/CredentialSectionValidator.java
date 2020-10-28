@@ -3,6 +3,7 @@ package de.bund.bsi.tresor.xaip.validator.syntax.validators;
 import static java.util.stream.Collectors.toList;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import de.bund.bsi.tr_esor.vr._1.CredentialValidityType;
@@ -27,17 +28,24 @@ public enum CredentialSectionValidator
      *            the credential section
      * @return the validation result
      */
-    public CredentialsSectionValidityType validateCredentialsSection( Optional<CredentialsSectionType> credentialsSection )
+    public Optional<CredentialsSectionValidityType> validateCredentialsSection( Optional<CredentialsSectionType> credentialsSection )
     {
-        CredentialsSectionValidityType result = new CredentialsSectionValidityType();
-        credentialsSection.map( section -> section.getCredential().stream()
+        List<CredentialValidityType> credential = credentialsSection.map( section -> section.getCredential().stream()
                 .map( this::validateCredential )
                 .collect( toList() ) )
-                .orElse( new ArrayList<>() )
-                .stream()
-                .forEach( result.getCredential()::add );
+                .orElse( new ArrayList<>() );
         
-        return result;
+        if ( !credential.isEmpty() )
+        {
+            CredentialsSectionValidityType result = new CredentialsSectionValidityType();
+            credential.stream().forEach( result.getCredential()::add );
+            
+            return Optional.of( result );
+        }
+        else
+        {
+            return Optional.empty();
+        }
     }
     
     /**

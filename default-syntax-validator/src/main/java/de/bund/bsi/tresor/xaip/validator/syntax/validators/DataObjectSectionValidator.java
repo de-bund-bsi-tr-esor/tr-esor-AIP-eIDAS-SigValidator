@@ -50,18 +50,25 @@ public enum DataObjectSectionValidator
      *            the dataObjectsSection to validate
      * @return the dataObjectsSection validation result
      */
-    public DataObjectsSectionValidityType validateDataSection( Optional<DataObjectsSectionType> dataObjectsSection )
+    public Optional<DataObjectsSectionValidityType> validateDataSection( Optional<DataObjectsSectionType> dataObjectsSection )
     {
-        DataObjectsSectionValidityType result = new DataObjectsSectionValidityType();
-        dataObjectsSection
+        List<DataObjectValidityType> data = dataObjectsSection
                 .map( section -> section.getDataObject().stream()
                         .map( this::validateDataObject )
                         .collect( toList() ) )
-                .orElse( new ArrayList<>() )
-                .stream()
-                .forEach( result.getDataObject()::add );
+                .orElse( new ArrayList<>() );
         
-        return result;
+        if ( !data.isEmpty() )
+        {
+            DataObjectsSectionValidityType result = new DataObjectsSectionValidityType();
+            data.stream().forEach( result.getDataObject()::add );
+            
+            return Optional.of( result );
+        }
+        else
+        {
+            return Optional.empty();
+        }
     }
     
     /**

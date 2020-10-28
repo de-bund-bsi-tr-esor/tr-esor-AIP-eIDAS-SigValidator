@@ -10,10 +10,14 @@ import java.util.Optional;
 import de.bund.bsi.tr_esor.vr._1.MetaDataObjectValidityType;
 import de.bund.bsi.tr_esor.vr._1.MetaDataSectionValidityType;
 import de.bund.bsi.tr_esor.xaip._1.CheckSumType;
+import de.bund.bsi.tr_esor.xaip._1.CredentialType;
 import de.bund.bsi.tr_esor.xaip._1.DataObjectType;
 import de.bund.bsi.tr_esor.xaip._1.DataObjectsSectionType;
 import de.bund.bsi.tr_esor.xaip._1.MetaDataObjectType;
 import de.bund.bsi.tr_esor.xaip._1.MetaDataSectionType;
+import de.bund.bsi.tr_esor.xaip._1.PackageHeaderType;
+import de.bund.bsi.tr_esor.xaip._1.PackageInfoUnitType;
+import de.bund.bsi.tr_esor.xaip._1.VersionManifestType;
 import de.bund.bsi.tresor.xaip.validator.api.control.ModuleLogger;
 import de.bund.bsi.tresor.xaip.validator.api.control.VerificationUtil;
 import de.bund.bsi.tresor.xaip.validator.api.control.XAIPUtil;
@@ -43,18 +47,25 @@ public enum MetaDataValidator
      *            the dataObjectsSection for the dataChecksum verification
      * @return the metaData section validation result
      */
-    public MetaDataSectionValidityType validateMetaDataSection( Optional<MetaDataSectionType> metaDataSection,
+    public Optional<MetaDataSectionValidityType> validateMetaDataSection( Optional<MetaDataSectionType> metaDataSection,
             DataObjectsSectionType dataSection )
     {
-        MetaDataSectionValidityType result = new MetaDataSectionValidityType();
-        metaDataSection.map( section -> section.getMetaDataObject().stream()
+        List<MetaDataObjectValidityType> metaData = metaDataSection.map( section -> section.getMetaDataObject().stream()
                 .map( meta -> validateMetaDataObject( meta, dataSection ) )
                 .collect( toList() ) )
-                .orElse( new ArrayList<>() )
-                .stream()
-                .forEach( result.getMetaDataObject()::add );
+                .orElse( new ArrayList<>() );
         
-        return result;
+        if ( !metaData.isEmpty() )
+        {
+            MetaDataSectionValidityType result = new MetaDataSectionValidityType();
+            metaData.stream().forEach( result.getMetaDataObject()::add );
+            
+            return Optional.of( result );
+        }
+        else
+        {
+            return Optional.empty();
+        }
     }
     
     /**
@@ -70,8 +81,8 @@ public enum MetaDataValidator
     {
         String oid = metaData.getDataObjectID().stream()
                 .findFirst()
-                .map( String.class::cast )
-                .orElse( null ); // TODO test if this is ok
+                .map( this::idFromObject )
+                .orElse( null );
         
         MetaDataObjectValidityType result = new MetaDataObjectValidityType();
         result.setMetaDataID( metaData.getMetaDataID() );
@@ -84,6 +95,42 @@ public enum MetaDataValidator
         // result.setContent(); omitted since this is only relevant under specific profiles, see BSI TR-ESOR VR
         
         return result;
+    }
+    
+    String idFromObject( Object object )
+    {
+        if ( object instanceof String )
+        {
+            return (String) object;
+        }
+        else if ( object instanceof DataObjectType )
+        {
+            return ((DataObjectType) object).getDataObjectID();
+        }
+        else if ( object instanceof CredentialType )
+        {
+            return ((CredentialType) object).getCredentialID();
+        }
+        else if ( object instanceof PackageHeaderType )
+        {
+            return ((PackageHeaderType) object).getPackageID();
+        }
+        else if ( object instanceof PackageInfoUnitType )
+        {
+            return ((PackageInfoUnitType) object).getPackageUnitID();
+        }
+        else if ( object instanceof VersionManifestType )
+        {
+            return ((VersionManifestType) object).getVersionID();
+        }
+        else if ( object instanceof MetaDataObjectType )
+        {
+            return ((MetaDataObjectType) object).getMetaDataID();
+        }
+        
+        ModuleLogger.verbose( "could id of object " + object.getClass() );
+        
+        return null;
     }
     
     /**
