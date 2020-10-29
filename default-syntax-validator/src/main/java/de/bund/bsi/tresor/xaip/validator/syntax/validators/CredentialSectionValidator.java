@@ -7,10 +7,13 @@ import java.util.List;
 import java.util.Optional;
 
 import de.bund.bsi.tr_esor.vr._1.CredentialValidityType;
+import de.bund.bsi.tr_esor.vr._1.CredentialValidityType.RelatedObjects;
 import de.bund.bsi.tr_esor.vr._1.CredentialsSectionValidityType;
 import de.bund.bsi.tr_esor.xaip._1.CredentialType;
 import de.bund.bsi.tr_esor.xaip._1.CredentialsSectionType;
+import de.bund.bsi.tr_esor.xaip._1.DataObjectType;
 import de.bund.bsi.tresor.xaip.validator.api.boundary.SignatureVerifier;
+import de.bund.bsi.tresor.xaip.validator.api.control.XAIPUtil;
 
 /**
  * Validator for any validations concerning data inside the {@link CredentialsSectionType}
@@ -57,9 +60,16 @@ public enum CredentialSectionValidator
      */
     public CredentialValidityType validateCredential( CredentialType credential )
     {
+        RelatedObjects related = new RelatedObjects();
+        credential.getRelatedObjects().stream()
+                .filter( DataObjectType.class::isInstance )
+                .map( XAIPUtil::idFromObject )
+                .map( id -> "//dataObject[@dataObjectID='" + id + "']" )
+                .forEach( related.getXPath()::add );
+        
         CredentialValidityType result = new CredentialValidityType();
         result.setCredentialID( credential.getCredentialID() );
-        // result.setRelatedObjects( value ); TODO xpath
+        result.setRelatedObjects( related );
         
         return result;
     }

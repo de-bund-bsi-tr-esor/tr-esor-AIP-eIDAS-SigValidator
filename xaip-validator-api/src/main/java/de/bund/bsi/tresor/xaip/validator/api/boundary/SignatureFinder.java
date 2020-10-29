@@ -1,7 +1,10 @@
 package de.bund.bsi.tresor.xaip.validator.api.boundary;
 
+import java.util.List;
 import java.util.Map;
 
+import de.bund.bsi.tr_esor.xaip._1.CredentialType;
+import de.bund.bsi.tr_esor.xaip._1.DataObjectType;
 import de.bund.bsi.tr_esor.xaip._1.XAIPType;
 import oasis.names.tc.dss._1_0.core.schema.SignatureObject;
 
@@ -21,5 +24,5 @@ public interface SignatureFinder extends ValidatorModule
      *            the xaip to scan for signatures
      * @return signatureObjects created from found signatures of a type specified by the implementor
      */
-    public Map<String, SignatureObject> findSignatures( XAIPType xaip );
+    public Map<DataObjectType, List<CredentialType>> findSignatures( XAIPType xaip );
 }

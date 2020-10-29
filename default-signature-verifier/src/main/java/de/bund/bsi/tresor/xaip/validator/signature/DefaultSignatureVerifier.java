@@ -23,9 +23,12 @@ import javax.xml.ws.soap.SOAPFaultException;
 
 import org.w3c.dom.Node;
 
+import com.sun.xml.ws.util.ByteArrayDataSource;
+
 import de.bund.bsi.ecard.api._1.VerifyResponse;
 import de.bund.bsi.tr_esor.api._1.S4_Service;
 import de.bund.bsi.tr_esor.vr._1.CredentialValidityType;
+import de.bund.bsi.tr_esor.xaip._1.CredentialType;
 import de.bund.bsi.tr_esor.xaip._1.DataObjectType;
 import de.bund.bsi.tr_esor.xaip._1.DataObjectType.BinaryData;
 import de.bund.bsi.tresor.xaip.validator.api.boundary.SignatureVerifier;
@@ -73,32 +76,39 @@ public class DefaultSignatureVerifier implements SignatureVerifier
     }
     
     @Override
-    public List<CredentialValidityType> verify( Map<String, SignatureObject> signaturesByCredId )
+    public List<CredentialValidityType> verify( Map<DataObjectType, List<CredentialType>> signatures )
     {
         List<CredentialValidityType> resultList = new ArrayList<>();
-        for ( Entry<String, SignatureObject> entry : signaturesByCredId.entrySet() )
+        for ( Entry<DataObjectType, List<CredentialType>> entry : signatures.entrySet() )
         {
-            String credId = entry.getKey();
-            SignatureObject signatureObject = entry.getValue();
+            DataObjectType dataObject = entry.getKey();
+            List<CredentialType> credentials = entry.getValue();
             
-            try
+            for ( CredentialType credential : credentials )
             {
-                VerifyRequest request = createRequest( signatureObject );
-                ResponseBaseType verification = requestVerification( request );
+                String credId = credential.getCredentialID();
+                SignatureObject signatureObject = credential.getSignatureObject();
                 
-                resultList.addAll( convertResponse( credId, verification ) );
+                try
+                {
+                    VerifyRequest request = createRequest( credId, signatureObject, dataObject );
+                    ResponseBaseType verification = requestVerification( request );
+                    
+                    resultList.addAll( convertResponse( credId, verification ) );
+                }
+                catch ( SOAPFaultException e )
+                {
+                    ModuleLogger.verbose( "verification error for credential " + credId, e );
+                    Result errorResult = DefaultResult.error().message( e.getMessage(), ResultLanguage.ENGLISH ).build();
+                    
+                    CredentialValidityType verificationError = new CredentialValidityType();
+                    verificationError.setCredentialID( credId );
+                    verificationError.setOther( VerificationUtil.verificationResult( errorResult ) );
+                    
+                    resultList.add( verificationError );
+                }
             }
-            catch ( SOAPFaultException e )
-            {
-                ModuleLogger.verbose( "verification error for credential " + credId, e );
-                Result errorResult = DefaultResult.error().message( e.getMessage(), ResultLanguage.ENGLISH ).build();
-                
-                CredentialValidityType verificationError = new CredentialValidityType();
-                verificationError.setCredentialID( credId );
-                verificationError.setOther( VerificationUtil.verificationResult( errorResult ) );
-                
-                resultList.add( verificationError );
-            }
+            
         }
         
         return resultList;
@@ -115,7 +125,6 @@ public class DefaultSignatureVerifier implements SignatureVerifier
     List<CredentialValidityType> convertResponse( String credId, ResponseBaseType response )
     {
         List<CredentialValidityType> resultList = new ArrayList<>();
-        
         try
         {
             JAXBContext context = JAXBContext.newInstance( IndividualReportType.class );
@@ -135,6 +144,11 @@ public class DefaultSignatureVerifier implements SignatureVerifier
                     {
                         CredentialValidityType result = new CredentialValidityType();
                         result.setCredentialID( credId );
+                        
+                        if ( detail instanceof JAXBElement )
+                        {
+                            detail = ((JAXBElement<?>) detail).getValue();
+                        }
                         
                         if ( detail instanceof DetailedSignatureReportType )
                         {
@@ -158,39 +172,36 @@ public class DefaultSignatureVerifier implements SignatureVerifier
         return resultList;
     }
     
-    VerifyRequest createRequest( SignatureObject signatureObject )
+    VerifyRequest createRequest( String credId, SignatureObject signatureObject, DataObjectType dataObject )
     {
         VerifyRequest request = new VerifyRequest();
-        Optional<Object> obj = Optional.ofNullable( signatureObject.getSignaturePtr() )
-                .map( SignaturePtr::getWhichDocument );
+        DataObjectType dataObjectDocument = Optional.ofNullable( signatureObject.getSignaturePtr() )
+                .map( SignaturePtr::getWhichDocument )
+                .flatMap( this::parseDocument )
+                .orElse( dataObject );
         
-        if ( obj.isPresent() )
-        {
-            DataObjectType dataObject = parseDocument( obj.get() ).orElseThrow(); // TODO
-            
-            SignaturePtr ptr = new SignaturePtr();
-            ptr.setWhichDocument( dataObject );
-            
-            SignatureObject sigObj = new SignatureObject();
-            sigObj.setSignaturePtr( ptr );
-            
-            Base64Data b64Data = new Base64Data();
-            b64Data.setValue( dataObject.getBinaryData().getValue() );
-            
-            DocumentType document = new DocumentType();
-            document.setBase64Data( b64Data );
-            document.setID( dataObject.getDataObjectID() );
-            
-            InputDocuments inputDocuments = new InputDocuments();
-            inputDocuments.getDocumentOrTransformedDataOrDocumentHash().add( document );
-            
-            request.setSignatureObject( sigObj );
-            request.setInputDocuments( inputDocuments );
-        }
-        else
-        {
-            request.setSignatureObject( signatureObject );
-        }
+        String id = Optional.ofNullable( dataObjectDocument )
+                .map( DataObjectType::getDataObjectID )
+                .orElse( credId );
+        
+        DataHandler dataHandler = Optional.ofNullable( dataObject )
+                .map( DataObjectType::getBinaryData )
+                .map( BinaryData::getValue )
+                .orElseGet( () -> new DataHandler(
+                        new ByteArrayDataSource( signatureObject.getBase64Signature().getValue(), "application/octet-stream" ) ) );
+        
+        Base64Data b64Data = new Base64Data();
+        b64Data.setValue( dataHandler );
+        
+        DocumentType document = new DocumentType();
+        document.setBase64Data( b64Data );
+        document.setID( id );
+        
+        InputDocuments inputDocuments = new InputDocuments();
+        inputDocuments.getDocumentOrTransformedDataOrDocumentHash().add( document );
+        
+        request.setSignatureObject( signatureObject );
+        request.setInputDocuments( inputDocuments );
         
         return request;
     }
@@ -281,4 +292,5 @@ public class DefaultSignatureVerifier implements SignatureVerifier
         
         return service.getS4().verify( request );
     }
+    
 }

@@ -13,6 +13,8 @@ import javax.xml.bind.Marshaller;
 
 import de.bund.bsi.tr_esor.vr._1.CredentialValidityType;
 import de.bund.bsi.tr_esor.vr._1.XAIPValidityType;
+import de.bund.bsi.tr_esor.xaip._1.CredentialType;
+import de.bund.bsi.tr_esor.xaip._1.DataObjectType;
 import de.bund.bsi.tresor.xaip.validator.api.boundary.ProtocolAssembler;
 import de.bund.bsi.tresor.xaip.validator.api.boundary.SignatureFinder;
 import de.bund.bsi.tresor.xaip.validator.api.boundary.SignatureVerifier;
@@ -21,7 +23,6 @@ import de.bund.bsi.tresor.xaip.validator.api.boundary.ValidatorModule;
 import de.bund.bsi.tresor.xaip.validator.api.control.ModuleLogger;
 import de.bund.bsi.tresor.xaip.validator.api.entity.SyntaxValidationResult;
 import de.bund.bsi.tresor.xaip.validator.api.entity.XAIPValidatorException;
-import oasis.names.tc.dss._1_0.core.schema.SignatureObject;
 import oasis.names.tc.dss_x._1_0.profiles.verificationreport.schema_.ObjectFactory;
 import oasis.names.tc.dss_x._1_0.profiles.verificationreport.schema_.VerificationReportType;
 
@@ -77,7 +78,7 @@ public enum Dispatcher
         if ( args.isVerify() )
         {
             syntaxResult.getXaip().ifPresent( xaip -> {
-                Map<String, SignatureObject> signatures = sigFinder.findSignatures( xaip );
+                Map<DataObjectType, List<CredentialType>> signatures = sigFinder.findSignatures( xaip );
                 ModuleLogger.log( signatures.size() + " signatures found" );
                 ModuleLogger.log( "finished signature search" );
                 

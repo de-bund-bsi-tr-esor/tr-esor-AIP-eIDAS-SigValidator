@@ -10,14 +10,10 @@ import java.util.Optional;
 import de.bund.bsi.tr_esor.vr._1.MetaDataObjectValidityType;
 import de.bund.bsi.tr_esor.vr._1.MetaDataSectionValidityType;
 import de.bund.bsi.tr_esor.xaip._1.CheckSumType;
-import de.bund.bsi.tr_esor.xaip._1.CredentialType;
 import de.bund.bsi.tr_esor.xaip._1.DataObjectType;
 import de.bund.bsi.tr_esor.xaip._1.DataObjectsSectionType;
 import de.bund.bsi.tr_esor.xaip._1.MetaDataObjectType;
 import de.bund.bsi.tr_esor.xaip._1.MetaDataSectionType;
-import de.bund.bsi.tr_esor.xaip._1.PackageHeaderType;
-import de.bund.bsi.tr_esor.xaip._1.PackageInfoUnitType;
-import de.bund.bsi.tr_esor.xaip._1.VersionManifestType;
 import de.bund.bsi.tresor.xaip.validator.api.control.ModuleLogger;
 import de.bund.bsi.tresor.xaip.validator.api.control.VerificationUtil;
 import de.bund.bsi.tresor.xaip.validator.api.control.XAIPUtil;
@@ -80,9 +76,8 @@ public enum MetaDataValidator
     public MetaDataObjectValidityType validateMetaDataObject( MetaDataObjectType metaData, DataObjectsSectionType dataSection )
     {
         String oid = metaData.getDataObjectID().stream()
-                .findFirst()
-                .map( this::idFromObject )
-                .orElse( null );
+                .map( XAIPUtil::idFromObject )
+                .reduce( "", ( a, b ) -> String.join( " ", a, b ) );
         
         MetaDataObjectValidityType result = new MetaDataObjectValidityType();
         result.setMetaDataID( metaData.getMetaDataID() );
@@ -95,42 +90,6 @@ public enum MetaDataValidator
         // result.setContent(); omitted since this is only relevant under specific profiles, see BSI TR-ESOR VR
         
         return result;
-    }
-    
-    String idFromObject( Object object )
-    {
-        if ( object instanceof String )
-        {
-            return (String) object;
-        }
-        else if ( object instanceof DataObjectType )
-        {
-            return ((DataObjectType) object).getDataObjectID();
-        }
-        else if ( object instanceof CredentialType )
-        {
-            return ((CredentialType) object).getCredentialID();
-        }
-        else if ( object instanceof PackageHeaderType )
-        {
-            return ((PackageHeaderType) object).getPackageID();
-        }
-        else if ( object instanceof PackageInfoUnitType )
-        {
-            return ((PackageInfoUnitType) object).getPackageUnitID();
-        }
-        else if ( object instanceof VersionManifestType )
-        {
-            return ((VersionManifestType) object).getVersionID();
-        }
-        else if ( object instanceof MetaDataObjectType )
-        {
-            return ((MetaDataObjectType) object).getMetaDataID();
-        }
-        
-        ModuleLogger.verbose( "could id of object " + object.getClass() );
-        
-        return null;
     }
     
     /**

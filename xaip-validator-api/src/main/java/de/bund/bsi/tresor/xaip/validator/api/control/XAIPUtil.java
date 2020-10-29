@@ -15,9 +15,14 @@ import javax.xml.namespace.QName;
 import org.etsi.uri._02918.v1_2.DataObjectReferenceType;
 
 import de.bund.bsi.tr_esor.vr._1.XAIPValidityType;
+import de.bund.bsi.tr_esor.xaip._1.CredentialType;
 import de.bund.bsi.tr_esor.xaip._1.DataObjectType;
 import de.bund.bsi.tr_esor.xaip._1.DataObjectType.BinaryData;
 import de.bund.bsi.tr_esor.xaip._1.DataObjectsSectionType;
+import de.bund.bsi.tr_esor.xaip._1.MetaDataObjectType;
+import de.bund.bsi.tr_esor.xaip._1.PackageHeaderType;
+import de.bund.bsi.tr_esor.xaip._1.PackageInfoUnitType;
+import de.bund.bsi.tr_esor.xaip._1.VersionManifestType;
 import de.bund.bsi.tr_esor.xaip._1.XAIPType;
 import oasis.names.tc.dss._1_0.core.schema.AnyType;
 
@@ -99,6 +104,49 @@ public class XAIPUtil
                 .stream()
                 .filter( obj -> obj.getDataObjectID().equals( dataObjectId ) )
                 .findAny();
+    }
+    
+    /**
+     * Retrieving the id of the respective object
+     * 
+     * @param object
+     *            the object
+     * @return the id of the object
+     */
+    public static String idFromObject( Object object )
+    {
+        if ( object instanceof String )
+        {
+            return (String) object;
+        }
+        else if ( object instanceof DataObjectType )
+        {
+            return ((DataObjectType) object).getDataObjectID();
+        }
+        else if ( object instanceof CredentialType )
+        {
+            return ((CredentialType) object).getCredentialID();
+        }
+        else if ( object instanceof PackageHeaderType )
+        {
+            return ((PackageHeaderType) object).getPackageID();
+        }
+        else if ( object instanceof PackageInfoUnitType )
+        {
+            return ((PackageInfoUnitType) object).getPackageUnitID();
+        }
+        else if ( object instanceof VersionManifestType )
+        {
+            return ((VersionManifestType) object).getVersionID();
+        }
+        else if ( object instanceof MetaDataObjectType )
+        {
+            return ((MetaDataObjectType) object).getMetaDataID();
+        }
+        
+        ModuleLogger.verbose( "could id of object " + object.getClass() );
+        
+        return null;
     }
     
     /**
