@@ -92,6 +92,11 @@ The XAIPValidator consists of multiple modules.
 	Printing the manual of the validator
 ```
 
+**Important Notes**
+- When using the command line version of the XAIPValidator you **must** specify the location of the schema files by using the parameter -Mvalidator.schemaDir. Otherwise the validator will not start
+- when using the parameter -o you must specify a directory. Currently the validator cannot write a plain file located in the same directory
+- when using parameter -v you need to specify the URL of the signature verification service to be used. The signature verification service must be compliant to the TR-03112 / OASIS interface definition (using VerifiyRequest)
+
 ### Server
 
 **Description:** The server version of the XAIPValidator is being used to provide a soap service implementing the verify function of the eCard api. This api can be used to send a verifyRequest containing an XAIP which will be validated in the following steps.
