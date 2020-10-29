@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.util.io.Streams;
@@ -62,7 +63,7 @@ public class VerificationUtil
                         {
                             Streams.drain( digestIn );
                             byte[] digest = digestIn.getMessageDigest().digest();
-                            byte[] expectedDigest = checksum.getCheckSum();
+                            byte[] expectedDigest = Base64.getDecoder().decode( checksum.getCheckSum() );
                             
                             if ( org.bouncycastle.util.Arrays.constantTimeAreEqual( expectedDigest, digest ) )
                             {
@@ -87,5 +88,22 @@ public class VerificationUtil
                 } ).orElse( DefaultResult.error().minor( Minor.CHECKSUM_ALG_NOT_SUPPORTED ) );
         
         return verificationResult( result.build() );
+    }
+    
+    /**
+     * Transforming a {@link VerificationResultType} into a {@link Result}
+     * 
+     * @param vr
+     *            the result type
+     * @return the result
+     */
+    public static Result result( VerificationResultType vr )
+    {
+        Result result = new Result();
+        result.setResultMajor( vr.getResultMajor() );
+        result.setResultMessage( vr.getResultMessage() );
+        result.setResultMinor( vr.getResultMinor() );
+        
+        return result;
     }
 }

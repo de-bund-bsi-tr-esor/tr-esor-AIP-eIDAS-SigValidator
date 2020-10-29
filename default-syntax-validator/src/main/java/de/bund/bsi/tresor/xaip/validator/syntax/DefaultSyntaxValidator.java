@@ -23,6 +23,7 @@ import de.bund.bsi.tr_esor.xaip._1.DataObjectsSectionType;
 import de.bund.bsi.tr_esor.xaip._1.XAIPType;
 import de.bund.bsi.tresor.xaip.validator.api.boundary.SyntaxValidator;
 import de.bund.bsi.tresor.xaip.validator.api.control.ModuleLogger;
+import de.bund.bsi.tresor.xaip.validator.api.control.VerificationUtil;
 import de.bund.bsi.tresor.xaip.validator.api.entity.DefaultResult;
 import de.bund.bsi.tresor.xaip.validator.api.entity.DefaultResult.ResultLanguage;
 import de.bund.bsi.tresor.xaip.validator.api.entity.SyntaxValidationResult;
@@ -33,7 +34,6 @@ import de.bund.bsi.tresor.xaip.validator.syntax.validators.MetaDataValidator;
 import de.bund.bsi.tresor.xaip.validator.syntax.validators.PackageHeaderValidator;
 import lombok.Getter;
 import oasis.names.tc.dss._1_0.core.schema.Result;
-import oasis.names.tc.dss_x._1_0.profiles.verificationreport.schema_.VerificationResultType;
 
 /**
  * Implementation of the SyntaxValidator module from the XAIPValidator.
@@ -84,11 +84,17 @@ public class DefaultSyntaxValidator implements SyntaxValidator
             
             DataObjectsSectionType dataSection = optXaip.map( XAIPType::getDataObjectsSection ).orElse( null );
             
-            report.setPackageHeader( packageValidator.validatePackageHeader( optXaip.map( XAIPType::getPackageHeader ) ) );
-            report.setMetaDataSection( metaValidator.validateMetaDataSection( optXaip.map( XAIPType::getMetaDataSection ), dataSection ) );
-            report.setDataObjectsSection( dataValidator.validateDataSection( optXaip.map( XAIPType::getDataObjectsSection ) ) );
-            report.setCredentialsSection(
-                    credentialValidator.validateCredentialsSection( optXaip.map( XAIPType::getCredentialsSection ) ) );
+            packageValidator.validatePackageHeader( optXaip.map( XAIPType::getPackageHeader ) )
+                    .ifPresent( report::setPackageHeader );
+            
+            metaValidator.validateMetaDataSection( optXaip.map( XAIPType::getMetaDataSection ), dataSection )
+                    .ifPresent( report::setMetaDataSection );
+            
+            dataValidator.validateDataSection( optXaip.map( XAIPType::getDataObjectsSection ) )
+                    .ifPresent( report::setDataObjectsSection );
+            
+            credentialValidator.validateCredentialsSection( optXaip.map( XAIPType::getCredentialsSection ) )
+                    .ifPresent( report::setCredentialsSection );
             
         }
         catch ( Exception e )
@@ -99,12 +105,7 @@ public class DefaultSyntaxValidator implements SyntaxValidator
                     .build();
         }
         
-        VerificationResultType formatResult = new VerificationResultType();
-        formatResult.setResultMajor( result.getResultMajor() );
-        formatResult.setResultMajor( result.getResultMinor() );
-        formatResult.setResultMessage( result.getResultMessage() );
-        
-        report.setFormatOK( formatResult );
+        report.setFormatOK( VerificationUtil.verificationResult( result ) );
         
         return new SyntaxValidationResult( optXaip, report );
     }
@@ -122,13 +123,16 @@ public class DefaultSyntaxValidator implements SyntaxValidator
         List<Source> schemas = new ArrayList<>();
         for ( File file : schemaDirectory.listFiles() )
         {
-            if ( file.isDirectory() )
+            if ( !file.isHidden() )
             {
-                schemas.addAll( sources( file ) );
-            }
-            else
-            {
-                schemas.add( new StreamSource( file ) );
+                if ( file.isDirectory() )
+                {
+                    schemas.addAll( sources( file ) );
+                }
+                else if ( file.getName().endsWith( ".xsd" ) )
+                {
+                    schemas.add( new StreamSource( file ) );
+                }
             }
         }
         

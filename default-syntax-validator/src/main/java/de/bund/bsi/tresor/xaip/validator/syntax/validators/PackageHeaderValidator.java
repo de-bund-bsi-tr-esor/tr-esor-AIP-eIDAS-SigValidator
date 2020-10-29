@@ -40,10 +40,10 @@ public enum PackageHeaderValidator
      *            the packageHeader
      * @return the validation result
      */
-    public PackageHeaderValidityType validatePackageHeader( Optional<PackageHeaderType> packageHeader )
+    public Optional<PackageHeaderValidityType> validatePackageHeader( Optional<PackageHeaderType> packageHeader )
     {
-        PackageHeaderValidityType result = new PackageHeaderValidityType();
-        packageHeader.ifPresent( header -> {
+        return packageHeader.map( header -> {
+            PackageHeaderValidityType result = new PackageHeaderValidityType();
             result.setAOID( header.getAOID() );
             result.setPackageID( header.getPackageID() );
             // result.setExtension( value ); omitted in the current profile, see BSI TR-ESOR-VR
@@ -53,9 +53,9 @@ public enum PackageHeaderValidator
             header.getVersionManifest().stream()
                     .map( this::validateVersionManifest )
                     .forEach( result.getVersionManifest()::add );
+            
+            return result;
         } );
-        
-        return result;
     }
     
     /**

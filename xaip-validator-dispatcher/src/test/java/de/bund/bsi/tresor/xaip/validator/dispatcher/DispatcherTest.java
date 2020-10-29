@@ -37,7 +37,9 @@ class DispatcherTest
         {
             DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
             documentBuilderFactory.setNamespaceAware( true );
+            
             Document parsedXml = documentBuilderFactory.newDocumentBuilder().parse( new ByteArrayInputStream( xml.toByteArray() ) );
+            
             assertEquals( "VerificationReport", parsedXml.getDocumentElement().getLocalName() );
         }
         catch ( SAXException | IOException | ParserConfigurationException e )

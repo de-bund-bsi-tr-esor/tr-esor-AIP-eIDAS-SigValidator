@@ -43,18 +43,25 @@ public enum MetaDataValidator
      *            the dataObjectsSection for the dataChecksum verification
      * @return the metaData section validation result
      */
-    public MetaDataSectionValidityType validateMetaDataSection( Optional<MetaDataSectionType> metaDataSection,
+    public Optional<MetaDataSectionValidityType> validateMetaDataSection( Optional<MetaDataSectionType> metaDataSection,
             DataObjectsSectionType dataSection )
     {
-        MetaDataSectionValidityType result = new MetaDataSectionValidityType();
-        metaDataSection.map( section -> section.getMetaDataObject().stream()
+        List<MetaDataObjectValidityType> metaData = metaDataSection.map( section -> section.getMetaDataObject().stream()
                 .map( meta -> validateMetaDataObject( meta, dataSection ) )
                 .collect( toList() ) )
-                .orElse( new ArrayList<>() )
-                .stream()
-                .forEach( result.getMetaDataObject()::add );
+                .orElse( new ArrayList<>() );
         
-        return result;
+        if ( !metaData.isEmpty() )
+        {
+            MetaDataSectionValidityType result = new MetaDataSectionValidityType();
+            metaData.stream().forEach( result.getMetaDataObject()::add );
+            
+            return Optional.of( result );
+        }
+        else
+        {
+            return Optional.empty();
+        }
     }
     
     /**
@@ -69,9 +76,8 @@ public enum MetaDataValidator
     public MetaDataObjectValidityType validateMetaDataObject( MetaDataObjectType metaData, DataObjectsSectionType dataSection )
     {
         String oid = metaData.getDataObjectID().stream()
-                .findFirst()
-                .map( String.class::cast )
-                .orElse( null ); // TODO test if this is ok
+                .map( XAIPUtil::idFromObject )
+                .reduce( "", ( a, b ) -> String.join( " ", a, b ) );
         
         MetaDataObjectValidityType result = new MetaDataObjectValidityType();
         result.setMetaDataID( metaData.getMetaDataID() );
@@ -81,7 +87,7 @@ public enum MetaDataValidator
         validateClassification( metaData.getCategory(), metaData.getClassification() ).ifPresent( result::setClassification );
         
         // result.setDataObjectCheckSum( value ); // FIXME bug in spec
-        // result.setContent(); omitted since this is only relevant under specific profiles, see BSI TR-ESOR VR
+        result.setContent( VerificationUtil.verificationResult( DefaultResult.ok().build() ) );
         
         return result;
     }
