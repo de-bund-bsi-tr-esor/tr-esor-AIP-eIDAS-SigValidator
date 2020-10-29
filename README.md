@@ -93,9 +93,9 @@ The XAIPValidator consists of multiple modules.
 ```
 
 **Important Notes**
-- when using the command line version of the XAIPValidator you **must** specify the location of the schema files by using the parameter -Mvalidator.schemaDir. Otherwise the validator will not start
-- when using the parameter -o you must specify a directory. Currently the validator cannot write a plain file located in the same directory
-- when using parameter -v you need to specify the URL of the signature verification service to be used. The signature verification service must be compliant to the TR-03112 / OASIS interface definition (using VerifiyRequest)
+- when using the command line version of the XAIPValidator you **must** specify the location of the schema files by using the parameter `-Mvalidator.schemaDir` unless you are using a custom syntax validation module. Otherwise the validator will not start
+- when using the parameter `-o` you must specify a directory. Currently the validator cannot write a plain file located in the same directory
+- when using parameter `-v` you need to specify the URL of the signature verification service to be used unless you are using a custom verification module. The signature verification service must be compliant to the TR-03112 / OASIS interface definition (using VerifiyRequest)
 
 ### Server
 
@@ -173,12 +173,14 @@ The XAIPValidator consists of multiple modules.
 The following limitations apply:
 
 - The XAIPValidator has a strong dependency to the external signature validation service. The current version of the service is not able to validate XML signatures properly. Therefore the validation of XAIPs containing XML signatures will lead to validation reports with unsupported signature formats.
-- The processing of XAdES-compliant signature objects is currently not full supported. We will fix this issue in one of the next SNAPSHOT releases
-- Information for TransformInfoType is currently not generated due to inconsistencies in the verification report scheme
+- The processing of XAdES-compliant signature objects is currently not fully supported. This issue will be fixed in one of the next SNAPSHOT releases
+- Information for `TransformInfoType` is currently not generated due to inconsistencies in the verification report scheme
 - Extensions are not evaluated due to their dependency to specific profiles
 - The content of Metadata sections is not evaluated with the exception of their well-formedness
 
-** Be aware of the following ** When running the validator, a warning is generated due to an illegal access to the ClassLoader. As far as is known, this warning does not influence the correct execution of the program
+**Be aware of the following issue**
+
+When running the validator, a warning is generated due to an illegal access to the ClassLoader. As far as known, this warning does not influence the correct execution of the program and originates in the jaxb library which is being used.
 
 ## Test Environment ##
 
