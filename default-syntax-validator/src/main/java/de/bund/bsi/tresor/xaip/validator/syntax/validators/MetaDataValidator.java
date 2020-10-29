@@ -87,7 +87,7 @@ public enum MetaDataValidator
         validateClassification( metaData.getCategory(), metaData.getClassification() ).ifPresent( result::setClassification );
         
         // result.setDataObjectCheckSum( value ); // FIXME bug in spec
-        // result.setContent(); omitted since this is only relevant under specific profiles, see BSI TR-ESOR VR
+        result.setContent( VerificationUtil.verificationResult( DefaultResult.ok().build() ) );
         
         return result;
     }

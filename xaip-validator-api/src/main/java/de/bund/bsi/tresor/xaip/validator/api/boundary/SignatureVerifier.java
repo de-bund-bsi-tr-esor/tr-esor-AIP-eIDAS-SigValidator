@@ -10,13 +10,7 @@ import oasis.names.tc.dss_x._1_0.profiles.verificationreport.schema_.IndividualR
 
 /**
  * API for the SignatureVerificationModule.<br>
- * This module is being used to verify all signatures found by the {@link SignatureFinder} implementation. Those signatures can be any type
- * of:<br>
- * <li>ASiC
- * <li>CAdES
- * <li>PAdES
- * <li>XAdES
- * <li>Timestamp
+ * This module is being used to verify all signatures found by the {@link SignatureFinder} implementation.
  * 
  * @author wolffs
  */

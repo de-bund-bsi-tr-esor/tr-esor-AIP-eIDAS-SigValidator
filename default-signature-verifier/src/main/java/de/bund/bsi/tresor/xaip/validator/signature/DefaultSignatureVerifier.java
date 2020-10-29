@@ -40,6 +40,7 @@ import de.bund.bsi.tresor.xaip.validator.api.entity.XAIPValidatorException;
 import lombok.Getter;
 import oasis.names.tc.dss._1_0.core.schema.AnyType;
 import oasis.names.tc.dss._1_0.core.schema.Base64Data;
+import oasis.names.tc.dss._1_0.core.schema.Base64Signature;
 import oasis.names.tc.dss._1_0.core.schema.DocumentType;
 import oasis.names.tc.dss._1_0.core.schema.InputDocuments;
 import oasis.names.tc.dss._1_0.core.schema.ResponseBaseType;
@@ -187,21 +188,32 @@ public class DefaultSignatureVerifier implements SignatureVerifier
         DataHandler dataHandler = Optional.ofNullable( dataObject )
                 .map( DataObjectType::getBinaryData )
                 .map( BinaryData::getValue )
-                .orElseGet( () -> new DataHandler(
-                        new ByteArrayDataSource( signatureObject.getBase64Signature().getValue(), "application/octet-stream" ) ) );
+                .orElseGet( () -> Optional.ofNullable( signatureObject.getBase64Signature() )
+                        .map( Base64Signature::getValue )
+                        .map( content -> new ByteArrayDataSource( content, "application/octet-stream" ) )
+                        .map( DataHandler::new )
+                        .orElse( null ) );
         
-        Base64Data b64Data = new Base64Data();
-        b64Data.setValue( dataHandler );
-        
-        DocumentType document = new DocumentType();
-        document.setBase64Data( b64Data );
-        document.setID( id );
-        
-        InputDocuments inputDocuments = new InputDocuments();
-        inputDocuments.getDocumentOrTransformedDataOrDocumentHash().add( document );
+        if ( dataHandler != null )
+        {
+            Base64Data b64Data = new Base64Data();
+            b64Data.setValue( dataHandler );
+            
+            DocumentType document = new DocumentType();
+            document.setBase64Data( b64Data );
+            document.setID( id );
+            
+            InputDocuments inputDocuments = new InputDocuments();
+            inputDocuments.getDocumentOrTransformedDataOrDocumentHash().add( document );
+            
+            request.setInputDocuments( inputDocuments );
+        }
+        else
+        {
+            ModuleLogger.log( "no document data found for signature with id " + id );
+        }
         
         request.setSignatureObject( signatureObject );
-        request.setInputDocuments( inputDocuments );
         
         return request;
     }
