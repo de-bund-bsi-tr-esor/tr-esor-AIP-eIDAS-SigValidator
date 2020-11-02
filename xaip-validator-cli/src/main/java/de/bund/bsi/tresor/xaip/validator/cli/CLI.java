@@ -52,7 +52,7 @@ public final class CLI
             else
             {
                 Dispatcher.INSTANCE.dispatch( args );
-                ModuleLogger.log( "finished validation without errors" );
+                ModuleLogger.log( "finished validation" );
             }
         }
         catch ( Exception e )

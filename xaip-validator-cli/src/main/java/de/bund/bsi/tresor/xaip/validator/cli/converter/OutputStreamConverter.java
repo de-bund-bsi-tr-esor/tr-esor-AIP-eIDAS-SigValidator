@@ -49,7 +49,7 @@ public class OutputStreamConverter implements IStringConverter<OutputStream>
         }
         catch ( Exception e )
         {
-            throw new XAIPValidatorException( "invalid output param " + value, e );
+            throw new XAIPValidatorException( "invalid or missing output param with or before value " + value, e );
         }
     }
 }
