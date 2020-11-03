@@ -5,6 +5,8 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.Map;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.LogManager;
 
 import com.beust.jcommander.JCommander;
 
@@ -22,7 +24,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor( access = AccessLevel.PRIVATE )
 public final class CLI
 {
-    
     /**
      * Starting the application and using the arguments to configure the validator which is being done by passing them to the dispatcher.
      * The command with the least amount of informations provided is the schema validation of an XAIP, which is being retrieved from an
@@ -33,6 +34,10 @@ public final class CLI
      */
     public static void main( String[] argv )
     {
+        // disable no optimization to prevent warning output
+        System.setProperty( "com.sun.xml.bind.v2.bytecode.ClassTailor.noOptimize", "true" );
+        LogManager.getLogManager().getLogger( "com.sun.xml.bind.Utils" ).setLevel( Level.WARNING );
+        
         Arguments args = new Arguments();
         JCommander jCommander = JCommander.newBuilder()
                 .addObject( args )
