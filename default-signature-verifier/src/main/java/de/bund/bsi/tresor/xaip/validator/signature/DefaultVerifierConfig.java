@@ -18,13 +18,16 @@ import lombok.Setter;
 @NoArgsConstructor( access = AccessLevel.PRIVATE )
 public class DefaultVerifierConfig
 {
-    public Optional<String> wsdlUrl  = Optional.empty();
+    public Optional<String> wsdlUrl        = Optional.empty();
+    
+    public int              requestTimeout = 3000;
+    public int              connectTimeout = 3000;
     
     // support for ecm identityToken
-    public Optional<String> umUrl    = Optional.empty();
-    public Optional<String> idpUrl   = Optional.empty();
-    public Optional<String> user     = Optional.empty();
-    public Optional<String> password = Optional.empty();
+    public Optional<String> umUrl          = Optional.empty();
+    public Optional<String> idpUrl         = Optional.empty();
+    public Optional<String> user           = Optional.empty();
+    public Optional<String> password       = Optional.empty();
     
     /**
      * Creating a {@link DefaultVerifierConfig} by parsing a property map
@@ -37,6 +40,13 @@ public class DefaultVerifierConfig
     {
         var config = new DefaultVerifierConfig();
         config.setWsdlUrl( Optional.ofNullable( arguments.get( "verifier.wsdlUrl" ) ) );
+        Optional.ofNullable( arguments.get( "verifier.requestTimeout" ) )
+                .map( Integer::parseInt )
+                .ifPresent( config::setRequestTimeout );
+        
+        Optional.ofNullable( arguments.get( "verifier.connectTimeout" ) )
+                .map( Integer::parseInt )
+                .ifPresent( config::setConnectTimeout );
         
         config.setUser( Optional.ofNullable( arguments.get( "verifier.user" ) ) );
         config.setPassword( Optional.ofNullable( arguments.get( "verifier.pass" ) ) );

@@ -19,7 +19,8 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor( access = AccessLevel.PRIVATE )
 public class ModuleLogger
 {
-    private static LoggerConfig conf;
+    private static Optional<LoggerConfig> conf    = Optional.empty();
+    private static final LoggerConfig     DEFAULT_CONF = new LoggerConfig( System.err, true );
     
     /**
      * Initialising the global logging configuraton for this logger. This can and has to be done only once. Any further calls will do
@@ -32,9 +33,9 @@ public class ModuleLogger
      */
     public static void initConfig( boolean verbose, OutputStream out )
     {
-        if ( conf == null )
+        if ( conf.isEmpty() )
         {
-            conf = new LoggerConfig( out, verbose );
+            conf = Optional.of( new LoggerConfig( out, verbose ) );
         }
     }
     
@@ -59,7 +60,7 @@ public class ModuleLogger
      */
     public static void verbose( String message, Throwable e )
     {
-        if ( conf.isVerbose() )
+        if ( conf.orElse( DEFAULT_CONF ).isVerbose() )
         {
             log( message, e );
         }
@@ -86,26 +87,23 @@ public class ModuleLogger
      */
     public static void log( String message, Throwable e )
     {
-        Optional<OutputStream> optOut = Optional.ofNullable( conf ).map( LoggerConfig::getOutput );
+        OutputStream out = conf.orElse( DEFAULT_CONF ).getOutput();
         
-        if ( optOut.isPresent() )
+        String loggername = ModuleLogger.class.getName();
+        StackWalker walker = StackWalker.getInstance( RETAIN_CLASS_REFERENCE );
+        String callerName = walker.walk( stream -> stream.filter( frame -> !frame.getClassName().equals( loggername ) )
+                .findFirst()
+                .map( StackFrame::getClassName )
+                .orElse( loggername ) );
+        
+        PrintWriter writer = new PrintWriter( out );
+        writer.format( "[%s] %s", callerName, message );
+        writer.append( System.lineSeparator() );
+        if ( e != null )
         {
-            String loggername = ModuleLogger.class.getName();
-            StackWalker walker = StackWalker.getInstance( RETAIN_CLASS_REFERENCE );
-            String callerName = walker.walk( stream -> stream.filter( frame -> !frame.getClassName().equals( loggername ) )
-                    .findFirst()
-                    .map( StackFrame::getClassName )
-                    .orElse( loggername ) );
-            
-            PrintWriter writer = new PrintWriter( optOut.get() );
-            writer.format( "[%s] %s", callerName, message );
-            writer.append( System.lineSeparator() );
-            if ( e != null )
-            {
-                e.printStackTrace( writer );
-            }
-            
-            writer.flush();
+            e.printStackTrace( writer );
         }
+        
+        writer.flush();
     }
 }

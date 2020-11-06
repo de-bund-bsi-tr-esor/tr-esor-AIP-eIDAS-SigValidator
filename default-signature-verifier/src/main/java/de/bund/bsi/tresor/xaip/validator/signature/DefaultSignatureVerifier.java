@@ -4,7 +4,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
+import java.net.HttpURLConnection;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,10 +20,12 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.ws.BindingProvider;
 import javax.xml.ws.soap.SOAPFaultException;
 
 import org.w3c.dom.Node;
 
+import com.sun.xml.ws.client.BindingProviderProperties;
 import com.sun.xml.ws.util.ByteArrayDataSource;
 
 import de.bund.bsi.ecard.api._1.VerifyResponse;
@@ -292,11 +295,28 @@ public class DefaultSignatureVerifier implements SignatureVerifier
             try
             {
                 URL wsdlUrl = new URL( wsdlLocation );
-                service = TokenSupplier.supplyToken( config )
-                        .map( token -> new S4_Service( wsdlUrl, new IdentityTokenHeaderFeature( token ) ) )
-                        .orElseGet( () -> new S4_Service( wsdlUrl ) );
+                
+                HttpURLConnection connection = (HttpURLConnection) wsdlUrl.openConnection();
+                connection.setRequestProperty( "Connection", "close" );
+                connection.setConnectTimeout( config.getConnectTimeout() );
+                connection.connect();
+                
+                if ( connection.getResponseCode() == 200 )
+                {
+                    service = TokenSupplier.supplyToken( config )
+                            .map( token -> new S4_Service( wsdlUrl, new IdentityTokenHeaderFeature( token ) ) )
+                            .orElseGet( () -> new S4_Service( wsdlUrl ) );
+                    
+                    Map<String, Object> requestContext = ((BindingProvider) service.getS4()).getRequestContext();
+                    requestContext.put( BindingProviderProperties.CONNECT_TIMEOUT, config.getConnectTimeout() );
+                    requestContext.put( BindingProviderProperties.REQUEST_TIMEOUT, config.getRequestTimeout() );
+                }
             }
-            catch ( MalformedURLException e )
+            catch ( SocketTimeoutException e )
+            {
+                throw new XAIPValidatorException( "could not connect to " + wsdlLocation, e );
+            }
+            catch ( IOException e )
             {
                 throw new XAIPValidatorException( "could not read verifyConnectorUrl " + wsdlLocation, e );
             }
