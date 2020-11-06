@@ -84,7 +84,7 @@ public enum DataObjectSectionValidator
         result.setDataObjectID( dataObject.getDataObjectID() );
         
         Optional.ofNullable( dataObject.getCheckSum() )
-                .map( checkSum -> VerificationUtil.verifyChecksum( XAIPUtil.retrieveContent( dataObject ), checkSum ) )
+                .map( checkSum -> VerificationUtil.verifyChecksum( XAIPUtil.retrieveBinaryContent( dataObject ), checkSum ) )
                 .ifPresent( result::setChecksum );
         
         XAIPUtil.findDataReferences( dataObject )

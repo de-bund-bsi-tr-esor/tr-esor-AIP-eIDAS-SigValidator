@@ -24,6 +24,7 @@ import de.bund.bsi.tr_esor.xaip._1.PackageHeaderType;
 import de.bund.bsi.tr_esor.xaip._1.PackageInfoUnitType;
 import de.bund.bsi.tr_esor.xaip._1.VersionManifestType;
 import de.bund.bsi.tr_esor.xaip._1.XAIPType;
+import de.bund.bsi.tresor.xaip.validator.api.entity.xaip.Canonicalization;
 import oasis.names.tc.dss._1_0.core.schema.AnyType;
 
 /**
@@ -156,7 +157,7 @@ public class XAIPUtil
      *            the dataObject
      * @return inputstream with content or empty data
      */
-    public static InputStream retrieveContent( DataObjectType dataObject )
+    public static InputStream retrieveBinaryContent( DataObjectType dataObject )
     {
         return Optional.ofNullable( dataObject )
                 .map( DataObjectType::getBinaryData )
@@ -174,6 +175,26 @@ public class XAIPUtil
                     return new ByteArrayInputStream( new byte[0] );
                 } )
                 .orElse( findLxaipData( dataObject ) );
+    }
+    
+    // TODO checksum data retrieval
+    
+    ///// desc: retrieve data of the object for checksum creation
+    public static InputStream checkSumData( DataObjectType dataObject )
+    {
+        // bei binaryData das b64 dekodierte object
+        // bei xml elementen die elemente dekodiert nach der packageHeader/canonicalization methode
+        
+        retrieveBinaryContent( dataObject ); // present or null
+        
+        return null;
+    }
+    
+    public static InputStream retrieveXmlContent( DataObjectType obj, Canonicalization canon )
+    {
+        AnyType xmlData = obj.getXmlData();
+        
+        return canon.getFunction().apply( t );
     }
     
     /**
