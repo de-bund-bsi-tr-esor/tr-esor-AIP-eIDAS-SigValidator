@@ -9,9 +9,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
 import javax.xml.namespace.QName;
+import javax.xml.transform.dom.DOMResult;
 
+import org.apache.xml.security.c14n.CanonicalizationException;
+import org.apache.xml.security.c14n.InvalidCanonicalizerException;
 import org.etsi.uri._02918.v1_2.DataObjectReferenceType;
 
 import de.bund.bsi.tr_esor.vr._1.XAIPValidityType;
@@ -24,7 +29,6 @@ import de.bund.bsi.tr_esor.xaip._1.PackageHeaderType;
 import de.bund.bsi.tr_esor.xaip._1.PackageInfoUnitType;
 import de.bund.bsi.tr_esor.xaip._1.VersionManifestType;
 import de.bund.bsi.tr_esor.xaip._1.XAIPType;
-import de.bund.bsi.tresor.xaip.validator.api.entity.xaip.Canonicalization;
 import oasis.names.tc.dss._1_0.core.schema.AnyType;
 
 /**
@@ -177,24 +181,14 @@ public class XAIPUtil
                 .orElse( findLxaipData( dataObject ) );
     }
     
-    // TODO checksum data retrieval
-    
-    ///// desc: retrieve data of the object for checksum creation
-    public static InputStream checkSumData( DataObjectType dataObject )
+    public static InputStream retrieveXmlContent( DataObjectType obj, Optional<String> c14nUrl )
+            throws InvalidCanonicalizerException, CanonicalizationException, JAXBException
     {
-        // bei binaryData das b64 dekodierte object
-        // bei xml elementen die elemente dekodiert nach der packageHeader/canonicalization methode
+        JAXBContext context = JAXBContext.newInstance( AnyType.class );
+        DOMResult result = new DOMResult();
+        context.createMarshaller().marshal( obj, result );
         
-        retrieveBinaryContent( dataObject ); // present or null
-        
-        return null;
-    }
-    
-    public static InputStream retrieveXmlContent( DataObjectType obj, Canonicalization canon )
-    {
-        AnyType xmlData = obj.getXmlData();
-        
-        return canon.getFunction().apply( t );
+        return Canonicalization.canonicalize( result.getNode(), c14nUrl );
     }
     
     /**

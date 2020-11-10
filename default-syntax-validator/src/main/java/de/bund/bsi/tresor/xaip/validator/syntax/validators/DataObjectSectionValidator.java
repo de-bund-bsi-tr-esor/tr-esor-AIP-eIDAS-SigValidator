@@ -50,11 +50,12 @@ public enum DataObjectSectionValidator
      *            the dataObjectsSection to validate
      * @return the dataObjectsSection validation result
      */
-    public Optional<DataObjectsSectionValidityType> validateDataSection( Optional<DataObjectsSectionType> dataObjectsSection )
+    public Optional<DataObjectsSectionValidityType> validateDataSection( Optional<DataObjectsSectionType> dataObjectsSection,
+            Optional<String> c14nUrl )
     {
         List<DataObjectValidityType> data = dataObjectsSection
                 .map( section -> section.getDataObject().stream()
-                        .map( this::validateDataObject )
+                        .map( obj -> validateDataObject( obj, c14nUrl ) )
                         .collect( toList() ) )
                 .orElse( new ArrayList<>() );
         
@@ -78,13 +79,16 @@ public enum DataObjectSectionValidator
      *            the dataObject to validate
      * @return the dataObject validation result
      */
-    public DataObjectValidityType validateDataObject( DataObjectType dataObject )
+    public DataObjectValidityType validateDataObject( DataObjectType dataObject, Optional<String> c14nUrl )
     {
         DataObjectValidityType result = new DataObjectValidityType();
         result.setDataObjectID( dataObject.getDataObjectID() );
         
+        InputStream data = Optional.ofNullable( XAIPUtil.retrieveBinaryContent( dataObject ) )
+                .orElse( XAIPUtil.retrieveXmlContent( dataObject, c14nUrl ) );
+        
         Optional.ofNullable( dataObject.getCheckSum() )
-                .map( checkSum -> VerificationUtil.verifyChecksum( XAIPUtil.retrieveBinaryContent( dataObject ), checkSum ) )
+                .map( checkSum -> VerificationUtil.verifyChecksum( data, checkSum ) )
                 .ifPresent( result::setChecksum );
         
         XAIPUtil.findDataReferences( dataObject )
