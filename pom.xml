@@ -26,6 +26,14 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+    <developers>
+        <developer>
+            <email>info@procilon.de</email>
+            <organization>procilon GROUP</organization>
+            <organizationUrl>https://www.procilon.de</organizationUrl>
+        </developer>
+    </developers>
+
     <dependencyManagement>
         <dependencies>
             <!-- external dependencies -->
