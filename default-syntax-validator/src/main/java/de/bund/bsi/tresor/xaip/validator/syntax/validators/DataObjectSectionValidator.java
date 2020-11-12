@@ -91,11 +91,20 @@ public enum DataObjectSectionValidator
         Optional.ofNullable( dataObject.getCheckSum() )
                 .map( checkSum -> {
                     try ( InputStream data = Optional.ofNullable( XAIPUtil.retrieveBinaryContent( dataObject ) )
-                            .orElse( XAIPUtil.retrieveXmlContent( dataObject, c14nUrl ) ) )
+                            .orElseGet( () -> {
+                                try
+                                {
+                                    return XAIPUtil.retrieveXmlContent( dataObject, c14nUrl );
+                                }
+                                catch ( InvalidCanonicalizerException | CanonicalizationException | JAXBException e )
+                                {
+                                    throw new IllegalStateException( e );
+                                }
+                            } ) )
                     {
                         return VerificationUtil.verifyChecksum( data, checkSum );
                     }
-                    catch ( InvalidCanonicalizerException | CanonicalizationException | JAXBException | IOException e )
+                    catch ( IllegalStateException | IOException e )
                     {
                         ModuleLogger.log( "could not retrieve data for checksum validation", e );
                         

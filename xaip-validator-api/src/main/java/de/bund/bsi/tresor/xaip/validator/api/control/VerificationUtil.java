@@ -5,9 +5,9 @@ import java.io.InputStream;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Base64;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.bouncycastle.util.encoders.Hex;
 import org.bouncycastle.util.io.Streams;
 
 import de.bund.bsi.tr_esor.xaip._1.CheckSumType;
@@ -63,7 +63,7 @@ public class VerificationUtil
                         {
                             Streams.drain( digestIn );
                             byte[] digest = digestIn.getMessageDigest().digest();
-                            byte[] expectedDigest = Base64.getDecoder().decode( checksum.getCheckSum() );
+                            byte[] expectedDigest = Hex.decode( checksum.getCheckSum() );
                             
                             if ( org.bouncycastle.util.Arrays.constantTimeAreEqual( expectedDigest, digest ) )
                             {

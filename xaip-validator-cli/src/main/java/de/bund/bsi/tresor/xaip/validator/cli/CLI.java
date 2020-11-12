@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
@@ -36,7 +37,9 @@ public final class CLI
     {
         // disable no optimization to prevent warning output
         System.setProperty( "com.sun.xml.bind.v2.bytecode.ClassTailor.noOptimize", "true" );
-        LogManager.getLogManager().getLogger( "com.sun.xml.bind.Utils" ).setLevel( Level.WARNING );
+        Optional.ofNullable( LogManager.getLogManager().getLogger( "" ) ).ifPresent( logger -> logger.setLevel( Level.WARNING ) );
+        Optional.ofNullable( LogManager.getLogManager().getLogger( "com.sun.xml.bind.Utils" ) )
+                .ifPresent( logger -> logger.setLevel( Level.WARNING ) );
         
         Arguments args = new Arguments();
         JCommander jCommander = JCommander.newBuilder()
