@@ -12,6 +12,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import javax.xml.bind.JAXBException;
+
+import org.apache.xml.security.c14n.CanonicalizationException;
+import org.apache.xml.security.c14n.InvalidCanonicalizerException;
 import org.etsi.uri._02918.v1_2.DataObjectReferenceType;
 import org.w3._2000._09.xmldsig_.DigestMethodType;
 
@@ -84,11 +88,20 @@ public enum DataObjectSectionValidator
         DataObjectValidityType result = new DataObjectValidityType();
         result.setDataObjectID( dataObject.getDataObjectID() );
         
-        InputStream data = Optional.ofNullable( XAIPUtil.retrieveBinaryContent( dataObject ) )
-                .orElse( XAIPUtil.retrieveXmlContent( dataObject, c14nUrl ) );
-        
         Optional.ofNullable( dataObject.getCheckSum() )
-                .map( checkSum -> VerificationUtil.verifyChecksum( data, checkSum ) )
+                .map( checkSum -> {
+                    try ( InputStream data = Optional.ofNullable( XAIPUtil.retrieveBinaryContent( dataObject ) )
+                            .orElse( XAIPUtil.retrieveXmlContent( dataObject, c14nUrl ) ) )
+                    {
+                        return VerificationUtil.verifyChecksum( data, checkSum );
+                    }
+                    catch ( InvalidCanonicalizerException | CanonicalizationException | JAXBException | IOException e )
+                    {
+                        ModuleLogger.log( "could not retrieve data for checksum validation", e );
+                        
+                        return VerificationUtil.verificationResult( DefaultResult.error().minor( Minor.NO_DATA_ACCESS_WARNING ).build() );
+                    }
+                } )
                 .ifPresent( result::setChecksum );
         
         XAIPUtil.findDataReferences( dataObject )
@@ -162,7 +175,7 @@ public enum DataObjectSectionValidator
             
             if ( !Files.isReadable( filePath ) )
             {
-                builder.minor( Minor.NO_PERMISSION );
+                builder.minor( Minor.NO_PERMISSION ).message( "reading a file requires read permission", ResultLanguage.ENGLISH );
             }
             else
             {
@@ -183,7 +196,7 @@ public enum DataObjectSectionValidator
         else
         {
             builder.minor( Minor.PARAMETER_ERROR )
-                    .message( "dataObject reference contains invalid parameter", ResultLanguage.ENGLISH );
+                    .message( "dataObject reference contains invalid lxaip parameter", ResultLanguage.ENGLISH );
         }
         
         return VerificationUtil.verificationResult( builder.build() );

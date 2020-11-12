@@ -71,7 +71,7 @@ public class VerificationUtil
                             }
                             else
                             {
-                                builder.minor( Minor.INVALID_CHECKSUM );
+                                builder.minor( Minor.CHECKSUM_INVALID );
                             }
                         }
                     }

@@ -122,7 +122,7 @@ public enum PackageHeaderValidator
                     if ( !validMethod )
                     {
                         result = DefaultResult.error()
-                                .minor( Minor.UNKNOWN_CANONICALIZATION_METHOD )
+                                .minor( Minor.UNKNOWN_C14N_METHOD )
                                 .message( "using invalid algorithm " + canonicalizationMethod.getAlgorithm(), ResultLanguage.ENGLISH )
                                 .build();
                     }

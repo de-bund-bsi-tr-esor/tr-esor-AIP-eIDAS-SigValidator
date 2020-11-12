@@ -4,6 +4,8 @@ import java.net.URI;
 
 import org.apache.commons.lang3.StringUtils;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import oasis.names.tc.dss._1_0.core.schema.InternationalStringType;
 import oasis.names.tc.dss._1_0.core.schema.Result;
 
@@ -15,39 +17,26 @@ import oasis.names.tc.dss._1_0.core.schema.Result;
  */
 public class DefaultResult
 {
-    private static final String PREFIX = "http://www.bsi.bund.de/tr-esor/api/1.2";
+    private static final String NS_TRESOR_API_1_1   = "http://www.bsi.bund.de/tr-esor/api/1.1";
+    private static final String NS_TRESOR_API_1_2   = "http://www.bsi.bund.de/tr-esor/api/1.2";
+    
+    private static final String NS_ECARD_API_1_1    = "http://www.bsi.bund.de/ecard/api/1.1";
+    private static final String NS_ECARD_TRESOR_1_2 = "http://www.bsi.bund.de/ecard/tr-esor/1.2";
+    
+    private static final String NS_OASIS_DSS_1_0    = "urn:oasis:names:tc:dss:1.0";
     
     /**
      * Language of the result
      * 
      * @author wolffs
      */
+    @Getter
+    @AllArgsConstructor
     public static enum ResultLanguage
     {
         GERMAN( "de" ), ENGLISH( "en" );
         
-        private final String langCode;
-        
-        /**
-         * Defining a new result language with the provided value as langCode
-         * 
-         * @param langCode
-         *            the langcode
-         */
-        private ResultLanguage( String langCode )
-        {
-            this.langCode = langCode;
-        }
-        
-        /**
-         * Returns the langCode
-         * 
-         * @return the language code
-         */
-        public String getValue()
-        {
-            return langCode;
-        }
+        private final String value;
     }
     
     /**
@@ -55,9 +44,20 @@ public class DefaultResult
      * 
      * @author wolffs
      */
+    @Getter
     public static enum Major
     {
-        OK( "/resultmajor#ok" ), ERROR( "/resultmajor#error" ), WARNING( "/resultmajor#warning" );
+        OK( NS_ECARD_API_1_1, "/resultmajor#ok" ),
+        
+        ERROR( NS_ECARD_API_1_1, "/resultmajor#error" ),
+        
+        WARNING( NS_ECARD_API_1_1, "/resultmajor#warning" ),
+        
+        VALID( NS_OASIS_DSS_1_0, ":detail:valid" ),
+        
+        INVALID( NS_OASIS_DSS_1_0, ":detail:invalid" ),
+        
+        INDETERMINED( NS_OASIS_DSS_1_0, ":detail:indetermined" );
         
         private final String uri;
         
@@ -67,19 +67,9 @@ public class DefaultResult
          * @param path
          *            the major path
          */
-        private Major( String path )
+        private Major( String namespace, String path )
         {
-            this.uri = PREFIX + path;
-        }
-        
-        /**
-         * Returns the complete major URI
-         * 
-         * @return the URI
-         */
-        public String getURI()
-        {
-            return this.uri;
+            this.uri = namespace + path;
         }
     }
     
@@ -88,66 +78,58 @@ public class DefaultResult
      * 
      * @author wolffs
      */
+    @Getter
     public static enum Minor
     {
-        CHECKSUM_ALG_NOT_SUPPORTED( "/resultminor/checkSumAlgorithmNotSupportedWarning",
-                "Der angegebene Checksum Algorithmus wird nicht unterstützt." ),
+        // using camel case variation instead
+        // http://www.bsi.bund.de/tr-esor/api/1.2/resultminor/checksumInvalid
+        // http://www.bsi.bund.de/tr-esor/api/1.2/resultminor/checksumAlgorithmNotSupportedWarning
+        // http://www.bsi.bund.de/ecard/api/1.1/resultminor//il/algorithm#signatureAlgorithmNotSupported
+        // http://www.bsi.bund.de/ecard/api/1.1/resultminor//il/algorithm#signatureAlgorithmNotSuitable
         
-        INVALID_CHECKSUM( "/resultminor/checkSumInvalid", "Die Checksumme ist ungültig." ),
+        NO_PERMISSION( NS_ECARD_API_1_1, "/resultminor/al/common#noPermission", null ),
         
-        NO_PERMISSION( "/resultminor/al/common#noPermission", null ),
+        INTERNAL_ERROR( NS_ECARD_API_1_1, "/resultminor/al/common#internalError", null ),
         
-        INTERNAL_ERROR( "/resultminor/al/common#internalError", null ),
+        PARAMETER_ERROR( NS_ECARD_API_1_1, "/resultminor/al/common#parameterError", null ),
         
-        PARAMETER_ERROR( "/resultminor/al/common#parameterError", null ),
+        NO_DATA_ACCESS_WARNING( NS_ECARD_API_1_1, "/resultminor/arl/noDataAccessWarning", null ),
         
-        PRESERVATION_PERIOD_EXPIRED( "/resultminor/preservationPeriodExpired", "Der Archivierungszeitraum ist abgelaufen." ),
+        SIG_FORMAT_NOT_SUPPORTED( NS_ECARD_API_1_1, "/resultminor/il/signature#signatureFormatNotSupported", null ),
         
-        EXISTING_AOID( "/resultminor/arl/existingAOID", "Die im Rahmen des ArchiveSubmissionRequest übergebene AOID existiert bereits." ),
+        SIG_ALG_NOT_SUITABLE( NS_ECARD_API_1_1, "/resultminor/il/algorithm#signatureAlgorithmNotSuitable", null ),
         
-        EXISTING_PACKAGE_INFO_WARNING( "/resultminor/arl/existingPackageInfoWarning",
-                "Bei der ArchiveUpdateRequest-Funktion wird ein DXAIP-Element übergeben, das ein packageInfo-Element enthält." ),
+        SIG_ALG_NOT_SUPPORTED( NS_ECARD_API_1_1, "/resultminor/il/algorithm#signatureAlgorithmNotSupported", null ),
         
-        LOW_SPACE_WARNING( "/resultminor/arl/lowSpaceWarning",
-                "Diese Warnung gibt an, dass der verfügbare Speicherplatz einen kritischen Wert unterschritten hat." ),
+        HASH_ALG_NOT_SUITABLE( NS_ECARD_API_1_1, "/resultminor/il/algorithm#hashAlgorithmNotSuitable", null ),
         
-        MISSING_REASON_OF_DELETION( "/resultminor/arl/missingReasonOfDeletion",
-                "Da beim ArchiveDeletionRequest kein ReasonOfDeletion-Element übergeben wurde, muss der Löschvorgang abgewiesen werden." ),
+        HASH_ALG_NOT_SUPPOERTED( NS_ECARD_API_1_1, "/resultminor/il/algorithm#hashAlgorithmNotSupported", null ),
         
-        NO_SPACE_ERROR( "/resultminor/arl/noSpaceError",
-                "Diese Fehlermeldung gibt an, dass kein Speicherplatz verfügbar war und deshalb das Archivdatenobjekt nicht abgelegt werden konnte." ),
+        NOT_SUPPORTED( NS_ECARD_TRESOR_1_2, "/resultminor/arl/notSupported", null ),
         
-        NOT_SUPPORTED(
-                "/resultminor/arl/notSupported",
-                "Diese Fehlermeldung gibt an, dass eine angeforderte Funktion, ein angefordertes Format oder ein übergebener optionaler Eingabeparameter nicht unterstützt wird." ),
+        UNKNOWN_ATTRIBUTE( NS_TRESOR_API_1_1, "/resultminor/unknownAttribute", null ),
         
-        REQUEST_ONLY_PARTLY_SUCCESSFUL_WARNING( "/resultminor/arl/requestOnlyPartlySuccessfulWarning",
-                "Diese Warnung gibt an, dass nicht alle angeforderten Daten zurückgeliefert werden konnten." ),
+        NOT_SUPPORTED_( NS_TRESOR_API_1_2, "/resultminor/arl/notSupported", null ),
         
-        UNKNOWN_ARCHIVE_DATA_TYPE( "/resultminor/arl/unknownArchiveDataType",
-                "Es wird ein binäres Datenobjekt mit einem nicht unterstützten Datenformat übergeben." ),
+        INVALID_FORMAT( NS_TRESOR_API_1_2, "/resultminor/invalidFormat", null ),
         
-        UNKNOWN_LOCATION( "/resultminor/arl/unknownLocation",
-                "Die im ArchiveDataRequest angegebene DataLocation ist nicht vorhanden bzw. fehlerhaft." ),
+        HASH_VALUE_MISMATCH( NS_TRESOR_API_1_2, "/resultminor/hashValueMismatch", null ),
         
-        UNKNOWN_AOID( "/resultminor/arl/unknownAOID", "Die übergebene AOID existiert nicht." ),
+        UNKNOWN_C14N_METHOD( NS_TRESOR_API_1_2, "/resultminor/unknownCanonicalizationMethod", null ),
         
-        UNKNOWN_VERSION_ID( "/resultminor/arl/unknownVersionID", "Die übergebene VersionID ist im entsprechenden XAIP nicht bekannt." ),
+        UNCHECKED_FORMAT_WARN( NS_TRESOR_API_1_2, "/resultminor/uncheckedFormatWarning", null ),
         
-        UNKNOWN_CANONICALIZATION_METHOD( "/resultminor/unknownCanonicalizationMethod",
-                "Die verwendete Kanonisierungsmethode ist in diesem fachlichen Kontext unbekannt." ),
+        PRESERVATION_PERIOD_EXPIRED( NS_TRESOR_API_1_2, "/resultminor/preservationPeriodExpired", null ),
         
-        INVALID_SIGNATURE( "/resultminor/sal#invalidSignature", "Die Signatur ist ungültig." ),
+        SUBMISSION_TIME_DEVIATION( NS_TRESOR_API_1_2, "/resultminor/submissionTimeDeviationBeyondLimit", null ),
         
-        NO_TIMESTAMP_GENERATED_WARNING( "/resultminor/sal#noTimestampGenerated",
-                "Für dieses Dokument wurde bisher kein Zeitstempel erstellt." ),
+        AMBIGUOUS_OBJECT_POINTER( NS_TRESOR_API_1_2, "/resultminor/ambiguousObjectPointerStatus", null ),
         
-        XAIP_NOK_SIG( "/resultminor/arl/XAIP_NOK_SIG", "Prüfung der Signatur nach Ketten- oder Schalenmodell ist fehlgeschlagen." ),
+        CHECKSUM_INVALID( NS_TRESOR_API_1_2, "/resultminor/checkSumInvalid", null ),
         
-        NO_DATA_ACCESS_WARNING( "/resultminor/arl/noDataAccessWarning", "Auf referenzierte Datei konnte nicht zugegriffen werden." );
+        CHECKSUM_ALG_NOT_SUPPORTED( NS_TRESOR_API_1_2, "/resultminor/checkSumAlgorithmNotSupportedWarning", null );
         
         private final String uri;
-        
         private final String message;
         
         /**
@@ -158,20 +140,10 @@ public class DefaultResult
          * @param message
          *            the associated message
          */
-        private Minor( String path, String message )
+        private Minor( String namespace, String path, String message )
         {
-            this.uri = PREFIX + path;
+            this.uri = namespace + path;
             this.message = message;
-        }
-        
-        /**
-         * Returns the complete minor result URI
-         * 
-         * @return the URI
-         */
-        public String getURI()
-        {
-            return this.uri;
         }
     }
     
@@ -206,6 +178,36 @@ public class DefaultResult
     }
     
     /**
+     * Adding {@link Major#VALID} to the result
+     * 
+     * @return the builder
+     */
+    public static Builder valid()
+    {
+        return new Builder( Major.VALID );
+    }
+    
+    /**
+     * Adding {@link Major#INVALID} to the result
+     * 
+     * @return the builder
+     */
+    public static Builder invalid()
+    {
+        return new Builder( Major.INVALID );
+    }
+    
+    /**
+     * Adding {@link Major#INDETERMINED} to the result
+     * 
+     * @return the builder
+     */
+    public static Builder indetermined()
+    {
+        return new Builder( Major.INDETERMINED );
+    }
+    
+    /**
      * Adding the major to the result
      * 
      * @param major
@@ -228,7 +230,7 @@ public class DefaultResult
     {
         for ( Major item : Major.values() )
         {
-            if ( item.getURI().equals( result.getResultMajor() ) )
+            if ( item.getUri().equals( result.getResultMajor() ) )
             {
                 return item;
             }
@@ -248,7 +250,7 @@ public class DefaultResult
     {
         for ( Minor item : Minor.values() )
         {
-            if ( item.getURI().equals( result.getResultMinor() ) )
+            if ( item.getUri().equals( result.getResultMinor() ) )
             {
                 return item;
             }
@@ -260,7 +262,7 @@ public class DefaultResult
     /**
      * Builder for TR-ESOR results
      * 
-     * @author pennerd
+     * @author wolffs
      */
     public static class Builder
     {
@@ -275,7 +277,7 @@ public class DefaultResult
         public Builder( Major major )
         {
             this.result = new Result();
-            this.result.setResultMajor( major.getURI() );
+            this.result.setResultMajor( major.getUri() );
         }
         
         /**
@@ -287,7 +289,7 @@ public class DefaultResult
          */
         public Builder major( Major major )
         {
-            this.result.setResultMajor( major.getURI() );
+            this.result.setResultMajor( major.getUri() );
             return this;
         }
         
@@ -313,10 +315,10 @@ public class DefaultResult
          */
         public Builder minor( Minor minor )
         {
-            this.result.setResultMinor( minor.getURI() );
+            this.result.setResultMinor( minor.getUri() );
             if ( minor.message != null )
             {
-                this.message( minor.message, "de" );
+                this.message( minor.message, "en" );
             }
             return this;
         }
@@ -424,22 +426,23 @@ public class DefaultResult
         Major majorFirst = DefaultResult.getMajor( first );
         Major majorSecond = DefaultResult.getMajor( second );
         
-        if ( majorFirst == Major.ERROR )
+        if ( majorFirst == Major.ERROR || majorFirst == Major.INVALID )
             return first;
-        if ( majorSecond == Major.ERROR )
+        if ( majorSecond == Major.ERROR || majorSecond == Major.INVALID )
             return second;
         
-        if ( majorFirst == Major.WARNING || majorSecond == Major.WARNING )
+        if ( majorFirst == Major.WARNING || majorSecond == Major.WARNING
+                || majorFirst == Major.INDETERMINED || majorSecond == Major.INDETERMINED )
         {
             Result result = null;
-            if ( majorFirst == Major.WARNING )
+            if ( majorFirst == Major.WARNING || majorFirst == Major.INDETERMINED )
                 result = first;
-            else if ( majorSecond == Major.WARNING )
+            else if ( majorSecond == Major.WARNING || majorSecond == Major.INDETERMINED )
                 result = second;
             
             if ( StringUtils.isBlank( result.getResultMinor() ) )
             {
-                result.setResultMinor( Minor.XAIP_NOK_SIG.getURI() );
+                result.setResultMinor( Minor.INTERNAL_ERROR.getUri() );
             }
             
             return result;

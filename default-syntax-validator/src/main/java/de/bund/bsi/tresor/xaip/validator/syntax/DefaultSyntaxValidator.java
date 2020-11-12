@@ -25,6 +25,7 @@ import de.bund.bsi.tresor.xaip.validator.api.boundary.SyntaxValidator;
 import de.bund.bsi.tresor.xaip.validator.api.control.ModuleLogger;
 import de.bund.bsi.tresor.xaip.validator.api.control.VerificationUtil;
 import de.bund.bsi.tresor.xaip.validator.api.entity.DefaultResult;
+import de.bund.bsi.tresor.xaip.validator.api.entity.DefaultResult.Minor;
 import de.bund.bsi.tresor.xaip.validator.api.entity.DefaultResult.ResultLanguage;
 import de.bund.bsi.tresor.xaip.validator.api.entity.SyntaxValidationResult;
 import de.bund.bsi.tresor.xaip.validator.api.entity.XAIPValidatorException;
@@ -66,7 +67,7 @@ public class DefaultSyntaxValidator implements SyntaxValidator
     {
         Optional<XAIPType> optXaip = Optional.empty();
         XAIPValidityType report = new XAIPValidityType();
-        Result result = DefaultResult.ok()
+        Result result = DefaultResult.valid()
                 .message( "xaip is schema conform", ResultLanguage.ENGLISH )
                 .build();
         
@@ -101,7 +102,8 @@ public class DefaultSyntaxValidator implements SyntaxValidator
         catch ( Exception e )
         {
             ModuleLogger.verbose( "syntax validation errors", e );
-            result = DefaultResult.error()
+            result = DefaultResult.invalid()
+                    .minor( Minor.INVALID_FORMAT )
                     .message( "xaip is not schema conform: " + e.getMessage(), ResultLanguage.ENGLISH )
                     .build();
         }
