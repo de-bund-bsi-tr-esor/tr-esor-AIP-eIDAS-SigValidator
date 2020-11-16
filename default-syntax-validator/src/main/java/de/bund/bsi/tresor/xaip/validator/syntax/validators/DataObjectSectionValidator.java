@@ -2,6 +2,7 @@ package de.bund.bsi.tresor.xaip.validator.syntax.validators;
 
 import static java.util.stream.Collectors.toList;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -90,11 +91,12 @@ public enum DataObjectSectionValidator
         
         Optional.ofNullable( dataObject.getCheckSum() )
                 .map( checkSum -> {
-                    try ( InputStream data = Optional.ofNullable( XAIPUtil.retrieveBinaryContent( dataObject ) )
+                    try ( InputStream data = XAIPUtil.retrieveBinaryContent( dataObject )
                             .orElseGet( () -> {
                                 try
                                 {
-                                    return XAIPUtil.retrieveXmlContent( dataObject, c14nUrl );
+                                    return XAIPUtil.retrieveXmlContent( dataObject, c14nUrl )
+                                            .orElse( new ByteArrayInputStream( new byte[0] ) );
                                 }
                                 catch ( InvalidCanonicalizerException | CanonicalizationException | JAXBException e )
                                 {

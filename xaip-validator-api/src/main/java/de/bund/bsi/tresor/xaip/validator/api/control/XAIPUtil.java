@@ -1,6 +1,5 @@
 package de.bund.bsi.tresor.xaip.validator.api.control;
 
-import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,6 +17,7 @@ import javax.xml.transform.dom.DOMResult;
 import org.apache.xml.security.c14n.CanonicalizationException;
 import org.apache.xml.security.c14n.InvalidCanonicalizerException;
 import org.etsi.uri._02918.v1_2.DataObjectReferenceType;
+import org.w3c.dom.Node;
 
 import de.bund.bsi.tr_esor.vr._1.XAIPValidityType;
 import de.bund.bsi.tr_esor.xaip._1.CredentialType;
@@ -41,6 +41,9 @@ public class XAIPUtil
     /**
      * Namespace and name of the XAIP element
      */
+    public static final QName XML_DATA_QNAME    = new QName( "http://www.bsi.bund.de/tr-esor/xaip/1.2", "xmlData" );
+    public static final QName XML_ANY_QNAME     = new QName( "oasis.names.tc.dss._1_0.core.schema.AnyType", "xmlAny" );
+    
     public static final QName XAIP_QNAME        = new QName( "http://www.bsi.bund.de/tr-esor/xaip/1.2", "XAIP" );
     public static final QName XAIP_REPORT_QNAME = new QName( "http://www.bsi.bund.de/tr-esor/vr/1.2", "XAIPReport" );
     
@@ -161,7 +164,7 @@ public class XAIPUtil
      *            the dataObject
      * @return inputstream with content or empty data
      */
-    public static InputStream retrieveBinaryContent( DataObjectType dataObject )
+    public static Optional<InputStream> retrieveBinaryContent( DataObjectType dataObject )
     {
         return Optional.ofNullable( dataObject )
                 .map( DataObjectType::getBinaryData )
@@ -176,19 +179,34 @@ public class XAIPUtil
                         ModuleLogger.verbose( "could not retrieve data from dataObject", e );
                     }
                     
-                    return new ByteArrayInputStream( new byte[0] );
-                } )
-                .orElse( findLxaipData( dataObject ) );
+                    return findLxaipData( dataObject ).orElse( null );
+                } );
     }
     
-    public static InputStream retrieveXmlContent( DataObjectType obj, Optional<String> c14nUrl )
+    public static Optional<InputStream> retrieveXmlContent( DataObjectType obj, Optional<String> c14nUrl )
             throws InvalidCanonicalizerException, CanonicalizationException, JAXBException
     {
+        
+        JAXBElement<AnyType> xml = new JAXBElement<AnyType>( XML_DATA_QNAME, AnyType.class, obj.getXmlData() );
         JAXBContext context = JAXBContext.newInstance( AnyType.class );
         DOMResult result = new DOMResult();
-        context.createMarshaller().marshal( obj, result );
+        context.createMarshaller().marshal( xml, result );
         
-        return Canonicalization.canonicalize( result.getNode(), c14nUrl );
+        Node xmlData = result.getNode().getFirstChild();
+        // NodeList data = xmlData.getChildNodes();
+        
+        try
+        {
+            // TODO FIXME canonicalization does not work as expected
+            
+            return Optional.of( Canonicalization.canonicalize( xmlData.getFirstChild(), c14nUrl ) );
+        }
+        catch ( InvalidCanonicalizerException | CanonicalizationException | IOException e )
+        {
+            ModuleLogger.log( "could not retrieve xml content", e );
+        }
+        
+        return Optional.empty();
     }
     
     /**
@@ -199,7 +217,7 @@ public class XAIPUtil
      *            the dataObject
      * @return inputstream with content or empty data
      */
-    static InputStream findLxaipData( DataObjectType dataObject )
+    static Optional<InputStream> findLxaipData( DataObjectType dataObject )
     {
         return findDataReferences( dataObject )
                 .map( DataObjectReferenceType::getURI )
@@ -214,8 +232,7 @@ public class XAIPUtil
                         ModuleLogger.verbose( "could not retrieve lxaip data from dataObject", e );
                     }
                     
-                    return new ByteArrayInputStream( new byte[0] );
-                } )
-                .orElse( new ByteArrayInputStream( new byte[0] ) );
+                    return null;
+                } );
     }
 }

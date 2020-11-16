@@ -132,7 +132,7 @@ public enum MetaDataValidator
                                 .message( "dataRef is not pointing to a valid dataObject", ResultLanguage.ENGLISH );
                     }
                     
-                    return dataObject.map( XAIPUtil::retrieveBinaryContent )
+                    return dataObject.flatMap( XAIPUtil::retrieveBinaryContent )
                             .map( content -> VerificationUtil.verifyChecksum( content, checksum ) )
                             .orElse( VerificationUtil.verificationResult( builder.build() ) );
                     

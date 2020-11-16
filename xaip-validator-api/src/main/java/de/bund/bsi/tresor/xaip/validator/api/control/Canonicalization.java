@@ -1,7 +1,8 @@
 package de.bund.bsi.tresor.xaip.validator.api.control;
 
 import java.io.ByteArrayInputStream;
-import java.io.InputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.Optional;
 import java.util.Set;
 
@@ -35,12 +36,16 @@ public class Canonicalization
         return VALID_C14N.contains( url );
     }
     
-    public static InputStream canonicalize( Node node, Optional<String> c14nUrl )
-            throws InvalidCanonicalizerException, CanonicalizationException
+    public static ByteArrayInputStream canonicalize( Node node, Optional<String> c14nUrl )
+            throws InvalidCanonicalizerException, CanonicalizationException, IOException
     {
         String c14nMethod = c14nUrl.orElseThrow( () -> new IllegalStateException( "no data found" ) );
-        
         Canonicalizer instance = Canonicalizer.getInstance( c14nMethod );
-        return new ByteArrayInputStream( instance.canonicalizeSubtree( node ) );
+        try ( ByteArrayOutputStream out = new ByteArrayOutputStream() )
+        {
+            instance.canonicalizeSubtree( node, out );
+            
+            return new ByteArrayInputStream( out.toByteArray() );
+        }
     }
 }
