@@ -31,11 +31,33 @@ public class Canonicalization
             Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS,
             Canonicalizer.ALGO_ID_C14N_WITH_COMMENTS );
     
+    /**
+     * Checking if the c14n is supported
+     * 
+     * @param url
+     *            the c14n url
+     * @return the result
+     */
     public static boolean isValidCanonicalization( String url )
     {
         return VALID_C14N.contains( url );
     }
     
+    /**
+     * Canonicalizing the node with the given url
+     * 
+     * @param node
+     *            the node
+     * @param c14nUrl
+     *            the c14n url
+     * @return the content stream
+     * @throws InvalidCanonicalizerException
+     *             on invalid c14n
+     * @throws CanonicalizationException
+     *             when c14n fails
+     * @throws IOException
+     *             when the data could not be retrieved
+     */
     public static ByteArrayInputStream canonicalize( Node node, Optional<String> c14nUrl )
             throws InvalidCanonicalizerException, CanonicalizationException, IOException
     {

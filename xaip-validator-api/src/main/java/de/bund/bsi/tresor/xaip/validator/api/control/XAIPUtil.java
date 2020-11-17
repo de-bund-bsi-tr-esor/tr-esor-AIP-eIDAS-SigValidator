@@ -188,7 +188,14 @@ public class XAIPUtil
                 } );
     }
     
-    public static Optional<InputStream> retrieveXmlContent( DataObjectType obj )
+    /**
+     * Returns the inputStream of a normal dataObject containing the document content
+     * 
+     * @param dataObject
+     *            the dataObject
+     * @return inputstream with content or empty data
+     */
+    public static Optional<InputStream> retrieveXmlContent( DataObjectType dataObject )
     {
         Optional<InputStream> content = Optional.empty();
         
@@ -196,7 +203,7 @@ public class XAIPUtil
         {
             DOMResult result = new DOMResult();
             
-            JAXBElement<AnyType> xml = new JAXBElement<AnyType>( XML_DATA_QNAME, AnyType.class, obj.getXmlData() );
+            JAXBElement<AnyType> xml = new JAXBElement<AnyType>( XML_DATA_QNAME, AnyType.class, dataObject.getXmlData() );
             JAXBContext context = JAXBContext.newInstance( AnyType.class );
             context.createMarshaller().marshal( xml, result );
             
