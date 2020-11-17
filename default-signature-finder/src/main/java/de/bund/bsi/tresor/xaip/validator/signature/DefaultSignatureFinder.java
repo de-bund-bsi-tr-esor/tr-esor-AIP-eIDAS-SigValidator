@@ -47,6 +47,7 @@ import de.bund.bsi.tresor.xaip.validator.api.boundary.SignatureFinder;
 import de.bund.bsi.tresor.xaip.validator.api.control.ModuleLogger;
 import de.bund.bsi.tresor.xaip.validator.signature.checker.CAdESChecker;
 import de.bund.bsi.tresor.xaip.validator.signature.checker.PAdESChecker;
+import de.bund.bsi.tresor.xaip.validator.signature.checker.XAdESChecker;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Value;
@@ -133,41 +134,32 @@ public class DefaultSignatureFinder implements SignatureFinder
                 .collect( toMap( Entry::getKey, Entry::getValue ) );
     }
     
-    FinderResult findSignatures( DataObjectType dataObject )
+    Optional<FinderResult> findSignatures( DataObjectType dataObject )
     {
         // TODO ask: xaip is invalid when both are present
-        Optional<byte[]> xmlData = extractXmlData( dataObject.getXmlData() );
         Optional<byte[]> binData = extractBinData( dataObject.getBinaryData() );
+        Optional<byte[]> xmlData = extractXmlData( dataObject.getXmlData() )
+                .or( () -> binData.filter( this::isXml ) );
         
-        SignaturePresence presence = SignaturePresence.UNKNOWN;
-        Optional<InputStream> document = Optional.empty();
+        return binData.map( data -> analyzeBinData( dataObject, data ) )
+                .or( () -> xmlData.map( data -> analyzeXmlData( dataObject, data ) ) );
+    }
+    
+    FinderResult analyzeBinData( DataObjectType dataObject, byte[] data )
+    {
+        SignaturePresence presence = SignaturePresence
+                .fromBoolean( PAdESChecker.INSTANCE.isPAdES( data ) || CAdESChecker.INSTANCE.isCAdES( data ) );
         
-        if ( binData.isPresent() )
-        {
-            if ( binData.map( this::isXml ).orElse( false ) )
-            {
-                xmlData = binData;
-            }
-            else
-            {
-                document = binData.map( ByteArrayInputStream::new );
-                presence = SignaturePresence.fromBoolean( binData
-                        .filter( data -> PAdESChecker.INSTANCE.isPAdES( data ) || CAdESChecker.INSTANCE.isCAdES( data ) )
-                        .isPresent() );
-            }
-        }
+        return new FinderResult( dataObject, presence, Optional.of( new ByteArrayInputStream( data ) ) );
+    }
+    
+    FinderResult analyzeXmlData( DataObjectType dataObject, byte[] data )
+    {
+        SignaturePresence presence = extractLxaipData( data )
+                .map( d -> SignaturePresence.UNKNOWN )
+                .orElseGet( () -> SignaturePresence.fromBoolean( XAdESChecker.INSTANCE.isXAdES( data ) ) );
         
-        if ( xmlData.isPresent() )
-        {
-            Optional<byte[]> lxaip = xmlData.flatMap( this::extractLxaipData );
-            
-            lxaip.map( ByteArrayInputStream::new )
-                    .map( lxaipData -> new FinderResult( dataObject, SignaturePresence.UNKNOWN, Optional.of( lxaipData ) ) );
-            
-            // if is lxaip -> presence
-        }
-        
-        return new FinderResult( dataObject, presence, document );
+        return new FinderResult( dataObject, presence, Optional.of( new ByteArrayInputStream( data ) ) );
     }
     
     boolean isXml( byte[] data )
