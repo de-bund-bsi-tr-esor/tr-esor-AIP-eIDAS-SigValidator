@@ -91,9 +91,7 @@ public class DefaultSyntaxValidator implements SyntaxValidator
             metaValidator.validateMetaDataSection( optXaip.map( XAIPType::getMetaDataSection ), dataSection )
                     .ifPresent( report::setMetaDataSection );
             
-            dataValidator.validateDataSection( optXaip.map( XAIPType::getDataObjectsSection ),
-                    optXaip.map( XAIPType::getPackageHeader ).flatMap( packageValidator::retrieveC14nUrl ) )
-                    .ifPresent( report::setDataObjectsSection );
+            dataValidator.validateDataSection( optXaip.map( XAIPType::getDataObjectsSection ) ).ifPresent( report::setDataObjectsSection );
             
             credentialValidator.validateCredentialsSection( optXaip.map( XAIPType::getCredentialsSection ) )
                     .ifPresent( report::setCredentialsSection );

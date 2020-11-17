@@ -1,5 +1,7 @@
 package de.bund.bsi.tresor.xaip.validator.api.control;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,10 +14,13 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.namespace.QName;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMResult;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
-import org.apache.xml.security.c14n.CanonicalizationException;
-import org.apache.xml.security.c14n.InvalidCanonicalizerException;
 import org.etsi.uri._02918.v1_2.DataObjectReferenceType;
 import org.w3c.dom.Node;
 
@@ -183,30 +188,34 @@ public class XAIPUtil
                 } );
     }
     
-    public static Optional<InputStream> retrieveXmlContent( DataObjectType obj, Optional<String> c14nUrl )
-            throws InvalidCanonicalizerException, CanonicalizationException, JAXBException
+    public static Optional<InputStream> retrieveXmlContent( DataObjectType obj )
     {
-        
-        JAXBElement<AnyType> xml = new JAXBElement<AnyType>( XML_DATA_QNAME, AnyType.class, obj.getXmlData() );
-        JAXBContext context = JAXBContext.newInstance( AnyType.class );
-        DOMResult result = new DOMResult();
-        context.createMarshaller().marshal( xml, result );
-        
-        Node xmlData = result.getNode().getFirstChild();
-        // NodeList data = xmlData.getChildNodes();
+        Optional<InputStream> content = Optional.empty();
         
         try
         {
-            // TODO FIXME canonicalization does not work as expected
+            DOMResult result = new DOMResult();
             
-            return Optional.of( Canonicalization.canonicalize( xmlData.getFirstChild(), c14nUrl ) );
+            JAXBElement<AnyType> xml = new JAXBElement<AnyType>( XML_DATA_QNAME, AnyType.class, obj.getXmlData() );
+            JAXBContext context = JAXBContext.newInstance( AnyType.class );
+            context.createMarshaller().marshal( xml, result );
+            
+            Node xmlContent = result.getNode().getFirstChild();
+            
+            TransformerFactory transformerFactory = TransformerFactory.newInstance();
+            Transformer transformer = transformerFactory.newTransformer();
+            
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            transformer.transform( new DOMSource( xmlContent ), new StreamResult( bos ) );
+            
+            content = Optional.of( new ByteArrayInputStream( bos.toByteArray() ) );
         }
-        catch ( InvalidCanonicalizerException | CanonicalizationException | IOException e )
+        catch ( JAXBException | TransformerException e )
         {
             ModuleLogger.log( "could not retrieve xml content", e );
         }
         
-        return Optional.empty();
+        return content;
     }
     
     /**

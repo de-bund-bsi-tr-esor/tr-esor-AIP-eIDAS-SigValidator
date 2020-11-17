@@ -13,10 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import javax.xml.bind.JAXBException;
-
-import org.apache.xml.security.c14n.CanonicalizationException;
-import org.apache.xml.security.c14n.InvalidCanonicalizerException;
 import org.etsi.uri._02918.v1_2.DataObjectReferenceType;
 import org.w3._2000._09.xmldsig_.DigestMethodType;
 
@@ -55,12 +51,11 @@ public enum DataObjectSectionValidator
      *            the dataObjectsSection to validate
      * @return the dataObjectsSection validation result
      */
-    public Optional<DataObjectsSectionValidityType> validateDataSection( Optional<DataObjectsSectionType> dataObjectsSection,
-            Optional<String> c14nUrl )
+    public Optional<DataObjectsSectionValidityType> validateDataSection( Optional<DataObjectsSectionType> dataObjectsSection )
     {
         List<DataObjectValidityType> data = dataObjectsSection
                 .map( section -> section.getDataObject().stream()
-                        .map( obj -> validateDataObject( obj, c14nUrl ) )
+                        .map( obj -> validateDataObject( obj ) )
                         .collect( toList() ) )
                 .orElse( new ArrayList<>() );
         
@@ -84,7 +79,7 @@ public enum DataObjectSectionValidator
      *            the dataObject to validate
      * @return the dataObject validation result
      */
-    public DataObjectValidityType validateDataObject( DataObjectType dataObject, Optional<String> c14nUrl )
+    public DataObjectValidityType validateDataObject( DataObjectType dataObject )
     {
         DataObjectValidityType result = new DataObjectValidityType();
         result.setDataObjectID( dataObject.getDataObjectID() );
@@ -92,17 +87,8 @@ public enum DataObjectSectionValidator
         Optional.ofNullable( dataObject.getCheckSum() )
                 .map( checkSum -> {
                     try ( InputStream data = XAIPUtil.retrieveBinaryContent( dataObject )
-                            .orElseGet( () -> {
-                                try
-                                {
-                                    return XAIPUtil.retrieveXmlContent( dataObject, c14nUrl )
-                                            .orElse( new ByteArrayInputStream( new byte[0] ) );
-                                }
-                                catch ( InvalidCanonicalizerException | CanonicalizationException | JAXBException e )
-                                {
-                                    throw new IllegalStateException( e );
-                                }
-                            } ) )
+                            .orElseGet( () -> XAIPUtil.retrieveXmlContent( dataObject )
+                                    .orElse( new ByteArrayInputStream( new byte[0] ) ) ) )
                     {
                         return VerificationUtil.verifyChecksum( data, checkSum );
                     }
