@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>de.bund.bsi.tr_esor</groupId>
     <artifactId>xaip-validator</artifactId>
-    <version>1.0.3-2</version>
+    <version>1.0.4</version>
     <name>XaipValidator</name>
     <description>Validator for TR-ESOR XAIP documents </description>
     <packaging>pom</packaging>
@@ -25,6 +25,14 @@
         <maven.compiler.target>11</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+
+    <developers>
+        <developer>
+            <email>info@procilon.de</email>
+            <organization>procilon GROUP</organization>
+            <organizationUrl>https://www.procilon.de</organizationUrl>
+        </developer>
+    </developers>
 
     <dependencyManagement>
         <dependencies>

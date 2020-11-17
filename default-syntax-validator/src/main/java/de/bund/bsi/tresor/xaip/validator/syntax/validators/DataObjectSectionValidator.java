@@ -2,6 +2,7 @@ package de.bund.bsi.tresor.xaip.validator.syntax.validators;
 
 import static java.util.stream.Collectors.toList;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -54,7 +55,7 @@ public enum DataObjectSectionValidator
     {
         List<DataObjectValidityType> data = dataObjectsSection
                 .map( section -> section.getDataObject().stream()
-                        .map( this::validateDataObject )
+                        .map( obj -> validateDataObject( obj ) )
                         .collect( toList() ) )
                 .orElse( new ArrayList<>() );
         
@@ -84,7 +85,20 @@ public enum DataObjectSectionValidator
         result.setDataObjectID( dataObject.getDataObjectID() );
         
         Optional.ofNullable( dataObject.getCheckSum() )
-                .map( checkSum -> VerificationUtil.verifyChecksum( XAIPUtil.retrieveContent( dataObject ), checkSum ) )
+                .map( checkSum -> {
+                    try ( InputStream data = XAIPUtil.retrieveBinaryContent( dataObject )
+                            .orElseGet( () -> XAIPUtil.retrieveXmlContent( dataObject )
+                                    .orElse( new ByteArrayInputStream( new byte[0] ) ) ) )
+                    {
+                        return VerificationUtil.verifyChecksum( data, checkSum );
+                    }
+                    catch ( IllegalStateException | IOException e )
+                    {
+                        ModuleLogger.log( "could not retrieve data for checksum validation", e );
+                        
+                        return VerificationUtil.verificationResult( DefaultResult.error().minor( Minor.NO_DATA_ACCESS_WARNING ).build() );
+                    }
+                } )
                 .ifPresent( result::setChecksum );
         
         XAIPUtil.findDataReferences( dataObject )
@@ -158,7 +172,7 @@ public enum DataObjectSectionValidator
             
             if ( !Files.isReadable( filePath ) )
             {
-                builder.minor( Minor.NO_PERMISSION );
+                builder.minor( Minor.NO_PERMISSION ).message( "reading a file requires read permission", ResultLanguage.ENGLISH );
             }
             else
             {
@@ -179,7 +193,7 @@ public enum DataObjectSectionValidator
         else
         {
             builder.minor( Minor.PARAMETER_ERROR )
-                    .message( "dataObject reference contains invalid parameter", ResultLanguage.ENGLISH );
+                    .message( "dataObject reference contains invalid lxaip parameter", ResultLanguage.ENGLISH );
         }
         
         return VerificationUtil.verificationResult( builder.build() );

@@ -26,13 +26,14 @@ public class CLITestM
     private static final String BATCH_TEST_DIR        = "src/test/resources/samples";
     private static final String BATCH_TEST_RESULT_DIR = "/tmp/reports";
     
-    // private static final String TEST_FILE = "src/test/resources/samples/TST-01-cades-det-single/XAIP-cades-det-single.xml";
+    private static final String TEST_FILE             = "src/test/resources/samples/TST-01-cades-det-single/XAIP-cades-det-single.xml";
     // private static final String TEST_FILE = "src/test/resources/samples/TST-03-cades-att-single/XAIP-cades-att-single.xml";
     // private static final String TEST_FILE = "src/test/resources/samples/TST-07-pdf-att-inv-single/XAIP-pdf-att-inv-single.xml";
     // private static final String TEST_FILE = "src/test/resources/samples/TST-09-pdf-att-vis-single/XAIP-pdf-att-vis-single.xml";
     // private static final String TEST_FILE = "src/test/resources/samples/TST-11-xades-det-txt-single/XAIP-xades-det-single.xml";
-    private static final String TEST_FILE             = "src/test/resources/samples/TST-13-xades-att-enveloping-txt-single/XAIP-xades-att-env-txt-single.xml";
-    private static final String TEST_RESULT__FILE     = "/tmp/report.xml";
+    // private static final String TEST_FILE =
+    // "src/test/resources/samples/TST-13-xades-att-enveloping-txt-single/XAIP-xades-att-env-txt-single.xml";
+    private static final String TEST_RESULT_FILE      = "/tmp/report.xml";
     
     /**
      * Executing the xaip validator with a single test file
@@ -47,11 +48,30 @@ public class CLITestM
                 "-v",
                 "-Mverifier.wsdlUrl=" + WSDL_URL,
                 "-o",
-                TEST_RESULT__FILE,
+                TEST_RESULT_FILE,
                 "-Mvalidator.schemaDir=" + SCHEMA_DIR
         };
         
         CLI.main( args );
+    }
+    
+    @Test
+    public void invalid()
+    {
+        System.out.println( "start" );
+        String[] args = {
+                "-i",
+                TEST_FILE,
+                "-d",
+                "-v",
+                "-Mverifier.wsdlUrl=" + WSDL_URL,
+                "-o",
+                TEST_RESULT_FILE,
+                "-Mvalidator.schemaDir=" + SCHEMA_DIR,
+        };
+        
+        CLI.main( args );
+        System.out.println( "finished" );
     }
     
     /**

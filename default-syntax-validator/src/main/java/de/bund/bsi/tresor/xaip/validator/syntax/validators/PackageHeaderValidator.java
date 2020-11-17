@@ -2,7 +2,6 @@ package de.bund.bsi.tresor.xaip.validator.syntax.validators;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
 import java.util.Optional;
 
 import javax.xml.datatype.XMLGregorianCalendar;
@@ -14,11 +13,11 @@ import de.bund.bsi.tr_esor.vr._1.VersionManifestValidityType;
 import de.bund.bsi.tr_esor.xaip._1.PackageHeaderType;
 import de.bund.bsi.tr_esor.xaip._1.PreservationInfoType;
 import de.bund.bsi.tr_esor.xaip._1.VersionManifestType;
+import de.bund.bsi.tresor.xaip.validator.api.control.Canonicalization;
 import de.bund.bsi.tresor.xaip.validator.api.control.VerificationUtil;
 import de.bund.bsi.tresor.xaip.validator.api.entity.DefaultResult;
 import de.bund.bsi.tresor.xaip.validator.api.entity.DefaultResult.Minor;
 import de.bund.bsi.tresor.xaip.validator.api.entity.DefaultResult.ResultLanguage;
-import de.bund.bsi.tresor.xaip.validator.api.entity.xaip.Canonicalization;
 import oasis.names.tc.dss._1_0.core.schema.Result;
 import oasis.names.tc.dss_x._1_0.profiles.verificationreport.schema_.VerificationResultType;
 
@@ -114,9 +113,7 @@ public enum PackageHeaderValidator
     {
         return Optional.ofNullable( canonicalizationMethod )
                 .map( CanonicalizationMethodType::getAlgorithm )
-                .map( cm -> Arrays.stream( Canonicalization.values() )
-                        .map( Canonicalization::getUrl )
-                        .anyMatch( cm::startsWith ) )
+                .map( Canonicalization::isValidCanonicalization )
                 .map( validMethod -> {
                     Result result = DefaultResult.ok()
                             .message( "using valid algorithm " + canonicalizationMethod.getAlgorithm(), ResultLanguage.ENGLISH )
@@ -125,13 +122,27 @@ public enum PackageHeaderValidator
                     if ( !validMethod )
                     {
                         result = DefaultResult.error()
-                                .minor( Minor.UNKNOWN_CANONICALIZATION_METHOD )
+                                .minor( Minor.UNKNOWN_C14N_METHOD )
                                 .message( "using invalid algorithm " + canonicalizationMethod.getAlgorithm(), ResultLanguage.ENGLISH )
                                 .build();
                     }
                     
                     return VerificationUtil.verificationResult( result );
                 } );
+    }
+    
+    /**
+     * Extracting the c14n url from the packageHeader
+     * 
+     * @param packageHeader
+     *            the packageHeader
+     * @return the c14n url if present
+     */
+    public Optional<String> retrieveC14nUrl( PackageHeaderType packageHeader )
+    {
+        return Optional.ofNullable( packageHeader )
+                .map( PackageHeaderType::getCanonicalizationMethod )
+                .map( CanonicalizationMethodType::getAlgorithm );
     }
     
 }

@@ -1,6 +1,7 @@
 package de.bund.bsi.tresor.xaip.validator.api.control;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,10 +10,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
 import javax.xml.namespace.QName;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMResult;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
 import org.etsi.uri._02918.v1_2.DataObjectReferenceType;
+import org.w3c.dom.Node;
 
 import de.bund.bsi.tr_esor.vr._1.XAIPValidityType;
 import de.bund.bsi.tr_esor.xaip._1.CredentialType;
@@ -36,6 +46,9 @@ public class XAIPUtil
     /**
      * Namespace and name of the XAIP element
      */
+    public static final QName XML_DATA_QNAME    = new QName( "http://www.bsi.bund.de/tr-esor/xaip/1.2", "xmlData" );
+    public static final QName XML_ANY_QNAME     = new QName( "oasis.names.tc.dss._1_0.core.schema.AnyType", "xmlAny" );
+    
     public static final QName XAIP_QNAME        = new QName( "http://www.bsi.bund.de/tr-esor/xaip/1.2", "XAIP" );
     public static final QName XAIP_REPORT_QNAME = new QName( "http://www.bsi.bund.de/tr-esor/vr/1.2", "XAIPReport" );
     
@@ -156,7 +169,7 @@ public class XAIPUtil
      *            the dataObject
      * @return inputstream with content or empty data
      */
-    public static InputStream retrieveContent( DataObjectType dataObject )
+    public static Optional<InputStream> retrieveBinaryContent( DataObjectType dataObject )
     {
         return Optional.ofNullable( dataObject )
                 .map( DataObjectType::getBinaryData )
@@ -171,9 +184,45 @@ public class XAIPUtil
                         ModuleLogger.verbose( "could not retrieve data from dataObject", e );
                     }
                     
-                    return new ByteArrayInputStream( new byte[0] );
-                } )
-                .orElse( findLxaipData( dataObject ) );
+                    return findLxaipData( dataObject ).orElse( null );
+                } );
+    }
+    
+    /**
+     * Returns the inputStream of a normal dataObject containing the document content
+     * 
+     * @param dataObject
+     *            the dataObject
+     * @return inputstream with content or empty data
+     */
+    public static Optional<InputStream> retrieveXmlContent( DataObjectType dataObject )
+    {
+        Optional<InputStream> content = Optional.empty();
+        
+        try
+        {
+            DOMResult result = new DOMResult();
+            
+            JAXBElement<AnyType> xml = new JAXBElement<AnyType>( XML_DATA_QNAME, AnyType.class, dataObject.getXmlData() );
+            JAXBContext context = JAXBContext.newInstance( AnyType.class );
+            context.createMarshaller().marshal( xml, result );
+            
+            Node xmlContent = result.getNode().getFirstChild();
+            
+            TransformerFactory transformerFactory = TransformerFactory.newInstance();
+            Transformer transformer = transformerFactory.newTransformer();
+            
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            transformer.transform( new DOMSource( xmlContent ), new StreamResult( bos ) );
+            
+            content = Optional.of( new ByteArrayInputStream( bos.toByteArray() ) );
+        }
+        catch ( JAXBException | TransformerException e )
+        {
+            ModuleLogger.log( "could not retrieve xml content", e );
+        }
+        
+        return content;
     }
     
     /**
@@ -184,7 +233,7 @@ public class XAIPUtil
      *            the dataObject
      * @return inputstream with content or empty data
      */
-    static InputStream findLxaipData( DataObjectType dataObject )
+    static Optional<InputStream> findLxaipData( DataObjectType dataObject )
     {
         return findDataReferences( dataObject )
                 .map( DataObjectReferenceType::getURI )
@@ -199,8 +248,7 @@ public class XAIPUtil
                         ModuleLogger.verbose( "could not retrieve lxaip data from dataObject", e );
                     }
                     
-                    return new ByteArrayInputStream( new byte[0] );
-                } )
-                .orElse( new ByteArrayInputStream( new byte[0] ) );
+                    return null;
+                } );
     }
 }
