@@ -1,5 +1,7 @@
 package de.bund.bsi.tresor.xaip.validator.api.control;
 
+import static java.util.stream.Collectors.toSet;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
@@ -7,8 +9,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
@@ -117,6 +121,34 @@ public class XAIPUtil
                 .stream()
                 .filter( obj -> obj.getDataObjectID().equals( dataObjectId ) )
                 .findAny();
+    }
+    
+    public static Set<DataObjectType> resolveRelatedDataObjects( DataObjectsSectionType dataSection, List<Object> relatedObjects )
+    {
+        Set<String> idRefs = new HashSet<>();
+        Set<DataObjectType> resultSet = relatedObjects.stream()
+                .map( ref -> {
+                    if ( ref instanceof DataObjectType )
+                    {
+                        return (DataObjectType) ref;
+                    }
+                    else if ( ref instanceof String )
+                    {
+                        idRefs.add( (String) ref );
+                    }
+                    
+                    return null;
+                } )
+                .collect( toSet() );
+        
+        Optional.ofNullable( dataSection )
+                .map( DataObjectsSectionType::getDataObject )
+                .orElse( new ArrayList<>() )
+                .stream()
+                .filter( obj -> idRefs.contains( obj.getDataObjectID() ) )
+                .forEach( resultSet::add );
+        
+        return resultSet;
     }
     
     /**
