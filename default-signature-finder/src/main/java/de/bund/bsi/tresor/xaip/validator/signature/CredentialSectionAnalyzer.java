@@ -1,69 +1,96 @@
 package de.bund.bsi.tresor.xaip.validator.signature;
 
-import java.util.List;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.util.AbstractMap;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-
-import org.w3._2000._09.xmldsig_.SignatureType;
 
 import de.bund.bsi.tr_esor.xaip._1.CredentialType;
 import de.bund.bsi.tr_esor.xaip._1.DataObjectType;
 import de.bund.bsi.tr_esor.xaip._1.DataObjectsSectionType;
 import de.bund.bsi.tresor.xaip.validator.api.control.XAIPUtil;
+import de.bund.bsi.tresor.xaip.validator.signature.entity.FinderResult;
+import de.bund.bsi.tresor.xaip.validator.signature.entity.SignaturePresence;
 import oasis.names.tc.dss._1_0.core.schema.Base64Signature;
 import oasis.names.tc.dss._1_0.core.schema.SignatureObject;
 import oasis.names.tc.dss._1_0.core.schema.SignaturePtr;
-import oasis.names.tc.dss._1_0.core.schema.Timestamp;
 
 /**
  * @author wolffs
  */
 public class CredentialSectionAnalyzer
 {
-    private Object object;
-    
-    void analyzeCredential( CredentialType credentials, DataObjectsSectionType dataObjects )
+    /*
+     * Notes: - data can be found in dataObject when exists - signatureData can be found in credential (b64Sig, signature, sigPtr for
+     * embedded) - other credentials with separate data: timestamp
+     * 
+     * - b64Sig can contain embedded signature -> no related dataObject
+     */
+    public static Map.Entry<CredentialType, Set<FinderResult>> analyzeCredential( CredentialType credential,
+            DataObjectsSectionType dataObjects, Set<FinderResult> dataSectionResults )
     {
-        credentials.getCredentialID();
+        Set<FinderResult> sigResults = new HashSet<>();
+        SignatureObject signObj = credential.getSignatureObject();
+        Set<DataObjectType> relatedData = XAIPUtil.resolveRelatedDataObjects( dataObjects, credential.getRelatedObjects() );
         
-        List<Object> relatedObjects = credentials.getRelatedObjects();
+        SignaturePtr signaturePtr = signObj.getSignaturePtr();
+        Optional<byte[]> b64Signature = Optional.ofNullable( signObj.getBase64Signature() ).map( Base64Signature::getValue );
         
-        SignatureObject signatureObject = credentials.getSignatureObject();
-        
-        // bezieht sich auf dss:signatureObject behandeln wie rohdatem im dataObject
-        Base64Signature base64Signature = signatureObject.getBase64Signature();
-        
-        // Bezug auf relatedObjects
-        SignatureType signature = signatureObject.getSignature();
-        SignaturePtr signaturePtr = signatureObject.getSignaturePtr();
-        Timestamp timestamp = signatureObject.getTimestamp();
-        
-        Set<DataObjectType> relatedData = XAIPUtil.resolveRelatedDataObjects( dataObjects, relatedObjects );
         if ( relatedData.isEmpty() )
         {
-            // zuordnung zu null wenn b64Signature,
-            
-            Optional.ofNullable( signatureObject.getBase64Signature() )
-                    .map( Base64Signature::getValue )
-                    .map( data -> DataSectionAnalyzer.findSignatures( null, Optional.of( data ) ) );
+            b64Signature.flatMap( data -> DataSectionAnalyzer.findSignatures( null, Optional.of( data ) ) )
+                    .ifPresent( sigResults::add );
         }
-        else
+        
+        for ( DataObjectType dataObject : relatedData )
         {
-            // zuordnung TimeStamp, Signature, SignaturePtr falls nicht embedded, b64Signature wenn embeddes signature (siehe datentyp
-            // prüfen)
+            Optional<InputStream> optData = dataSectionResults.stream()
+                    .filter( r -> dataObject.getDataObjectID().equals( r.getDataObject().getDataObjectID() ) )
+                    .findAny()
+                    .flatMap( FinderResult::getData )
+                    .or( () -> DataSectionAnalyzer.extractData( dataObject ).map( ByteArrayInputStream::new ) );
             
-            for ( DataObjectType dataObject : relatedData )
+            // TODO: only when optData present; is this correct?
+            if ( optData.isPresent() && (signObj.getSignature() != null || signObj.getTimestamp() != null) )
             {
-                
-                Optional.ofNullable( signatureObject.getBase64Signature() )
-                        .map( Base64Signature::getValue )
-                        .map( data -> DataSectionAnalyzer.findSignatures( dataObject, Optional.of( data ) ) );
+                sigResults.add( new FinderResult( dataObject, SignaturePresence.PRESENT, optData ) );
+            }
+            else if ( b64Signature.isPresent() )
+            {
+                b64Signature.flatMap( data -> DataSectionAnalyzer.findSignatures( dataObject, Optional.of( data ) ) )
+                        .ifPresent( sigResults::add );
+            }
+            else if ( signaturePtr != null )
+            {
+                sigResults.add( analyzePointer( signaturePtr, dataObject, optData ) );
+            }
+            else
+            {
+                sigResults.add( new FinderResult( dataObject, SignaturePresence.UNKNOWN, optData ) );
             }
         }
+        
+        return new AbstractMap.SimpleEntry<>( credential, sigResults );
     }
     
-    void signaturePointer()
+    static FinderResult analyzePointer( SignaturePtr pointer, DataObjectType dataObj, Optional<InputStream> optData )
     {
-        // embedded signature?
+        Object document = pointer.getWhichDocument();
+        String oid = XAIPUtil.idFromObject( document );
+        if ( dataObj.getDataObjectID().equals( oid ) )
+        {
+            return new FinderResult( dataObj, SignaturePresence.PRESENT, optData );
+        }
+        
+        // TODO might convert document to byte[] in another form
+        if ( document instanceof byte[] )
+        {
+            return DataSectionAnalyzer.analyzeBinData( dataObj, (byte[]) document );
+        }
+        
+        return new FinderResult( dataObj, SignaturePresence.MISSING, optData );
     }
 }

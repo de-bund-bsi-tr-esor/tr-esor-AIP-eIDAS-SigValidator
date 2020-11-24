@@ -1,18 +1,27 @@
 package de.bund.bsi.tresor.xaip.validator.signature;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
+import static java.util.stream.Collectors.toMap;
+import static java.util.stream.Collectors.toSet;
 
 import java.util.AbstractMap;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Optional;
+import java.util.Set;
 
 import de.bund.bsi.tr_esor.xaip._1.CredentialType;
 import de.bund.bsi.tr_esor.xaip._1.CredentialsSectionType;
 import de.bund.bsi.tr_esor.xaip._1.DataObjectType;
+import de.bund.bsi.tr_esor.xaip._1.DataObjectsSectionType;
 import de.bund.bsi.tr_esor.xaip._1.XAIPType;
 import de.bund.bsi.tresor.xaip.validator.api.boundary.SignatureFinder;
 import de.bund.bsi.tresor.xaip.validator.api.control.ModuleLogger;
+import de.bund.bsi.tresor.xaip.validator.signature.entity.FinderResult;
 import lombok.Getter;
 
 /**
@@ -61,5 +70,46 @@ public class DefaultSignatureFinder implements SignatureFinder
     {
         a.addAll( b );
         return a;
+    }
+    
+    /////////////////////////////////////////////////////////
+    
+    public Map<DataObjectType, List<CredentialType>> findSignature( XAIPType xaip )
+    {
+        DataObjectsSectionType dataSection = xaip.getDataObjectsSection();
+        
+        Set<FinderResult> dataSectionResults = Optional.ofNullable( dataSection )
+                .map( DataObjectsSectionType::getDataObject )
+                .orElse( emptyList() )
+                .stream()
+                .map( DataSectionAnalyzer::findSignatures )
+                .filter( Optional::isPresent )
+                .map( Optional::get )
+                .collect( toSet() );
+        
+        Map<CredentialType, Set<FinderResult>> credentialSectionResult = Optional.ofNullable( xaip.getCredentialsSection() )
+                .map( CredentialsSectionType::getCredential )
+                .orElse( emptyList() )
+                .stream()
+                .map( c -> CredentialSectionAnalyzer.analyzeCredential( c, dataSection, dataSectionResults ) )
+                .collect( toMap( Entry::getKey, Entry::getValue ) );
+        
+        // TODO: merge both results
+        Iterator<FinderResult> iterator = dataSectionResults.iterator();
+        while ( iterator.hasNext() )
+        {
+            FinderResult dataSectionResult = iterator.next();
+            for ( Set<FinderResult> credentialResult : credentialSectionResult.values() )
+            {
+                
+                if ( value.stream().anyMatch(
+                        r -> r.getDataObject().getDataObjectID().equals( dataSectionResult.getDataObject().getDataObjectID() ) ) )
+                {
+                    iterator.remove();
+                }
+            }
+        }
+        
+        return null;
     }
 }

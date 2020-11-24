@@ -9,6 +9,7 @@ import java.nio.file.Paths;
 import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
 import javax.xml.bind.DataBindingException;
@@ -45,22 +46,31 @@ public class DataSectionAnalyzer
 {
     static public Optional<FinderResult> findSignatures( DataObjectType dataObject, Optional<byte[]> document )
     {
-        return document.map( data -> isXml( data ) ? analyzeXmlData( dataObject, data ) : analyzeBinData( dataObject, data ) );
+        return document.map( data -> isXml( data ) ? analyzeXmlData( dataObject, data, false ) : analyzeBinData( dataObject, data ) );
     }
     
     static public Optional<FinderResult> findSignatures( DataObjectType dataObject )
     {
-        // TODO ask: xaip is invalid when both are present
         Optional<byte[]> binData = extractBinData( dataObject.getBinaryData() );
         Optional<byte[]> xmlData = extractXmlData( dataObject.getXmlData() )
                 .or( () -> binData.filter( DataSectionAnalyzer::isXml ) );
         
         return binData.map( data -> analyzeBinData( dataObject, data ) )
-                .or( () -> xmlData.map( data -> analyzeXmlData( dataObject, data ) ) );
+                .or( () -> xmlData.map( data -> analyzeXmlData( dataObject, data, true ) ) );
+    }
+    
+    public static Optional<byte[]> extractData( DataObjectType dataObject )
+    {
+        Optional<byte[]> binData = extractBinData( dataObject.getBinaryData() );
+        Optional<byte[]> xmlData = extractXmlData( dataObject.getXmlData() )
+                .or( () -> binData.filter( DataSectionAnalyzer::isXml ) );
+        
+        return binData.or( () -> xmlData );
     }
     
     static boolean isXml( byte[] data )
     {
+        // TODO init sax parser instead
         byte[] xmlStart = "<".getBytes( StandardCharsets.UTF_8 );
         byte[] xmlEnd = ">".getBytes( StandardCharsets.UTF_8 );
         
@@ -77,7 +87,7 @@ public class DataSectionAnalyzer
         }
     }
     
-    static FinderResult analyzeBinData( DataObjectType dataObject, byte[] data )
+    public static FinderResult analyzeBinData( DataObjectType dataObject, byte[] data )
     {
         SignaturePresence presence = SignaturePresence
                 .fromBoolean( PAdESChecker.INSTANCE.isPAdES( data ) || CAdESChecker.INSTANCE.isCAdES( data ) );
@@ -85,11 +95,12 @@ public class DataSectionAnalyzer
         return new FinderResult( dataObject, presence, new ByteArrayInputStream( data ) );
     }
     
-    static FinderResult analyzeXmlData( DataObjectType dataObject, byte[] data )
+    static FinderResult analyzeXmlData( DataObjectType dataObject, byte[] data, boolean considerLxaip )
     {
-        SignaturePresence presence = extractLxaipData( data )
+        Supplier<SignaturePresence> xadesResult = () -> SignaturePresence.fromBoolean( XAdESChecker.INSTANCE.isXAdES( data ) );
+        SignaturePresence presence = considerLxaip ? extractLxaipData( data )
                 .map( d -> SignaturePresence.UNKNOWN )
-                .orElseGet( () -> SignaturePresence.fromBoolean( XAdESChecker.INSTANCE.isXAdES( data ) ) );
+                .orElseGet( xadesResult ) : xadesResult.get();
         
         return new FinderResult( dataObject, presence, new ByteArrayInputStream( data ) );
     }
@@ -154,6 +165,13 @@ public class DataSectionAnalyzer
         return result;
     }
     
+    /**
+     * 
+     * @param data
+     * @return
+     * @throws IllegalArgumentException
+     *             when content is not base64 encoded
+     */
     static Optional<byte[]> extractBinData( BinaryData data )
     {
         return Optional.ofNullable( data )

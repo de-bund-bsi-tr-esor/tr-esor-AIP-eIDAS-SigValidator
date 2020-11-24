@@ -4,12 +4,14 @@ import java.io.InputStream;
 import java.util.Optional;
 
 import de.bund.bsi.tr_esor.xaip._1.DataObjectType;
+import lombok.AllArgsConstructor;
 import lombok.Value;
 
 /**
  * @author wolffs
  */
 @Value
+@AllArgsConstructor
 public class FinderResult
 {
     private DataObjectType        dataObject;
