@@ -2,6 +2,7 @@ package de.bund.bsi.tresor.xaip.validator.syntax.validators;
 
 import static java.util.stream.Collectors.toList;
 
+import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -132,7 +133,8 @@ public enum MetaDataValidator
                                 .message( "dataRef is not pointing to a valid dataObject", ResultLanguage.ENGLISH );
                     }
                     
-                    return dataObject.flatMap( XAIPUtil::retrieveBinaryContent )
+                    return dataObject.flatMap( XAIPUtil::extractData )
+                            .map( ByteArrayInputStream::new )
                             .map( content -> VerificationUtil.verifyChecksum( content, checksum ) )
                             .orElse( VerificationUtil.verificationResult( builder.build() ) );
                     

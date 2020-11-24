@@ -86,9 +86,9 @@ public enum DataObjectSectionValidator
         
         Optional.ofNullable( dataObject.getCheckSum() )
                 .map( checkSum -> {
-                    try ( InputStream data = XAIPUtil.retrieveBinaryContent( dataObject )
-                            .orElseGet( () -> XAIPUtil.retrieveXmlContent( dataObject )
-                                    .orElse( new ByteArrayInputStream( new byte[0] ) ) ) )
+                    try ( InputStream data = XAIPUtil.extractData( dataObject )
+                            .map( ByteArrayInputStream::new )
+                            .orElse( new ByteArrayInputStream( new byte[0] ) ) )
                     {
                         return VerificationUtil.verifyChecksum( data, checkSum );
                     }
