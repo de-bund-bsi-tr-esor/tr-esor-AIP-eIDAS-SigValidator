@@ -128,6 +128,15 @@ public class XAIPUtil
                 .findAny();
     }
     
+    /**
+     * Resolving the relatedObjects and returning the resolved dataObjects
+     * 
+     * @param dataSection
+     *            the dataSection containing the dataObjects
+     * @param relatedObjects
+     *            the relatedObjects
+     * @return a set of resolved dataObjects
+     */
     public static Set<DataObjectType> resolveRelatedDataObjects( DataObjectsSectionType dataSection, List<Object> relatedObjects )
     {
         Set<String> idRefs = new HashSet<>();
@@ -199,6 +208,13 @@ public class XAIPUtil
         return null;
     }
     
+    /**
+     * Extracting the complete xml data provided by the anyType which can contain any data or not
+     * 
+     * @param anyType
+     *            anyType from the dataObjectType containing any xmlData
+     * @return the xml content
+     */
     public static Optional<byte[]> extractXmlData( AnyType anyType )
     {
         boolean isEmpty = Optional.ofNullable( anyType )
@@ -235,6 +251,13 @@ public class XAIPUtil
         return xmlData;
     }
     
+    /**
+     * Checking if the provided xmlData is an lxaip reference and extracting the referenced data if any were found.
+     * 
+     * @param xmlData
+     *            the xmlData to check if the data contains an lxaip reference
+     * @return the lxaip content if any lxaip reference was found
+     */
     public static Optional<byte[]> extractLxaipData( byte[] xmlData )
     {
         Optional<byte[]> result = Optional.empty();
@@ -258,9 +281,11 @@ public class XAIPUtil
     }
     
     /**
+     * Extracting the content of the binary data if any data is present
      * 
      * @param data
-     * @return
+     *            the binary data
+     * @return the binary data content if present
      * @throws IllegalArgumentException
      *             when content is not base64 encoded
      */
@@ -282,6 +307,24 @@ public class XAIPUtil
                 } );
     }
     
+    /**
+     * Extracting the data from a dataObject. The data source can be any of:<br/>
+     * <ul>
+     * <li>BinaryData
+     * <ul>
+     * <li>xmlData
+     * <li>lxaipData
+     * </ul>
+     * <li>XmlData
+     * <ul>
+     * <li>lxaipData
+     * </ul>
+     * </ul>
+     * 
+     * @param dataObject
+     *            the dataObject to retrieve the data from
+     * @return data from the dataObject if any is present
+     */
     public static Optional<byte[]> extractData( DataObjectType dataObject )
     {
         Optional<byte[]> binData = XAIPUtil.extractBinData( dataObject.getBinaryData() );
@@ -291,6 +334,13 @@ public class XAIPUtil
         return binData.or( () -> xmlData );
     }
     
+    /**
+     * Checking if the binary data is xml data
+     * 
+     * @param data
+     *            the binary data to check
+     * @return if the binary data is xml data
+     */
     public static boolean isXml( byte[] data )
     {
         // TODO init sax parser instead

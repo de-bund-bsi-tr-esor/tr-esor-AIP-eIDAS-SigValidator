@@ -23,11 +23,17 @@ import oasis.names.tc.dss._1_0.core.schema.SignaturePtr;
  */
 public class CredentialSectionAnalyzer
 {
-    /*
-     * Notes: - data can be found in dataObject when exists - signatureData can be found in credential (b64Sig, signature, sigPtr for
-     * embedded) - other credentials with separate data: timestamp
+    
+    /**
+     * Analyzing the credential and returning an entry of the credential with all possible signatures which can be verified
      * 
-     * - b64Sig can contain embedded signature -> no related dataObject
+     * @param credential
+     *            the credential type
+     * @param dataObjects
+     *            the dataObjectsSection containing the dataObjects
+     * @param dataSectionResults
+     *            the result of the dataSectionAnalyzer
+     * @return an entry where the credential is being used as a key and possible signature are the value
      */
     public static Map.Entry<CredentialType, Set<FinderResult>> analyzeCredential( CredentialType credential,
             DataObjectsSectionType dataObjects, Set<FinderResult> dataSectionResults )
@@ -51,7 +57,7 @@ public class CredentialSectionAnalyzer
                     .filter( r -> dataObject.getDataObjectID().equals( r.getDataObject().getDataObjectID() ) )
                     .findAny()
                     .flatMap( FinderResult::getData )
-                    .or( () -> DataSectionAnalyzer.extractData( dataObject ).map( ByteArrayInputStream::new ) );
+                    .or( () -> XAIPUtil.extractData( dataObject ).map( ByteArrayInputStream::new ) );
             
             // TODO: only when optData present; is this correct?
             if ( optData.isPresent() && (signObj.getSignature() != null || signObj.getTimestamp() != null) )

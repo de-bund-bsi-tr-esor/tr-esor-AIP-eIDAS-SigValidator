@@ -8,6 +8,8 @@ import lombok.AllArgsConstructor;
 import lombok.Value;
 
 /**
+ * Representation of a found signature which contains the relevant data and the dataObject
+ * 
  * @author wolffs
  */
 @Value
@@ -18,6 +20,16 @@ public class FinderResult
     private SignaturePresence     presence;
     private Optional<InputStream> data;
     
+    /**
+     * Creating a new FinderResult
+     * 
+     * @param dataObject
+     *            the dataObject containing a signature
+     * @param presence
+     *            the presence of a signature
+     * @param data
+     *            the data of the dataObject (might be an embedded signature)
+     */
     public FinderResult( DataObjectType dataObject, SignaturePresence presence, InputStream data )
     {
         this.dataObject = dataObject;

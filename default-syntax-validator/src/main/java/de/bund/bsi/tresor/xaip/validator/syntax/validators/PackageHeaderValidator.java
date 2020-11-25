@@ -131,6 +131,13 @@ public enum PackageHeaderValidator
                 } );
     }
     
+    /**
+     * Retrieving the c14nUrl from the packageHeader
+     * 
+     * @param packageHeader
+     *            the packageHeader
+     * @return the c14nUrl if present
+     */
     public Optional<String> retrieveC14nUrl( PackageHeaderType packageHeader )
     {
         return Optional.ofNullable( packageHeader )

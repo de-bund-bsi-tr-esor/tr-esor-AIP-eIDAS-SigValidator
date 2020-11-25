@@ -81,7 +81,7 @@ public enum Dispatcher
                 ModuleLogger.log( signatures.size() + " signatures found" );
                 ModuleLogger.log( "finished signature search" );
                 
-                credentialReports.addAll( sigVerifier.verify( signatures ) );
+                credentialReports.addAll( sigVerifier.verify( xaip, signatures ) );
                 ModuleLogger.log( "finished signature verification" );
             } );
         }

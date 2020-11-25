@@ -1,7 +1,6 @@
 package de.bund.bsi.tresor.xaip.validator.api.entity;
 
 import java.net.URI;
-import java.util.Arrays;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -38,13 +37,6 @@ public class DefaultResult
         GERMAN( "de" ), ENGLISH( "en" );
         
         private final String value;
-    }
-    
-    public static void main( String[] args )
-    {
-        Arrays.stream( Minor.values() )
-                .map( Minor::getUri )
-                .forEach( System.out::println );
     }
     
     /**
