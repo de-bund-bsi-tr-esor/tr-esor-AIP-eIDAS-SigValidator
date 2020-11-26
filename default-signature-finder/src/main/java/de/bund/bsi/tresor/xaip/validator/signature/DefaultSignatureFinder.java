@@ -70,11 +70,17 @@ public class DefaultSignatureFinder implements SignatureFinder
         while ( iterator.hasNext() )
         {
             FinderResult dataSectionResult = iterator.next();
+            Optional<String> dataSectionObjId = Optional.ofNullable( dataSectionResult.getDataObject() )
+                    .map( DataObjectType::getDataObjectID );
+            
             for ( Set<FinderResult> credentialResult : credentialSectionResults.values() )
             {
-                if ( credentialResult.stream().anyMatch(
-                        r -> r.getDataObject().getDataObjectID().equals( dataSectionResult.getDataObject().getDataObjectID() ) ) )
+                if ( credentialResult.stream()
+                        .anyMatch( r -> Optional.ofNullable( r.getDataObject() )
+                                .map( DataObjectType::getDataObjectID )
+                                .equals( dataSectionObjId ) ) )
                 {
+                    
                     iterator.remove();
                     break;
                 }
