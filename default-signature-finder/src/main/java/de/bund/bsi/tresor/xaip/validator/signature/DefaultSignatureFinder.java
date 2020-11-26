@@ -76,6 +76,7 @@ public class DefaultSignatureFinder implements SignatureFinder
                         r -> r.getDataObject().getDataObjectID().equals( dataSectionResult.getDataObject().getDataObjectID() ) ) )
                 {
                     iterator.remove();
+                    break;
                 }
             }
         }

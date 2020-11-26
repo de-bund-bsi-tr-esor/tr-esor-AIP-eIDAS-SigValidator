@@ -7,6 +7,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -263,8 +264,12 @@ public class XAIPUtil
         try ( ByteArrayInputStream xmlIn = new ByteArrayInputStream( xmlData ) )
         {
             DataObjectReferenceType dataRef = JAXB.unmarshal( xmlIn, DataObjectReferenceType.class );
+            Optional<Path> optPath = Optional.ofNullable( dataRef.getURI() ).map( Paths::get );
             
-            result = Optional.of( Files.readAllBytes( Paths.get( dataRef.getURI() ) ) );
+            if ( optPath.isPresent() )
+            {
+                result = Optional.of( Files.readAllBytes( optPath.get() ) );
+            }
         }
         catch ( DataBindingException e )
         {
