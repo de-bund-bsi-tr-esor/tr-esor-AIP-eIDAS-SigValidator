@@ -9,7 +9,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -296,8 +295,8 @@ public class XAIPUtil
                 .map( dh -> {
                     try
                     {
-                        byte[] b64Data = IOUtils.toByteArray( dh.getInputStream() );
-                        return Base64.getDecoder().decode( b64Data );
+                        return IOUtils.toByteArray( dh.getInputStream() );
+                        // return Base64.getDecoder().decode( b64Data );
                     }
                     catch ( IOException e )
                     {
