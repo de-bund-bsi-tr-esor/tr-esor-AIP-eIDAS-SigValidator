@@ -16,7 +16,7 @@
 		schemaLocation="oasis-sstc-saml-schema-protocol-1.1.xsd" />
 
 	<xs:import namespace="http://uri.etsi.org/01903/v1.3.2#"
-		schemaLocation="XAdES-1-3-2.xsd" />
+		schemaLocation="XAdES01903v132-201601.xsd" />
 
 	<xs:import namespace="http://www.w3.org/XML/1998/namespace"
 		schemaLocation="xml.xsd" />
