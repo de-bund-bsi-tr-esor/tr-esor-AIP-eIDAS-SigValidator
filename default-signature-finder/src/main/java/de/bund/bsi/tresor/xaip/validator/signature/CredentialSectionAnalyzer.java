@@ -44,11 +44,18 @@ public class CredentialSectionAnalyzer
         
         SignaturePtr signaturePtr = signObj.getSignaturePtr();
         Optional<byte[]> b64Signature = Optional.ofNullable( signObj.getBase64Signature() ).map( Base64Signature::getValue );
+        Optional<org.w3._2000._09.xmldsig_.SignatureType> signType = Optional.ofNullable( signObj.getSignature() );
         
         if ( relatedData.isEmpty() )
         {
+            // should check signatureObject/signature
             b64Signature.flatMap( data -> DataSectionAnalyzer.findSignatures( null, Optional.of( data ) ) )
                     .ifPresent( sigResults::add );
+            
+            if ( signType.map( org.w3._2000._09.xmldsig_.SignatureType::getObject ).map( l -> !l.isEmpty() ).orElse( false ) )
+            {
+                sigResults.add( new FinderResult( null, SignaturePresence.PRESENT, Optional.empty() ) );
+            }
         }
         
         for ( DataObjectType dataObject : relatedData )
@@ -60,7 +67,7 @@ public class CredentialSectionAnalyzer
                     .or( () -> XAIPUtil.extractData( dataObject ).map( ByteArrayInputStream::new ) );
             
             // TODO: only when optData present; is this correct?
-            if ( optData.isPresent() && (signObj.getSignature() != null || signObj.getTimestamp() != null) )
+            if ( optData.isPresent() && (signType.isPresent() || signObj.getTimestamp() != null) )
             {
                 sigResults.add( new FinderResult( dataObject, SignaturePresence.PRESENT, optData ) );
             }
