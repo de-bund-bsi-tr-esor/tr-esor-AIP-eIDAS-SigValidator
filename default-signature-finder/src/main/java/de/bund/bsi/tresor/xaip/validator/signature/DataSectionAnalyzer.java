@@ -47,8 +47,8 @@ public class DataSectionAnalyzer
         Optional<byte[]> xmlData = XAIPUtil.extractXmlData( dataObject.getXmlData() )
                 .or( () -> binData.filter( XAIPUtil::isXml ) );
         
-        return binData.map( data -> analyzeBinData( dataObject, data ) )
-                .or( () -> xmlData.map( data -> analyzeXmlData( dataObject, data, true ) ) );
+        return xmlData.map( data -> analyzeXmlData( dataObject, data, true ) )
+                .or( () -> binData.map( data -> analyzeBinData( dataObject, data ) ) );
     }
     
     /**
