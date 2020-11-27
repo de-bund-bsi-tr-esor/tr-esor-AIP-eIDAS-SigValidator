@@ -10,8 +10,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.IntStream;
@@ -139,30 +139,28 @@ public class XAIPUtil
      */
     public static Set<DataObjectType> resolveRelatedDataObjects( DataObjectsSectionType dataSection, List<Object> relatedObjects )
     {
-        Set<String> idRefs = new HashSet<>();
-        Set<DataObjectType> resultSet = relatedObjects.stream()
+        Set<String> ids = relatedObjects.stream()
                 .map( ref -> {
                     if ( ref instanceof DataObjectType )
                     {
-                        return (DataObjectType) ref;
+                        return ((DataObjectType) ref).getDataObjectID();
                     }
                     else if ( ref instanceof String )
                     {
-                        idRefs.add( (String) ref );
+                        return (String) ref;
                     }
                     
                     return null;
                 } )
+                .filter( Objects::nonNull )
                 .collect( toSet() );
         
-        Optional.ofNullable( dataSection )
+        return Optional.ofNullable( dataSection )
                 .map( DataObjectsSectionType::getDataObject )
                 .orElse( new ArrayList<>() )
                 .stream()
-                .filter( obj -> idRefs.contains( obj.getDataObjectID() ) )
-                .forEach( resultSet::add );
-        
-        return resultSet;
+                .filter( obj -> ids.contains( obj.getDataObjectID() ) )
+                .collect( toSet() );
     }
     
     /**
@@ -203,7 +201,7 @@ public class XAIPUtil
             return ((MetaDataObjectType) object).getMetaDataID();
         }
         
-        ModuleLogger.verbose( "could id of object " + object.getClass() );
+        ModuleLogger.verbose( "could not find id of object " + object.getClass() );
         
         return null;
     }

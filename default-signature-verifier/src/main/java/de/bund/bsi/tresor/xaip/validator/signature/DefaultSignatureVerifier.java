@@ -130,8 +130,9 @@ public class DefaultSignatureVerifier implements SignatureVerifier
             VerifyRequest request = createRequest( reqId, signatureObject, dataObjContent );
             boolean hasInputDocument = Optional.ofNullable( request.getInputDocuments() )
                     .map( InputDocuments::getDocumentOrTransformedDataOrDocumentHash )
-                    .map( List::isEmpty )
+                    .map( list -> !list.isEmpty() )
                     .orElse( false );
+            
             if ( request.getSignatureObject() != null || hasInputDocument )
             {
                 return convertResponse( reqId, requestVerification( request ) );

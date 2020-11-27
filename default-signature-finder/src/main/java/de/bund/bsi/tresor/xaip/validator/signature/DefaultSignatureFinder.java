@@ -80,7 +80,6 @@ public class DefaultSignatureFinder implements SignatureFinder
                                 .map( DataObjectType::getDataObjectID )
                                 .equals( dataSectionObjId ) ) )
                 {
-                    
                     iterator.remove();
                     break;
                 }
