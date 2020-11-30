@@ -56,6 +56,7 @@ import oasis.names.tc.dss._1_0.core.schema.InputDocuments;
 import oasis.names.tc.dss._1_0.core.schema.ResponseBaseType;
 import oasis.names.tc.dss._1_0.core.schema.Result;
 import oasis.names.tc.dss._1_0.core.schema.SignatureObject;
+import oasis.names.tc.dss._1_0.core.schema.SignaturePtr;
 import oasis.names.tc.dss._1_0.core.schema.VerifyRequest;
 import oasis.names.tc.dss_x._1_0.profiles.verificationreport.schema_.DetailedSignatureReportType;
 import oasis.names.tc.dss_x._1_0.profiles.verificationreport.schema_.IndividualReportType;
@@ -220,13 +221,18 @@ public class DefaultSignatureVerifier implements SignatureVerifier
         VerifyRequest request = new VerifyRequest();
         signatureObject.ifPresent( request::setSignatureObject );
         
+        String documentId = signatureObject.map( SignatureObject::getSignaturePtr )
+                .map( SignaturePtr::getWhichDocument )
+                .map( XAIPUtil::idFromObject )
+                .orElse( id );
+        
         data.ifPresent( binary -> {
             Base64Data b64Data = new Base64Data();
             b64Data.setValue( new DataHandler( new ByteArrayDataSource( binary, "application/octet-stream" ) ) );
             
             DocumentType document = new DocumentType();
             document.setBase64Data( b64Data );
-            document.setID( id );
+            document.setID( documentId );
             
             InputDocuments inputDocuments = new InputDocuments();
             inputDocuments.getDocumentOrTransformedDataOrDocumentHash().add( document );
