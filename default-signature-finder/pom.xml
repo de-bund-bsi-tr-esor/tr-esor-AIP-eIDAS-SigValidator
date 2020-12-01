@@ -6,6 +6,7 @@
         <groupId>de.bund.bsi.tr_esor</groupId>
         <artifactId>xaip-validator</artifactId>
         <version>1.0.5-1-SNAPSHOT</version>
+
     </parent>
     <artifactId>default-signature-finder</artifactId>
     <packaging>jar</packaging>
