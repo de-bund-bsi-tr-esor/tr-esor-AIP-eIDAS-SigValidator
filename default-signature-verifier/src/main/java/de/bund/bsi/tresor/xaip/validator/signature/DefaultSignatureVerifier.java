@@ -1,5 +1,8 @@
 package de.bund.bsi.tresor.xaip.validator.signature;
 
+import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -12,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.activation.DataHandler;
@@ -32,18 +36,21 @@ import de.bund.bsi.ecard.api._1.VerifyResponse;
 import de.bund.bsi.tr_esor.api._1.S4_Service;
 import de.bund.bsi.tr_esor.vr._1.CredentialValidityType;
 import de.bund.bsi.tr_esor.xaip._1.CredentialType;
+import de.bund.bsi.tr_esor.xaip._1.CredentialsSectionType;
 import de.bund.bsi.tr_esor.xaip._1.DataObjectType;
 import de.bund.bsi.tr_esor.xaip._1.DataObjectType.BinaryData;
+import de.bund.bsi.tr_esor.xaip._1.DataObjectsSectionType;
+import de.bund.bsi.tr_esor.xaip._1.XAIPType;
 import de.bund.bsi.tresor.xaip.validator.api.boundary.SignatureVerifier;
 import de.bund.bsi.tresor.xaip.validator.api.control.ModuleLogger;
 import de.bund.bsi.tresor.xaip.validator.api.control.VerificationUtil;
+import de.bund.bsi.tresor.xaip.validator.api.control.XAIPUtil;
 import de.bund.bsi.tresor.xaip.validator.api.entity.DefaultResult;
 import de.bund.bsi.tresor.xaip.validator.api.entity.DefaultResult.ResultLanguage;
 import de.bund.bsi.tresor.xaip.validator.api.entity.XAIPValidatorException;
 import lombok.Getter;
 import oasis.names.tc.dss._1_0.core.schema.AnyType;
 import oasis.names.tc.dss._1_0.core.schema.Base64Data;
-import oasis.names.tc.dss._1_0.core.schema.Base64Signature;
 import oasis.names.tc.dss._1_0.core.schema.DocumentType;
 import oasis.names.tc.dss._1_0.core.schema.InputDocuments;
 import oasis.names.tc.dss._1_0.core.schema.ResponseBaseType;
@@ -80,42 +87,75 @@ public class DefaultSignatureVerifier implements SignatureVerifier
     }
     
     @Override
-    public List<CredentialValidityType> verify( Map<DataObjectType, List<CredentialType>> signatures )
+    public List<CredentialValidityType> verify( XAIPType xaip, Map<String, Set<String>> credIdsByDataId )
     {
         List<CredentialValidityType> resultList = new ArrayList<>();
-        for ( Entry<DataObjectType, List<CredentialType>> entry : signatures.entrySet() )
+        for ( Entry<String, Set<String>> entry : credIdsByDataId.entrySet() )
         {
-            DataObjectType dataObject = entry.getKey();
-            List<CredentialType> credentials = entry.getValue();
+            Optional<String> dataId = Optional.ofNullable( entry.getKey() );
+            Optional<byte[]> data = Optional.ofNullable( xaip.getDataObjectsSection() ).stream()
+                    .map( DataObjectsSectionType::getDataObject )
+                    .flatMap( List::stream )
+                    .filter( dataObj -> dataId.map( dataObj.getDataObjectID()::equals ).orElse( false ) )
+                    .findAny()
+                    .flatMap( XAIPUtil::extractData );
             
-            for ( CredentialType credential : credentials )
+            Set<String> credIds = entry.getValue();
+            if ( credIds.isEmpty() && data.isPresent() )
             {
-                String credId = credential.getCredentialID();
-                SignatureObject signatureObject = credential.getSignatureObject();
-                
-                try
+                resultList.addAll( request( dataId.get(), Optional.empty(), data ) );
+            }
+            else
+            {
+                for ( String credId : credIds )
                 {
-                    VerifyRequest request = createRequest( credId, signatureObject, dataObject );
-                    ResponseBaseType verification = requestVerification( request );
+                    Optional<SignatureObject> signObj = Optional.ofNullable( xaip.getCredentialsSection() ).stream()
+                            .map( CredentialsSectionType::getCredential )
+                            .flatMap( List::stream )
+                            .filter( credObj -> credObj.getCredentialID().equals( credId ) )
+                            .map( CredentialType::getSignatureObject )
+                            .findAny();
                     
-                    resultList.addAll( convertResponse( credId, verification ) );
-                }
-                catch ( SOAPFaultException e )
-                {
-                    ModuleLogger.verbose( "verification error for credential " + credId, e );
-                    Result errorResult = DefaultResult.error().message( e.getMessage(), ResultLanguage.ENGLISH ).build();
-                    
-                    CredentialValidityType verificationError = new CredentialValidityType();
-                    verificationError.setCredentialID( credId );
-                    verificationError.setOther( VerificationUtil.verificationResult( errorResult ) );
-                    
-                    resultList.add( verificationError );
+                    resultList.addAll( request( credId, signObj, data ) );
                 }
             }
-            
         }
         
         return resultList;
+    }
+    
+    List<CredentialValidityType> request( String reqId, Optional<SignatureObject> signatureObject, Optional<byte[]> dataObjContent )
+    {
+        try
+        {
+            VerifyRequest request = createRequest( reqId, signatureObject, dataObjContent );
+            boolean hasInputDocument = Optional.ofNullable( request.getInputDocuments() )
+                    .map( InputDocuments::getDocumentOrTransformedDataOrDocumentHash )
+                    .map( list -> !list.isEmpty() )
+                    .orElse( false );
+            
+            if ( request.getSignatureObject() != null || hasInputDocument )
+            {
+                return convertResponse( reqId, requestVerification( request ) );
+            }
+            else
+            {
+                ModuleLogger.verbose( "neither inputDocument or signatureObject found for credential or data " + reqId );
+                
+                return emptyList();
+            }
+        }
+        catch ( SOAPFaultException e )
+        {
+            ModuleLogger.verbose( "verification error for credential or data " + reqId, e );
+            Result errorResult = DefaultResult.error().message( e.getMessage(), ResultLanguage.ENGLISH ).build();
+            
+            CredentialValidityType verificationError = new CredentialValidityType();
+            verificationError.setCredentialID( reqId );
+            verificationError.setOther( VerificationUtil.verificationResult( errorResult ) );
+            
+            return asList( verificationError );
+        }
     }
     
     /**
@@ -176,47 +216,28 @@ public class DefaultSignatureVerifier implements SignatureVerifier
         return resultList;
     }
     
-    VerifyRequest createRequest( String credId, SignatureObject signatureObject, DataObjectType dataObject )
+    VerifyRequest createRequest( String id, Optional<SignatureObject> signatureObject, Optional<byte[]> data )
     {
         VerifyRequest request = new VerifyRequest();
-        DataObjectType dataObjectDocument = Optional.ofNullable( signatureObject.getSignaturePtr() )
+        signatureObject.ifPresent( request::setSignatureObject );
+        
+        String documentId = signatureObject.map( SignatureObject::getSignaturePtr )
                 .map( SignaturePtr::getWhichDocument )
-                .flatMap( this::parseDocument )
-                .orElse( dataObject );
+                .map( XAIPUtil::idFromObject )
+                .orElse( id );
         
-        String id = Optional.ofNullable( dataObjectDocument )
-                .map( DataObjectType::getDataObjectID )
-                .orElse( credId );
-        
-        DataHandler dataHandler = Optional.ofNullable( dataObject )
-                .map( DataObjectType::getBinaryData )
-                .map( BinaryData::getValue )
-                .orElseGet( () -> Optional.ofNullable( signatureObject.getBase64Signature() )
-                        .map( Base64Signature::getValue )
-                        .map( content -> new ByteArrayDataSource( content, "application/octet-stream" ) )
-                        .map( DataHandler::new )
-                        .orElse( null ) );
-        
-        if ( dataHandler != null )
-        {
+        data.ifPresent( binary -> {
             Base64Data b64Data = new Base64Data();
-            b64Data.setValue( dataHandler );
+            b64Data.setValue( new DataHandler( new ByteArrayDataSource( binary, "application/octet-stream" ) ) );
             
             DocumentType document = new DocumentType();
             document.setBase64Data( b64Data );
-            document.setID( id );
+            document.setID( documentId );
             
             InputDocuments inputDocuments = new InputDocuments();
             inputDocuments.getDocumentOrTransformedDataOrDocumentHash().add( document );
-            
             request.setInputDocuments( inputDocuments );
-        }
-        else
-        {
-            ModuleLogger.log( "no document data found for signature with id " + id );
-        }
-        
-        request.setSignatureObject( signatureObject );
+        } );
         
         return request;
     }

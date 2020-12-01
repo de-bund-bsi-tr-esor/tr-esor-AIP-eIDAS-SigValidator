@@ -1,18 +1,25 @@
 package de.bund.bsi.tresor.xaip.validator.signature;
 
-import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
+import static java.util.stream.Collectors.toMap;
+import static java.util.stream.Collectors.toSet;
 
-import java.util.AbstractMap;
 import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Optional;
+import java.util.Set;
 
 import de.bund.bsi.tr_esor.xaip._1.CredentialType;
 import de.bund.bsi.tr_esor.xaip._1.CredentialsSectionType;
 import de.bund.bsi.tr_esor.xaip._1.DataObjectType;
+import de.bund.bsi.tr_esor.xaip._1.DataObjectsSectionType;
 import de.bund.bsi.tr_esor.xaip._1.XAIPType;
 import de.bund.bsi.tresor.xaip.validator.api.boundary.SignatureFinder;
-import de.bund.bsi.tresor.xaip.validator.api.control.ModuleLogger;
+import de.bund.bsi.tresor.xaip.validator.signature.entity.FinderResult;
+import de.bund.bsi.tresor.xaip.validator.signature.entity.SignaturePresence;
 import lombok.Getter;
 
 /**
@@ -26,40 +33,89 @@ public class DefaultSignatureFinder implements SignatureFinder
     private final String vendor  = "BSI";
     private final String version = "1.0.0";
     
+    /**
+     * List of credentialIds mapped by the dataObjectId
+     * 
+     * @param xaip
+     * @return
+     */
     @Override
-    public Map<DataObjectType, List<CredentialType>> findSignatures( XAIPType xaip )
+    public Map<String, Set<String>> findSignatures( XAIPType xaip )
     {
-        Map<DataObjectType, List<CredentialType>> results = new HashMap<>();
-        CredentialsSectionType credentialSection = xaip.getCredentialsSection();
+        DataObjectsSectionType dataSection = xaip.getDataObjectsSection();
         
-        if ( credentialSection != null && credentialSection.getCredential() != null )
+        Set<FinderResult> dataSectionResults = Optional.ofNullable( dataSection )
+                .map( DataObjectsSectionType::getDataObject )
+                .orElse( emptyList() )
+                .stream()
+                .map( DataSectionAnalyzer::findSignatures )
+                .filter( Optional::isPresent )
+                .map( Optional::get )
+                .collect( toSet() );
+        
+        Map<CredentialType, Set<FinderResult>> credentialSectionResults = Optional.ofNullable( xaip.getCredentialsSection() )
+                .map( CredentialsSectionType::getCredential )
+                .orElse( emptyList() )
+                .stream()
+                .map( c -> CredentialSectionAnalyzer.analyzeCredential( c, dataSection, dataSectionResults ) )
+                .collect( toMap( Entry::getKey, Entry::getValue ) );
+        
+        return mapCredIdsByDataId( mergeResults( dataSectionResults, credentialSectionResults ) );
+    }
+    
+    Map<CredentialType, Set<FinderResult>> mergeResults( Set<FinderResult> dataSectionResults,
+            Map<CredentialType, Set<FinderResult>> credentialSectionResults )
+    {
+        Iterator<FinderResult> iterator = dataSectionResults.iterator();
+        while ( iterator.hasNext() )
         {
+            FinderResult dataSectionResult = iterator.next();
+            Optional<String> dataSectionObjId = Optional.ofNullable( dataSectionResult.getDataObject() )
+                    .map( DataObjectType::getDataObjectID );
             
-            for ( CredentialType credential : credentialSection.getCredential() )
+            for ( Set<FinderResult> credentialResult : credentialSectionResults.values() )
             {
-                String cid = credential.getCredentialID();
-                ModuleLogger.verbose( "checking credential " + cid );
-                credential.getRelatedObjects()
-                        .stream()
-                        .filter( DataObjectType.class::isInstance )
-                        .map( DataObjectType.class::cast )
-                        .map( dataObject -> new AbstractMap.SimpleEntry<DataObjectType, List<CredentialType>>( dataObject,
-                                asList( credential ) ) )
-                        .forEach( entry -> results.merge( entry.getKey(), entry.getValue(), this::remap ) );
-                
-                if ( credential.getRelatedObjects().isEmpty() )
+                if ( credentialResult.stream()
+                        .anyMatch( r -> Optional.ofNullable( r.getDataObject() )
+                                .map( DataObjectType::getDataObjectID )
+                                .equals( dataSectionObjId ) ) )
                 {
-                    results.merge( null, asList( credential ), this::remap );
+                    iterator.remove();
+                    break;
                 }
             }
         }
         
-        return results;
+        credentialSectionResults.put( null, dataSectionResults );
+        
+        return credentialSectionResults;
     }
     
-    List<CredentialType> remap( List<CredentialType> a, List<CredentialType> b )
+    // can contain null-valued keys when a credentialSection occurs without data refs
+    Map<String, Set<String>> mapCredIdsByDataId( Map<CredentialType, Set<FinderResult>> result )
     {
-        a.addAll( b );
-        return a;
+        Map<String, Set<String>> credIdsByDataId = new HashMap<>();
+        for ( Entry<CredentialType, Set<FinderResult>> entry : result.entrySet() )
+        {
+            Set<String> credId = Optional.ofNullable( entry.getKey() )
+                    .map( CredentialType::getCredentialID )
+                    .map( Set::of )
+                    .orElse( new HashSet<>() );
+            
+            for ( FinderResult finderResult : entry.getValue() )
+            {
+                // TODO might want to log some informations
+                if ( finderResult.getPresence() != SignaturePresence.MISSING )
+                {
+                    String dataId = Optional.ofNullable( finderResult.getDataObject() )
+                            .map( DataObjectType::getDataObjectID )
+                            .orElse( null );
+                    
+                    credIdsByDataId.computeIfAbsent( dataId, k -> new HashSet<>() ).addAll( credId );
+                }
+            }
+        }
+        
+        return credIdsByDataId;
     }
 }

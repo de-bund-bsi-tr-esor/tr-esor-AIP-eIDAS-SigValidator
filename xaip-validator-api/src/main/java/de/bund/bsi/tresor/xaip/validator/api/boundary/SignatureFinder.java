@@ -1,7 +1,7 @@
 package de.bund.bsi.tresor.xaip.validator.api.boundary;
 
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import de.bund.bsi.tr_esor.xaip._1.CredentialType;
 import de.bund.bsi.tr_esor.xaip._1.DataObjectType;
@@ -25,8 +25,7 @@ public interface SignatureFinder extends ValidatorModule
      * 
      * @param xaip
      *            the xaip to scan for signatures
-     * @return a map where containing the {@link DataObjectType} and the related {@link CredentialType}s, unbound {@link CredentialType}s
-     *         are bound to the null value key
+     * @return a set of credentialIds mapped to the related dataObjectId
      */
-    public Map<DataObjectType, List<CredentialType>> findSignatures( XAIPType xaip );
+    public Map<String, Set<String>> findSignatures( XAIPType xaip );
 }

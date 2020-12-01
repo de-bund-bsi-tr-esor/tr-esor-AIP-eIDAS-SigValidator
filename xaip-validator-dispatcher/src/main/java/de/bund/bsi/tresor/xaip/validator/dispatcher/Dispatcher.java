@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
+import java.util.Set;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -13,8 +14,6 @@ import javax.xml.bind.Marshaller;
 
 import de.bund.bsi.tr_esor.vr._1.CredentialValidityType;
 import de.bund.bsi.tr_esor.vr._1.XAIPValidityType;
-import de.bund.bsi.tr_esor.xaip._1.CredentialType;
-import de.bund.bsi.tr_esor.xaip._1.DataObjectType;
 import de.bund.bsi.tresor.xaip.validator.api.boundary.ProtocolAssembler;
 import de.bund.bsi.tresor.xaip.validator.api.boundary.SignatureFinder;
 import de.bund.bsi.tresor.xaip.validator.api.boundary.SignatureVerifier;
@@ -78,11 +77,11 @@ public enum Dispatcher
         if ( args.isVerify() )
         {
             syntaxResult.getXaip().ifPresent( xaip -> {
-                Map<DataObjectType, List<CredentialType>> signatures = sigFinder.findSignatures( xaip );
+                Map<String, Set<String>> signatures = sigFinder.findSignatures( xaip );
                 ModuleLogger.log( signatures.size() + " signatures found" );
                 ModuleLogger.log( "finished signature search" );
                 
-                credentialReports.addAll( sigVerifier.verify( signatures ) );
+                credentialReports.addAll( sigVerifier.verify( xaip, signatures ) );
                 ModuleLogger.log( "finished signature verification" );
             } );
         }

@@ -26,13 +26,22 @@ public class CLITestM
     private static final String BATCH_TEST_DIR        = "src/test/resources/samples";
     private static final String BATCH_TEST_RESULT_DIR = "/tmp/reports";
     
-    private static final String TEST_FILE             = "src/test/resources/samples/TST-01-cades-det-single/XAIP-cades-det-single.xml";
-    // private static final String TEST_FILE = "src/test/resources/samples/TST-03-cades-att-single/XAIP-cades-att-single.xml";
+    // private static final String TEST_FILE = "src/test/resources/samples/TST-01-cades-det-single/XAIP-cades-det-single.xml";
+    // private static final String TEST_FILE = "src/test/resources/samples/TST-19-xades-det-xml-single/XAIP-xades-det-xml-single.xml";
+    
     // private static final String TEST_FILE = "src/test/resources/samples/TST-07-pdf-att-inv-single/XAIP-pdf-att-inv-single.xml";
+    // private static final String TEST_FILE = "src/test/resources/samples/TST-08-pdf-att-inv-double/XAIP-pdf-att-inv-double.xml";
     // private static final String TEST_FILE = "src/test/resources/samples/TST-09-pdf-att-vis-single/XAIP-pdf-att-vis-single.xml";
-    // private static final String TEST_FILE = "src/test/resources/samples/TST-11-xades-det-txt-single/XAIP-xades-det-single.xml";
+    // private static final String TEST_FILE = "src/test/resources/samples/TST-10-pdf-att-vis-double/XAIP-pdf-att-vis-double.xml";
     // private static final String TEST_FILE =
     // "src/test/resources/samples/TST-13-xades-att-enveloping-txt-single/XAIP-xades-att-env-txt-single.xml";
+    // private static final String TEST_FILE =
+    // "src/test/resources/samples/TST-24-xades-att-enveloped-xml-single/XAIP-xades-att-enveloped-xml-single.xml";
+    // private static final String TEST_FILE =
+    // "src/test/resources/samples/TST-24-1-xades-att-enveloped-xml-single_b64/XAIP-xades-att-enveloped-xml-single.xml";
+    
+    private static final String TEST_FILE             = "src/test/resources/samples/cades-enveloping-b64Data-sigPtr-chain.xml";
+    
     private static final String TEST_RESULT_FILE      = "/tmp/report.xml";
     
     /**
@@ -40,23 +49,6 @@ public class CLITestM
      */
     @Test
     public void validateIntegrationTestManually()
-    {
-        String[] args = {
-                "-i",
-                TEST_FILE,
-                "-d",
-                "-v",
-                "-Mverifier.wsdlUrl=" + WSDL_URL,
-                "-o",
-                TEST_RESULT_FILE,
-                "-Mvalidator.schemaDir=" + SCHEMA_DIR
-        };
-        
-        CLI.main( args );
-    }
-    
-    @Test
-    public void invalid()
     {
         System.out.println( "start" );
         String[] args = {
@@ -67,7 +59,7 @@ public class CLITestM
                 "-Mverifier.wsdlUrl=" + WSDL_URL,
                 "-o",
                 TEST_RESULT_FILE,
-                "-Mvalidator.schemaDir=" + SCHEMA_DIR,
+                "-Mvalidator.schemaDir=" + SCHEMA_DIR
         };
         
         CLI.main( args );

@@ -1,15 +1,23 @@
 package de.bund.bsi.tresor.xaip.validator.api.control;
 
+import static java.util.stream.Collectors.toSet;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.IntStream;
 
+import javax.xml.bind.DataBindingException;
+import javax.xml.bind.JAXB;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
@@ -21,6 +29,7 @@ import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.apache.commons.io.IOUtils;
 import org.etsi.uri._02918.v1_2.DataObjectReferenceType;
 import org.w3c.dom.Node;
 
@@ -120,6 +129,41 @@ public class XAIPUtil
     }
     
     /**
+     * Resolving the relatedObjects and returning the resolved dataObjects
+     * 
+     * @param dataSection
+     *            the dataSection containing the dataObjects
+     * @param relatedObjects
+     *            the relatedObjects
+     * @return a set of resolved dataObjects
+     */
+    public static Set<DataObjectType> resolveRelatedDataObjects( DataObjectsSectionType dataSection, List<Object> relatedObjects )
+    {
+        Set<String> ids = relatedObjects.stream()
+                .map( ref -> {
+                    if ( ref instanceof DataObjectType )
+                    {
+                        return ((DataObjectType) ref).getDataObjectID();
+                    }
+                    else if ( ref instanceof String )
+                    {
+                        return (String) ref;
+                    }
+                    
+                    return null;
+                } )
+                .filter( Objects::nonNull )
+                .collect( toSet() );
+        
+        return Optional.ofNullable( dataSection )
+                .map( DataObjectsSectionType::getDataObject )
+                .orElse( new ArrayList<>() )
+                .stream()
+                .filter( obj -> ids.contains( obj.getDataObjectID() ) )
+                .collect( toSet() );
+    }
+    
+    /**
      * Retrieving the id of the respective object
      * 
      * @param object
@@ -157,98 +201,164 @@ public class XAIPUtil
             return ((MetaDataObjectType) object).getMetaDataID();
         }
         
-        ModuleLogger.verbose( "could id of object " + object.getClass() );
+        ModuleLogger.verbose( "could not find id of object " + object.getClass() );
         
         return null;
     }
     
     /**
-     * Returns the inputStream of a normal dataObject containing the document content
+     * Extracting the complete xml data provided by the anyType which can contain any data or not
      * 
-     * @param dataObject
-     *            the dataObject
-     * @return inputstream with content or empty data
+     * @param anyType
+     *            anyType from the dataObjectType containing any xmlData
+     * @return the xml content
      */
-    public static Optional<InputStream> retrieveBinaryContent( DataObjectType dataObject )
+    public static Optional<byte[]> extractXmlData( AnyType anyType )
     {
-        return Optional.ofNullable( dataObject )
-                .map( DataObjectType::getBinaryData )
+        boolean isEmpty = Optional.ofNullable( anyType )
+                .map( AnyType::getAny )
+                .map( List::isEmpty )
+                .orElse( true );
+        
+        Optional<byte[]> xmlData = Optional.empty();
+        if ( !isEmpty )
+        {
+            try
+            {
+                DOMResult result = new DOMResult();
+                JAXBElement<AnyType> xml = new JAXBElement<AnyType>( XML_DATA_QNAME, AnyType.class, anyType );
+                JAXBContext context = JAXBContext.newInstance( AnyType.class );
+                context.createMarshaller().marshal( xml, result );
+                
+                Node xmlContent = result.getNode().getFirstChild();
+                
+                TransformerFactory transformerFactory = TransformerFactory.newInstance();
+                Transformer transformer = transformerFactory.newTransformer();
+                
+                ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                transformer.transform( new DOMSource( xmlContent ), new StreamResult( bos ) );
+                
+                xmlData = Optional.of( bos.toByteArray() );
+            }
+            catch ( JAXBException | TransformerException e )
+            {
+                ModuleLogger.verbose( "could not retrieve lxaip data from dataObject", e );
+            }
+        }
+        
+        return xmlData;
+    }
+    
+    /**
+     * Checking if the provided xmlData is an lxaip reference and extracting the referenced data if any were found.
+     * 
+     * @param xmlData
+     *            the xmlData to check if the data contains an lxaip reference
+     * @return the lxaip content if any lxaip reference was found
+     */
+    public static Optional<byte[]> extractLxaipData( byte[] xmlData )
+    {
+        Optional<byte[]> result = Optional.empty();
+        try ( ByteArrayInputStream xmlIn = new ByteArrayInputStream( xmlData ) )
+        {
+            DataObjectReferenceType dataRef = JAXB.unmarshal( xmlIn, DataObjectReferenceType.class );
+            Optional<Path> optPath = Optional.ofNullable( dataRef.getURI() ).map( Paths::get );
+            
+            if ( optPath.isPresent() )
+            {
+                result = Optional.of( Files.readAllBytes( optPath.get() ) );
+            }
+        }
+        catch ( DataBindingException e )
+        {
+            // no lxaip
+        }
+        catch ( IOException e )
+        {
+            // could not read lxaip data
+            ModuleLogger.verbose( "could not retrieve lxaip data from dataObject", e );
+        }
+        
+        return result;
+    }
+    
+    /**
+     * Extracting the content of the binary data if any data is present
+     * 
+     * @param data
+     *            the binary data
+     * @return the binary data content if present
+     * @throws IllegalArgumentException
+     *             when content is not base64 encoded
+     */
+    public static Optional<byte[]> extractBinData( BinaryData data )
+    {
+        return Optional.ofNullable( data )
                 .map( BinaryData::getValue )
-                .map( t -> {
+                .map( dh -> {
                     try
                     {
-                        return t.getInputStream();
+                        return IOUtils.toByteArray( dh.getInputStream() );
+                        // return Base64.getDecoder().decode( b64Data );
                     }
                     catch ( IOException e )
                     {
-                        ModuleLogger.verbose( "could not retrieve data from dataObject", e );
+                        ModuleLogger.log( "could not extract binaryData", e );
+                        return null;
                     }
-                    
-                    return findLxaipData( dataObject ).orElse( null );
                 } );
     }
     
     /**
-     * Returns the inputStream of a normal dataObject containing the document content
+     * Extracting the data from a dataObject. The data source can be any of:<br/>
+     * <ul>
+     * <li>BinaryData
+     * <ul>
+     * <li>xmlData
+     * <li>lxaipData
+     * </ul>
+     * <li>XmlData
+     * <ul>
+     * <li>lxaipData
+     * </ul>
+     * </ul>
      * 
      * @param dataObject
-     *            the dataObject
-     * @return inputstream with content or empty data
+     *            the dataObject to retrieve the data from
+     * @return data from the dataObject if any is present
      */
-    public static Optional<InputStream> retrieveXmlContent( DataObjectType dataObject )
+    public static Optional<byte[]> extractData( DataObjectType dataObject )
     {
-        Optional<InputStream> content = Optional.empty();
+        Optional<byte[]> binData = XAIPUtil.extractBinData( dataObject.getBinaryData() );
+        Optional<byte[]> xmlData = XAIPUtil.extractXmlData( dataObject.getXmlData() )
+                .or( () -> binData.filter( XAIPUtil::isXml ) );
         
-        try
-        {
-            DOMResult result = new DOMResult();
-            
-            JAXBElement<AnyType> xml = new JAXBElement<AnyType>( XML_DATA_QNAME, AnyType.class, dataObject.getXmlData() );
-            JAXBContext context = JAXBContext.newInstance( AnyType.class );
-            context.createMarshaller().marshal( xml, result );
-            
-            Node xmlContent = result.getNode().getFirstChild();
-            
-            TransformerFactory transformerFactory = TransformerFactory.newInstance();
-            Transformer transformer = transformerFactory.newTransformer();
-            
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            transformer.transform( new DOMSource( xmlContent ), new StreamResult( bos ) );
-            
-            content = Optional.of( new ByteArrayInputStream( bos.toByteArray() ) );
-        }
-        catch ( JAXBException | TransformerException e )
-        {
-            ModuleLogger.log( "could not retrieve xml content", e );
-        }
-        
-        return content;
+        return binData.or( () -> xmlData );
     }
     
     /**
-     * Returns the inputStream of an lxaip dataObject which is being attached externally and therefore not obtainable by using the
-     * binaryData object.
+     * Checking if the binary data is xml data
      * 
-     * @param dataObject
-     *            the dataObject
-     * @return inputstream with content or empty data
+     * @param data
+     *            the binary data to check
+     * @return if the binary data is xml data
      */
-    static Optional<InputStream> findLxaipData( DataObjectType dataObject )
+    public static boolean isXml( byte[] data )
     {
-        return findDataReferences( dataObject )
-                .map( DataObjectReferenceType::getURI )
-                .map( Paths::get )
-                .map( path -> {
-                    try
-                    {
-                        return new FileInputStream( path.toFile() );
-                    }
-                    catch ( IOException e )
-                    {
-                        ModuleLogger.verbose( "could not retrieve lxaip data from dataObject", e );
-                    }
-                    
-                    return null;
-                } );
+        // TODO init sax parser instead
+        byte[] xmlStart = "<".getBytes( StandardCharsets.UTF_8 );
+        byte[] xmlEnd = ">".getBytes( StandardCharsets.UTF_8 );
+        
+        if ( data.length > xmlStart.length + xmlEnd.length )
+        {
+            boolean hasXmlStart = IntStream.range( 0, xmlStart.length ).allMatch( i -> data[i] == xmlStart[i] );
+            boolean hasXmlEnd = IntStream.range( data.length - xmlEnd.length, xmlEnd.length ).allMatch( i -> data[i] == xmlEnd[i] );
+            
+            return hasXmlStart && hasXmlEnd;
+        }
+        else
+        {
+            return false;
+        }
     }
 }

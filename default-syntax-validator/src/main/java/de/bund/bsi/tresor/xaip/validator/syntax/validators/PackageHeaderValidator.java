@@ -132,11 +132,11 @@ public enum PackageHeaderValidator
     }
     
     /**
-     * Extracting the c14n url from the packageHeader
+     * Retrieving the c14nUrl from the packageHeader
      * 
      * @param packageHeader
      *            the packageHeader
-     * @return the c14n url if present
+     * @return the c14nUrl if present
      */
     public Optional<String> retrieveC14nUrl( PackageHeaderType packageHeader )
     {

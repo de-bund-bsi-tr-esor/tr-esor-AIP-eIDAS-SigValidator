@@ -115,6 +115,14 @@ public class DefaultProtocolAssembler implements ProtocolAssembler
                     .orElse( ensureReportContent( masterReport ) );
         } );
         
+        if ( !masterReports.isEmpty() )
+        {
+            CredentialsSectionValidityType credentialValidity = new CredentialsSectionValidityType();
+            credentialValidity.getCredential().addAll( masterReports );
+            
+            report.setCredentialsSection( credentialValidity );
+        }
+        
         return report;
     }
     
