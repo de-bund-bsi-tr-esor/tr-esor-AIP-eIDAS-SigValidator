@@ -29,7 +29,6 @@ import de.bund.bsi.tresor.xaip.validator.api.control.VerificationUtil;
 import de.bund.bsi.tresor.xaip.validator.api.control.XAIPUtil;
 import de.bund.bsi.tresor.xaip.validator.api.entity.DefaultResult;
 import de.bund.bsi.tresor.xaip.validator.api.entity.DefaultResult.Builder;
-import de.bund.bsi.tresor.xaip.validator.api.entity.DefaultResult.Major;
 import de.bund.bsi.tresor.xaip.validator.api.entity.DefaultResult.Minor;
 import de.bund.bsi.tresor.xaip.validator.api.entity.DefaultResult.ResultLanguage;
 import oasis.names.tc.dss._1_0.core.schema.Result;
@@ -106,7 +105,6 @@ public enum DataObjectSectionValidator
                 .ifPresent( result::setChecksum );
         
         validateTransformInfo( dataObject.getTransformInfo() ).ifPresent( result::setTransformInfo );
-        // result.setFormatOK( value ); TODO implementing on a different date and leaving this blank since it's optional
         
         return result;
     }
@@ -136,7 +134,7 @@ public enum DataObjectSectionValidator
                     TransformInfoValidityType validityType = new TransformInfoValidityType();
                     validityType.setTransformObjectID( info.getTransformObjectID() );
                     
-                    Result result = DefaultResult.major( Major.WARNING )
+                    Result result = DefaultResult.indetermined()
                             .minor( Minor.NOT_SUPPORTED )
                             .message( "transform informations can't be evaluated since xaip profiles are currently not supported",
                                     ResultLanguage.ENGLISH )

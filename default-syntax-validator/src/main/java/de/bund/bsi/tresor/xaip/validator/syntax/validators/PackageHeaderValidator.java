@@ -115,13 +115,13 @@ public enum PackageHeaderValidator
                 .map( CanonicalizationMethodType::getAlgorithm )
                 .map( Canonicalization::isValidCanonicalization )
                 .map( validMethod -> {
-                    Result result = DefaultResult.ok()
+                    Result result = DefaultResult.valid()
                             .message( "using valid algorithm " + canonicalizationMethod.getAlgorithm(), ResultLanguage.ENGLISH )
                             .build();
                     
                     if ( !validMethod )
                     {
-                        result = DefaultResult.error()
+                        result = DefaultResult.invalid()
                                 .minor( Minor.UNKNOWN_C14N_METHOD )
                                 .message( "using invalid algorithm " + canonicalizationMethod.getAlgorithm(), ResultLanguage.ENGLISH )
                                 .build();

@@ -55,7 +55,7 @@ public class VerificationUtil
     {
         Builder result = DigestAlgorithm.fromXmlSyntax( checksum.getCheckSumAlgorithm() )
                 .map( digestAlg -> {
-                    Builder builder = DefaultResult.error();
+                    Builder builder = DefaultResult.invalid();
                     try
                     {
                         MessageDigest md = MessageDigest.getInstance( digestAlg.getJavaName(), new BouncyCastleProvider() );
@@ -67,7 +67,7 @@ public class VerificationUtil
                             
                             if ( org.bouncycastle.util.Arrays.constantTimeAreEqual( expectedDigest, digest ) )
                             {
-                                builder = DefaultResult.ok();
+                                builder = DefaultResult.valid();
                             }
                             else
                             {
@@ -85,7 +85,7 @@ public class VerificationUtil
                     }
                     
                     return builder;
-                } ).orElse( DefaultResult.error().minor( Minor.CHECKSUM_ALG_NOT_SUPPORTED ) );
+                } ).orElse( DefaultResult.invalid().minor( Minor.CHECKSUM_ALG_NOT_SUPPORTED ) );
         
         return verificationResult( result.build() );
     }
