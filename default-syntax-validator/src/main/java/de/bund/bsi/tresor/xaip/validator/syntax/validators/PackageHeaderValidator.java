@@ -90,11 +90,11 @@ public enum PackageHeaderValidator
                 .map( date -> LocalDate.parse( date, DATE_FORMATTER ) )
                 .map( LocalDate.now()::isBefore )
                 .map( notExpired -> {
-                    return notExpired ? DefaultResult.ok().build()
-                            : DefaultResult.error()
+                    return notExpired ? DefaultResult.valid().build()
+                            : DefaultResult.invalid()
                                     .minor( Minor.PRESERVATION_PERIOD_EXPIRED )
                                     .build();
-                } ).orElse( DefaultResult.error()
+                } ).orElse( DefaultResult.invalid()
                         .message( "missing preservation info", ResultLanguage.ENGLISH )
                         .build() );
         
