@@ -1,7 +1,7 @@
 ![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)
 
 # XAIPValidator
-The XAIPValidator is a tool designed for the validation of an XML formatted Archival Information Package (XAIP). Using a modular structure and plugin mechanism, the validator is validating the XAIP by using those modules which can vary by their implementation.
+The XAIPValidator is a tool designed for validation of an XML formatted Archival Information Package (XAIP). Using a modular structure and plugin mechanism, the validator is validating an XAIP by using those modules which can vary by their implementation.
 
 Validation will be done step by step in following order:
 
@@ -58,17 +58,18 @@ The XAIPValidator consists of multiple modules.
 
 ```
 -M <moduleConfig>
-	Passing a configuration for a module. This Option is optional since the need for a configuation is defined by the specific module implementation.
-	Providing a configuration can be done by either directly setting a specific configuration or passing a complete configuration file. In both cases the arguments have to match a specific pattern to identify the module  the configuration applies to:
-    
-	$MODULE.$PROPERTY
-	
-	Modules : finder,verifier,validator,assembler
-	Property: either the keyword `conf` which is reserved to load the configuration from a file followed by this property or any configuration keyword the specific module implementation offers
+	Passing a module configuration property. This Option is optional since the need for a configuation is defined by the specific module implementation.
+	Providing a configuration can be done by either directly setting a specific configuration or passing a complete configuration file (-c, --config). The name of the argument is defined by the module implementation.
+	Example: -Mvalidator.schemaDir=../xaip/schema
 
-	Examples: 
-		-Mverifier.conf=/tmp/example.properties
-		-Mverifier.wsdlUrl=http://localhost:8080/s4?wsdl
+		
+-c, --config <file>
+	Passing a property file which contains any module configuration. The property file can contain properties of multiple modules.
+	Example: -c config.properties
+	
+	config.properties:
+	validator.schemaDir=/opt/xaip/schema
+	verifier.wsdlUrl=http://localhost:8080/VerificationService/S4?wsdl
 
 -i, --in, --input <file>
 	Source of the XAIP to validate. This can be an external <file> or the standard inputstream when omitting this option.

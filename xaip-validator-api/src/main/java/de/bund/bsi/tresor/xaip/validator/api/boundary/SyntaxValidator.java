@@ -14,7 +14,7 @@ import oasis.names.tc.dss_x._1_0.profiles.verificationreport.schema_.IndividualR
 public interface SyntaxValidator extends ValidatorModule
 {
     /**
-     * Retrieving data from the inputStream and verifies if the data contains a valid XAIP. As a result of this operation, an
+     * Retrieving data from the inputStream and verifies if the data contains a valid XAIP. As a result of this operation an
      * {@link IndividualReportType} will be created containing the information of the XAIP syntax validation. If the validation was
      * successful the parsed {@link XAIPType} is also being returned.
      * 

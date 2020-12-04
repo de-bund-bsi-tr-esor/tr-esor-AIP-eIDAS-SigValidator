@@ -44,7 +44,7 @@ import oasis.names.tc.dss._1_0.core.schema.Result;
 @Getter
 public class DefaultSyntaxValidator implements SyntaxValidator
 {
-    private static final String        SCHEMA_DIR_PROPERTY = "schemaDir";
+    private static final String        SCHEMA_DIR_PROPERTY = "validator.schemaDir";
     
     private final String               vendor              = "BSI";
     private final String               version             = "1.0.0";
@@ -58,7 +58,7 @@ public class DefaultSyntaxValidator implements SyntaxValidator
     @Override
     public void configure( Map<String, String> properties )
     {
-        schemaDir = Optional.ofNullable( properties.get( "validator.schemaDir" ) )
+        schemaDir = Optional.ofNullable( properties.get( SCHEMA_DIR_PROPERTY ) )
                 .orElseThrow( () -> new XAIPValidatorException( "missing property " + SCHEMA_DIR_PROPERTY ) );
     }
     

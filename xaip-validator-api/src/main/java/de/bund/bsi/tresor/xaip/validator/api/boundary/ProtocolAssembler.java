@@ -14,14 +14,14 @@ import oasis.names.tc.dss_x._1_0.profiles.verificationreport.schema_.Verificatio
 public interface ProtocolAssembler extends ValidatorModule
 {
     /**
-     * Using the {@link XAIPValidityType} created by the {@link SyntaxValidator} and adding the informations retrieved by the
-     * {@link SignatureVerifier} module
+     * Using the {@link XAIPValidityType} created by the {@link SyntaxValidator} and the informations retrieved by the
+     * {@link SignatureVerifier} to create a {@link VerificationReportType} which is presenting the result of the XAIP validation
      * 
      * @param xaipReport
      *            the xaipReport of the syntax validation module
      * @param credentialReports
      *            the individual reports from the verification module
-     * @return a reports representing the overall result of the validation and the intermediate reports
+     * @return a reports representing the overall result of the validation and the individual reports of the xaip content
      */
     public VerificationReportType assembleProtocols( XAIPValidityType xaipReport, Collection<CredentialValidityType> credentialReports );
 }

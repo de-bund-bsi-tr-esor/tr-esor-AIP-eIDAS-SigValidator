@@ -11,9 +11,9 @@ public interface ValidatorModule
 {
     /**
      * Version of the module which is always coupled to the vendor and can be in any format. The version will be printed on verbose logging
-     * when the module is being loaded to identify the modules in use. This helps the user to analyse any problems in the future.
+     * when the module is being loaded to identify the modules in use. This helps the user to analyze and report problems to the vendor.
      * 
-     * @return version the module version of the vendor
+     * @return the module version of the vendor
      */
     public String getVersion();
     
@@ -26,29 +26,46 @@ public interface ValidatorModule
     public String getVendor();
     
     /**
-     * Optional method for configuring the module. This method only needs to be implemented when the module is using any external
-     * configuration.<br/>
-     * The property map will contain any module arguments being passed to the XAIPValidator on startup.<br/>
-     * <br/>
-     * Arguments being passed to the XAIPValidator will have the following structure:<br/>
-     * <br/>
-     * <b>Format:</b> <code>$MODULE.$PROPERTY=$VALUE</code><br/>
-     * <b>Example:</b> <code>verifier.wsdlUrl=http://localhost:8080/s4?wsdl</code><br/>
-     * <br/>
-     * <li><b>$MODULE:</b> name of the module (finder,verifier,validator,assembler)
-     * <li><b>$PROPERTY:</b> property name which occurs as key in the properties map
-     * <li><b>$VALUE:</b> value mapped to the property name/key <br/>
-     * <br/>
-     * <i>Please refrain from using a property with the key <code>conf</code> since this keyword is reserved to specify a location of a
-     * property file containing the complete property map of this configuration.</i><br/>
-     * <br/>
-     * <b>Example:</b><code>verifier.conf=/tmp/verifier.properties</code><br/>
-     * <b>/tmp/verifier.properties:</b><br/>
-     * <code>wsdlUrl=http://localhost:8080/s4?wsdl</code><br/>
-     * <code>user=admin</code><br/>
-     * <code>pass=secret</code><br/>
-     * <br/>
-     * For an example implementation take a look at the default signature verifier provided by the BSI.
+     * Optional method for configuring the module. This method only needs to be implemented when the module depends on external
+     * configuration.</br>
+     * The property map will contain any module arguments being passed to the XAIPValidator on startup either via multiple arguments or a
+     * property file containing all properties.</br>
+     * </br>
+     * <b>Examples:</b></br>
+     * </br>
+     * <b>Input:</b> <code>java -jar xaip-validator-cli.jar -Margument.first=foo -Margument.second=bar</code></br>
+     * <b>Resolves to:</b></br>
+     * <table border=1>
+     * <tr>
+     * <td>argument.first</td>
+     * <td>foo</td>
+     * </tr>
+     * <tr>
+     * <td>argument.second</td>
+     * <td>bar</td>
+     * </tr>
+     * </table>
+     * </br>
+     * <b>Input:</b> <code>java -jar xaip-validator-cli.jar --config example.properties</code></br>
+     * <b>Resolves to:</b></br>
+     * <table border=1>
+     * <tr>
+     * <td>argument.first</td>
+     * <td>foo</td>
+     * </tr>
+     * <tr>
+     * <td>argument.second</td>
+     * <td>bar</td>
+     * </tr>
+     * </table>
+     * </br>
+     * <b>Content of example.properties:</br>
+     * <table border=1>
+     * <tr>
+     * <td>argument.first=foo</br>
+     * argument.second=bar</td>
+     * </tr>
+     * </table>
      * 
      * @param properties
      *            the property map for this module

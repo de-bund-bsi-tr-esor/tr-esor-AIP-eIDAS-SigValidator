@@ -46,7 +46,7 @@ import de.bund.bsi.tr_esor.xaip._1.XAIPType;
 import oasis.names.tc.dss._1_0.core.schema.AnyType;
 
 /**
- * Util class for XAIP
+ * Util class for XAIP operations
  * 
  * @author wolffs
  */
@@ -88,7 +88,7 @@ public class XAIPUtil
     }
     
     /**
-     * Searching for any {@link DataObjectReferenceType} which is present on lxaip's
+     * Searching for any {@link DataObjectReferenceType} which is being used in lxaip's
      * 
      * @param dataObject
      *            the dataObject
@@ -110,13 +110,13 @@ public class XAIPUtil
     }
     
     /**
-     * Searching for an {@link DataObjectType} by a dataObjectId
+     * Searching for a {@link DataObjectType} by a dataObjectId
      * 
      * @param dataSection
      *            the dataObjectsSection
      * @param dataObjectId
      *            the dataObjectId
-     * @return the dataObject if found
+     * @return the dataObject if found or an empty optional
      */
     public static Optional<DataObjectType> findDataObjectById( DataObjectsSectionType dataSection, String dataObjectId )
     {
@@ -164,7 +164,7 @@ public class XAIPUtil
     }
     
     /**
-     * Retrieving the id of the respective object
+     * Retrieving the id of the respective XAIP-Component (e.g. {@link CredentialType} or {@link MetaDataObjectType})
      * 
      * @param object
      *            the object
@@ -207,7 +207,7 @@ public class XAIPUtil
     }
     
     /**
-     * Extracting the complete xml data provided by the anyType which can contain any data or not
+     * Extracting the complete xml data provided by the {@link AnyType} which can contain any data or none
      * 
      * @param anyType
      *            anyType from the dataObjectType containing any xmlData
@@ -288,8 +288,6 @@ public class XAIPUtil
      * @param data
      *            the binary data
      * @return the binary data content if present
-     * @throws IllegalArgumentException
-     *             when content is not base64 encoded
      */
     public static Optional<byte[]> extractBinData( BinaryData data )
     {
@@ -299,7 +297,6 @@ public class XAIPUtil
                     try
                     {
                         return IOUtils.toByteArray( dh.getInputStream() );
-                        // return Base64.getDecoder().decode( b64Data );
                     }
                     catch ( IOException e )
                     {
@@ -314,8 +311,8 @@ public class XAIPUtil
      * <ul>
      * <li>BinaryData
      * <ul>
-     * <li>xmlData
-     * <li>lxaipData
+     * <li>xmlData as b64 data
+     * <li>lxaipData as b64 data
      * </ul>
      * <li>XmlData
      * <ul>
