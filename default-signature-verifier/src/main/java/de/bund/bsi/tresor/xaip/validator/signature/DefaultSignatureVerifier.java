@@ -312,38 +312,52 @@ public class DefaultSignatureVerifier implements SignatureVerifier
     {
         if ( service == null )
         {
-            String wsdlLocation = config.getWsdlUrl().orElseThrow( () -> new XAIPValidatorException( "missing wsdl location" ) );
-            try
-            {
-                URL wsdlUrl = new URL( wsdlLocation );
-                
-                HttpURLConnection connection = (HttpURLConnection) wsdlUrl.openConnection();
-                connection.setRequestProperty( "Connection", "close" );
-                connection.setConnectTimeout( config.getConnectTimeout() );
-                connection.connect();
-                
-                if ( connection.getResponseCode() == 200 )
-                {
-                    service = TokenSupplier.supplyToken( config )
-                            .map( token -> new S4_Service( wsdlUrl, new IdentityTokenHeaderFeature( token ) ) )
-                            .orElseGet( () -> new S4_Service( wsdlUrl ) );
-                    
-                    Map<String, Object> requestContext = ((BindingProvider) service.getS4()).getRequestContext();
-                    requestContext.put( BindingProviderProperties.CONNECT_TIMEOUT, config.getConnectTimeout() );
-                    requestContext.put( BindingProviderProperties.REQUEST_TIMEOUT, config.getRequestTimeout() );
-                }
-            }
-            catch ( SocketTimeoutException e )
-            {
-                throw new XAIPValidatorException( "could not connect to " + wsdlLocation, e );
-            }
-            catch ( IOException e )
-            {
-                throw new XAIPValidatorException( "could not read verifyConnectorUrl " + wsdlLocation, e );
-            }
+            createService();
         }
         
         return service.getS4().verify( request );
+    }
+    
+    void createService()
+    {
+        String wsdlLocation = config.getWsdlUrl().orElseThrow( () -> new XAIPValidatorException( "missing wsdl location" ) );
+        Optional<HttpURLConnection> openConnection = Optional.empty();
+        try
+        {
+            URL wsdlUrl = new URL( wsdlLocation );
+            
+            HttpURLConnection connection = (HttpURLConnection) wsdlUrl.openConnection();
+            connection.setRequestProperty( "Connection", "close" );
+            connection.setConnectTimeout( config.getConnectTimeout() );
+            
+            openConnection = Optional.of( connection );
+            connection.connect();
+            
+            if ( connection.getResponseCode() == 200 )
+            {
+                service = TokenSupplier.supplyToken( config )
+                        .map( token -> new S4_Service( wsdlUrl, new IdentityTokenHeaderFeature( token ) ) )
+                        .orElseGet( () -> new S4_Service( wsdlUrl ) );
+                
+                Map<String, Object> requestContext = ((BindingProvider) service.getS4()).getRequestContext();
+                requestContext.put( BindingProviderProperties.CONNECT_TIMEOUT, config.getConnectTimeout() );
+                requestContext.put( BindingProviderProperties.REQUEST_TIMEOUT, config.getRequestTimeout() );
+            }
+            
+            connection.disconnect();
+        }
+        catch ( SocketTimeoutException e )
+        {
+            throw new XAIPValidatorException( "could not connect to " + wsdlLocation, e );
+        }
+        catch ( IOException e )
+        {
+            throw new XAIPValidatorException( "could not read verifyConnectorUrl " + wsdlLocation, e );
+        }
+        finally
+        {
+            openConnection.ifPresent( HttpURLConnection::disconnect );
+        }
     }
     
 }
