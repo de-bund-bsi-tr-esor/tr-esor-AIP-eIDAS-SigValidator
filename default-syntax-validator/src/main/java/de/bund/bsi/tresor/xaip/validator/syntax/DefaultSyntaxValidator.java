@@ -1,5 +1,6 @@
 package de.bund.bsi.tresor.xaip.validator.syntax;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -16,6 +17,7 @@ import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
+import org.apache.commons.io.IOUtils;
 import org.etsi.uri._02918.v1_2.DataObjectReferenceType;
 
 import de.bund.bsi.tr_esor.vr._1.XAIPValidityType;
@@ -27,8 +29,10 @@ import de.bund.bsi.tresor.xaip.validator.api.control.VerificationUtil;
 import de.bund.bsi.tresor.xaip.validator.api.entity.DefaultResult;
 import de.bund.bsi.tresor.xaip.validator.api.entity.DefaultResult.Minor;
 import de.bund.bsi.tresor.xaip.validator.api.entity.DefaultResult.ResultLanguage;
+import de.bund.bsi.tresor.xaip.validator.api.entity.ModuleContext;
 import de.bund.bsi.tresor.xaip.validator.api.entity.SyntaxValidationResult;
 import de.bund.bsi.tresor.xaip.validator.api.entity.XAIPValidatorException;
+import de.bund.bsi.tresor.xaip.validator.syntax.context.DefaultSyntaxValidatorContext;
 import de.bund.bsi.tresor.xaip.validator.syntax.validators.CredentialSectionValidator;
 import de.bund.bsi.tresor.xaip.validator.syntax.validators.DataObjectSectionValidator;
 import de.bund.bsi.tresor.xaip.validator.syntax.validators.MetaDataValidator;
@@ -63,7 +67,7 @@ public class DefaultSyntaxValidator implements SyntaxValidator
     }
     
     @Override
-    public SyntaxValidationResult validateSyntax( InputStream xaipCandidate )
+    public SyntaxValidationResult validateSyntax( ModuleContext context, InputStream xaipCandidate )
     {
         Optional<XAIPType> optXaip = Optional.empty();
         XAIPValidityType report = new XAIPValidityType();
@@ -71,8 +75,14 @@ public class DefaultSyntaxValidator implements SyntaxValidator
                 .message( "xaip is schema conform", ResultLanguage.ENGLISH )
                 .build();
         
-        try
+        try ( ByteArrayOutputStream baos = new ByteArrayOutputStream() )
         {
+            IOUtils.copy( xaipCandidate, baos );
+            byte[] data = baos.toByteArray();
+            
+            DefaultSyntaxValidatorContext syntaxContext = new DefaultSyntaxValidatorContext( data );
+            context.put( DefaultSyntaxValidatorContext.class, syntaxContext );
+            
             JAXBContext jaxbContext = JAXBContext.newInstance( XAIPType.class, DataObjectReferenceType.class );
             Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
             
@@ -80,7 +90,7 @@ public class DefaultSyntaxValidator implements SyntaxValidator
             Schema schema = schemaFactory.newSchema( sources( new File( schemaDir ) ).stream().toArray( Source[]::new ) );
             
             jaxbUnmarshaller.setSchema( schema );
-            JAXBElement<XAIPType> element = jaxbUnmarshaller.unmarshal( new StreamSource( xaipCandidate ), XAIPType.class );
+            JAXBElement<XAIPType> element = jaxbUnmarshaller.unmarshal( new StreamSource( syntaxContext.rawXaipInput() ), XAIPType.class );
             optXaip = Optional.ofNullable( element.getValue() );
             
             DataObjectsSectionType dataSection = optXaip.map( XAIPType::getDataObjectsSection ).orElse( null );
@@ -95,7 +105,6 @@ public class DefaultSyntaxValidator implements SyntaxValidator
             
             credentialValidator.validateCredentialsSection( optXaip.map( XAIPType::getCredentialsSection ) )
                     .ifPresent( report::setCredentialsSection );
-            
         }
         catch ( Exception e )
         {

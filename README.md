@@ -21,10 +21,16 @@ cd xaipvalidator
 mvn clean package
 
 # CLI
+# Mac/Linux/Windows
 java -jar xaip-validator-cli/target/xaip-validator-cli.jar -i ~/Dokumente/XAIP-Validator/validator/PAdES.xaip -Mvalidator.schemaDir=default-syntax-validator/src/main/resources/definitions
 
+
 # SOAP Server
-java -cp "xaip-validator-soap/target/xaip-validator-soap-1.0.1-2.jar:target/dependency/*" de.bund.bsi.tresor.xaip.validator.soap.Server -Mvalidator.schemaDir=default-syntax-validator/src/main/resources/definition -Mverifier.wsdlUrl="https://host:port/VerificationService/S4?wsdl"
+# Mac/Linux
+java -cp "xaip-validator-soap/target/xaip-validator-soap-1.0.6-1.jar:target/dependency/*" de.bund.bsi.tresor.xaip.validator.soap.Server -Mvalidator.schemaDir=default-syntax-validator/src/main/resources/definition -Mverifier.wsdlUrl="https://host:port/VerificationService/S4?wsdl"
+
+# Windows
+java -cp "xaip-validator-soap/target/xaip-validator-soap-1.0.6-1.jar;target/dependency/*" de.bund.bsi.tresor.xaip.validator.soap.Server -Mvalidator.schemaDir=default-syntax-validator/src/main/resources/definition -Mverifier.wsdlUrl="https://host:port/VerificationService/S4?wsdl"
 ```
 
 ## Prerequisites

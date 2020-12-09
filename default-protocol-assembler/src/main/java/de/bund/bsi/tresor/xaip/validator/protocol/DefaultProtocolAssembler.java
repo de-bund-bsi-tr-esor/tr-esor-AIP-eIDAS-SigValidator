@@ -29,6 +29,7 @@ import de.bund.bsi.tresor.xaip.validator.api.control.XAIPUtil;
 import de.bund.bsi.tresor.xaip.validator.api.entity.DefaultResult;
 import de.bund.bsi.tresor.xaip.validator.api.entity.DefaultResult.Major;
 import de.bund.bsi.tresor.xaip.validator.api.entity.DefaultResult.ResultLanguage;
+import de.bund.bsi.tresor.xaip.validator.api.entity.ModuleContext;
 import lombok.Getter;
 import oasis.names.tc.dss._1_0.core.schema.AnyType;
 import oasis.names.tc.dss._1_0.core.schema.Result;
@@ -49,7 +50,8 @@ public class DefaultProtocolAssembler implements ProtocolAssembler
     private final String version = "1.0.0";
     
     @Override
-    public VerificationReportType assembleProtocols( XAIPValidityType xaipReport, Collection<CredentialValidityType> credentialReports )
+    public VerificationReportType assembleProtocols( ModuleContext context, XAIPValidityType xaipReport,
+            Collection<CredentialValidityType> credentialReports )
     {
         var completeReport = new VerificationReportType();
         

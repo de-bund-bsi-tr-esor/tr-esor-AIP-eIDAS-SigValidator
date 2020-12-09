@@ -1,4 +1,4 @@
-package de.bund.bsi.tresor.xaip.validator.signature;
+package de.bund.bsi.tresor.xaip.validator.signature.token;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -9,6 +9,8 @@ import java.net.http.HttpResponse.BodyHandlers;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Optional;
+
+import de.bund.bsi.tresor.xaip.validator.signature.DefaultVerifierConfig;
 
 /**
  * Supplier implementation of the optional identityToken which is being used as an additional header for the ECM requests.

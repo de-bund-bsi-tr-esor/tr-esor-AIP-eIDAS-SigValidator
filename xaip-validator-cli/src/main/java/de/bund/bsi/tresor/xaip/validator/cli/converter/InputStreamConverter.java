@@ -1,6 +1,5 @@
 package de.bund.bsi.tresor.xaip.validator.cli.converter;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -24,12 +23,6 @@ public class InputStreamConverter implements IStringConverter<InputStream>
     {
         try
         {
-            File file = new File( value );
-            if ( !file.exists() )
-            {
-                throw new FileNotFoundException();
-            }
-            
             return new FileInputStream( value );
         }
         catch ( FileNotFoundException e )

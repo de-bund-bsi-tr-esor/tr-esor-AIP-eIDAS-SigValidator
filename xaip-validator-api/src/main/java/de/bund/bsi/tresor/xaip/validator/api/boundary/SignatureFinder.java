@@ -6,6 +6,7 @@ import java.util.Set;
 import de.bund.bsi.tr_esor.xaip._1.CredentialType;
 import de.bund.bsi.tr_esor.xaip._1.DataObjectType;
 import de.bund.bsi.tr_esor.xaip._1.XAIPType;
+import de.bund.bsi.tresor.xaip.validator.api.entity.ModuleContext;
 
 /**
  * API for the SignatureFinderModule.
@@ -24,9 +25,12 @@ public interface SignatureFinder extends ValidatorModule
      * Therefore multiple {@link CredentialType}s can be bound to an {@link DataObjectType} and in cases for embedded unbound
      * {@link CredentialType}s they relate to an empty {@link DataObjectType} which is represented in the map as <code>null</code> value.
      * 
+     * @param context
+     *            moduleContext which can be used to add additional results/arguments for subsequent modules or evaluate those additional
+     *            data
      * @param xaip
      *            the xaip to analyze
      * @return a set of credentialIds as value mapped to the related dataObjectId as the key
      */
-    public Map<String, Set<String>> findSignatures( XAIPType xaip );
+    public Map<String, Set<String>> findSignatures( ModuleContext context, XAIPType xaip );
 }

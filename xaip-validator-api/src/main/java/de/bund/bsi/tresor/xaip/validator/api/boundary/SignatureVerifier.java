@@ -8,6 +8,7 @@ import de.bund.bsi.tr_esor.vr._1.CredentialValidityType;
 import de.bund.bsi.tr_esor.xaip._1.CredentialType;
 import de.bund.bsi.tr_esor.xaip._1.DataObjectType;
 import de.bund.bsi.tr_esor.xaip._1.XAIPType;
+import de.bund.bsi.tresor.xaip.validator.api.entity.ModuleContext;
 import oasis.names.tc.dss_x._1_0.profiles.verificationreport.schema_.IndividualReportType;
 
 /**
@@ -23,6 +24,9 @@ public interface SignatureVerifier extends ValidatorModule
      * the resolved signatures. Each signature should result into an {@link CredentialValidityType} with consideration of the supported
      * signatures of the verifier.
      * 
+     * @param context
+     *            moduleContext which can be used to add additional results/arguments for subsequent modules or evaluate those additional
+     *            data
      * @param xaip
      *            the xaip to validate
      * @param credIdsByDataId
@@ -46,5 +50,6 @@ public interface SignatureVerifier extends ValidatorModule
      *            </ul>
      * @return the verification result in form of an {@link IndividualReportType}s
      */
-    public List<CredentialValidityType> verify( XAIPType xaip, Map<String, Set<String>> credIdsByDataId );
+    public List<CredentialValidityType> verify( ModuleContext context, XAIPType xaip, Map<String, Set<String>> credIdsByDataId );
+    
 }

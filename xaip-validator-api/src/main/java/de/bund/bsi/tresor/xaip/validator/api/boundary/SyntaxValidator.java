@@ -3,6 +3,7 @@ package de.bund.bsi.tresor.xaip.validator.api.boundary;
 import java.io.InputStream;
 
 import de.bund.bsi.tr_esor.xaip._1.XAIPType;
+import de.bund.bsi.tresor.xaip.validator.api.entity.ModuleContext;
 import de.bund.bsi.tresor.xaip.validator.api.entity.SyntaxValidationResult;
 import oasis.names.tc.dss_x._1_0.profiles.verificationreport.schema_.IndividualReportType;
 
@@ -18,10 +19,13 @@ public interface SyntaxValidator extends ValidatorModule
      * {@link IndividualReportType} will be created containing the information of the XAIP syntax validation. If the validation was
      * successful the parsed {@link XAIPType} is also being returned.
      * 
+     * @param context
+     *            moduleContext which can be used to add additional results/arguments for subsequent modules or evaluate those additional
+     *            data
      * @param xaipCandidate
      *            inputStream which should contain an xaip
      * @return {@link SyntaxValidationResult} containing the {@link IndividualReportType} and an optional {@link XAIPType} which is empty on
      *         invalid syntax
      */
-    public SyntaxValidationResult validateSyntax( InputStream xaipCandidate );
+    public SyntaxValidationResult validateSyntax( ModuleContext context, InputStream xaipCandidate );
 }

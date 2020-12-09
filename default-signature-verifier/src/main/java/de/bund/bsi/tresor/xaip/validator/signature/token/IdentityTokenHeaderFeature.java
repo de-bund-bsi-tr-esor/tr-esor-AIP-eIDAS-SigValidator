@@ -1,4 +1,4 @@
-package de.bund.bsi.tresor.xaip.validator.signature;
+package de.bund.bsi.tresor.xaip.validator.signature.token;
 
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;

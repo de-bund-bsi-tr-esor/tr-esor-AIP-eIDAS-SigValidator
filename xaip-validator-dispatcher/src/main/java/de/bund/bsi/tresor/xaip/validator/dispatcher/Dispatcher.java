@@ -20,6 +20,7 @@ import de.bund.bsi.tresor.xaip.validator.api.boundary.SignatureVerifier;
 import de.bund.bsi.tresor.xaip.validator.api.boundary.SyntaxValidator;
 import de.bund.bsi.tresor.xaip.validator.api.boundary.ValidatorModule;
 import de.bund.bsi.tresor.xaip.validator.api.control.ModuleLogger;
+import de.bund.bsi.tresor.xaip.validator.api.entity.ModuleContext;
 import de.bund.bsi.tresor.xaip.validator.api.entity.SyntaxValidationResult;
 import de.bund.bsi.tresor.xaip.validator.api.entity.XAIPValidatorException;
 import oasis.names.tc.dss_x._1_0.profiles.verificationreport.schema_.ObjectFactory;
@@ -65,10 +66,11 @@ public enum Dispatcher
      */
     public void dispatch( DispatcherArguments args )
     {
+        ModuleContext ctx = new ModuleContext();
         ModuleLogger.initConfig( args.isVerbose(), args.getLog() );
         loadModules( args.getModuleConfig() );
         
-        SyntaxValidationResult syntaxResult = syntaxValidator.validateSyntax( args.getInput() );
+        SyntaxValidationResult syntaxResult = syntaxValidator.validateSyntax( ctx, args.getInput() );
         ModuleLogger.log( "finished syntax validation" );
         
         XAIPValidityType xaipReport = syntaxResult.getSyntaxReport();
@@ -77,16 +79,16 @@ public enum Dispatcher
         if ( args.isVerify() )
         {
             syntaxResult.getXaip().ifPresent( xaip -> {
-                Map<String, Set<String>> signatures = sigFinder.findSignatures( xaip );
+                Map<String, Set<String>> signatures = sigFinder.findSignatures( ctx, xaip );
                 ModuleLogger.log( signatures.size() + " signatures found" );
                 ModuleLogger.log( "finished signature search" );
                 
-                credentialReports.addAll( sigVerifier.verify( xaip, signatures ) );
+                credentialReports.addAll( sigVerifier.verify( ctx, xaip, signatures ) );
                 ModuleLogger.log( "finished signature verification" );
             } );
         }
         
-        VerificationReportType verificationReport = protocolAssembler.assembleProtocols( xaipReport, credentialReports );
+        VerificationReportType verificationReport = protocolAssembler.assembleProtocols( ctx, xaipReport, credentialReports );
         ModuleLogger.log( "finished protocol assembling" );
         
         writeReport( verificationReport, args.getOutput() );
