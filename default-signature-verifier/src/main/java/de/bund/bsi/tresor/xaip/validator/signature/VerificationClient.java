@@ -55,6 +55,12 @@ public class VerificationClient
     private S4_Service            service;
     private DefaultVerifierConfig config;
     
+    /**
+     * Creating a new client for the verificationService
+     * 
+     * @param config
+     *            the defaultVerifier config
+     */
     public VerificationClient( DefaultVerifierConfig config )
     {
         this.config = config;
@@ -111,8 +117,12 @@ public class VerificationClient
      * request. The service client will be created on the first call and reused after. When no wsdl was being provided an exception will be
      * thrown instead.
      * 
-     * @param request
-     *            the verification request
+     * @param reqId
+     *            the requestId
+     * @param signatureObject
+     *            the signatureObject
+     * @param dataObjContent
+     *            the dataObjectContent
      * @return the verification response
      */
     public List<CredentialValidityType> request( String reqId, Optional<SignatureObject> signatureObject, Optional<byte[]> dataObjContent )

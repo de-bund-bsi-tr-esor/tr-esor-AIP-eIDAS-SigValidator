@@ -32,8 +32,6 @@ import oasis.names.tc.dss._1_0.core.schema.SignatureObject;
  * Implementation of the SignatureVerifier module from the XAIPValidator.
  * 
  * @author wolffs
- * @param <T>
- * @param <V>
  */
 @Getter
 public class DefaultSignatureVerifier implements SignatureVerifier

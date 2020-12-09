@@ -16,6 +16,11 @@ public class DefaultSyntaxValidatorContext
 {
     private byte[] rawData;
     
+    /**
+     * Returns an new inputStream of raw xaip data
+     * 
+     * @return the inputStream
+     */
     public InputStream rawXaipInput()
     {
         return new ByteArrayInputStream( rawData );
