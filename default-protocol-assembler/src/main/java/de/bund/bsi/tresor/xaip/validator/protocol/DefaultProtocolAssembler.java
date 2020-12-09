@@ -1,5 +1,6 @@
 package de.bund.bsi.tresor.xaip.validator.protocol;
 
+import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 
@@ -107,25 +108,40 @@ public class DefaultProtocolAssembler implements ProtocolAssembler
                 .collect( toList() ) );
         
         // detached signatures
-        masterReports.replaceAll( masterReport -> {
-            final String masterId = masterReport.getCredentialID();
-            
-            return credentialReports.stream()
-                    .filter( f -> f.getCredentialID().equals( masterId ) )
-                    .findAny()
-                    .map( subReport -> mergeSubReport( masterReport, subReport ) )
-                    .orElse( ensureReportContent( masterReport ) );
-        } );
+        List<CredentialValidityType> currentMasterReports = new ArrayList<>();
+        for ( CredentialValidityType masterReport : masterReports )
+        {
+            currentMasterReports.addAll( replace( masterReport, credentialReports ) );
+        }
         
-        if ( !masterReports.isEmpty() )
+        if ( !currentMasterReports.isEmpty() )
         {
             CredentialsSectionValidityType credentialValidity = new CredentialsSectionValidityType();
-            credentialValidity.getCredential().addAll( masterReports );
+            credentialValidity.getCredential().addAll( currentMasterReports );
             
             report.setCredentialsSection( credentialValidity );
         }
         
         return report;
+    }
+    
+    List<CredentialValidityType> replace( CredentialValidityType masterReport,
+            Collection<CredentialValidityType> credentialReports )
+    {
+        final String masterId = masterReport.getCredentialID();
+        List<CredentialValidityType> replacements = credentialReports.stream()
+                .filter( f -> f.getCredentialID().equals( masterId ) )
+                .map( subReport -> mergeSubReport( masterReport, subReport ) )
+                .collect( toList() );
+        
+        if ( !replacements.isEmpty() )
+        {
+            return replacements;
+        }
+        else
+        {
+            return singletonList( ensureReportContent( masterReport ) );
+        }
     }
     
     CredentialValidityType ensureReportContent( CredentialValidityType type )
