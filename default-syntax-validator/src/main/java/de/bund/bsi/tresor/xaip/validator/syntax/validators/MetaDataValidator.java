@@ -99,7 +99,8 @@ public enum MetaDataValidator
     {
         String oid = metaData.getDataObjectID().stream()
                 .map( XAIPUtil::idFromObject )
-                .reduce( "", ( a, b ) -> String.join( " ", a, b ) );
+                .reduce( "", ( a, b ) -> String.join( " ", a, b ) )
+                .trim();
         
         MetaDataObjectValidityType result = new MetaDataObjectValidityType();
         result.setMetaDataID( metaData.getMetaDataID() );
