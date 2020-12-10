@@ -119,7 +119,9 @@ public class DefaultSignatureVerifier implements SignatureVerifier
     List<CredentialValidityType> verifySignature( String id, Set<String> xmlContextIds, Optional<SignatureObject> signatureObject,
             Optional<byte[]> dataObjContent, Optional<DefaultSyntaxValidatorContext> ctx )
     {
-        if ( xmlContextIds.contains( id ) || signatureObject.map( SignatureObject::getSignature ).isPresent() )
+        
+        if ( xmlContextIds.contains( id ) || dataObjContent.map( XAIPUtil::isXml ).orElse( false )
+                || signatureObject.map( SignatureObject::getSignature ).isPresent() )
         {
             Optional<byte[]> encodedXmlData = Optional.empty();
             Optional<SignatureObject> encodedSignatureObj = Optional.empty();
