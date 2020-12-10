@@ -171,7 +171,7 @@ public class VerificationClient
         catch ( Exception e )
         {
             ModuleLogger.verbose( "verification error for credential or data " + reqId, e );
-            Result errorResult = DefaultResult.error().message( e.getMessage(), ResultLanguage.ENGLISH ).build();
+            Result errorResult = DefaultResult.invalid().message( e.getMessage(), ResultLanguage.ENGLISH ).build();
             
             CredentialValidityType verificationError = new CredentialValidityType();
             verificationError.setCredentialID( reqId );

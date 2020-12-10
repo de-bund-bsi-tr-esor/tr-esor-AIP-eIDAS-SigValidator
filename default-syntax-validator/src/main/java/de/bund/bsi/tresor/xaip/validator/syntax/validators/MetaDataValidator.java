@@ -109,7 +109,7 @@ public enum MetaDataValidator
         validateClassification( metaData.getCategory(), metaData.getClassification() ).ifPresent( result::setClassification );
         
         // result.setDataObjectCheckSum( value ); // FIXME bug in spec
-        result.setContent( VerificationUtil.verificationResult( DefaultResult.ok().build() ) );
+        result.setContent( VerificationUtil.verificationResult( DefaultResult.valid().build() ) );
         
         return result;
     }
