@@ -79,7 +79,7 @@ public class CredentialSectionAnalyzer
             
             if ( signType.map( org.w3._2000._09.xmldsig_.SignatureType::getObject ).map( l -> !l.isEmpty() ).orElse( false ) )
             {
-                sigResults.add( new FinderResult( null, SignaturePresence.PRESENT, Optional.empty(), false ) );
+                sigResults.add( new FinderResult( null, SignaturePresence.PRESENT, Optional.empty() ) );
             }
         }
         
@@ -92,13 +92,12 @@ public class CredentialSectionAnalyzer
                     .map( CredentialSectionAnalyzer::dataContent )
                     .or( () -> XAIPUtil.extractData( dataObject ) );
             
-            boolean isXml = optDataBlob.map( XAIPUtil::isXml ).orElse( false );
             Optional<InputStream> optData = optDataBlob.map( ByteArrayInputStream::new );
             
             // TODO: only when optData present; is this correct?
             if ( optData.isPresent() && (signType.isPresent() || signObj.getTimestamp() != null) )
             {
-                sigResults.add( new FinderResult( dataObject, SignaturePresence.PRESENT, optData, isXml ) );
+                sigResults.add( new FinderResult( dataObject, SignaturePresence.PRESENT, optData ) );
             }
             else if ( b64Signature.isPresent() )
             {
@@ -107,11 +106,11 @@ public class CredentialSectionAnalyzer
             }
             else if ( signaturePtr != null )
             {
-                sigResults.add( analyzePointer( signaturePtr, dataObject, optData, isXml ) );
+                sigResults.add( analyzePointer( signaturePtr, dataObject, optData ) );
             }
             else
             {
-                sigResults.add( new FinderResult( dataObject, SignaturePresence.UNKNOWN, optData, isXml ) );
+                sigResults.add( new FinderResult( dataObject, SignaturePresence.UNKNOWN, optData ) );
             }
         }
         
@@ -132,13 +131,13 @@ public class CredentialSectionAnalyzer
         }
     }
     
-    static FinderResult analyzePointer( SignaturePtr pointer, DataObjectType dataObj, Optional<InputStream> optData, boolean isXml )
+    static FinderResult analyzePointer( SignaturePtr pointer, DataObjectType dataObj, Optional<InputStream> optData )
     {
         Object document = pointer.getWhichDocument();
         String oid = XAIPUtil.idFromObject( document );
         if ( dataObj.getDataObjectID().equals( oid ) )
         {
-            return new FinderResult( dataObj, SignaturePresence.PRESENT, optData, isXml );
+            return new FinderResult( dataObj, SignaturePresence.PRESENT, optData );
         }
         
         // TODO might convert document to byte[] in another form
@@ -147,6 +146,6 @@ public class CredentialSectionAnalyzer
             return DataSectionAnalyzer.analyzeBinData( dataObj, (byte[]) document );
         }
         
-        return new FinderResult( dataObj, SignaturePresence.MISSING, optData, isXml );
+        return new FinderResult( dataObj, SignaturePresence.MISSING, optData );
     }
 }

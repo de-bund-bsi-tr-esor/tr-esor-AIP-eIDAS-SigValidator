@@ -41,9 +41,6 @@ public class FinderResult
     private SignaturePresence     presence;
     private Optional<InputStream> data;
     
-    // indicating if this is an plain xmlSignature which was not b64 encoded and has to be handled with caution
-    private boolean               isXmlSignatureObject;
-    
     /**
      * Creating a new FinderResult
      * 
@@ -53,14 +50,11 @@ public class FinderResult
      *            the presence of a signature
      * @param data
      *            the data of the dataObject (might be an embedded signature)
-     * @param isXmlSignatureObj
-     *            if the result is an xmlSignature which needs further treatment later
      */
-    public FinderResult( DataObjectType dataObject, SignaturePresence presence, InputStream data, boolean isXmlSignatureObj )
+    public FinderResult( DataObjectType dataObject, SignaturePresence presence, InputStream data )
     {
         this.dataObject = dataObject;
         this.presence = presence;
         this.data = Optional.ofNullable( data );
-        this.isXmlSignatureObject = isXmlSignatureObj;
     }
 }

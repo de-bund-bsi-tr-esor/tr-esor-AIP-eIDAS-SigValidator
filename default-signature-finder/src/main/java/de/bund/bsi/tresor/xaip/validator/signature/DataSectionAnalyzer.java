@@ -86,7 +86,7 @@ public class DataSectionAnalyzer
         SignaturePresence presence = SignaturePresence
                 .fromBoolean( PAdESChecker.INSTANCE.isPAdES( data ) || CAdESChecker.INSTANCE.isCAdES( data ) );
         
-        return new FinderResult( dataObject, presence, new ByteArrayInputStream( data ), false );
+        return new FinderResult( dataObject, presence, new ByteArrayInputStream( data ) );
     }
     
     /**
@@ -107,7 +107,7 @@ public class DataSectionAnalyzer
                 .map( d -> SignaturePresence.UNKNOWN )
                 .orElseGet( xadesResult ) : xadesResult.get();
         
-        return new FinderResult( dataObject, presence, new ByteArrayInputStream( data ), false );
+        return new FinderResult( dataObject, presence, new ByteArrayInputStream( data ) );
     }
     
 }

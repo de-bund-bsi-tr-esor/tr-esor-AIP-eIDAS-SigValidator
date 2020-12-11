@@ -62,9 +62,22 @@ public class CLITestM
     // "src/test/resources/samples/TST-24-1-xades-att-enveloped-xml-single_b64/XAIP-xades-att-enveloped-xml-single.xml";
     // private static final String TEST_FILE = "src/test/resources/samples/cades-enveloping-b64Data-sigPtr-chain.xml";
     
-    private static final String TEST_FILE             = "src/test/resources/samples/TST-11-xades-det-txt-single/XAIP-xades-det-single.xml";
+    // private static final String TEST_FILE = "src/test/resources/samples/TST-11-xades-det-txt-single/XAIP-xades-det-single.xml";
+    // private static final String TEST_FILE =
+    // "/home/wolffs/git/xaipautomated/testdata/TST-24-xades-att-enveloped-xml-single/XAIP-xades-att-enveloped-xml-single.xml";
+    // private static final String TEST_FILE =
+    // "/home/wolffs/git/xaipautomated/testdata/TST-21-1-xades-det-xml-double-single-sig-file/XAIP-xades-det-xml-double.xml";
+    // private static final String TEST_FILE =
+    // "/home/wolffs/git/xaipautomated/testdata/TST-13-xades-att-enveloping-txt-single/XAIP-xades-att-env-txt-single.xml";
+    private static final String TEST_FILE             = "/home/wolffs/git/xaipautomated/testdata/TST-17-1-xades-att-enveloping-pdf-single-b64/XAIP-xades-att-env-pdf-single.xml";
     
     private static final String TEST_RESULT_FILE      = "/tmp/report.xml";
+    
+    @Test
+    public void help()
+    {
+        CLI.main( new String[] { "-h" } );
+    }
     
     /**
      * Executing the xaip validator with a single test file

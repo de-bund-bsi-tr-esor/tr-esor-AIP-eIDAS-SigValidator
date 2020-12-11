@@ -40,7 +40,6 @@ import de.bund.bsi.tr_esor.xaip._1.DataObjectsSectionType;
 import de.bund.bsi.tr_esor.xaip._1.XAIPType;
 import de.bund.bsi.tresor.xaip.validator.api.boundary.SignatureFinder;
 import de.bund.bsi.tresor.xaip.validator.api.entity.ModuleContext;
-import de.bund.bsi.tresor.xaip.validator.signature.context.DefaultSignatureFinderContext;
 import de.bund.bsi.tresor.xaip.validator.signature.entity.FinderResult;
 import de.bund.bsi.tresor.xaip.validator.signature.entity.SignaturePresence;
 import lombok.Getter;
@@ -56,12 +55,6 @@ public class DefaultSignatureFinder implements SignatureFinder
     private final String vendor  = "BSI";
     private final String version = "1.0.0";
     
-    /**
-     * List of credentialIds mapped by the dataObjectId
-     * 
-     * @param xaip
-     * @return
-     */
     @Override
     public Map<String, Set<String>> findSignatures( ModuleContext context, XAIPType xaip )
     {
@@ -83,38 +76,7 @@ public class DefaultSignatureFinder implements SignatureFinder
                 .map( c -> CredentialSectionAnalyzer.analyzeCredential( c, dataSection, dataSectionResults ) )
                 .collect( toMap( Entry::getKey, Entry::getValue ) );
         
-        Map<CredentialType, Set<FinderResult>> mergeResults = mergeResults( dataSectionResults, credentialSectionResults );
-        
-        Set<String> xmlContextIds = xmlContextIds( dataSectionResults, credentialSectionResults );
-        DefaultSignatureFinderContext finderContext = new DefaultSignatureFinderContext( xmlContextIds );
-        context.put( DefaultSignatureFinderContext.class, finderContext );
-        
-        return mapCredIdsByDataId( mergeResults );
-    }
-    
-    Set<String> xmlContextIds( Set<FinderResult> dataSectionResults, Map<CredentialType, Set<FinderResult>> credentialSectionResult )
-    {
-        Set<String> xmlContextDataObjectIds = dataSectionResults.stream()
-                .filter( FinderResult::isXmlSignatureObject )
-                .filter( f -> SignaturePresence.PRESENT.equals( f.getPresence() ) )
-                .map( FinderResult::getDataObject )
-                .map( DataObjectType::getDataObjectID )
-                .collect( toSet() );
-        
-        Set<String> xmlContextCredentialIds = credentialSectionResult.entrySet().stream()
-                .filter( f -> !f.getValue().isEmpty() )
-                .filter( f -> f.getValue().stream()
-                        .filter( rf -> SignaturePresence.PRESENT.equals( rf.getPresence() ) )
-                        .anyMatch( FinderResult::isXmlSignatureObject ) )
-                .map( Entry::getKey )
-                .map( CredentialType::getCredentialID )
-                .collect( toSet() );
-        
-        Set<String> xmlContextIds = new HashSet<>();
-        xmlContextIds.addAll( xmlContextDataObjectIds );
-        xmlContextIds.addAll( xmlContextCredentialIds );
-        
-        return xmlContextIds;
+        return mapCredIdsByDataId( mergeResults( dataSectionResults, credentialSectionResults ) );
     }
     
     Map<CredentialType, Set<FinderResult>> mergeResults( Set<FinderResult> dataSectionResults,

@@ -23,7 +23,6 @@ package de.bund.bsi.tresor.xaip.validator.signature;
 
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -42,7 +41,6 @@ import de.bund.bsi.tresor.xaip.validator.api.boundary.SignatureVerifier;
 import de.bund.bsi.tresor.xaip.validator.api.control.ModuleLogger;
 import de.bund.bsi.tresor.xaip.validator.api.control.XAIPUtil;
 import de.bund.bsi.tresor.xaip.validator.api.entity.ModuleContext;
-import de.bund.bsi.tresor.xaip.validator.signature.context.DefaultSignatureFinderContext;
 import de.bund.bsi.tresor.xaip.validator.syntax.context.DefaultSyntaxValidatorContext;
 import lombok.Getter;
 import oasis.names.tc.dss._1_0.core.schema.SignatureObject;
@@ -77,9 +75,6 @@ public class DefaultSignatureVerifier implements SignatureVerifier
     public List<CredentialValidityType> verify( ModuleContext context, XAIPType xaip, Map<String, Set<String>> credIdsByDataId )
     {
         Optional<DefaultSyntaxValidatorContext> syntaxContext = context.find( DefaultSyntaxValidatorContext.class );
-        Set<String> xmlContextIds = context.find( DefaultSignatureFinderContext.class )
-                .map( DefaultSignatureFinderContext::getXmlContextIds )
-                .orElse( new HashSet<>() );
         
         List<CredentialValidityType> resultList = new ArrayList<>();
         for ( Entry<String, Set<String>> entry : credIdsByDataId.entrySet() )
@@ -95,7 +90,7 @@ public class DefaultSignatureVerifier implements SignatureVerifier
             Set<String> credIds = entry.getValue();
             if ( credIds.isEmpty() && data.isPresent() )
             {
-                resultList.addAll( verifySignature( dataId.get(), xmlContextIds, Optional.empty(), data, syntaxContext ) );
+                resultList.addAll( verifySignature( dataId.get(), null, Optional.empty(), data, syntaxContext ) );
             }
             else
             {
@@ -108,7 +103,7 @@ public class DefaultSignatureVerifier implements SignatureVerifier
                             .map( CredentialType::getSignatureObject )
                             .findAny();
                     
-                    resultList.addAll( verifySignature( credId, xmlContextIds, signObj, data, syntaxContext ) );
+                    resultList.addAll( verifySignature( dataId.orElse( null ), credId, signObj, data, syntaxContext ) );
                 }
             }
         }
@@ -116,12 +111,14 @@ public class DefaultSignatureVerifier implements SignatureVerifier
         return resultList;
     }
     
-    List<CredentialValidityType> verifySignature( String id, Set<String> xmlContextIds, Optional<SignatureObject> signatureObject,
+    List<CredentialValidityType> verifySignature( String dataId, String credId, Optional<SignatureObject> signatureObject,
             Optional<byte[]> dataObjContent, Optional<DefaultSyntaxValidatorContext> ctx )
     {
+        boolean encodeDataObj = dataObjContent.map( XAIPUtil::isXml ).orElse( false );
+        boolean encodeCredObj = signatureObject.map( SignatureObject::getSignature ).isPresent();
+        String reqId = Optional.ofNullable( credId ).orElse( dataId );
         
-        if ( xmlContextIds.contains( id ) || dataObjContent.map( XAIPUtil::isXml ).orElse( false )
-                || signatureObject.map( SignatureObject::getSignature ).isPresent() )
+        if ( encodeDataObj || encodeCredObj )
         {
             Optional<byte[]> encodedXmlData = Optional.empty();
             Optional<SignatureObject> encodedSignatureObj = Optional.empty();
@@ -131,34 +128,37 @@ public class DefaultSignatureVerifier implements SignatureVerifier
                 try ( InputStream rawXaip = optRawXaip.get() )
                 {
                     Document document = new SAXReader().read( rawXaip );
-                    encodedXmlData = XmlSignatureEncoder.b64EncodeDataObjectPlainXml( document, id );
-                    
-                    if ( signatureObject.isPresent() )
+                    if ( encodeDataObj )
                     {
-                        encodedSignatureObj = XmlSignatureEncoder.b64EncodeCredentialXmlSignatureObject( document, id );
+                        encodedXmlData = XmlSignatureEncoder.b64EncodeDataObjectPlainXml( document, dataId );
+                    }
+                    
+                    if ( encodeCredObj )
+                    {
+                        encodedSignatureObj = XmlSignatureEncoder.b64EncodeCredentialXmlSignatureObject( document, credId );
                     }
                     
                     encodedXmlData = chooseData( dataObjContent, encodedXmlData );
                     encodedSignatureObj = chooseData( signatureObject, encodedSignatureObj );
                     
-                    return client.request( id, encodedSignatureObj, encodedXmlData );
+                    return client.request( reqId, encodedSignatureObj, encodedXmlData );
                 }
                 catch ( Exception e )
                 {
-                    ModuleLogger.verbose( "error retrieving xml related data for id " + id, e );
+                    ModuleLogger.verbose( "error retrieving xml related data for id " + reqId, e );
                     // since no request is being send to the verificationServic the code below is being executed to return alternative
                     // results with a warning
                 }
             }
             
-            ModuleLogger.log( "[ WARN ]xml data found bound to id " + id
+            ModuleLogger.log( "[ WARN ]xml data found bound to id " + reqId
                     + " but could not parse raw xaip input which can result into an invalid signature verification" );
             
-            return client.request( id, signatureObject, dataObjContent );
+            return client.request( reqId, signatureObject, dataObjContent );
         }
         else
         {
-            return client.request( id, signatureObject, dataObjContent );
+            return client.request( reqId, signatureObject, dataObjContent );
         }
     }
     
