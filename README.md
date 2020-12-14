@@ -11,6 +11,8 @@ Validation will be done step by step in following order:
 4. Calling SignatureVerificationModule
 5. Calling ProtocolAssemblerModule
 
+![Components](overview_components.jpg "Components")
+
 ## Getting Started
 
 ```
@@ -48,11 +50,12 @@ mvn clean package
 java -jar xaip-validator-cli/target/xaip-validator-cli.jar -i ~/Dokumente/XAIP-Validator/validator/PAdES.xaip -Mvalidator.schemaDir=default-syntax-validator/src/main/resources/definition
 ```
 
+**Important Notes**
 
-## Components
-The XAIPValidator consists of multiple modules.
+Without any additional configuration the xaip validator is using the default module implementations.
+For more informations take a look into the module section where the module funktionality is being further explained.
 
-![Components](overview_components.jpg "Components")
+Any known issues about the validator are being explained at the bottom of this page.
 
 ### CLI
 
@@ -64,19 +67,22 @@ The XAIPValidator consists of multiple modules.
 
 ```
 -M=<moduleConfig>
-	Passing a single module configuration property to the validator. The property and requirements for any module configuration properties are defined by the implementing module.
+    Passing a single module configuration property to the validator.
+    The property and requirements for any module configuration properties are defined by the implementing module.
 
     Example: -Mverifier.wsdlUrl=http://localhost:8080/s4?wsdl
 
-    This example is using the property config verifier.wsdlUrl which is a required config property of the DefaultVerifierModule.
-
-    Instead of passing multiple module properties as an argument, a config file which contains the module properties can be passed instead. For more informations see –c, --config <file>
+    This example is using the property config verifier.wsdlUrl which is a required config property 
+    of the DefaultVerifierModule. Instead of passing multiple module properties as an argument, a config file
+    which contains the module properties can be passed instead.
+    For more informations see –c, --config <file>
 
 -c, --config <file>
-    Passing a configuration file in form of a property file to the validator. This file can contain any module configuration property. The configuration file is being passed to every module so they can scan the content and retrieve any configuration properties they define. 
+    Passing a configuration file in form of a property file to the validator.
+    This file can contain any module configuration property. The configuration file is being passed to every
+    module so they can scan the content and retrieve any configuration properties they define. 
 
     The handling is just the same as passing all configuration properties via a separate command line argument.
-
     This argument can also be used together with single command line module property arguments.
 
     Example: -c config.properties
@@ -86,22 +92,28 @@ The XAIPValidator consists of multiple modules.
       verifier.wsdlUrl=http://localhost:8080/s4?wsdl
 
 -i, --in, --input <file>
-    Passing a <file> as a source for the xaip validation. Omitting this argument will take the standard <inpuStream> for the validation.
+    Passing a <file> as a source for the xaip validation.
+    Omitting this argument will take the standard <inpuStream> for the validation.
 
     Example: -i /tmp/sample.xaip
 	
 -o, --out, --output <file>
-    Defining a definition for the validation result. Omitting this argument will write the result to the standard <outputStream> instead.
+    Defining a definition for the validation result.
+    Omitting this argument will write the result to the standard <outputStream> instead.
 
     Example: -o /tmp/report.xml
 
 -v, --verify
-    This flags enables the signature verification which is being executed by the [SignatureVerifierModule]. Omitting this flag will only execute the syntax validation.
+    This flags enables the signature verification which is being executed by the [SignatureVerifierModule].
+    Omitting this flag will only execute the syntax validation.
+    
 -d, --debug
-    Flag to enable debug output for a better analysis of the validator behaviour. This output can contain stacktraces or other kinds of errors even when everything works fine.
+    Flag to enable debug output for a better analysis of the validator behaviour.
+    This output can contain stacktraces or other kinds of errors even when everything works fine.
 
 -l, --log <file>
-    Since this tool is not only creating a report but also log output this argument can be used to separate the log output of the validator into a dedicated document.
+    Since this tool is not only creating a report but also log output this argument can be used
+    to separate the log output of the validator into a dedicated document.
 
     Example: -l validator.log
 
@@ -109,32 +121,39 @@ The XAIPValidator consists of multiple modules.
 	Printing the usage of the validator.
 ```
 
-**Important Notes**
-- when using the command line version of the XAIPValidator you **must** specify the location of the schema files by using the parameter `-Mvalidator.schemaDir` unless you are using a custom syntax validation module. Otherwise the validator will not start
-- when using the parameter `-o` you must specify a directory. Currently the validator cannot write a plain file located in the same directory
-- when using parameter `-v` you need to specify the URL of the signature verification service to be used unless you are using a custom verification module. The signature verification service must be compliant to the TR-03112 / OASIS interface definition (using VerifiyRequest)
-
 ### Server
 
 **Description:** The server version of the XAIPValidator is being used to provide a soap service implementing the verify function of the eCard api. This api can be used to send a verifyRequest containing an XAIP which will be validated in the following steps.
 
-**Usage:** `java -cp "target/xaip-validator-soap-1.0.1-2.jar:target/dependency/*" de.bund.bsi.tresor.xaip.validator.soap.Server [OPTION [ARG]*]*`
+**Usage:** `java -cp "target/xaip-validator-soap-1.0.6-SNAPSHOT.jar:target/dependency/*" de.bund.bsi.tresor.xaip.validator.soap.Server [OPTION [ARG]*]*`
 
 **Options:**
 
-```
--M <moduleConfig>
-	Passing a configuration for a module. This Option is optional since the need for a configuation is defined by the specific module implementation.
-	Providing a configuration can be done by either directly setting a specific configuration or passing a complete configuration file. In both cases the arguments have to match a specific pattern to identify the module  the configuration applies to:
-    
-    $MODULE.$PROPERTY
-	
-	Modules : finder,verifier,validator,assembler
-	Property: either the keyword `conf` which is reserved to load the configuration from a file followed by this property or any configuration keyword the specific module implementation offers
+```	
+-M=<moduleConfig>
+    Passing a single module configuration property to the validator.
+    The property and requirements for any module configuration properties are defined by the implementing module.
 
-	Examples: 
-		-Mverifier.conf=/tmp/example.properties
-		-Mverifier.wsdlUrl=http://localhost:8080/s4?wsdl
+    Example: -Mverifier.wsdlUrl=http://localhost:8080/s4?wsdl
+
+    This example is using the property config verifier.wsdlUrl which is a required config property 
+    of the DefaultVerifierModule. Instead of passing multiple module properties as an argument, a config file
+    which contains the module properties can be passed instead.
+    For more informations see –c, --config <file>
+
+-c, --config <file>
+    Passing a configuration file in form of a property file to the validator.
+    This file can contain any module configuration property. The configuration file is being passed to every
+    module so they can scan the content and retrieve any configuration properties they define. 
+
+    The handling is just the same as passing all configuration properties via a separate command line argument.
+    This argument can also be used together with single command line module property arguments.
+
+    Example: -c config.properties
+
+    Content of config.properties:
+      validator.schemaDir=/tmp/xaip/definition
+      verifier.wsdlUrl=http://localhost:8080/s4?wsdl
 
 -p, --port <port>
 	Port the server should be published to, 8080 by default
@@ -147,12 +166,19 @@ The XAIPValidator consists of multiple modules.
 
 --path <path>
 	Custom path the service should be used, `/xaip-validate` by default
+    
+-d, --debug
+    Flag to enable debug output for a better analysis of the validator behaviour.
+    This output can contain stacktraces or other kinds of errors even when everything works fine.
 
--d, --debug, --verbose
-	Flag to enable verbose logging over all components. The additional logs will be written to the same output as the other log entries.
+-l, --log <file>
+    Since this tool is not only creating a report but also log output this argument can be used
+    to separate the log output of the validator into a dedicated document.
+
+    Example: -l validator.log
 
 -h, --help
-	Printing the manual of the validator
+	Printing the usage of the validator.
 ```
 
 ## Modules
@@ -168,6 +194,12 @@ The XAIPValidator consists of multiple modules.
 | *validator.schemaDir  | /tmp/xaip-schema | schema directory containing all xaip schema files |
 
 \* - required configuration
+
+### Default Finder
+
+**Description:** Finding any signature in the XAIP which can be in the data- or credentialSection.
+
+**Configurations:** NONE
 
 ### Default Verifier
 
@@ -185,7 +217,14 @@ The XAIPValidator consists of multiple modules.
 
 \* - required configuration
 
-## Known Limitations
+
+### Default Assembler
+
+**Description:** Merging all results into one report
+
+**Configurations:** NONE
+
+## Known Issues and Limitations
 
 The following limitations apply:
 
@@ -195,9 +234,8 @@ The following limitations apply:
 - Extensions are not evaluated due to their dependency to specific profiles
 - The content of Metadata sections is not evaluated with the exception of their well-formedness
 
-**Be aware of the following issue**
-
-When running the validator, a warning is generated due to an illegal access to the ClassLoader. As far as known, this warning does not influence the correct execution of the program and originates in the jaxb library which is being used.
+The following issues are known:
+- When using the paramter `-o` the provided argument has to be a file which is not in the current directory
 
 ## Test Environment ##
 
