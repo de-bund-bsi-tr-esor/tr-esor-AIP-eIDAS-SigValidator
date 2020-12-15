@@ -171,12 +171,6 @@ Any known issues about the validator are being explained at the bottom of this p
     Flag to enable debug output for a better analysis of the validator behaviour.
     This output can contain stacktraces or other kinds of errors even when everything works fine.
 
--l, --log <file>
-    Since this tool is not only creating a report but also log output this argument can be used
-    to separate the log output of the validator into a dedicated document.
-
-    Example: -l validator.log
-
 -h, --help
 	Printing the usage of the validator.
 ```

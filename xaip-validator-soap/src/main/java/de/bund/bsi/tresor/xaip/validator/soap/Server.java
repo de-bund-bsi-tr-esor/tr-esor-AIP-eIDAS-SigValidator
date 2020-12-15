@@ -21,8 +21,13 @@
  */
 package de.bund.bsi.tresor.xaip.validator.soap;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.util.Map;
+import java.util.Properties;
 
 import javax.xml.ws.Endpoint;
 
@@ -57,6 +62,7 @@ public class Server
         try
         {
             jCommander.parse( args );
+            mergeConfig( config );
             
             ModuleLogger.initConfig( config.isVerbose(), config.getLog() );
             if ( config.isHelp() )
@@ -91,5 +97,20 @@ public class Server
         Endpoint.publish( address, new XAIPValidator( config ) );
         
         ModuleLogger.log( "published server on address: " + address );
+    }
+    
+    @SuppressWarnings( { "rawtypes", "unchecked" } )
+    private static void mergeConfig( ServerConfig args ) throws IOException
+    {
+        if ( args.getConfig() != null && Files.isReadable( args.getConfig() ) )
+        {
+            Properties config = new Properties();
+            try ( InputStream configData = Files.newInputStream( args.getConfig() ) )
+            {
+                config.load( configData );
+                config.putAll( args.getModuleConfig() );
+                args.setModuleConfig( (Map) config );
+            }
+        }
     }
 }

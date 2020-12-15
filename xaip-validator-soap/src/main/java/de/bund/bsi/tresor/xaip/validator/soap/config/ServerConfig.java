@@ -22,12 +22,14 @@
 package de.bund.bsi.tresor.xaip.validator.soap.config;
 
 import java.io.OutputStream;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
 import com.beust.jcommander.DynamicParameter;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
+import com.beust.jcommander.converters.PathConverter;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -42,29 +44,33 @@ public class ServerConfig
 {
     
     // providing description for the application itself and catching all unparsed remaining arguments
-    @DynamicParameter( names = "-M", descriptionKey = MessageBundle.SERVER_INFO )
+    @DynamicParameter( order = 1, names = "-M", descriptionKey = MessageBundle.SERVER_INFO )
     private Map<String, String> moduleConfig = new HashMap<>();
     
-    @Parameter( order = 1, names = { "-p", "--port" },
+    @Parameter( order = 2, names = { "-c", "--config" }, descriptionKey = MessageBundle.SERVER_USAGE_CONFIG,
+            converter = PathConverter.class )
+    private Path                config       = null;
+    
+    @Parameter( order = 3, names = { "-p", "--port" },
             descriptionKey = MessageBundle.SERVER_PORT )
     private int                 port         = 8080;
     
-    @Parameter( order = 2, names = { "-P", "--protocol" },
+    @Parameter( order = 4, names = { "-P", "--protocol" },
             descriptionKey = MessageBundle.SERVER_PROTOCOL )
     private String              protocol     = "http";
     
-    @Parameter( order = 3, names = { "-H", "--host" },
+    @Parameter( order = 5, names = { "-H", "--host" },
             descriptionKey = MessageBundle.SERVER_HOST )
     private String              host         = "localhost";
     
-    @Parameter( order = 4, names = { "--path" },
+    @Parameter( order = 6, names = { "--path" },
             descriptionKey = MessageBundle.SERVER_PATH )
     private String              path         = "/xaip-validate";
     
-    @Parameter( order = 5, names = { "-d", "--debug", "--verbose" }, descriptionKey = MessageBundle.SERVER_VERBOSE )
+    @Parameter( order = 7, names = { "-d", "--debug", "--verbose" }, descriptionKey = MessageBundle.SERVER_VERBOSE )
     private boolean             verbose      = false;
     
-    @Parameter( order = 6, names = { "-h", "--help" }, help = true, descriptionKey = MessageBundle.SERVER_HELP )
+    @Parameter( order = 8, names = { "-h", "--help" }, help = true, descriptionKey = MessageBundle.SERVER_HELP )
     private boolean             help;
     
     // -- Following values are default parameter for the server

@@ -33,22 +33,24 @@ import lombok.Getter;
 @Getter
 public abstract class MessageBundle
 {
-    public static final ResourceBundle RESOURCE        = ResourceBundle.getBundle( "MessageBundle" );
+    public static final ResourceBundle RESOURCE            = ResourceBundle.getBundle( "MessageBundle" );
     
-    public static final String         SERVER_INFO     = "server.info";
+    public static final String         SERVER_INFO         = "server.info";
     
-    public static final String         SERVER_NAME     = "server.name";
+    public static final String         SERVER_NAME         = "server.name";
     
-    public static final String         SERVER_HELP     = "server.help";
+    public static final String         SERVER_HELP         = "server.help";
     
-    public static final String         SERVER_HOST     = "server.host";
+    public static final String         SERVER_HOST         = "server.host";
     
-    public static final String         SERVER_PORT     = "server.port";
+    public static final String         SERVER_PORT         = "server.port";
     
-    public static final String         SERVER_PATH     = "server.path";
+    public static final String         SERVER_PATH         = "server.path";
     
-    public static final String         SERVER_PROTOCOL = "server.protocol";
+    public static final String         SERVER_PROTOCOL     = "server.protocol";
     
-    public static final String         SERVER_VERBOSE  = "server.verbose";
+    public static final String         SERVER_VERBOSE      = "server.verbose";
+    
+    public static final String         SERVER_USAGE_CONFIG = "server.usage.config";
     
 }
