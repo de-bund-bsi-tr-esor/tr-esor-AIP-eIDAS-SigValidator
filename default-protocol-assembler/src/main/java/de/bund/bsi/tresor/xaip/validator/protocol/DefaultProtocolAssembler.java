@@ -21,20 +21,12 @@
  */
 package de.bund.bsi.tresor.xaip.validator.protocol;
 
-import static java.util.Collections.singletonList;
-import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toSet;
-
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -43,8 +35,6 @@ import javax.xml.datatype.DatatypeFactory;
 
 import de.bund.bsi.tr_esor.vr._1.CredentialValidityType;
 import de.bund.bsi.tr_esor.vr._1.CredentialsSectionValidityType;
-import de.bund.bsi.tr_esor.vr._1.DataObjectValidityType;
-import de.bund.bsi.tr_esor.vr._1.DataObjectsSectionValidityType;
 import de.bund.bsi.tr_esor.vr._1.XAIPValidityType;
 import de.bund.bsi.tresor.xaip.validator.api.boundary.ProtocolAssembler;
 import de.bund.bsi.tresor.xaip.validator.api.control.ModuleLogger;
@@ -79,13 +69,19 @@ public class DefaultProtocolAssembler implements ProtocolAssembler
     {
         var completeReport = new VerificationReportType();
         
-        XAIPValidityType report = mergeProtocols( xaipReport, credentialReports );
+        Set<CredentialValidityType> reports = new HashSet<>( credentialReports );
+        if ( !credentialReports.isEmpty() && Objects.isNull( xaipReport.getCredentialsSection() ) )
+        {
+            xaipReport.setCredentialsSection( new CredentialsSectionValidityType() );
+        }
+        
+        xaipReport.getCredentialsSection().getCredential().addAll( reports );
         
         AnyType anyType = new AnyType();
-        anyType.getAny().add( XAIPUtil.asElement( report ) );
+        anyType.getAny().add( XAIPUtil.asElement( xaipReport ) );
         
         IndividualReportType individualReport = new IndividualReportType();
-        individualReport.setResult( VerificationUtil.result( report.getFormatOK() ) );
+        individualReport.setResult( VerificationUtil.result( xaipReport.getFormatOK() ) );
         individualReport.setSignedObjectIdentifier( new SignedObjectIdentifierType() );
         individualReport.setDetails( anyType );
         
@@ -110,67 +106,8 @@ public class DefaultProtocolAssembler implements ProtocolAssembler
         return completeReport;
     }
     
-    XAIPValidityType mergeProtocols( XAIPValidityType report, Collection<CredentialValidityType> credentialReports )
-    {
-        List<CredentialValidityType> masterReports = Optional.ofNullable( report )
-                .map( XAIPValidityType::getCredentialsSection )
-                .map( CredentialsSectionValidityType::getCredential )
-                .orElse( new ArrayList<>() );
-        
-        // embedded signatures
-        Set<String> embedded = Optional.ofNullable( report )
-                .map( XAIPValidityType::getDataObjectsSection )
-                .map( DataObjectsSectionValidityType::getDataObject )
-                .orElse( new ArrayList<>() )
-                .stream()
-                .map( DataObjectValidityType::getDataObjectID )
-                .collect( toSet() );
-        
-        masterReports.addAll( credentialReports.stream()
-                .filter( f -> embedded.contains( f.getCredentialID() ) )
-                .filter( distinctByKey( CredentialValidityType::getCredentialID ) )
-                .collect( toList() ) );
-        
-        // detached signatures
-        List<CredentialValidityType> currentMasterReports = new ArrayList<>();
-        for ( CredentialValidityType masterReport : masterReports )
-        {
-            currentMasterReports.addAll( replace( masterReport, credentialReports ) );
-        }
-        
-        if ( !currentMasterReports.isEmpty() )
-        {
-            CredentialsSectionValidityType credentialValidity = new CredentialsSectionValidityType();
-            credentialValidity.getCredential().addAll( currentMasterReports );
-            
-            report.setCredentialsSection( credentialValidity );
-        }
-        
-        return report;
-    }
-    
-    List<CredentialValidityType> replace( CredentialValidityType masterReport,
-            Collection<CredentialValidityType> credentialReports )
-    {
-        final String masterId = masterReport.getCredentialID();
-        List<CredentialValidityType> replacements = credentialReports.stream()
-                .filter( f -> f.getCredentialID().equals( masterId ) )
-                .map( subReport -> mergeSubReport( masterReport, subReport ) )
-                .collect( toList() );
-        
-        if ( !replacements.isEmpty() )
-        {
-            return replacements;
-        }
-        else
-        {
-            return singletonList( ensureReportContent( masterReport ) );
-        }
-    }
-    
     CredentialValidityType ensureReportContent( CredentialValidityType type )
     {
-        
         boolean hasAnyReport = Stream.of( type.getDetailedSignatureReport(),
                 type.getEvidenceRecordReport(),
                 type.getIndividualAttributeCertificateReport(),
@@ -191,35 +128,5 @@ public class DefaultProtocolAssembler implements ProtocolAssembler
         }
         
         return type;
-        
-    }
-    
-    CredentialValidityType mergeSubReport( CredentialValidityType master, CredentialValidityType sub )
-    {
-        Optional.ofNullable( sub.getDetailedSignatureReport() ).ifPresent( master::setDetailedSignatureReport );
-        Optional.ofNullable( sub.getEvidenceRecordReport() ).ifPresent( master::setEvidenceRecordReport );
-        Optional.ofNullable( sub.getIndividualAttributeCertificateReport() ).ifPresent( master::setIndividualAttributeCertificateReport );
-        Optional.ofNullable( sub.getIndividualCertificateReport() ).ifPresent( master::setIndividualCertificateReport );
-        Optional.ofNullable( sub.getIndividualCRLReport() ).ifPresent( master::setIndividualCRLReport );
-        Optional.ofNullable( sub.getIndividualOCSPReport() ).ifPresent( master::setIndividualOCSPReport );
-        Optional.ofNullable( sub.getIndividualTimeStampReport() ).ifPresent( master::setIndividualTimeStampReport );
-        Optional.ofNullable( sub.getOther() ).ifPresent( master::setOther );
-        
-        return master;
-    }
-    
-    /**
-     * Stateful filter for distinct keys
-     * 
-     * @param <T>
-     *            type of the key
-     * @param keyExtractor
-     *            the key extractor function
-     * @return the predicate
-     */
-    public static <T> Predicate<T> distinctByKey( Function<? super T, ?> keyExtractor )
-    {
-        Set<Object> seen = ConcurrentHashMap.newKeySet();
-        return t -> seen.add( keyExtractor.apply( t ) );
     }
 }
