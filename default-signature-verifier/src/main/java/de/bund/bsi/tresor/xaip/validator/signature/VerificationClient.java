@@ -67,6 +67,7 @@ import oasis.names.tc.dss._1_0.core.schema.SignaturePtr;
 import oasis.names.tc.dss._1_0.core.schema.VerifyRequest;
 import oasis.names.tc.dss_x._1_0.profiles.verificationreport.schema_.DetailedSignatureReportType;
 import oasis.names.tc.dss_x._1_0.profiles.verificationreport.schema_.IndividualReportType;
+import oasis.names.tc.dss_x._1_0.profiles.verificationreport.schema_.TimeStampValidityType;
 
 /**
  * @author wolffs
@@ -246,6 +247,10 @@ public class VerificationClient
                         if ( detail instanceof DetailedSignatureReportType )
                         {
                             result.setDetailedSignatureReport( (DetailedSignatureReportType) detail );
+                        }
+                        else if ( detail instanceof TimeStampValidityType )
+                        {
+                            result.setIndividualTimeStampReport( (TimeStampValidityType) detail );
                         }
                         else
                         {
