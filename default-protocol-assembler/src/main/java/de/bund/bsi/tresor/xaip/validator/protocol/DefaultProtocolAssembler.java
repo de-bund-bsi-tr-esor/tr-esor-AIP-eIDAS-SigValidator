@@ -33,6 +33,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -126,6 +128,7 @@ public class DefaultProtocolAssembler implements ProtocolAssembler
         
         masterReports.addAll( credentialReports.stream()
                 .filter( f -> embedded.contains( f.getCredentialID() ) )
+                .filter( distinctByKey( CredentialValidityType::getCredentialID ) )
                 .collect( toList() ) );
         
         // detached signatures
@@ -203,5 +206,20 @@ public class DefaultProtocolAssembler implements ProtocolAssembler
         Optional.ofNullable( sub.getOther() ).ifPresent( master::setOther );
         
         return master;
+    }
+    
+    /**
+     * Stateful filter for distinct keys
+     * 
+     * @param <T>
+     *            type of the key
+     * @param keyExtractor
+     *            the key extractor function
+     * @return the predicate
+     */
+    public static <T> Predicate<T> distinctByKey( Function<? super T, ?> keyExtractor )
+    {
+        Set<Object> seen = ConcurrentHashMap.newKeySet();
+        return t -> seen.add( keyExtractor.apply( t ) );
     }
 }
