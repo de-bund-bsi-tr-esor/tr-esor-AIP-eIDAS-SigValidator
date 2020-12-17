@@ -21,11 +21,15 @@
  */
 package de.bund.bsi.tresor.xaip.validator.protocol;
 
+import static java.util.Collections.emptyMap;
+
 import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
@@ -34,6 +38,7 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 
 import de.bund.bsi.tr_esor.vr._1.CredentialValidityType;
+import de.bund.bsi.tr_esor.vr._1.CredentialValidityType.RelatedObjects;
 import de.bund.bsi.tr_esor.vr._1.CredentialsSectionValidityType;
 import de.bund.bsi.tr_esor.vr._1.XAIPValidityType;
 import de.bund.bsi.tresor.xaip.validator.api.boundary.ProtocolAssembler;
@@ -44,6 +49,7 @@ import de.bund.bsi.tresor.xaip.validator.api.entity.DefaultResult;
 import de.bund.bsi.tresor.xaip.validator.api.entity.DefaultResult.Major;
 import de.bund.bsi.tresor.xaip.validator.api.entity.DefaultResult.ResultLanguage;
 import de.bund.bsi.tresor.xaip.validator.api.entity.ModuleContext;
+import de.bund.bsi.tresor.xaip.validator.syntax.context.DefaultSyntaxValidatorContext;
 import lombok.Getter;
 import oasis.names.tc.dss._1_0.core.schema.AnyType;
 import oasis.names.tc.dss._1_0.core.schema.Result;
@@ -68,14 +74,15 @@ public class DefaultProtocolAssembler implements ProtocolAssembler
             Collection<CredentialValidityType> credentialReports )
     {
         var completeReport = new VerificationReportType();
+        final Set<CredentialValidityType> reports = addRelations( context, new HashSet<>( credentialReports ) );
         
-        Set<CredentialValidityType> reports = new HashSet<>( credentialReports );
-        if ( !credentialReports.isEmpty() && Objects.isNull( xaipReport.getCredentialsSection() ) )
+        if ( !reports.isEmpty() && Objects.isNull( xaipReport.getCredentialsSection() ) )
         {
             xaipReport.setCredentialsSection( new CredentialsSectionValidityType() );
         }
         
-        xaipReport.getCredentialsSection().getCredential().addAll( reports );
+        Optional.ofNullable( xaipReport.getCredentialsSection() )
+                .ifPresent( section -> section.getCredential().addAll( reports ) );
         
         AnyType anyType = new AnyType();
         anyType.getAny().add( XAIPUtil.asElement( xaipReport ) );
@@ -104,6 +111,21 @@ public class DefaultProtocolAssembler implements ProtocolAssembler
         }
         
         return completeReport;
+    }
+    
+    Set<CredentialValidityType> addRelations( ModuleContext context, Set<CredentialValidityType> reports )
+    {
+        Map<String, RelatedObjects> relatedObjectByCredId = context.find( DefaultSyntaxValidatorContext.class )
+                .map( DefaultSyntaxValidatorContext::getRelatedObjectByCredId )
+                .orElse( emptyMap() );
+        
+        for ( CredentialValidityType report : reports )
+        {
+            Optional.ofNullable( relatedObjectByCredId.get( report.getCredentialID() ) )
+                    .ifPresent( report::setRelatedObjects );
+        }
+        
+        return reports;
     }
     
     CredentialValidityType ensureReportContent( CredentialValidityType type )

@@ -21,19 +21,18 @@
  */
 package de.bund.bsi.tresor.xaip.validator.syntax.validators;
 
-import static java.util.stream.Collectors.toList;
+import static java.util.Collections.emptyMap;
+import static java.util.stream.Collectors.toMap;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.AbstractMap;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 
-import de.bund.bsi.tr_esor.vr._1.CredentialValidityType;
 import de.bund.bsi.tr_esor.vr._1.CredentialValidityType.RelatedObjects;
-import de.bund.bsi.tr_esor.vr._1.CredentialsSectionValidityType;
 import de.bund.bsi.tr_esor.xaip._1.CredentialType;
 import de.bund.bsi.tr_esor.xaip._1.CredentialsSectionType;
 import de.bund.bsi.tr_esor.xaip._1.DataObjectType;
-import de.bund.bsi.tresor.xaip.validator.api.boundary.SignatureVerifier;
 import de.bund.bsi.tresor.xaip.validator.api.control.XAIPUtil;
 
 /**
@@ -46,40 +45,28 @@ public enum CredentialSectionValidator
     INSTANCE;
     
     /**
-     * Complete validation of the credential section and all sub elements
+     * Checking the credentials for relatedObjects
      * 
      * @param credentialsSection
      *            the credential section
      * @return the validation result
      */
-    public Optional<CredentialsSectionValidityType> validateCredentialsSection( Optional<CredentialsSectionType> credentialsSection )
+    public Map<String, RelatedObjects> validateCredentialsSection( Optional<CredentialsSectionType> credentialsSection )
     {
-        List<CredentialValidityType> credential = credentialsSection.map( section -> section.getCredential().stream()
+        return credentialsSection.map( section -> section.getCredential().stream()
                 .map( this::validateCredential )
-                .collect( toList() ) )
-                .orElse( new ArrayList<>() );
-        
-        if ( !credential.isEmpty() )
-        {
-            CredentialsSectionValidityType result = new CredentialsSectionValidityType();
-            credential.stream().forEach( result.getCredential()::add );
-            
-            return Optional.of( result );
-        }
-        else
-        {
-            return Optional.empty();
-        }
+                .collect( toMap( Entry::getKey, Entry::getValue ) ) )
+                .orElse( emptyMap() );
     }
     
     /**
-     * Validating a credential. The report is being added after the {@link SignatureVerifier} module
+     * Searching for related objects of the credential and mapping it to the credentialId
      * 
      * @param credential
      *            the credential
      * @return the validation result
      */
-    public CredentialValidityType validateCredential( CredentialType credential )
+    public Map.Entry<String, RelatedObjects> validateCredential( CredentialType credential )
     {
         RelatedObjects related = new RelatedObjects();
         credential.getRelatedObjects().stream()
@@ -88,10 +75,6 @@ public enum CredentialSectionValidator
                 .map( id -> "//dataObject[@dataObjectID='" + id + "']" )
                 .forEach( related.getXPath()::add );
         
-        CredentialValidityType result = new CredentialValidityType();
-        result.setCredentialID( credential.getCredentialID() );
-        result.setRelatedObjects( related );
-        
-        return result;
+        return new AbstractMap.SimpleEntry<String, RelatedObjects>( credential.getCredentialID(), related );
     }
 }

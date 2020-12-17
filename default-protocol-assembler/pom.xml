@@ -17,6 +17,11 @@
             <artifactId>xaip-validator-api</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>de.bund.bsi.tr_esor</groupId>
+            <artifactId>default-syntax-validator</artifactId>
+            <version>${project.version}</version>
+        </dependency>
         <!-- external dependencies -->
         <dependency>
             <groupId>org.projectlombok</groupId>

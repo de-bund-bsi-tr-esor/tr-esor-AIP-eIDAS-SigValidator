@@ -68,12 +68,12 @@ public class DefaultSignatureVerifier implements SignatureVerifier
     public void configure( Map<String, String> config )
     {
         this.config = DefaultVerifierConfig.fromArguments( config );
-        this.client = new VerificationClient( this.config );
     }
     
     @Override
     public List<CredentialValidityType> verify( ModuleContext context, XAIPType xaip, Map<String, Set<String>> credIdsByDataId )
     {
+        client = new VerificationClient( this.config );
         Optional<DefaultSyntaxValidatorContext> syntaxContext = context.find( DefaultSyntaxValidatorContext.class );
         
         List<CredentialValidityType> resultList = new ArrayList<>();

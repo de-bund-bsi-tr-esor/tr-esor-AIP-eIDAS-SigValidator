@@ -21,6 +21,7 @@
  */
 package de.bund.bsi.tresor.xaip.validator.syntax;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.InputStream;
@@ -41,6 +42,7 @@ import javax.xml.validation.SchemaFactory;
 import org.apache.commons.io.IOUtils;
 import org.etsi.uri._02918.v1_2.DataObjectReferenceType;
 
+import de.bund.bsi.tr_esor.vr._1.CredentialValidityType.RelatedObjects;
 import de.bund.bsi.tr_esor.vr._1.XAIPValidityType;
 import de.bund.bsi.tr_esor.xaip._1.DataObjectsSectionType;
 import de.bund.bsi.tr_esor.xaip._1.XAIPType;
@@ -101,9 +103,6 @@ public class DefaultSyntaxValidator implements SyntaxValidator
             IOUtils.copy( xaipCandidate, baos );
             byte[] data = baos.toByteArray();
             
-            DefaultSyntaxValidatorContext syntaxContext = new DefaultSyntaxValidatorContext( data );
-            context.put( DefaultSyntaxValidatorContext.class, syntaxContext );
-            
             JAXBContext jaxbContext = JAXBContext.newInstance( XAIPType.class, DataObjectReferenceType.class );
             Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
             
@@ -111,9 +110,10 @@ public class DefaultSyntaxValidator implements SyntaxValidator
             Schema schema = schemaFactory.newSchema( sources( new File( schemaDir ) ).stream().toArray( Source[]::new ) );
             
             jaxbUnmarshaller.setSchema( schema );
-            JAXBElement<XAIPType> element = jaxbUnmarshaller.unmarshal( new StreamSource( syntaxContext.rawXaipInput() ), XAIPType.class );
-            optXaip = Optional.ofNullable( element.getValue() );
+            JAXBElement<XAIPType> element = jaxbUnmarshaller.unmarshal(
+                    new StreamSource( new ByteArrayInputStream( data ) ), XAIPType.class );
             
+            optXaip = Optional.ofNullable( element.getValue() );
             DataObjectsSectionType dataSection = optXaip.map( XAIPType::getDataObjectsSection ).orElse( null );
             
             packageValidator.validatePackageHeader( optXaip.map( XAIPType::getPackageHeader ) )
@@ -124,8 +124,11 @@ public class DefaultSyntaxValidator implements SyntaxValidator
             
             dataValidator.validateDataSection( optXaip.map( XAIPType::getDataObjectsSection ) ).ifPresent( report::setDataObjectsSection );
             
-            credentialValidator.validateCredentialsSection( optXaip.map( XAIPType::getCredentialsSection ) )
-                    .ifPresent( report::setCredentialsSection );
+            Map<String, RelatedObjects> credential = credentialValidator
+                    .validateCredentialsSection( optXaip.map( XAIPType::getCredentialsSection ) );
+            
+            DefaultSyntaxValidatorContext syntaxContext = new DefaultSyntaxValidatorContext( data, credential );
+            context.put( DefaultSyntaxValidatorContext.class, syntaxContext );
         }
         catch ( Exception e )
         {

@@ -23,9 +23,13 @@ package de.bund.bsi.tresor.xaip.validator.syntax.context;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 
+import de.bund.bsi.tr_esor.vr._1.CredentialValidityType.RelatedObjects;
 import de.bund.bsi.tresor.xaip.validator.syntax.DefaultSyntaxValidator;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 /**
  * Class representing context of the {@link DefaultSyntaxValidator}
@@ -35,7 +39,10 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class DefaultSyntaxValidatorContext
 {
-    private byte[] rawData;
+    private byte[]                      rawData;
+    
+    @Getter
+    private Map<String, RelatedObjects> relatedObjectByCredId = new HashMap<>();
     
     /**
      * Returns an new inputStream of raw xaip data
