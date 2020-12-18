@@ -41,7 +41,7 @@ java -cp "xaip-validator-soap/target/xaip-validator-soap-1.0.6-1.jar;target/depe
 ## Installing
 
 ```
-git clone git@git.procilon.local:pronext/projektkomponenten/xaipvalidator.git
+git clone git@github.com:de-bund-bsi-tr-esor/tr-esor-AIP-eIDAS-SigValidator.git
 
 cd xaipvalidator
 
