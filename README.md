@@ -16,7 +16,7 @@ Validation will be done step by step in following order:
 ## Getting Started
 
 ```
-git clone git@git.procilon.local:pronext/projektkomponenten/xaipvalidator.git
+git clone git@github.com:de-bund-bsi-tr-esor/tr-esor-AIP-eIDAS-SigValidator.git
 
 cd xaipvalidator
 
