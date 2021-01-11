@@ -6,7 +6,7 @@
         <groupId>de.bund.bsi.tr_esor</groupId>
         <artifactId>xaip-validator</artifactId>
 
-        <version>1.0.6-2</version>
+        <version>1.0.7-SNAPSHOT</version>
     </parent>
     <artifactId>xaip-validator-dispatcher</artifactId>
 
