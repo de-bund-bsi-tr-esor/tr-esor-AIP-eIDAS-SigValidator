@@ -78,7 +78,15 @@ public class DefaultResult
         
         INVALID( NS_OASIS_DSS_1_0, ":detail:invalid" ),
         
-        INDETERMINED( NS_OASIS_DSS_1_0, ":detail:indetermined" );
+        INDETERMINED( NS_OASIS_DSS_1_0, ":detail:indetermined" ),
+        
+        SUCCESS( NS_OASIS_DSS_1_0, ":resultmajor:Success" ),
+        
+        REQUESTER_ERROR( NS_OASIS_DSS_1_0, ":resultmajor:RequesterError" ),
+        
+        RESPONSER_ERROR( NS_OASIS_DSS_1_0, ":resultmajor:ResponderError" ),
+        
+        INSUFFICIENT_INFORMATION( NS_OASIS_DSS_1_0, ":resultmajor:InsufficientInformation" );
         
         private final String uri;
         
