@@ -57,6 +57,7 @@ import oasis.names.tc.dss._1_0.core.schema.VerificationTimeInfoType;
 import oasis.names.tc.dss_x._1_0.profiles.verificationreport.schema_.IndividualReportType;
 import oasis.names.tc.dss_x._1_0.profiles.verificationreport.schema_.SignedObjectIdentifierType;
 import oasis.names.tc.dss_x._1_0.profiles.verificationreport.schema_.VerificationReportType;
+import oasis.names.tc.dss_x._1_0.profiles.verificationreport.schema_.VerificationResultType;
 
 /**
  * Implementation of the ProtocolAssembler module from the XAIPValidator.
@@ -88,7 +89,7 @@ public class DefaultProtocolAssembler implements ProtocolAssembler
         anyType.getAny().add( XAIPUtil.asElement( xaipReport ) );
         
         IndividualReportType individualReport = new IndividualReportType();
-        individualReport.setResult( VerificationUtil.result( xaipReport.getFormatOK() ) );
+        individualReport.setResult( createResult( xaipReport.getFormatOK() ) );
         individualReport.setSignedObjectIdentifier( new SignedObjectIdentifierType() );
         individualReport.setDetails( anyType );
         
@@ -111,6 +112,19 @@ public class DefaultProtocolAssembler implements ProtocolAssembler
         }
         
         return completeReport;
+    }
+    
+    Result createResult( VerificationResultType vrResult )
+    {
+        Major formatOk = Major.fromUri( vrResult.getResultMajor() ).orElse( Major.RESPONSER_ERROR );
+        Major resultMajor = formatOk.isPositiv() ? Major.SUCCESS : Major.RESPONSER_ERROR;
+        
+        Result result = new Result();
+        result.setResultMajor( resultMajor.getUri() );
+        result.setResultMinor( vrResult.getResultMinor() );
+        result.setResultMessage( vrResult.getResultMessage() );
+        
+        return result;
     }
     
     Set<CredentialValidityType> addRelations( ModuleContext context, Set<CredentialValidityType> reports )
