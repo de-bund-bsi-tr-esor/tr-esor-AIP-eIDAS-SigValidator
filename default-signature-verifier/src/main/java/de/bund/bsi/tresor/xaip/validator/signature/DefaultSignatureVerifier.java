@@ -33,6 +33,7 @@ import org.dom4j.Document;
 import org.dom4j.io.SAXReader;
 
 import de.bund.bsi.tr_esor.vr._1.CredentialValidityType;
+import de.bund.bsi.tr_esor.vr._1.CredentialValidityType.RelatedObjects;
 import de.bund.bsi.tr_esor.xaip._1.CredentialType;
 import de.bund.bsi.tr_esor.xaip._1.CredentialsSectionType;
 import de.bund.bsi.tr_esor.xaip._1.DataObjectsSectionType;
@@ -90,7 +91,8 @@ public class DefaultSignatureVerifier implements SignatureVerifier
             Set<String> credIds = entry.getValue();
             if ( credIds.isEmpty() && data.isPresent() )
             {
-                resultList.addAll( verifySignature( dataId.get(), null, Optional.empty(), data, syntaxContext ) );
+                List<CredentialValidityType> result = verifySignature( dataId.get(), null, Optional.empty(), data, syntaxContext );
+                resultList.addAll( addMissingRelations( dataId, result ) );
             }
             else
             {
@@ -103,7 +105,8 @@ public class DefaultSignatureVerifier implements SignatureVerifier
                             .map( CredentialType::getSignatureObject )
                             .findAny();
                     
-                    resultList.addAll( verifySignature( dataId.orElse( null ), credId, signObj, data, syntaxContext ) );
+                    List<CredentialValidityType> result = verifySignature( dataId.orElse( null ), credId, signObj, data, syntaxContext );
+                    resultList.addAll( addMissingRelations( dataId, result ) );
                 }
             }
         }
@@ -158,8 +161,29 @@ public class DefaultSignatureVerifier implements SignatureVerifier
         }
         else
         {
+            
             return client.request( reqId, signatureObject, dataObjContent );
         }
+    }
+    
+    List<CredentialValidityType> addMissingRelations( Optional<String> dataId, List<CredentialValidityType> req )
+    {
+        if ( dataId.isPresent() )
+        {
+            for ( CredentialValidityType credential : req )
+            {
+                String id = dataId.get();
+                RelatedObjects relatedObjects = Optional.ofNullable( credential.getRelatedObjects() ).orElse( new RelatedObjects() );
+                List<String> xPath = Optional.ofNullable( relatedObjects.getXPath() ).orElse( new ArrayList<>() );
+                if ( !xPath.contains( id ) )
+                {
+                    relatedObjects.getXPath().add( "//dataObject[@dataObjectID='" + id + "']" );
+                    credential.setRelatedObjects( relatedObjects );
+                }
+            }
+        }
+        
+        return req;
     }
     
     <T> Optional<T> chooseData( Optional<T> optional, Optional<T> alternativeFavorite )
