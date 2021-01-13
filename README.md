@@ -229,10 +229,31 @@ The following limitations apply:
 - The content of Metadata sections is not evaluated with the exception of their well-formedness
 
 The following issues are known:
-- When using the paramter `-o` the provided argument has to be a file which is not in the current directory
+- **[XVAL-1]** When using the paramter `-o` the provided argument has to be a file which is not in the current directory
 
 ## Test Environment ##
 
 - Use the following URL for the validation service: https://staging.protectr.de/VerificationService/S4?wsdl
 - Testmaterial is supplied separately together with sample XAIP-files and a shell script for test execution
 
+## License ##
+
+This software is underlying the rules of the following license: Apache License Version 2.0, January 2004.\
+The software was created by ecsec GmbH on behalf of the Federal Office for Information Security.
+
+## Contact ##
+
+**Federal Office for Information Security (BSI)**\
+Godesberger Allee 185-189\
+53175 Bonn, Germany\
+phone: +49 228 99 9582-0\
+fax: +49 228 99 9582-5400\
+e-mail: bsi@bsi.bund.de
+
+and
+
+**procilon IT-Logistics GmbH**\
+Leipziger Straße 110\
+04425 Taucha bei Leipzig, Germany\
+phone: +49 34298 4878 31\
+e-mail: anfrage@procilon.de
