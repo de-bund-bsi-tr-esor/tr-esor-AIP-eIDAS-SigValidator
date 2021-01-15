@@ -239,7 +239,7 @@ The following issues are known:
 ## License ##
 
 This software is underlying the rules of the following license: Apache License Version 2.0, January 2004.\
-The software was created by ecsec GmbH on behalf of the Federal Office for Information Security.
+The software was created by procilon IT-Logistics GmbH on behalf of the Federal Office for Information Security.
 
 ## Contact ##
 
