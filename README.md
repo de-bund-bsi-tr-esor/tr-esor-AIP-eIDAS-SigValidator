@@ -36,7 +36,12 @@ java -cp "xaip-validator-soap/target/xaip-validator-soap-1.0.6-1.jar;target/depe
 ```
 
 ## Prerequisites
-- Java 11
+- java 11
+	- for executing the CLI jar
+- maven
+	- to build the project and loading dependencies
+- git-client
+	- to pull this project, alternatively the project can be downloaded manually via git web
 
 ## Installing
 
