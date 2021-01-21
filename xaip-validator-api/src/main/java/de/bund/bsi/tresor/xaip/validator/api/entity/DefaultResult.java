@@ -22,6 +22,8 @@
 package de.bund.bsi.tresor.xaip.validator.api.entity;
 
 import java.net.URI;
+import java.util.Arrays;
+import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -91,6 +93,20 @@ public class DefaultResult
         private Major( String namespace, String path )
         {
             this.uri = namespace + path;
+        }
+        
+        /**
+         * Identifying the major of the provided string
+         * 
+         * @param str
+         *            the major uri
+         * @return the optional major
+         */
+        public static Optional<Major> fromString( String str )
+        {
+            return Arrays.stream( Major.values() )
+                    .filter( m -> m.getUri().equalsIgnoreCase( str ) )
+                    .findAny();
         }
     }
     
