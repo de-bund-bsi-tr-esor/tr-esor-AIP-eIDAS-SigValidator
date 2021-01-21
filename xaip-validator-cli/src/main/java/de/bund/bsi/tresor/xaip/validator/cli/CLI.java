@@ -80,6 +80,12 @@ public final class CLI
             }
             else
             {
+                if ( args.getInput().equals( System.in ) )
+                {
+                    ModuleLogger.log( "no input source provided using stdIn" );
+                    ModuleLogger.log( "use ctrl+D to close or ctrl+C to interrupt, reading stdIn..." );
+                }
+                
                 Dispatcher.INSTANCE.dispatch( args );
                 ModuleLogger.log( "finished validation" );
             }

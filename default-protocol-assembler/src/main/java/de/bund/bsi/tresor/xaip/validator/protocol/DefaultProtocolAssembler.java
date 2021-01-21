@@ -23,7 +23,6 @@ package de.bund.bsi.tresor.xaip.validator.protocol;
 
 import static java.util.Collections.emptyMap;
 
-import java.io.File;
 import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -37,11 +36,10 @@ import java.util.stream.Stream;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
-import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -76,6 +74,7 @@ import oasis.names.tc.dss._1_0.core.schema.VerificationTimeInfoType;
 import oasis.names.tc.dss_x._1_0.profiles.verificationreport.schema_.IndividualReportType;
 import oasis.names.tc.dss_x._1_0.profiles.verificationreport.schema_.SignedObjectIdentifierType;
 import oasis.names.tc.dss_x._1_0.profiles.verificationreport.schema_.VerificationReportType;
+import oasis.names.tc.dss_x._1_0.profiles.verificationreport.schema_.VerificationResultType;
 
 /**
  * Implementation of the ProtocolAssembler module from the XAIPValidator.
@@ -107,7 +106,7 @@ public class DefaultProtocolAssembler implements ProtocolAssembler
         anyType.getAny().add( XAIPUtil.asElement( xaipReport ) );
         
         IndividualReportType individualReport = new IndividualReportType();
-        // individualReport.setResult( VerificationUtil.result() );
+        individualReport.setResult( resultSummary( xaipReport ) );
         individualReport.setSignedObjectIdentifier( new SignedObjectIdentifierType() );
         individualReport.setDetails( anyType );
         
@@ -132,31 +131,22 @@ public class DefaultProtocolAssembler implements ProtocolAssembler
         return completeReport;
     }
     
-    public static void main( String[] args ) throws Exception
+    Result resultSummary( XAIPValidityType report )
     {
-        Unmarshaller unmarshaller = JAXBContext.newInstance( VerificationReportType.class ).createUnmarshaller();
+        Major resultMajor = Major.SUCCESS;
+        String resultMessage = "successfully validated the xaip structure and containing signatures";
         
-        JAXBElement<VerificationReportType> report = (JAXBElement<VerificationReportType>) unmarshaller
-                .unmarshal( new File( "/tmp/test.xml" ) );
-        
-        resultSummary( report.getValue() );
-    }
-    
-    // Collection<CredentialValidityType>
-    static Result resultSummary( VerificationReportType report ) throws Exception
-    {
         try
         {
-            JAXBContext context = JAXBContext.newInstance( VerificationReportType.class );
+            JAXBContext context = JAXBContext.newInstance( XAIPValidityType.class );
             Marshaller marshaller = context.createMarshaller();
             
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
             
-            JAXBElement<VerificationReportType> foo = new JAXBElement<VerificationReportType>( new QName( "verificationReport" ),
-                    VerificationReportType.class, report );
+            JAXBElement<XAIPValidityType> xaipReport = XAIPUtil.asElement( report );
             Document doc = builder.newDocument();
-            marshaller.marshal( foo, doc );
+            marshaller.marshal( xaipReport, doc );
             
             NSMapping nsMapping = new NSMapping();
             nsMapping.putNamespace( "ns", "urn:oasis:names:tc:dss-x:1.0:profiles:verificationreport:schema#" );
@@ -166,24 +156,39 @@ public class DefaultProtocolAssembler implements ProtocolAssembler
             xpath.setNamespaceContext( nsMapping );
             
             XPathExpression expr = xpath.compile( "//ns:DetailedSignatureReport/ns:SignatureOK/ns:SigMathOK/ns:ResultMajor" );
-            
             NodeList result = (NodeList) expr.evaluate( doc, XPathConstants.NODESET );
             
             for ( int i = 0; i < result.getLength(); i++ )
             {
                 Node node = result.item( i );
-                System.out.println( node.getTextContent() );
-                
                 Optional<Major> major = DefaultResult.Major.fromString( node.getTextContent() );
+                if ( major.isPresent() && !major.get().isPositiv() )
+                {
+                    resultMajor = Major.REQUESTER_ERROR;
+                    resultMessage = "invalid signature(s) were found";
+                }
             }
-            
         }
-        catch ( ParserConfigurationException | XPathExpressionException e )
+        catch ( ParserConfigurationException | XPathExpressionException | JAXBException e )
         {
-            // TODO
+            resultMajor = Major.RESPONDER_ERROR;
+            ModuleLogger.log( "could not analyse and merge signature results into summary", e );
         }
         
-        return Major.OK
+        return DefaultResult.major( resultMajor ).message( resultMessage, ResultLanguage.ENGLISH ).build();
+    }
+    
+    Result createResult( VerificationResultType vrResult )
+    {
+        Major formatOk = Major.fromUri( vrResult.getResultMajor() ).orElse( Major.RESPONDER_ERROR );
+        Major resultMajor = formatOk.isPositiv() ? Major.SUCCESS : Major.RESPONDER_ERROR;
+        
+        Result result = new Result();
+        result.setResultMajor( resultMajor.getUri() );
+        result.setResultMinor( vrResult.getResultMinor() );
+        result.setResultMessage( vrResult.getResultMessage() );
+        
+        return result;
     }
     
     Set<CredentialValidityType> addRelations( ModuleContext context, Set<CredentialValidityType> reports )

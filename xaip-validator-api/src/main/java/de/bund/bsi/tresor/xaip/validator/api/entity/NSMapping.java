@@ -7,6 +7,8 @@ import javax.xml.XMLConstants;
 import javax.xml.namespace.NamespaceContext;
 
 /**
+ * Simple NamespaceContext implementation
+ * 
  * @author wolffs
  */
 public class NSMapping implements NamespaceContext
@@ -14,6 +16,14 @@ public class NSMapping implements NamespaceContext
     
     private final HashMap<String, String> nsContext = new HashMap<>();
     
+    /**
+     * Adding a namespace to a prefix
+     * 
+     * @param prefix
+     *            the prefix
+     * @param uri
+     *            the namespace uri
+     */
     public void putNamespace( String prefix, String uri )
     {
         nsContext.put( prefix, uri );

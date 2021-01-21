@@ -75,6 +75,11 @@ public enum CredentialSectionValidator
                 .map( id -> "//dataObject[@dataObjectID='" + id + "']" )
                 .forEach( related.getXPath()::add );
         
+        if ( related.getXPath().isEmpty() )
+        {
+            related.getXPath().add( "//credential[@credentalID='" + credential.getCredentialID() + "']" );
+        }
+        
         return new AbstractMap.SimpleEntry<String, RelatedObjects>( credential.getCredentialID(), related );
     }
 }

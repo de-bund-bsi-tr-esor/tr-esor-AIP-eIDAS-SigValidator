@@ -22,8 +22,9 @@
 package de.bund.bsi.tresor.xaip.validator.api.entity;
 
 import java.net.URI;
-import java.util.Arrays;
 import java.util.Optional;
+import java.util.stream.Stream;
+import java.util.Arrays;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -80,7 +81,15 @@ public class DefaultResult
         
         INVALID( NS_OASIS_DSS_1_0, ":detail:invalid" ),
         
-        INDETERMINED( NS_OASIS_DSS_1_0, ":detail:indetermined" );
+        INDETERMINED( NS_OASIS_DSS_1_0, ":detail:indetermined" ),
+        
+        SUCCESS( NS_OASIS_DSS_1_0, ":resultmajor:Success" ),
+        
+        REQUESTER_ERROR( NS_OASIS_DSS_1_0, ":resultmajor:RequesterError" ),
+        
+        RESPONDER_ERROR( NS_OASIS_DSS_1_0, ":resultmajor:ResponderError" ),
+        
+        INSUFFICIENT_INFORMATION( NS_OASIS_DSS_1_0, ":resultmajor:InsufficientInformation" );
         
         private final String uri;
         
@@ -93,6 +102,30 @@ public class DefaultResult
         private Major( String namespace, String path )
         {
             this.uri = namespace + path;
+        }
+        
+        /**
+         * Parsing a major from an uri string
+         * 
+         * @param uri
+         *            the major uri
+         * @return the major if present
+         */
+        public static Optional<Major> fromUri( String uri )
+        {
+            return Stream.of( Major.values() )
+                    .filter( maj -> maj.getUri().equalsIgnoreCase( uri ) )
+                    .findAny();
+        }
+        
+        /**
+         * Checking if the result major is positiv
+         * 
+         * @return is positiv
+         */
+        public boolean isPositiv()
+        {
+            return this == OK || this == VALID || this == SUCCESS;
         }
         
         /**
