@@ -13,26 +13,28 @@ Validation will be done step by step in following order:
 
 ![Components](overview_components.jpg "Components")
 
-## Getting Started
+## Quickstart
 
 ```
-git clone git@github.com:de-bund-bsi-tr-esor/tr-esor-AIP-eIDAS-SigValidator.git
+git clone https://github.com/de-bund-bsi-tr-esor/tr-esor-AIP-eIDAS-SigValidator.git
 
-cd xaipvalidator
+cd tr-esor-AIP-eIDAS-SigValidator
 
 mvn clean package
 
+java -jar xaip-validator-cli/target/xaip-validator-cli.jar -i ~/sample.xaip -Mvalidator.schemaDir=default-syntax-validator/src/main/resources/definition
+
 # CLI
 # Mac/Linux/Windows
-java -jar xaip-validator-cli/target/xaip-validator-cli.jar -i ~/Dokumente/XAIP-Validator/validator/PAdES.xaip -Mvalidator.schemaDir=default-syntax-validator/src/main/resources/definitions
+java -jar xaip-validator-cli/target/xaip-validator-cli.jar -i ~/sample.xaip -Mvalidator.schemaDir=default-syntax-validator/src/main/resources/definitions
 
 
 # SOAP Server
 # Mac/Linux
-java -cp "xaip-validator-soap/target/xaip-validator-soap-1.0.6-1.jar:target/dependency/*" de.bund.bsi.tresor.xaip.validator.soap.Server -Mvalidator.schemaDir=default-syntax-validator/src/main/resources/definition -Mverifier.wsdlUrl="https://host:port/VerificationService/S4?wsdl"
+java -cp "xaip-validator-soap/target/xaip-validator-soap-1.0.7-2.jar:target/dependency/*" de.bund.bsi.tresor.xaip.validator.soap.Server -Mvalidator.schemaDir=default-syntax-validator/src/main/resources/definition -Mverifier.wsdlUrl="https://host:port/VerificationService/S4?wsdl"
 
 # Windows
-java -cp "xaip-validator-soap/target/xaip-validator-soap-1.0.6-1.jar;target/dependency/*" de.bund.bsi.tresor.xaip.validator.soap.Server -Mvalidator.schemaDir=default-syntax-validator/src/main/resources/definition -Mverifier.wsdlUrl="https://host:port/VerificationService/S4?wsdl"
+java -cp "xaip-validator-soap/target/xaip-validator-soap-1.0.7-2.jar;target/dependency/*" de.bund.bsi.tresor.xaip.validator.soap.Server -Mvalidator.schemaDir=default-syntax-validator/src/main/resources/definition -Mverifier.wsdlUrl="https://host:port/VerificationService/S4?wsdl"
 ```
 
 ## Prerequisites
@@ -43,17 +45,78 @@ java -cp "xaip-validator-soap/target/xaip-validator-soap-1.0.6-1.jar;target/depe
 - git-client
 	- to pull this project, alternatively the project can be downloaded manually via git web
 
-## Installing
+## Installation
+- **Step 1:** Install Java 11
+        - OpenJDK: https://openjdk.java.net/install/
+
+- **Step 2:** Install Maven
+        - Apache Maven Installation Guide: http://maven.apache.org/install.html
+
+- **Step 3:** Install GitHub
+        - GitHub installation guide: https://github.com/git-guides/install-git
+	
+	- GitHub GUI clients: https://git-scm.com/downloads/guis
+
+- **Step 4:** Clone the Project
+        - GitHub documentation: https://github.com/git-guides/git-clone
+
+- **Step 5:** Build the Project
+        - open up a terminal on the project root node
+	
+	- call `mvn clean package`
+	
+- **Use the Validator:**
+	- example call:
+	
+```
+java -jar xaip-validator-cli/target/xaip-validator-cli.jar -i ~/Dokumente/sample.xaip -Mvalidator.schemaDir=/tmp/tr-esor-AIP-eIDAS-SigValidator/default-syntax-validator/src/main/resources/definitions
+```
+
+### Quick Example
 
 ```
-git clone git@github.com:de-bund-bsi-tr-esor/tr-esor-AIP-eIDAS-SigValidator.git
+git clone https://github.com/de-bund-bsi-tr-esor/tr-esor-AIP-eIDAS-SigValidator.git
 
-cd xaipvalidator
+cd tr-esor-AIP-eIDAS-SigValidator
 
 mvn clean package
 
-java -jar xaip-validator-cli/target/xaip-validator-cli.jar -i ~/Dokumente/XAIP-Validator/validator/PAdES.xaip -Mvalidator.schemaDir=default-syntax-validator/src/main/resources/definition
+java -jar xaip-validator-cli/target/xaip-validator-cli.jar -i ~/sample.xaip -Mvalidator.schemaDir=default-syntax-validator/src/main/resources/definition
 ```
+
+### Complete Example
+
+In this example, the project was checked out under `/tmp` so the root node of the project is `/tmp/tr-esor-AIP-eIDAS-SigValidator`:
+
+```
+$ pwd
+/tmp/tr-esor-AIP-eIDAS-SigValidator
+```
+
+Build the project using maven:
+```
+$ mvn clean package
+```
+
+A successful build should print a *`BUILD SUCCESS`* message. When following message is being printed, your shell is not using `java 11+`: *`invalid target release: 11`*. 
+
+
+The tool can be found in the target directory of the *`xaip-validator-cli`* submodule:
+```
+$ ls xaip-validator-cli/target/
+archive-tmp           checkstyle-checker.xml  checkstyle-rules.xml         classes            generated-test-sources  maven-status  xaip-validator-cli-1.0.7-2.jar
+checkstyle-cachefile  checkstyle-result.xml   checkstyle-suppressions.xml  generated-sources  maven-archiver          test-classes  xaip-validator-cli.jar
+```
+
+The `jar` which can be executed does not contain version information in its name (`xaip-validator-cli.jar`).
+Reason for this are the required runtime dependencies. Those are being added to the versioned `jar` resulting in the `xaip-validator-cli.jar`.
+
+When executing, the first module (syntax validator) requires schema information for the xaip validation.
+If no specific profiles are being used, following directory can be passed to the tool to provide those schemas:
+
+`tr-esor-AIP-eIDAS-SigValidator/default-syntax-validator/src/main/resources/definitions/`
+
+
 
 **Important Notes**
 
@@ -62,6 +125,8 @@ For more informations take a look into the module section where the module funkt
 
 Any known issues about the validator are being explained at the bottom of this page.
 
+
+## Usage
 ### CLI
 
 **Description:** The cli version of the XAIPValidator is being used for validation of XAIP's via the command line.
