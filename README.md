@@ -39,33 +39,43 @@ java -cp "xaip-validator-soap/target/xaip-validator-soap-1.0.7-2.jar;target/depe
 
 ## Prerequisites
 - java 11
+
 	- for executing the CLI jar
 - maven
+
 	- to build the project and loading dependencies
+	
 - git-client
+
 	- to pull this project, alternatively the project can be downloaded manually via git web
 
 ## Installation
 - **Step 1:** Install Java 11
-        - OpenJDK: https://openjdk.java.net/install/
+
+	- OpenJDK: https://openjdk.java.net/install/
 
 - **Step 2:** Install Maven
-        - Apache Maven Installation Guide: http://maven.apache.org/install.html
+
+	- Apache Maven Installation Guide: http://maven.apache.org/install.html
 
 - **Step 3:** Install GitHub
-        - GitHub installation guide: https://github.com/git-guides/install-git
+
+	- GitHub installation guide: https://github.com/git-guides/install-git
 	
 	- GitHub GUI clients: https://git-scm.com/downloads/guis
 
 - **Step 4:** Clone the Project
-        - GitHub documentation: https://github.com/git-guides/git-clone
+
+	- GitHub documentation: https://github.com/git-guides/git-clone
 
 - **Step 5:** Build the Project
-        - open up a terminal on the project root node
+
+	- open up a terminal on the project root node
 	
 	- call `mvn clean package`
 	
 - **Use the Validator:**
+
 	- example call:
 	
 ```
