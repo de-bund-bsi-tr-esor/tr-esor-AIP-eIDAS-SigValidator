@@ -77,7 +77,7 @@ public enum CredentialSectionValidator
         
         if ( related.getXPath().isEmpty() )
         {
-            related.getXPath().add( "//credential[@credentalID='" + credential.getCredentialID() + "']" );
+            related.getXPath().add( "//credential[@credentialID='" + credential.getCredentialID() + "']" );
         }
         
         return new AbstractMap.SimpleEntry<String, RelatedObjects>( credential.getCredentialID(), related );
