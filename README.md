@@ -38,7 +38,7 @@ java -cp "xaip-validator-soap/target/xaip-validator-soap-1.0.7-2.jar;target/depe
 ```
 
 ## Prerequisites
-- java 11
+- java 11 (>= 11.0.10)
 
 	- for executing the CLI jar
 - maven
@@ -73,6 +73,12 @@ java -cp "xaip-validator-soap/target/xaip-validator-soap-1.0.7-2.jar;target/depe
 	- open up a terminal on the project root node
 	
 	- call `mvn clean package`
+
+- **Optional:** Create javadoc html
+
+	- call `mvn javadoc:aggregate -Ddoclint=none` to create the javadoc on the root node
+	
+	- the javadoc can be open up via `tr-esor-AIP-eIDAS-SigValidator/target/site/apidocs/index.html` (open in browser)
 	
 - **Use the Validator:**
 
@@ -90,8 +96,11 @@ git clone https://github.com/de-bund-bsi-tr-esor/tr-esor-AIP-eIDAS-SigValidator.
 cd tr-esor-AIP-eIDAS-SigValidator
 
 mvn clean package
+mvn javadoc:aggregate -Ddoclint=none
 
 java -jar xaip-validator-cli/target/xaip-validator-cli.jar -i ~/sample.xaip -Mvalidator.schemaDir=default-syntax-validator/src/main/resources/definition
+
+
 ```
 
 ### Complete Example
@@ -126,7 +135,8 @@ If no specific profiles are being used, following directory can be passed to the
 
 `tr-esor-AIP-eIDAS-SigValidator/default-syntax-validator/src/main/resources/definitions/`
 
-
+A handy format of the javadoc can be created by calling `mvn javadoc:aggregate -Ddoclint=none` on the root project.
+The javadoc will be available under `tr-esor-AIP-eIDAS-SigValidator/target/site/apidocs/index.html` which should be opened using an internet browser.
 
 **Important Notes**
 
