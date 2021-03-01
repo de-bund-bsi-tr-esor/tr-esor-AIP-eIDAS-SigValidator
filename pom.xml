@@ -5,9 +5,10 @@
     <groupId>de.bund.bsi.tr_esor</groupId>
     <artifactId>tr-esor-AIP-eIDAS-SigValidator</artifactId>
     <version>1.0.8-SNAPSHOT</version>
-    <name>XaipValidator</name>
-    <description>Validator for TR-ESOR XAIP documents </description>
+    <name>AIP-eIDAS-SigValidator</name>
+    <description>Validator for TR-ESOR AIP documents </description>
     <packaging>pom</packaging>
+    <inceptionYear>2021</inceptionYear>
 
     <modules>
         <module>default-syntax-validator</module>
@@ -25,6 +26,19 @@
         <maven.compiler.target>11</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+
+    <licenses>
+        <license>
+            <name>Apache-2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>manual</distribution>
+        </license>
+    </licenses>
+    
+    <organization>
+        <name>Federal Office for Information Security (BSI)</name>
+        <url>https://bsi.bund.de/</url>
+    </organization>
 
     <developers>
         <developer>
