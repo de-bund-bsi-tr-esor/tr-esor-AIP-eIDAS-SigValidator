@@ -3,8 +3,8 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>de.bund.bsi.tr_esor</groupId>
-    <artifactId>xaip-validator</artifactId>
-    <version>1.0.7-3</version>
+    <artifactId>tr-esor-AIP-eIDAS-SigValidator</artifactId>
+    <version>1.0.8-SNAPSHOT</version>
     <name>XaipValidator</name>
     <description>Validator for TR-ESOR XAIP documents </description>
     <packaging>pom</packaging>

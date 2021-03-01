@@ -4,8 +4,8 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>de.bund.bsi.tr_esor</groupId>
-        <artifactId>xaip-validator</artifactId>
-        <version>1.0.7-3</version>
+        <artifactId>tr-esor-AIP-eIDAS-SigValidator</artifactId>
+        <version>1.0.8-SNAPSHOT</version>
     </parent>
     <artifactId>default-syntax-validator</artifactId>
     <packaging>jar</packaging>
