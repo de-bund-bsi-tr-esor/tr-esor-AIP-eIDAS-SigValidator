@@ -22,19 +22,19 @@ cd tr-esor-AIP-eIDAS-SigValidator
 
 mvn clean package
 
-java -jar xaip-validator-cli/target/xaip-validator-cli.jar -i ~/sample.xaip -Mvalidator.schemaDir=default-syntax-validator/src/main/resources/definition
+java -jar aip-validator-cli/target/aip-validator-cli.jar -i ~/sample.xaip -Mvalidator.schemaDir=default-syntax-validator/src/main/resources/definition
 
 # CLI
 # Mac/Linux/Windows
-java -jar xaip-validator-cli/target/xaip-validator-cli.jar -i ~/sample.xaip -Mvalidator.schemaDir=default-syntax-validator/src/main/resources/definitions
+java -jar aip-validator-cli/target/aip-validator-cli.jar -i ~/sample.xaip -Mvalidator.schemaDir=default-syntax-validator/src/main/resources/definitions
 
 
 # SOAP Server
 # Mac/Linux
-java -cp "xaip-validator-soap/target/xaip-validator-soap-1.0.7-2.jar:target/dependency/*" de.bund.bsi.tresor.xaip.validator.soap.Server -Mvalidator.schemaDir=default-syntax-validator/src/main/resources/definition -Mverifier.wsdlUrl="https://host:port/VerificationService/S4?wsdl"
+java -cp "aip-validator-soap/target/aip-validator-soap-1.0.7-2.jar:target/dependency/*" de.bund.bsi.tresor.aip.validator.soap.Server -Mvalidator.schemaDir=default-syntax-validator/src/main/resources/definition -Mverifier.wsdlUrl="https://host:port/VerificationService/S4?wsdl"
 
 # Windows
-java -cp "xaip-validator-soap/target/xaip-validator-soap-1.0.7-2.jar;target/dependency/*" de.bund.bsi.tresor.xaip.validator.soap.Server -Mvalidator.schemaDir=default-syntax-validator/src/main/resources/definition -Mverifier.wsdlUrl="https://host:port/VerificationService/S4?wsdl"
+java -cp "aip-validator-soap/target/aip-validator-soap-1.0.7-2.jar;target/dependency/*" de.bund.bsi.tresor.aip.validator.soap.Server -Mvalidator.schemaDir=default-syntax-validator/src/main/resources/definition -Mverifier.wsdlUrl="https://host:port/VerificationService/S4?wsdl"
 ```
 
 ## Prerequisites
@@ -85,7 +85,7 @@ java -cp "xaip-validator-soap/target/xaip-validator-soap-1.0.7-2.jar;target/depe
 	- example call:
 	
 ```
-java -jar xaip-validator-cli/target/xaip-validator-cli.jar -i ~/Dokumente/sample.xaip -Mvalidator.schemaDir=/tmp/tr-esor-AIP-eIDAS-SigValidator/default-syntax-validator/src/main/resources/definitions
+java -jar aip-validator-cli/target/aip-validator-cli.jar -i ~/Dokumente/sample.xaip -Mvalidator.schemaDir=/tmp/tr-esor-AIP-eIDAS-SigValidator/default-syntax-validator/src/main/resources/definitions
 ```
 
 ### Quick Example
@@ -98,7 +98,7 @@ cd tr-esor-AIP-eIDAS-SigValidator
 mvn clean package
 mvn javadoc:aggregate -Ddoclint=none
 
-java -jar xaip-validator-cli/target/xaip-validator-cli.jar -i ~/sample.xaip -Mvalidator.schemaDir=default-syntax-validator/src/main/resources/definition
+java -jar aip-validator-cli/target/aip-validator-cli.jar -i ~/sample.xaip -Mvalidator.schemaDir=default-syntax-validator/src/main/resources/definition
 
 
 ```
@@ -120,17 +120,17 @@ $ mvn clean package
 A successful build should print a *`BUILD SUCCESS`* message. When following message is being printed, your shell is not using `java 11+`: *`invalid target release: 11`*. 
 
 
-The tool can be found in the target directory of the *`xaip-validator-cli`* submodule:
+The tool can be found in the target directory of the *`aip-validator-cli`* submodule:
 ```
-$ ls xaip-validator-cli/target/
-archive-tmp           checkstyle-checker.xml  checkstyle-rules.xml         classes            generated-test-sources  maven-status  xaip-validator-cli-1.0.7-2.jar
-checkstyle-cachefile  checkstyle-result.xml   checkstyle-suppressions.xml  generated-sources  maven-archiver          test-classes  xaip-validator-cli.jar
+$ ls aip-validator-cli/target/
+archive-tmp           checkstyle-checker.xml  checkstyle-rules.xml         classes            generated-test-sources  maven-status  aip-validator-cli-1.0.7-2.jar
+checkstyle-cachefile  checkstyle-result.xml   checkstyle-suppressions.xml  generated-sources  maven-archiver          test-classes  aip-validator-cli.jar
 ```
 
-The `jar` which can be executed does not contain version information in its name (`xaip-validator-cli.jar`).
-Reason for this are the required runtime dependencies. Those are being added to the versioned `jar` resulting in the `xaip-validator-cli.jar`.
+The `jar` which can be executed does not contain version information in its name (`aip-validator-cli.jar`).
+Reason for this are the required runtime dependencies. Those are being added to the versioned `jar` resulting in the `aip-validator-cli.jar`.
 
-When executing, the first module (syntax validator) requires schema information for the xaip validation.
+When executing, the first module (syntax validator) requires schema information for the aip validation.
 If no specific profiles are being used, following directory can be passed to the tool to provide those schemas:
 
 `tr-esor-AIP-eIDAS-SigValidator/default-syntax-validator/src/main/resources/definitions/`
@@ -140,7 +140,7 @@ The javadoc will be available under `tr-esor-AIP-eIDAS-SigValidator/target/site/
 
 **Important Notes**
 
-Without any additional configuration the xaip validator is using the default module implementations.
+Without any additional configuration the aip validator is using the default module implementations.
 For more informations take a look into the module section where the module funktionality is being further explained.
 
 Any known issues about the validator are being explained at the bottom of this page.
@@ -149,9 +149,9 @@ Any known issues about the validator are being explained at the bottom of this p
 ## Usage
 ### CLI
 
-**Description:** The cli version of the XAIPValidator is being used for validation of XAIP's via the command line.
+**Description:** The cli version of the AIPValidator is being used for validation of AIP's via the command line.
 
-**Usage:** `java -jar xaip-validator.jar [OPTION [ARG]*]*`
+**Usage:** `java -jar aip-validator.jar [OPTION [ARG]*]*`
 
 **Options:**
 
@@ -182,7 +182,7 @@ Any known issues about the validator are being explained at the bottom of this p
       verifier.wsdlUrl=http://localhost:8080/s4?wsdl
 
 -i, --in, --input <file>
-    Passing a <file> as a source for the xaip validation.
+    Passing a <file> as a source for the aip validation.
     Omitting this argument will take the standard <inpuStream> for the validation.
 
     Example: -i /tmp/sample.xaip
@@ -213,9 +213,9 @@ Any known issues about the validator are being explained at the bottom of this p
 
 ### Server
 
-**Description:** The server version of the XAIPValidator is being used to provide a soap service implementing the verify function of the eCard api. This api can be used to send a verifyRequest containing an XAIP which will be validated in the following steps.
+**Description:** The server version of the AIPValidator is being used to provide a soap service implementing the verify function of the eCard api. This api can be used to send a verifyRequest containing an AIP which will be validated in the following steps.
 
-**Usage:** `java -cp "target/xaip-validator-soap-1.0.6-SNAPSHOT.jar:target/dependency/*" de.bund.bsi.tresor.xaip.validator.soap.Server [OPTION [ARG]*]*`
+**Usage:** `java -cp "target/aip-validator-soap-1.0.6-SNAPSHOT.jar:target/dependency/*" de.bund.bsi.tresor.aip.validator.soap.Server [OPTION [ARG]*]*`
 
 **Options:**
 
@@ -255,7 +255,7 @@ Any known issues about the validator are being explained at the bottom of this p
 	Hostname the server is published to
 
 --path <path>
-	Custom path the service should be used, `/xaip-validate` by default
+	Custom path the service should be used, `/aip-validate` by default
     
 -d, --debug
     Flag to enable debug output for a better analysis of the validator behaviour.
@@ -269,19 +269,19 @@ Any known issues about the validator are being explained at the bottom of this p
 
 ### Default Validator
 
-**Description:** Validating the XAIP using the provided schema files (XSD's)
+**Description:** Validating the AIP using the provided schema files (XSD's)
 
 **Configurations:**
 
 | ConfigName            | Example          | Description                                       |
 |-----------------------|------------------|---------------------------------------------------|
-| *validator.schemaDir  | /tmp/xaip-schema | schema directory containing all xaip schema files |
+| *validator.schemaDir  | /tmp/xaip-schema | schema directory containing all aip schema files |
 
 \* - required configuration
 
 ### Default Finder
 
-**Description:** Finding any signature in the XAIP which can be in the data- or credentialSection.
+**Description:** Finding any signature in the AIP which can be in the data- or credentialSection.
 
 **Configurations:** NONE
 
@@ -312,7 +312,7 @@ Any known issues about the validator are being explained at the bottom of this p
 
 The following limitations apply:
 
-- The XAIPValidator has a strong dependency to the external signature validation service. The current version of the service is not able to validate XML signatures properly. Therefore the validation of XAIPs containing XML signatures will lead to validation reports with unsupported signature formats.
+- The AIPValidator has a strong dependency to the external signature validation service. The current version of the service is not able to validate XML signatures properly. Therefore the validation of AIPs containing XML signatures will lead to validation reports with unsupported signature formats.
 - The processing of XAdES-compliant signature objects is currently not fully supported. This issue will be fixed in one of the next SNAPSHOT releases
 - Information for `TransformInfoType` is currently not generated due to inconsistencies in the verification report scheme
 - Extensions are not evaluated due to their dependency to specific profiles
@@ -324,7 +324,7 @@ The following issues are known:
 ## Test Environment ##
 
 - Use the following URL for the validation service: https://staging.protectr.de/VerificationService/S4?wsdl
-- Testmaterial is supplied separately together with sample XAIP-files and a shell script for test execution
+- Testmaterial is supplied separately together with sample AIP-files and a shell script for test execution
 
 ## License ##
 
@@ -338,7 +338,7 @@ Godesberger Allee 185-189\
 53175 Bonn, Germany\
 phone: +49 228 99 9582-0\
 fax: +49 228 99 9582-5400\
-e-mail: bsi@bsi.bund.de
+e-mail: tresor@bsi.bund.de
 
 and
 

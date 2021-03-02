@@ -15,10 +15,10 @@
         <module>default-signature-finder</module>
         <module>default-signature-verifier</module>
         <module>default-protocol-assembler</module>
-        <module>xaip-validator-cli</module>
-        <module>xaip-validator-soap</module>
-        <module>xaip-validator-api</module>
-        <module>xaip-validator-dispatcher</module>
+        <module>aip-validator-cli</module>
+        <module>aip-validator-soap</module>
+        <module>aip-validator-api</module>
+        <module>aip-validator-dispatcher</module>
     </modules>
 
     <properties>

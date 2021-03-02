@@ -25,6 +25,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
+import de.bund.bsi.tresor.aip.validator.protocol.DefaultProtocolAssembler;
+
 /**
  * @author bendlera
  *
@@ -33,7 +35,7 @@ class DefaultProtocolAssemblerTest
 {
     
     /**
-     * Test method for {@link de.bund.bsi.tresor.xaip.validator.protocol.DefaultProtocolAssembler#getVendor()}.
+     * Test method for {@link de.bund.bsi.tresor.aip.validator.protocol.DefaultProtocolAssembler#getVendor()}.
      */
     @Test
     void testGetVendor()
@@ -42,7 +44,7 @@ class DefaultProtocolAssemblerTest
     }
     
     /**
-     * Test method for {@link de.bund.bsi.tresor.xaip.validator.protocol.DefaultProtocolAssembler#getVersion()}.
+     * Test method for {@link de.bund.bsi.tresor.aip.validator.protocol.DefaultProtocolAssembler#getVersion()}.
      */
     @Test
     void testGetVersion()

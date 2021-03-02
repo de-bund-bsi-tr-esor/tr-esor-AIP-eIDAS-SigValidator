@@ -1,0 +1,45 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>de.bund.bsi.tr_esor</groupId>
+        <artifactId>tr-esor-AIP-eIDAS-SigValidator</artifactId>
+        <version>1.0.8-SNAPSHOT</version>
+    </parent>
+    <artifactId>aip-validator-dispatcher</artifactId>
+
+    <dependencies>
+        <!-- internal dependencies -->
+        <dependency>
+            <groupId>de.bund.bsi.tr_esor</groupId>
+            <artifactId>aip-validator-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>de.bund.bsi.tr_esor</groupId>
+            <artifactId>default-protocol-assembler</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>de.bund.bsi.tr_esor</groupId>
+            <artifactId>default-syntax-validator</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>de.bund.bsi.tr_esor</groupId>
+            <artifactId>default-signature-finder</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>de.bund.bsi.tr_esor</groupId>
+            <artifactId>default-signature-verifier</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <!-- external dependencies -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+    </dependencies>
+</project>
