@@ -324,7 +324,7 @@ The following issues are known:
 ## Test Environment ##
 
 - Use the following URL for the validation service: https://staging.protectr.de/VerificationService/S4?wsdl
-- Testmaterial is supplied separately together with sample AIP-files and a shell script for test execution
+- Some test material can be found in aip-validator-cli/src/test/resources/samples
 
 ## License ##
 
