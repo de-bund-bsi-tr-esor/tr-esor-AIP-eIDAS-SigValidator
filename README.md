@@ -31,10 +31,10 @@ java -jar aip-validator-cli/target/aip-validator-cli.jar -i ~/sample.xaip -Mvali
 
 # SOAP Server
 # Mac/Linux
-java -cp "aip-validator-soap/target/aip-validator-soap-1.0.7-2.jar:target/dependency/*" de.bund.bsi.tresor.aip.validator.soap.Server -Mvalidator.schemaDir=default-syntax-validator/src/main/resources/definition -Mverifier.wsdlUrl="https://host:port/VerificationService/S4?wsdl"
+java -cp "aip-validator-soap/target/aip-validator-soap-1.0.8-1:target/dependency/*" de.bund.bsi.tresor.aip.validator.soap.Server -Mvalidator.schemaDir=default-syntax-validator/src/main/resources/definition -Mverifier.wsdlUrl="https://host:port/VerificationService/S4?wsdl"
 
 # Windows
-java -cp "aip-validator-soap/target/aip-validator-soap-1.0.7-2.jar;target/dependency/*" de.bund.bsi.tresor.aip.validator.soap.Server -Mvalidator.schemaDir=default-syntax-validator/src/main/resources/definition -Mverifier.wsdlUrl="https://host:port/VerificationService/S4?wsdl"
+java -cp "aip-validator-soap/target/aip-validator-soap-1.0.8-1.jar;target/dependency/*" de.bund.bsi.tresor.aip.validator.soap.Server -Mvalidator.schemaDir=default-syntax-validator/src/main/resources/definition -Mverifier.wsdlUrl="https://host:port/VerificationService/S4?wsdl"
 ```
 
 ## Prerequisites
@@ -123,7 +123,7 @@ A successful build should print a *`BUILD SUCCESS`* message. When following mess
 The tool can be found in the target directory of the *`aip-validator-cli`* submodule:
 ```
 $ ls aip-validator-cli/target/
-archive-tmp           checkstyle-checker.xml  checkstyle-rules.xml         classes            generated-test-sources  maven-status  aip-validator-cli-1.0.7-2.jar
+archive-tmp           checkstyle-checker.xml  checkstyle-rules.xml         classes            generated-test-sources  maven-status  aip-validator-cli-1.0.8-1.jar
 checkstyle-cachefile  checkstyle-result.xml   checkstyle-suppressions.xml  generated-sources  maven-archiver          test-classes  aip-validator-cli.jar
 ```
 
@@ -215,7 +215,7 @@ Any known issues about the validator are being explained at the bottom of this p
 
 **Description:** The server version of the AIPValidator is being used to provide a soap service implementing the verify function of the eCard api. This api can be used to send a verifyRequest containing an AIP which will be validated in the following steps.
 
-**Usage:** `java -cp "target/aip-validator-soap-1.0.6-SNAPSHOT.jar:target/dependency/*" de.bund.bsi.tresor.aip.validator.soap.Server [OPTION [ARG]*]*`
+**Usage:** `java -cp "target/aip-validator-soap-1.0.8-1.jar:target/dependency/*" de.bund.bsi.tresor.aip.validator.soap.Server [OPTION [ARG]*]*`
 
 **Options:**
 
