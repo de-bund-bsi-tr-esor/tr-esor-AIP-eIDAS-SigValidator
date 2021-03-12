@@ -1,0 +1,67 @@
+Third party software
+====================
+
+This software is using the following third party software, which might be published under different licenses.
+
+LICENSE						| SOFTWARE
+================================================+======================================================================
+Apache License, Version 2.0			| jcommander 1.78
+Apache License, Version 2.0			| Apache Commons Lang 3.10
+Apache License, Version 2.0			| Apache CXF Core 3.4.2
+Apache License, Version 2.0			| Apache CXF Runtime SOAP Binding 3.4.2
+Apache License, Version 2.0			| Apache CXF Runtime XML Binding 3.4.2
+Apache License, Version 2.0			| Apache CXF Runtime JAXB DataBinding 3.4.2
+Apache License, Version 2.0			| Apache CXF Runtime JAX-WS Frontend 3.4.2
+Apache License, Version 2.0			| Apache CXF Runtime Simple Frontend 3.4.2
+Apache License, Version 2.0			| Apache CXF Runtime HTTP Transport 3.4.2
+Apache License, Version 2.0			| Apache CXF Runtime WS Addressing 3.4.2
+Apache License, Version 2.0			| Apache CXF Runtime WS Policy 3.4.2
+Apache License, Version 2.0			| Apache CXF Runtime Core for WSDL 3.4.2
+Apache License, Version 2.0			| Apache FontBox 2.0.20
+Apache License, Version 2.0			| Apache PDFBox 2.0.20
+Apache License, Version 2.0			| Apache XML Security for Java 2.2.0
+Apache License, Version 2.0			| XmlSchema Core 2.2.5
+Apache License, Version 2.0			| Apache Commons Codec 1.14
+Apache License, Version 2.0			| Apache Commons IO 2.7
+The Apache License, Version 2.0			| Woodstox 5.2.1
+The Apache License, Version 2.0			| Woodstox 6.2.3
+The Apache License, Version 2.0			| org.apiguardian:apiguardian-api 1.1.0
+The Apache License, Version 2.0			| org.opentest4j:opentest4j 1.2.0
+The Apache Software License, Version 2.0	| Apache Commons Logging 1.2
+The Apache Software License, Version 2.0	| XML Commons Resolver Component 1.2
+The Apache Software License, Version 2.0	| Apache Neethi 3.1.1
+Bouncy Castle Licence				| Bouncy Castle S/MIME API 1.64
+Bouncy Castle Licence				| Bouncy Castle PKIX, CMS, EAC, TSP, PKCS, OCSP, CMP, and CRMF APIs 1.64
+Bouncy Castle Licence				| Bouncy Castle Provider 1.64
+BSD License 2.0					| jaxen 1.2.0
+BSD License 3					| Hamcrest 2.2
+BSD License 3					| Hamcrest Core 2.2
+BSD-3-Clause					| asm 9.0
+BSD 3-clause New License			| dom4j 2.1.3
+The BSD License					| Stax2 API 4.2
+The BSD License					| Stax2 API 4.2.1
+CDDL+GPL License				| Old JAXB Core 2.3.0.1
+CDDL+GPL License				| Old JAXB Runtime 2.3.1
+CDDL/GPLv2+CE					| JavaBeans Activation Framework API jar 1.2.0
+CDDL 1.1 (GPL2 w/ CPE)				| jaxb-api 2.3.1
+CDDL + GPLv2 with classpath exception		| Java Servlet API 4.0.1
+CPL						| WSDL4J 1.6.3
+EDL 1.0						| Jakarta Activation 1.2.2
+EDL 1.0						| Jakarta Activation API jar 1.2.2
+Eclipse Distribution License - v 1.0		| istack common utility code runtime 3.0.11
+Eclipse Distribution License - v 1.0		| Jakarta Web Services Metadata API 2.1.0
+Eclipse Distribution License - v 1.0		| Jakarta XML Binding API 2.3.3
+Eclipse Distribution License - v 1.0		| Jakarta SOAP with Attachments API 1.4.2
+Eclipse Distribution License - v 1.0		| Jakarta XML Web Services API 2.3.3
+Eclipse Distribution License - v 1.0		| JAXB Runtime 2.3.3
+Eclipse Distribution License - v 1.0		| TXW2 Runtime 2.3.3
+Eclipse Distribution License - v 1.0		| Metro Web Services API non-OSGi Bundle 2.4.4
+Eclipse Distribution License - v 1.0		| Metro Web Services Runtime non-OSGi Bundle 2.4.4
+Eclipse Public License v2.0			| JUnit Jupiter (Aggregator) 5.6.2
+Eclipse Public License v2.0			| JUnit Jupiter API 5.6.2
+Eclipse Public License v2.0			| JUnit Jupiter Engine 5.6.2
+Eclipse Public License v2.0			| JUnit Jupiter Params 5.6.2
+Eclipse Public License v2.0			| JUnit Platform Commons 1.6.2
+Eclipse Public License v2.0			| JUnit Platform Engine API 1.6.2
+MIT License					| SLF4J API Module 1.7.9
+The MIT License					| Project Lombok 1.18.12
