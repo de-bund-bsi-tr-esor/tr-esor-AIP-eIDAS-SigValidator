@@ -45,7 +45,7 @@
                             <archive>
                                 <manifest>
                                     <mainClass>
-                                        de.bund.bsi.tresor.xaip.validator.cli.CLI
+                                        de.bund.bsi.tresor.aip.validator.cli.CLI
                                     </mainClass>
                                 </manifest>
                             </archive>
