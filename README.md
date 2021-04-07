@@ -294,10 +294,6 @@ Any known issues about the validator are being explained at the bottom of this p
 | ConfigName        | Example                                                   | Description                          |
 |-------------------|-----------------------------------------------------------|--------------------------------------|
 | *verifier.wsdlUrl | https://host:port/VerificationService/S4?wsdl             | url of the verification service wsdl |
-|  verifier.user    | umsysadmin                                                | uid for the token creation           |
-|  verifier.pass    | someSecret                                                | password of the user                 |
-|  verifier.umUrl   | https://protectr.procilon.test/UserManager/v1/login       | loginUrl of the procilon userManager |
-|  verifier.idpUrl  | https://protectr.procilon.test/idp/profile/SAML2/SOAP/ECP | idpUrl of the procilon idp           |
 
 \* - required configuration
 
@@ -323,7 +319,7 @@ The following issues are known:
 
 ## Test Environment ##
 
-- Use the following URL for the validation service: https://staging.protectr.de/VerificationService/S4?wsdl
+- Use the following URL for the validation service: https://tresortest.protectr.de/VerificationService/S4?wsdl
 - Some test material can be found in aip-validator-cli/src/test/resources/samples
 
 ## License ##
