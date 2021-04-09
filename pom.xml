@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>de.bund.bsi.tr_esor</groupId>
     <artifactId>tr-esor-AIP-eIDAS-SigValidator</artifactId>
-    <version>1.0.8-1</version>
+    <version>1.0.8-2</version>
     <name>AIP-eIDAS-SigValidator</name>
     <description>Validator for TR-ESOR AIP documents </description>
     <packaging>pom</packaging>
@@ -34,7 +34,7 @@
             <distribution>manual</distribution>
         </license>
     </licenses>
-    
+
     <organization>
         <name>Federal Office for Information Security (BSI)</name>
         <url>https://bsi.bund.de/</url>
@@ -148,6 +148,37 @@
                         </module>
                     </checkstyleRules>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>license-maven-plugin</artifactId>
+                <version>2.0.0</version>
+                <executions>
+                    <execution>
+                        <id>update-file-header-UTF-8</id>
+                        <goals>
+                            <goal>update-file-header</goal>
+                        </goals>
+                        <configuration>
+                            <excludes>
+                                <exclude>**/*.properties</exclude>
+                            </excludes>
+                            <encoding>UTF-8</encoding>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>update-file-header-ISO-8859-1</id>
+                        <goals>
+                            <goal>update-file-header</goal>
+                        </goals>
+                        <configuration>
+                            <includes>
+                                <include>**/*.properties</include>
+                            </includes>
+                            <encoding>ISO-8859-1</encoding>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
