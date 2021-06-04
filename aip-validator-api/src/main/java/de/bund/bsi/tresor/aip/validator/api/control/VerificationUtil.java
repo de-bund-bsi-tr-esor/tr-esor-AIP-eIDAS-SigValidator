@@ -84,7 +84,7 @@ public class VerificationUtil
                         {
                             Streams.drain( digestIn );
                             byte[] digest = digestIn.getMessageDigest().digest();
-                            byte[] expectedDigest = Hex.decode( checksum.getCheckSum() );
+                            byte[] expectedDigest = checksum.getCheckSum();
                             
                             if ( org.bouncycastle.util.Arrays.constantTimeAreEqual( expectedDigest, digest ) )
                             {
