@@ -343,3 +343,26 @@ Leipziger Straße 110\
 04425 Taucha bei Leipzig, Germany\
 phone: +49 34298 4878 31\
 e-mail: anfrage@procilon.de
+
+## Changelog ##
+### Default Validator ###
+
+- 1.0.0
+-- inital version
+
+### Default Finder ###
+
+- 1.0.0
+-- inital version
+- 1.1.0
+-- added ASiC support
+
+### Default Verifier ###
+
+- 1.0.0
+-- inital version
+
+### Default Assembler ###
+
+- 1.0.0
+-- inital version

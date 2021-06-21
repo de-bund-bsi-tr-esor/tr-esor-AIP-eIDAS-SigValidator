@@ -23,10 +23,10 @@ package de.bund.bsi.tresor.aip.validator.signature;
 
 import java.io.ByteArrayInputStream;
 import java.util.Optional;
-import java.util.function.Supplier;
 
 import de.bund.bsi.tr_esor.xaip._1.DataObjectType;
 import de.bund.bsi.tresor.aip.validator.api.control.AIPUtil;
+import de.bund.bsi.tresor.aip.validator.signature.checker.ASiCChecker;
 import de.bund.bsi.tresor.aip.validator.signature.checker.CAdESChecker;
 import de.bund.bsi.tresor.aip.validator.signature.checker.PAdESChecker;
 import de.bund.bsi.tresor.aip.validator.signature.checker.XAdESChecker;
@@ -83,8 +83,11 @@ public class DataSectionAnalyzer
      */
     public static FinderResult analyzeBinData( DataObjectType dataObject, byte[] data )
     {
-        SignaturePresence presence = SignaturePresence
-                .fromBoolean( PAdESChecker.INSTANCE.isPAdES( data ) || CAdESChecker.INSTANCE.isCAdES( data ) );
+        boolean isPAdES = PAdESChecker.INSTANCE.isPAdES( data );
+        boolean isCAdES = CAdESChecker.INSTANCE.isCAdES( data );
+        boolean isASiC = ASiCChecker.INSTANCE.isASiC( data );
+        
+        SignaturePresence presence = SignaturePresence.fromBoolean( isPAdES || isCAdES || isASiC );
         
         return new FinderResult( dataObject, presence, new ByteArrayInputStream( data ) );
     }
@@ -102,12 +105,31 @@ public class DataSectionAnalyzer
      */
     public static FinderResult analyzeXmlData( DataObjectType dataObject, byte[] data, boolean considerLxaip )
     {
-        Supplier<SignaturePresence> xadesResult = () -> SignaturePresence.fromBoolean( XAdESChecker.INSTANCE.isXAdES( data ) );
-        SignaturePresence presence = considerLxaip ? AIPUtil.extractLxaipData( data )
-                .map( d -> SignaturePresence.UNKNOWN )
-                .orElseGet( xadesResult ) : xadesResult.get();
+        if ( considerLxaip )
+        {
+            return analyzeLXAIPData( dataObject, data );
+        }
+        
+        SignaturePresence presence = SignaturePresence.fromBoolean( XAdESChecker.INSTANCE.isXAdES( data ) );
         
         return new FinderResult( dataObject, presence, new ByteArrayInputStream( data ) );
+    }
+    
+    /**
+     * Analyzing if the external data of the lxaip reference contains a signature
+     * 
+     * @param dataObject
+     *            the dataObject related to the lxaip data reference
+     * @param data
+     *            the dataObject data containing the reference information to the external data
+     * @return the finder result
+     */
+    public static FinderResult analyzeLXAIPData( DataObjectType dataObject, byte[] data )
+    {
+        FinderResult xmlResult = analyzeXmlData( dataObject, data, false );
+        boolean isXAdES = SignaturePresence.PRESENT == xmlResult.getPresence();
+        
+        return isXAdES ? xmlResult : analyzeBinData( dataObject, data );
     }
     
 }

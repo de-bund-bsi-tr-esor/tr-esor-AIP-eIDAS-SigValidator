@@ -53,7 +53,7 @@ import lombok.Getter;
 public class DefaultSignatureFinder implements SignatureFinder
 {
     private final String vendor  = "BSI";
-    private final String version = "1.0.0";
+    private final String version = "1.1.0";
     
     @Override
     public Map<String, Set<String>> findSignatures( ModuleContext context, XAIPType xaip )
