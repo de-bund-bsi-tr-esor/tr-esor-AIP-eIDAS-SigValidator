@@ -348,21 +348,21 @@ e-mail: anfrage@procilon.de
 ### Default Validator ###
 
 - 1.0.0
--- inital version
+	- inital version
 
 ### Default Finder ###
 
 - 1.0.0
--- inital version
+	- inital version
 - 1.1.0
--- added ASiC support
+	- added ASiC support
 
 ### Default Verifier ###
 
 - 1.0.0
--- inital version
+	- inital version
 
 ### Default Assembler ###
 
 - 1.0.0
--- inital version
+	- inital version
