@@ -21,11 +21,14 @@
  */
 package de.bund.bsi.tresor.aip.validator.signature;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.emptyOrNullString;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import de.bund.bsi.tresor.aip.validator.signature.DefaultSignatureFinder;
 
 /**
  * @author bendlera
@@ -33,13 +36,22 @@ import de.bund.bsi.tresor.aip.validator.signature.DefaultSignatureFinder;
  */
 class DefaultSignatureFinderTest
 {
+    private DefaultSignatureFinder uut;
+    
+    @BeforeEach
+    public void init()
+    {
+        uut = new DefaultSignatureFinder();
+    }
+    
     /**
      * Test method for {@link de.bund.bsi.tresor.aip.validator.signature.DefaultSignatureFinder#getVendor()}.
      */
     @Test
     void testGetVendor()
     {
-        assertEquals( "BSI", new DefaultSignatureFinder().getVendor() );
+        assertThat( uut.getVendor(), is( not( emptyOrNullString() ) ) );
+        assertThat( uut.getVendor(), is( equalTo( "BSI" ) ) );
     }
     
     /**
@@ -48,6 +60,6 @@ class DefaultSignatureFinderTest
     @Test
     void testGetVersion()
     {
-        assertEquals( "1.0.0", new DefaultSignatureFinder().getVersion() );
+        assertThat( uut.getVersion(), is( not( emptyOrNullString() ) ) );
     }
 }

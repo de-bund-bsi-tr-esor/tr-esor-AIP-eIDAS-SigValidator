@@ -21,13 +21,13 @@
  */
 package de.bund.bsi.tresor.aip.validator.signature.checker;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -41,9 +41,9 @@ import de.bund.bsi.tresor.aip.validator.api.control.ModuleLogger;
 class PAdESCheckerTest
 {
     
+    private PAdESChecker                 uut          = PAdESChecker.INSTANCE;
+    
     private static ByteArrayOutputStream loggerOutput = new ByteArrayOutputStream();
-    private static byte[]                signedPdfFile;
-    private static byte[]                unsignedPdfFile;
     
     /**
      * Loads test data.
@@ -55,29 +55,32 @@ class PAdESCheckerTest
     static void setUpBeforeClass() throws Exception
     {
         ModuleLogger.initConfig( true, loggerOutput );
-        
-        signedPdfFile = Files
-                .readAllBytes( Paths.get( PAdESCheckerTest.class.getResource( "/signed.pdf" ).toURI() ) );
-        unsignedPdfFile = Files
-                .readAllBytes( Paths.get( PAdESCheckerTest.class.getResource( "/unsigned.pdf" ).toURI() ) );
     }
     
     /**
      * Test method for {@link de.bund.bsi.tresor.aip.validator.signature.checker.PAdESChecker#isPAdES(byte[])}.
      */
     @Test
-    void testIsPAdES()
+    void testIsPAdES() throws IOException
     {
-        assertTrue( PAdESChecker.INSTANCE.isPAdES( signedPdfFile ) );
+        try ( InputStream in = this.getClass().getResourceAsStream( "/signed.pdf" ) )
+        {
+            assertThat( uut.isPAdES( in.readAllBytes() ), is( true ) );
+        }
     }
     
     /**
      * Test method for {@link de.bund.bsi.tresor.aip.validator.signature.checker.PAdESChecker#isPAdES(byte[])}.
+     * 
+     * @throws IOException
      */
     @Test
-    void testIsPAdESCaseNoSignature()
+    void testIsPAdESCaseNoSignature() throws IOException
     {
-        assertFalse( PAdESChecker.INSTANCE.isPAdES( unsignedPdfFile ) );
+        try ( InputStream in = this.getClass().getResourceAsStream( "/unsigned.pdf" ) )
+        {
+            assertThat( uut.isPAdES( in.readAllBytes() ), is( false ) );
+        }
     }
     
     /**
@@ -86,7 +89,8 @@ class PAdESCheckerTest
     @Test
     void testIsPAdESCaseNoPdf()
     {
-        assertFalse( PAdESChecker.INSTANCE.isPAdES( "filecontent".getBytes( StandardCharsets.UTF_8 ) ) );
+        byte[] data = "filecontent".getBytes( StandardCharsets.UTF_8 );
+        assertThat( uut.isPAdES( data ), is( false ) );
     }
     
     /**
@@ -95,7 +99,8 @@ class PAdESCheckerTest
     @Test
     void testHasPAdESRequirementsCaseNoPdf()
     {
-        assertFalse( PAdESChecker.INSTANCE.hasPAdESRequirements( "%PDF-1.7".getBytes( StandardCharsets.UTF_8 ) ) );
+        byte[] data = "%PDF-1.7".getBytes( StandardCharsets.UTF_8 );
+        assertThat( uut.hasPAdESRequirements( data ), is( false ) );
     }
     
 }

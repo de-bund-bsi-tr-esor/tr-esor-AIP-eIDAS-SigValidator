@@ -31,7 +31,7 @@ java -jar aip-validator-cli/target/aip-validator-cli.jar -i ~/sample.xaip -Mvali
 
 # SOAP Server
 # Mac/Linux
-java -cp "aip-validator-soap/target/aip-validator-soap-1.0.8-2:target/dependency/*" de.bund.bsi.tresor.aip.validator.soap.Server -Mvalidator.schemaDir=default-syntax-validator/src/main/resources/definition -Mverifier.wsdlUrl="https://host:port/VerificationService/S4?wsdl"
+java -cp "aip-validator-soap/target/aip-validator-soap-1.0.8-2.jar:aip-validator-soap/target/dependency/*" de.bund.bsi.tresor.aip.validator.soap.Server -Mvalidator.schemaDir=default-syntax-validator/src/main/resources/definitions -Mverifier.wsdlUrl="http://host:port/VerificationService/S4?wsdl"
 
 # Windows
 java -cp "aip-validator-soap/target/aip-validator-soap-1.0.8-2.jar;target/dependency/*" de.bund.bsi.tresor.aip.validator.soap.Server -Mvalidator.schemaDir=default-syntax-validator/src/main/resources/definition -Mverifier.wsdlUrl="https://host:port/VerificationService/S4?wsdl"
