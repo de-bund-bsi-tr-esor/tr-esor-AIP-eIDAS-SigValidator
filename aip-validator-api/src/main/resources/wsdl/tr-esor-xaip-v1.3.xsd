@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xs:schema xmlns:xaip="http://www.bsi.bund.de/tr-esor/xaip/1.2" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xades="http://uri.etsi.org/01903/v1.3.2#" xmlns:ers="urn:ietf:params:xml:ns:ers" xmlns:vr="urn:oasis:names:tc:dss-x:1.0:profiles:verificationreport:schema#" xmlns:dss="urn:oasis:names:tc:dss:1.0:core:schema" xmlns:ec="http://www.bsi.bund.de/ecard/api/1.1" xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" xmlns:xmime="http://www.w3.org/2005/05/xmlmime" targetNamespace="http://www.bsi.bund.de/tr-esor/xaip/1.2" elementFormDefault="qualified" attributeFormDefault="unqualified">
+<xs:schema xmlns:xaip="http://www.bsi.bund.de/tr-esor/xaip" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xades="http://uri.etsi.org/01903/v1.3.2#" xmlns:ers="urn:ietf:params:xml:ns:ers" xmlns:vr="urn:oasis:names:tc:dss-x:1.0:profiles:verificationreport:schema#" xmlns:dss="urn:oasis:names:tc:dss:1.0:core:schema" xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" xmlns:xmime="http://www.w3.org/2005/05/xmlmime" targetNamespace="http://www.bsi.bund.de/tr-esor/xaip" elementFormDefault="qualified" attributeFormDefault="unqualified" version="1.3.0">
 	<xs:import namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="./deps/xmldsig-core-schema.xsd"/>
 	<xs:import namespace="http://uri.etsi.org/01903/v1.3.2#" schemaLocation="./deps/XAdES-1-3-2.xsd"/>
 	<xs:import namespace="urn:ietf:params:xml:ns:ers" schemaLocation="./deps/xml-ers-rfc6283.xsd"/>
 	<xs:import namespace="urn:oasis:names:tc:dss-x:1.0:profiles:verificationreport:schema#" schemaLocation="./deps/oasis-dssx-1.0-profiles-verification-report-cs1.xsd"/>
 	<xs:import namespace="urn:oasis:names:tc:dss:1.0:core:schema" schemaLocation="./deps/oasis-dss-core-schema-v1.0-os.xsd"/>
-	<xs:import namespace="http://www.bsi.bund.de/ecard/api/1.1" schemaLocation="./deps/eCard.xsd"/>
 	<xs:import namespace="urn:oasis:names:tc:SAML:2.0:assertion" schemaLocation="./deps/saml-schema-assertion-2.0.xsd"/>
 	<xs:import namespace="http://www.w3.org/2005/05/xmlmime" schemaLocation="./deps/xmlmime.xsd"/>
 	<!--============================================================-->
-	<!-- Version 1.2 (+xml-mime) vom 20.12.2018                    	-->
+	<!-- Version 1.3.0 vom 05.03.2021                                                                            -->
 	<!--============================================================-->
 	<!--============================================================-->
 	<!-- XAIP gesamt -->
@@ -22,6 +21,7 @@
 			<xs:element name="dataObjectsSection" type="xaip:dataObjectsSectionType" minOccurs="0"/>
 			<xs:element name="credentialsSection" type="xaip:credentialsSectionType" minOccurs="0"/>
 		</xs:sequence>
+		<xs:attribute name="XAIPVersion" use="required" fixed="1.3.0"/>
 	</xs:complexType>
 	<!--============================================================-->
 	<!-- packageHeaderType -->
@@ -58,6 +58,8 @@
 			<xs:element name="extension" type="xaip:extensionType" minOccurs="0"/>
 		</xs:sequence>
 	</xs:complexType>
+	<!-- Auskommentiert am 5.3.2021, da keine Stellen gefunden, die den Typ referenzieren -->
+	<!--
 	<xs:complexType name="otherContentType">
 		<xs:complexContent>
 			<xs:extension base="xs:anyType">
@@ -65,6 +67,7 @@
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
+-->
 	<xs:complexType name="submissionInfoType">
 		<xs:sequence>
 			<xs:element name="clientID" type="saml:NameIDType"/>
@@ -95,17 +98,27 @@
 	</xs:complexType>
 	<xs:element name="metaDataObject" type="xaip:metaDataObjectType"/>
 	<xs:complexType name="metaDataObjectType">
-		<xs:complexContent>
-			<xs:extension base="xs:anyType">
-				<xs:attribute name="metaDataID" type="xs:ID" use="required"/>
-				<xs:attribute name="dataObjectID" type="xs:IDREFS" use="required"/>
-				<xs:attribute name="category" type="xs:string"/>
-				<xs:attribute name="classification" type="xs:string"/>
-				<xs:attribute name="type" type="xs:string"/>
-			</xs:extension>
-		</xs:complexContent>
+		<xs:sequence>
+			<xs:choice>
+				<xs:element ref="xaip:binaryMetaData"/>
+				<xs:element name="xmlMetaData" type="dss:AnyType"/>
+			</xs:choice>
+			<xs:element ref="xaip:checkSum" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="metaDataID" type="xs:ID" use="required"/>
+		<xs:attribute name="relatedObjects" type="xs:IDREFS" use="required"/>
+		<xs:attribute name="category" type="xs:string"/>
+		<xs:attribute name="classification" type="xs:string"/>
+		<xs:attribute name="type" type="xs:string"/>
 	</xs:complexType>
-	<xs:element name="dataObjectCheckSum" type="xaip:checkSumType"/>
+	<xs:element name="binaryMetaData" type="xaip:binaryMetaDataType"/>
+	<xs:complexType name="binaryMetaDataType" xmime:expectedContentTypes="*/*">
+		<xs:simpleContent>
+			<xs:extension base="xs:base64Binary">
+				<xs:attribute name="MimeType" type="xs:string" use="optional"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
 	<!--============================================================-->
 	<!-- DataObjectsSection -->
 	<!--============================================================-->
@@ -114,26 +127,28 @@
 			<xs:element ref="xaip:dataObject" maxOccurs="unbounded"/>
 		</xs:sequence>
 	</xs:complexType>
+	<xs:element name="binaryData" type="xaip:binaryDataType"/>
+	<xs:complexType name="binaryDataType" xmime:expectedContentTypes="*/*">
+		<xs:simpleContent>
+			<xs:extension base="xs:base64Binary">
+				<xs:attribute name="MimeType" type="xs:string" use="optional"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
 	<xs:element name="dataObject" type="xaip:dataObjectType"/>
 	<xs:complexType name="dataObjectType">
 		<xs:sequence>
 			<xs:choice>
-				<xs:element name="binaryData">
-					<xs:complexType xmime:expectedContentTypes="*/*">
-						<xs:simpleContent>
-							<xs:extension base="xs:base64Binary">
-								<xs:attribute name="MimeType" type="xs:string" use="optional"/>
-							</xs:extension>
-						</xs:simpleContent>
-					</xs:complexType>
-				</xs:element>
+				<xs:element ref="xaip:binaryData"/>
 				<xs:element name="xmlData" type="dss:AnyType"/>
 			</xs:choice>
-			<xs:element name="checkSum" type="xaip:checkSumType" minOccurs="0"/>
+			<xs:element ref="xaip:checkSum" minOccurs="0"/>
 			<xs:element name="transformInfo" type="xaip:tranformInfoType" minOccurs="0"/>
 		</xs:sequence>
 		<xs:attribute name="dataObjectID" type="xs:ID" use="required"/>
+		<xs:attribute name="relatedObjects" type="xs:IDREFS"/>
 	</xs:complexType>
+	<xs:element name="checkSum" type="xaip:checkSumType"/>
 	<xs:complexType name="checkSumType">
 		<xs:sequence>
 			<xs:element name="checkSumAlgorithm" type="xs:anyURI"/>
@@ -176,12 +191,12 @@
 	</xs:complexType>
 	<xs:element name="evidenceRecord" type="xaip:EvidenceRecordType"/>
 	<xs:complexType name="EvidenceRecordType">
-		<xs:complexContent>
-			<xs:extension base="ec:EvidenceRecordType">
-				<xs:attribute name="AOID" type="xs:string"/>
-				<xs:attribute name="VersionID" type="xs:string"/>
-			</xs:extension>
-		</xs:complexContent>
+		<xs:choice>
+			<xs:element name="xmlEvidenceRecord" type="ers:EvidenceRecordType"/>
+			<xs:element name="asn1EvidenceRecord" type="xs:base64Binary"/>
+		</xs:choice>
+		<xs:attribute name="AOID" type="xs:string"/>
+		<xs:attribute name="VersionID" type="xs:string"/>
 	</xs:complexType>
 	<!--============================================================-->
 	<!-- Delta-XAIP -->

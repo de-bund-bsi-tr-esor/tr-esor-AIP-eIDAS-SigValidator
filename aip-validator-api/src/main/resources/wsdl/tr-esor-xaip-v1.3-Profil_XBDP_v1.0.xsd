@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xaip="http://www.bsi.bund.de/tr-esor/xaip" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xades="http://uri.etsi.org/01903/v1.3.2#" xmlns:ers="urn:ietf:params:xml:ns:ers" xmlns:vr="urn:oasis:names:tc:dss-x:1.0:profiles:verificationreport:schema#" xmlns:dss="urn:oasis:names:tc:dss:1.0:core:schema" xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" xmlns:xml="http://www.w3.org/XML/1998/namespace" xmlns:premis2="info:lc/xmlns/premis-v2" xmlns:premis3="http://www.loc.gov/premis/v3" targetNamespace="http://www.bsi.bund.de/tr-esor/xaip" elementFormDefault="qualified" attributeFormDefault="unqualified" version="1.3">
+	<xs:include schemaLocation="tr-esor-xaip-v1.3.xsd"/>
+	<xs:import namespace="info:lc/xmlns/premis-v2" schemaLocation="deps/premis-2.3/premis-v2-3.xsd"/>
+	<xs:import namespace="http://www.loc.gov/premis/v3" schemaLocation="deps/premis-3.0/premis-v3.0.xsd"/>
+	<!-- ======================================= -->
+	<!-- Version 1.3 vom 16.04.2020                                       -->
+	<!-- ======================================= -->
+	<xs:complexType name="TechnischeMetadatenTyp">
+		<xs:annotation>
+			<xs:documentation>
+				Die technischen Metadaten bezogen auf eine Version von XAIP.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:any namespace="info:lc/xmlns/premis-v2 http://www.loc.gov/premis/v3" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="TechMetadatenID" type="xs:ID" use="optional">
+			<xs:annotation>
+				<xs:documentation>
+					Eindeutige ID für dieses Objekt.
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:element name="TechnischeMetadaten" type="xaip:TechnischeMetadatenTyp"/>
+</xs:schema>

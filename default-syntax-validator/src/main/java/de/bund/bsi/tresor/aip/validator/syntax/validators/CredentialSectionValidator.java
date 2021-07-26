@@ -29,10 +29,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 
-import de.bund.bsi.tr_esor.vr._1.CredentialValidityType.RelatedObjects;
-import de.bund.bsi.tr_esor.xaip._1.CredentialType;
-import de.bund.bsi.tr_esor.xaip._1.CredentialsSectionType;
-import de.bund.bsi.tr_esor.xaip._1.DataObjectType;
+import de.bund.bsi.tr_esor.vr.CredentialValidityType.RelatedObjects;
+import de.bund.bsi.tr_esor.xaip.CredentialType;
+import de.bund.bsi.tr_esor.xaip.CredentialsSectionType;
+import de.bund.bsi.tr_esor.xaip.DataObjectType;
 import de.bund.bsi.tresor.aip.validator.api.control.AIPUtil;
 
 /**

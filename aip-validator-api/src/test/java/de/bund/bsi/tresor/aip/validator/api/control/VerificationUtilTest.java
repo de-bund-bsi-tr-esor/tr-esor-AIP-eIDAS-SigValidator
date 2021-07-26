@@ -36,9 +36,9 @@ import org.bouncycastle.util.encoders.Hex;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import de.bund.bsi.tr_esor.xaip._1.CheckSumType;
-import de.bund.bsi.tr_esor.xaip._1.DataObjectType;
-import de.bund.bsi.tr_esor.xaip._1.DataObjectType.BinaryData;
+import de.bund.bsi.tr_esor.xaip.BinaryDataType;
+import de.bund.bsi.tr_esor.xaip.CheckSumType;
+import de.bund.bsi.tr_esor.xaip.DataObjectType;
 import de.bund.bsi.tresor.aip.validator.api.entity.DefaultResult.Major;
 import de.bund.bsi.tresor.aip.validator.api.entity.DefaultResult.Minor;
 import de.bund.bsi.tresor.aip.validator.api.entity.aip.DigestAlgorithm;
@@ -56,46 +56,48 @@ public class VerificationUtilTest
     {
         DataSource dataSource = new FileDataSource( getClass().getResource( "/data.txt" ).getFile() );
         DataHandler dataHandler = new DataHandler( dataSource );
-
-        BinaryData binaryData = new BinaryData();
+        
+        BinaryDataType binaryData = new BinaryDataType();
         binaryData.setValue( dataHandler );
         
         DataObjectType dataObject = new DataObjectType();
-		dataObject.setBinaryData( binaryData );
-
-    	CheckSumType checkSumType = new CheckSumType();
-    	checkSumType.setCheckSumAlgorithm( DigestAlgorithm.SHA256.getXmlUri() );
-
-    	byte[] checkSum = Hex.decode( "315f5bdb76d078c43b8ac0064e4a0164612b1fce77c869345bfc94c75894edd3".getBytes() );
-		checkSumType.setCheckSum( checkSum );
-
-        try ( InputStream is = getClass().getResourceAsStream( "/data.txt" ) ) {
-        	VerificationResultType result = VerificationUtil.verifyChecksum( is, checkSumType );
+        dataObject.setBinaryData( binaryData );
+        
+        CheckSumType checkSumType = new CheckSumType();
+        checkSumType.setCheckSumAlgorithm( DigestAlgorithm.SHA256.getXmlUri() );
+        
+        byte[] checkSum = Hex.decode( "315f5bdb76d078c43b8ac0064e4a0164612b1fce77c869345bfc94c75894edd3".getBytes() );
+        checkSumType.setCheckSum( checkSum );
+        
+        try ( InputStream is = getClass().getResourceAsStream( "/data.txt" ) )
+        {
+            VerificationResultType result = VerificationUtil.verifyChecksum( is, checkSumType );
             assertThat( result.getResultMajor(), is( equalTo( Major.VALID.getUri() ) ) );
         }
     }
-
+    
     @Test
     @DisplayName( "should reject invalid checksum" )
     public void verifyChecksumFailureTest() throws IOException
     {
         DataSource dataSource = new FileDataSource( getClass().getResource( "/data.txt" ).getFile() );
         DataHandler dataHandler = new DataHandler( dataSource );
-
-        BinaryData binaryData = new BinaryData();
+        
+        BinaryDataType binaryData = new BinaryDataType();
         binaryData.setValue( dataHandler );
         
         DataObjectType dataObject = new DataObjectType();
-		dataObject.setBinaryData( binaryData );
-
-    	CheckSumType checkSumType = new CheckSumType();
-    	checkSumType.setCheckSumAlgorithm( DigestAlgorithm.SHA256.getXmlUri() );
-
-    	byte[] checkSum = Hex.decode( "0000000000000000000000000000000000000000000000000000000000000000".getBytes() );
-		checkSumType.setCheckSum( checkSum );
-
-        try ( InputStream is = getClass().getResourceAsStream( "/data.txt" ) ) {
-        	VerificationResultType result = VerificationUtil.verifyChecksum( is, checkSumType );
+        dataObject.setBinaryData( binaryData );
+        
+        CheckSumType checkSumType = new CheckSumType();
+        checkSumType.setCheckSumAlgorithm( DigestAlgorithm.SHA256.getXmlUri() );
+        
+        byte[] checkSum = Hex.decode( "0000000000000000000000000000000000000000000000000000000000000000".getBytes() );
+        checkSumType.setCheckSum( checkSum );
+        
+        try ( InputStream is = getClass().getResourceAsStream( "/data.txt" ) )
+        {
+            VerificationResultType result = VerificationUtil.verifyChecksum( is, checkSumType );
             assertThat( result.getResultMajor(), is( equalTo( Major.INVALID.getUri() ) ) );
             assertThat( result.getResultMinor(), is( equalTo( Minor.CHECKSUM_INVALID.getUri() ) ) );
         }

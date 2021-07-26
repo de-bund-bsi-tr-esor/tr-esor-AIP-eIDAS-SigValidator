@@ -1,0 +1,461 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ================================================ -->
+<!-- This document is part of ETSI TS 119 512 v.1.1.2 -->
+<!-- ================================================ -->
+<!--
+	
+	Imported schemes and their namespaces are rewritten!
+	They are NOT compatible with the original schema!
+	
+	Version 2.0 of the DSS/X specification introduces a multi-syntax approach to 
+	support both JSON and XML. Therefore it is neccessary to limit the use of
+	syntax elements to a common base. Another goal is to support implementors 
+	using mapping frameworks.These requirements affect the XML syntax and resulted
+	in the modification of existing scheme. These major topics are identified:
+	
+	- the use of xs:any
+	- the 'mixed' content attribute of xs:complexType
+	- inline namespace declarations usede within XPath expressions
+	- 'choice' constructs that maybe mapped by frameworks in an untyped way
+	
+	This schema is rewritten to fulfil the requirements mentioned above. The 
+	functionalities intended by the initial authors is preserved as good as 
+	possible. For details regarding the multi-syntax approach and the DSS-X 
+	specification in general see the OASIS DSS-X homepage at 
+	https://www.oasis-open.org/committees/tc_home.php?wg_abbrev=dss-x.
+	
+-->
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:dsb="http://docs.oasis-open.org/dss-x/ns/base" xmlns:info="http://docs.oasis-open.org/dss-x/ns/metadata" xmlns:ers="urn:ietf:params:xml:ns:ers" xmlns:pres="http://uri.etsi.org/19512/v1.1.2#" xmlns:wsp="http://www.w3.org/ns/ws-policy" xmlns:ds-rw="http://docs.oasis-open.org/dss-x/ns/xmldsig/rewritten" xmlns:xmime="http://www.w3.org/2005/05/xmlmime" xmlns:nsl="http://docs.oasis-open.org/dss-x/ns/nsList" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:dss2="http://docs.oasis-open.org/dss-x/ns/core" xmlns:saml2-rw="http://docs.oasis-open.org/dss-x/ns/saml2/rewritten" xmlns:md="http://docs.oasis-open.org/dss-x/ns/metadata" xmlns:XAdESv141="http://uri.etsi.org/01903/v1.4.1#" xmlns:xades-rw="urn:oasis:names:tc:dss-x:2.0:xades:rewritten" xmlns:xadesv141-rw="urn:oasis:names:tc:dss-x:2.0:xadesv141:rewritten" xmlns:ades="http://docs.oasis-open.org/dss/ns/ades" targetNamespace="http://uri.etsi.org/19512/v1.1.2#" elementFormDefault="qualified" attributeFormDefault="unqualified" version="1.1.2">
+	<import namespace="http://www.w3.org/XML/1998/namespace" schemaLocation="./deps/xml.xsd"/>
+	<import namespace="http://docs.oasis-open.org/dss-x/ns/base" schemaLocation="./deps/oasis-dss-base-schema.xsd"/>
+	<import namespace="http://docs.oasis-open.org/dss-x/ns/xmldsig/rewritten" schemaLocation="./deps/oasis-dss-rw-xmldsig-core-schema.xsd"/>
+	<import namespace="http://docs.oasis-open.org/dss-x/ns/metadata" schemaLocation="./deps/oasis-dss-metadata-schema.xsd"/>
+	<!-- ======================================= -->
+	<!-- Preservation API          			     -->
+	<!-- ======================================= -->
+	<!-- Version 1.1.2 (24.09.2020)              -->
+	<!-- ======================================= -->
+	<!-- =%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%= -->
+	<!-- 5.3 Operations                      -->
+	<!-- =%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%= -->
+	<!-- ================================ -->
+	<!-- 5.3.1 Basic types                -->
+	<!-- ================================ -->
+	<complexType name="RequestType">
+		<sequence>
+			<element name="OptionalInputs" type="dsb:OptionalInputsType" minOccurs="0"/>
+		</sequence>
+		<attribute name="RequestID" type="string" use="optional"/>
+	</complexType>
+	<complexType name="ResponseType">
+		<sequence>
+			<element name="OptionalOutputs" type="dsb:OptionalOutputsType" minOccurs="0"/>
+			<element ref="dsb:Result"/>
+		</sequence>
+		<attribute name="RequestID" type="string" use="optional"/>
+	</complexType>
+	<!-- ================================ -->
+	<!-- 5.3.2 RetrieveInfo               -->
+	<!-- ================================ -->
+	<element name="RetrieveInfo" type="pres:RetrieveInfoType"/>
+	<complexType name="RetrieveInfoType">
+		<complexContent>
+			<extension base="pres:RequestType">
+				<sequence>
+					<element name="Profile" type="anyURI" minOccurs="0"/>
+					<element name="Status" type="pres:StatusType" minOccurs="0"/>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<element name="RetrieveInfoResponse" type="pres:RetrieveInfoResponseType"/>
+	<complexType name="RetrieveInfoResponseType">
+		<complexContent>
+			<extension base="pres:ResponseType">
+				<sequence>
+					<element ref="pres:Profile" minOccurs="0" maxOccurs="unbounded"/>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<!-- ================================ -->
+	<!-- 5.3.3 PreservePO                 -->
+	<!-- ================================ -->
+	<element name="PreservePO" type="pres:PreservePOType"/>
+	<complexType name="PreservePOType">
+		<complexContent>
+			<extension base="pres:RequestType">
+				<sequence>
+					<element name="Profile" type="anyURI"/>
+					<element ref="pres:PO" minOccurs="0" maxOccurs="unbounded"/>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<element name="PreservePOResponse" type="pres:PreservePOResponseType"/>
+	<complexType name="PreservePOResponseType">
+		<complexContent>
+			<extension base="pres:ResponseType">
+				<sequence>
+					<element ref="pres:POID" minOccurs="0"/>
+					<element ref="pres:PO" minOccurs="0" maxOccurs="unbounded"/>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<!-- ================================ -->
+	<!-- 5.3.4 RetrievePO                 -->
+	<!-- ================================ -->
+	<element name="RetrievePO" type="pres:RetrievePOType"/>
+	<complexType name="RetrievePOType">
+		<complexContent>
+			<extension base="pres:RequestType">
+				<sequence>
+					<element ref="pres:POID"/>
+					<element ref="pres:VersionID" minOccurs="0" maxOccurs="unbounded"/>
+					<element name="SubjectOfRetrieval" type="pres:SubjectOfRetrievalType" minOccurs="0"/>
+					<element name="POFormat" type="anyURI" minOccurs="0"/>
+					<element name="EvidenceFormat" type="anyURI" minOccurs="0"/>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<element name="POFormat" type="anyURI"/>
+	<element name="EvidenceFormat" type="anyURI"/>
+	<element name="RetrievePOResponse" type="pres:RetrievePOResponseType"/>
+	<complexType name="RetrievePOResponseType">
+		<complexContent>
+			<extension base="pres:ResponseType">
+				<sequence>
+					<element ref="pres:PO" minOccurs="0" maxOccurs="unbounded"/>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<!-- ================================ -->
+	<!-- 5.3.5 DeletePO                   -->
+	<!-- ================================ -->
+	<element name="DeletePO" type="pres:DeletePOType"/>
+	<complexType name="DeletePOType">
+		<complexContent>
+			<extension base="pres:RequestType">
+				<sequence>
+					<element ref="pres:POID"/>
+					<element name="Mode" type="pres:DeletionModeType" minOccurs="0"/>
+					<element name="ClaimedRequestorName" type="string" minOccurs="0"/>
+					<element name="Reason" type="string" minOccurs="0"/>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<element name="DeletePOResponse" type="pres:ResponseType"/>
+	<!-- ================================ -->
+	<!-- 5.3.6 UpdatePOC                  -->
+	<!-- ================================ -->
+	<element name="UpdatePOC" type="pres:UpdatePOCType"/>
+	<complexType name="UpdatePOCType">
+		<complexContent>
+			<extension base="pres:RequestType">
+				<sequence>
+					<element ref="pres:POID"/>
+					<element ref="pres:DeltaPOC" maxOccurs="unbounded"/>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<element name="DeltaPOC" type="pres:POType"/>
+	<element name="UpdatePOCResponse" type="pres:UpdatePOCResponseType"/>
+	<complexType name="UpdatePOCResponseType">
+		<complexContent>
+			<extension base="pres:ResponseType">
+				<sequence>
+					<element ref="pres:VersionID" minOccurs="0"/>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<!-- ================================ -->
+	<!-- 5.3.7 RetrieveTrace              -->
+	<!-- ================================ -->
+	<element name="RetrieveTrace" type="pres:RetrieveTraceType"/>
+	<complexType name="RetrieveTraceType">
+		<complexContent>
+			<extension base="pres:RequestType">
+				<sequence>
+					<element ref="pres:POID"/>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<element name="RetrieveTraceResponse" type="pres:RetrieveTraceResponseType"/>
+	<complexType name="RetrieveTraceResponseType">
+		<complexContent>
+			<extension base="pres:ResponseType">
+				<sequence>
+					<element ref="pres:Trace"/>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<!-- ========================== -->
+	<!-- 5.3.8 ValidateEvidence     -->
+	<!-- ========================== -->
+	<element name="ValidateEvidence" type="pres:ValidateEvidenceType"/>
+	<complexType name="ValidateEvidenceType">
+		<complexContent>
+			<extension base="pres:RequestType">
+				<sequence>
+					<element ref="pres:Evidence" minOccurs="0"/>
+					<element ref="pres:PO" minOccurs="0" maxOccurs="unbounded"/>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<element name="ValidateEvidenceResponse" type="pres:ValidateEvidenceResponseType"/>
+	<complexType name="ValidateEvidenceResponseType">
+		<complexContent>
+			<extension base="pres:ResponseType">
+				<sequence>
+					<element ref="pres:ValidationReport" minOccurs="0"/>
+					<element name="ProofOfExistence" type="dateTime" minOccurs="0"/>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<element name="ValidationReport" type="pres:POType"/>
+	<!-- ========================== -->
+	<!-- 5.3.9 Search               -->
+	<!-- ========================== -->
+	<element name="Search" type="pres:SearchType"/>
+	<complexType name="SearchType">
+		<complexContent>
+			<extension base="pres:RequestType">
+				<sequence>
+					<element name="Filter" type="string"/>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<element name="SearchResponse" type="pres:SearchResponseType"/>
+	<complexType name="SearchResponseType">
+		<complexContent>
+			<extension base="pres:ResponseType">
+				<sequence>
+					<element ref="pres:POID" minOccurs="0" maxOccurs="unbounded"/>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<!-- =%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%= -->
+	<!-- 5.4 Components for operations       -->
+	<!-- =%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%= -->
+	<!-- =================================== -->
+	<!-- 5.4.1 DeletionMode                  -->
+	<!-- =================================== -->
+	<simpleType name="DeletionModeType">
+		<restriction base="string">
+			<enumeration value="OnlySubDOs"/>
+			<enumeration value="SubDOsAndEvidence"/>
+			<!-- this is the default, if DeletionMode-parameter is omitted -->
+		</restriction>
+	</simpleType>
+	<!-- =================================== -->
+	<!-- 5.4.2 Event                         -->
+	<!-- =================================== -->
+	<element name="Event" type="pres:EventType"/>
+	<complexType name="EventType">
+		<sequence>
+			<element name="Time" type="dateTime"/>
+			<element name="Subject" type="string"/>
+			<element name="Operation" type="string"/>
+			<element name="Object" type="string" minOccurs="0"/>
+			<element name="Detail" type="string" minOccurs="0"/>
+		</sequence>
+	</complexType>
+	<!-- =================================== -->
+	<!-- 5.4.3 Evidence                      -->
+	<!-- =================================== -->
+	<element name="Evidence" type="pres:EvidenceType"/>
+	<complexType name="EvidenceType">
+		<complexContent>
+			<extension base="pres:POType">
+				<attribute name="POID" type="string" use="optional"/>
+				<attribute name="VersionID" type="string" use="optional"/>
+			</extension>
+		</complexContent>
+	</complexType>
+	<!-- =================================== -->
+	<!-- 5.4.4 PO                            -->
+	<!-- =================================== -->
+	<element name="PO" type="pres:POType"/>
+	<complexType name="POType">
+		<choice>
+			<element name="binaryData">
+				<complexType xmime:expectedContentTypes="*/*">
+					<simpleContent>
+						<extension base="base64Binary"/>
+					</simpleContent>
+				</complexType>
+			</element>
+			<!-- 	
+				Note, that instead of the generic namespace statement
+				<any namespace="##other" processContents="lax"></any>
+				within the following xmlData element one could explictly 
+				specify the corresponding namespace 
+				(e.g. http://www.bsi.bund.de/tr-esor/xaip/1.2 for the 
+				XML-based Archive Information Package (XAIP) according
+				to Annex A.3.2) and import the corresponding XML-schema.
+			-->
+			<element name="xmlData">
+				<complexType>
+					<sequence>
+						<any namespace="##other" processContents="lax"/>
+					</sequence>
+				</complexType>
+			</element>
+		</choice>
+		<attribute name="FormatId" type="anyURI" use="optional"/>
+		<attribute name="MimeType" type="string" use="optional"/>
+		<attribute name="PronomId" type="string" use="optional"/>
+		<attribute name="ID" type="ID" use="optional"/>
+		<attribute name="RelatedObjects" type="IDREFS" use="optional"/>
+	</complexType>
+	<!-- =================================== -->
+	<!-- 5.4.5 PreservationStorageModel      -->
+	<!-- =================================== -->
+	<simpleType name="PreservationStorageModelType">
+		<restriction base="string">
+			<enumeration value="WithStorage"/>
+			<enumeration value="WithTemporaryStorage"/>
+			<enumeration value="WithoutStorage"/>
+		</restriction>
+	</simpleType>
+	<!-- =================================== -->
+	<!-- 5.4.6 Profile                       -->
+	<!-- =================================== -->
+	<element name="Profile" type="pres:ProfileType"/>
+	<complexType name="ProfileType">
+		<complexContent>
+			<extension base="info:ProfileType">
+				<sequence>
+					<element name="SchemeIdentifier" type="anyURI" minOccurs="0"/>
+					<element name="ProfileValidityPeriod" type="pres:ProfileValidityPeriodType"/>
+					<element name="PreservationStorageModel" type="pres:PreservationStorageModelType"/>
+					<element name="PreservationGoal" type="anyURI" maxOccurs="unbounded"/>
+					<!-- Note: The current version of TS 119 512 defines the following to goals:
+						http://uri.etsi.org/19512/goal/pgd - preservation of general data
+						http://uri.etsi.org/19512/goal/pds - preservation of digital signatures			 
+						http://uri.etsi.org/19512/goal/aug - augmentation of submitted evidences						
+						Future versions or other documents may define additional goals.
+					-->
+					<element name="EvidenceFormat" type="info:FormatType" maxOccurs="unbounded"/>
+					<element name="ExpectedEvidenceDuration" type="duration" minOccurs="0"/>
+					<element name="PreservationEvidenceRetentionPeriod" type="duration" minOccurs="0"/>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="ProfileValidityPeriodType">
+		<sequence>
+			<element name="ValidFrom" type="dateTime"/>
+			<element name="ValidUntil" type="dateTime" minOccurs="0"/>
+		</sequence>
+	</complexType>
+	<!-- =================================== -->
+	<!-- 5.4.7 Status                        -->
+	<!-- =================================== -->
+	<simpleType name="StatusType">
+		<restriction base="string">
+			<enumeration value="active"/>
+			<enumeration value="inactive"/>
+			<enumeration value="all"/>
+		</restriction>
+	</simpleType>
+	<!-- =================================== -->
+	<!-- 5.4.8 SubjectOfRetrieval            -->
+	<!-- =================================== -->
+	<simpleType name="SubjectOfRetrievalType">
+		<restriction base="string">
+			<enumeration value="PO"/>
+			<enumeration value="Evidence"/>
+			<enumeration value="POwithEmbeddedEvidence"/>
+			<enumeration value="POwithDetachedEvidence"/>
+			<!-- this is the default, if SubjectOfRetrieval-parameter is omitted -->
+		</restriction>
+	</simpleType>
+	<!-- =================================== -->
+	<!-- 5.4.9 Trace                        -->
+	<!-- =================================== -->
+	<element name="Trace" type="pres:TraceType"/>
+	<complexType name="TraceType">
+		<sequence>
+			<element ref="pres:Event" minOccurs="0" maxOccurs="unbounded"/>
+		</sequence>
+	</complexType>
+	<!-- =%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%= -->
+	<!-- 5.5 Components for ASiC extensions  -->
+	<!-- =%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%= -->
+	<!-- =%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%= -->
+	<!-- 5.5.1 Extensions for ASiC manifest  -->
+	<!-- =%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%= -->
+	<!-- =================================== -->
+	<!-- 5.5.1.1 ContainerID                 -->
+	<!-- =================================== -->
+	<element name="ContainerID" type="pres:ContainerIDType"/>
+	<complexType name="ContainerIDType">
+		<sequence>
+			<element ref="pres:POID"/>
+			<element ref="pres:VersionID" minOccurs="0"/>
+		</sequence>
+	</complexType>
+	<element name="POID" type="string"/>
+	<element name="VersionID" type="string"/>
+	<!-- =================================== -->
+	<!-- 5.5.1.2 PreservationPeriod          -->
+	<!-- =================================== -->
+	<element name="PreservationPeriod" type="date"/>
+	<!-- =================================== -->
+	<!-- 5.5.1.3 PreservationSubmitter       -->
+	<!-- =================================== -->
+	<element name="PreservationSubmitter" type="string"/>
+	<!-- =================================== -->
+	<!-- 5.5.1.4 IsUpdatedVersionOf          -->
+	<!-- =================================== -->
+	<element name="IsUpdatedVersionOf" type="anyURI"/>
+	<!-- =%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%==%=%=% -->
+	<!-- 5.5.2 Extensions for DataObjectReference  -->
+	<!-- =%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%==%=%=% -->
+	<!-- =================================== -->
+	<!-- 5.5.2.1 IsMetaDataOf                -->
+	<!-- =================================== -->
+	<element name="IsMetaDataOf" type="anyURI"/>
+	<!-- =%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%= -->
+	<!-- 5.6 Other Preservation Objects      -->
+	<!-- =%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%= -->
+	<!-- =================================== -->
+	<!-- 5.6.1 DigestList                    -->
+	<!-- =================================== -->
+	<element name="DigestList" type="pres:DigestListType"/>
+	<complexType name="DigestListType">
+		<sequence>
+			<element ref="ds-rw:DigestMethod"/>
+			<element ref="ds-rw:DigestValue" maxOccurs="unbounded"/>
+			<element ref="pres:Evidence" minOccurs="0"/>
+		</sequence>
+	</complexType>
+	<!-- =%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=% -->
+	<!-- Annex H. Attributes for preservation evidences -->
+	<!-- =%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=% -->
+	<!-- ==================================== -->
+	<!-- H.2 preservation-service-identifier  -->
+	<!-- ==================================== -->
+	<element name="PreservationServiceIdentifier" type="anyURI"/>
+	<!-- =========================================== -->
+	<!-- H.3 preservation-evidence-policy attribute  -->
+	<!-- =========================================== -->
+	<element name="PreservationEvidencePolicy" type="anyURI"/>
+	<!-- =================================== -->
+	<!-- H.4 preservation-profile attribute  -->
+	<!-- =================================== -->
+	<element name="PreservationProfile" type="anyURI"/>
+</schema>

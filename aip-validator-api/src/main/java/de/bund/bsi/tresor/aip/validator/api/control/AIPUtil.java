@@ -54,16 +54,16 @@ import org.apache.commons.io.IOUtils;
 import org.etsi.uri._02918.v1_2.DataObjectReferenceType;
 import org.w3c.dom.Node;
 
-import de.bund.bsi.tr_esor.vr._1.XAIPValidityType;
-import de.bund.bsi.tr_esor.xaip._1.CredentialType;
-import de.bund.bsi.tr_esor.xaip._1.DataObjectType;
-import de.bund.bsi.tr_esor.xaip._1.DataObjectType.BinaryData;
-import de.bund.bsi.tr_esor.xaip._1.DataObjectsSectionType;
-import de.bund.bsi.tr_esor.xaip._1.MetaDataObjectType;
-import de.bund.bsi.tr_esor.xaip._1.PackageHeaderType;
-import de.bund.bsi.tr_esor.xaip._1.PackageInfoUnitType;
-import de.bund.bsi.tr_esor.xaip._1.VersionManifestType;
-import de.bund.bsi.tr_esor.xaip._1.XAIPType;
+import de.bund.bsi.tr_esor.vr.XAIPValidityType;
+import de.bund.bsi.tr_esor.xaip.BinaryDataType;
+import de.bund.bsi.tr_esor.xaip.CredentialType;
+import de.bund.bsi.tr_esor.xaip.DataObjectType;
+import de.bund.bsi.tr_esor.xaip.DataObjectsSectionType;
+import de.bund.bsi.tr_esor.xaip.MetaDataObjectType;
+import de.bund.bsi.tr_esor.xaip.PackageHeaderType;
+import de.bund.bsi.tr_esor.xaip.PackageInfoUnitType;
+import de.bund.bsi.tr_esor.xaip.VersionManifestType;
+import de.bund.bsi.tr_esor.xaip.XAIPType;
 import oasis.names.tc.dss._1_0.core.schema.AnyType;
 
 /**
@@ -76,11 +76,11 @@ public class AIPUtil
     /**
      * Namespace and name of the XAIP element
      */
-    public static final QName XML_DATA_QNAME    = new QName( "http://www.bsi.bund.de/tr-esor/xaip/1.2", "xmlData" );
+    public static final QName XML_DATA_QNAME    = new QName( "http://www.bsi.bund.de/tr-esor/xaip", "xmlData" );
     public static final QName XML_ANY_QNAME     = new QName( "oasis.names.tc.dss._1_0.core.schema.AnyType", "xmlAny" );
     
-    public static final QName XAIP_QNAME        = new QName( "http://www.bsi.bund.de/tr-esor/xaip/1.2", "XAIP" );
-    public static final QName XAIP_REPORT_QNAME = new QName( "http://www.bsi.bund.de/tr-esor/vr/1.2", "XAIPReport" );
+    public static final QName XAIP_QNAME        = new QName( "http://www.bsi.bund.de/tr-esor/xaip", "XAIP" );
+    public static final QName XAIP_REPORT_QNAME = new QName( "http://www.bsi.bund.de/tr-esor/vr", "XAIPReport" );
     
     /**
      * Creating a proper JAXBElement of the xaipType which can be used for marshalling since the generated wsdl types do not contain a
@@ -310,10 +310,10 @@ public class AIPUtil
      *            the binary data
      * @return the binary data content if present
      */
-    public static Optional<byte[]> extractBinData( BinaryData data )
+    public static Optional<byte[]> extractBinData( BinaryDataType data )
     {
         return Optional.ofNullable( data )
-                .map( BinaryData::getValue )
+                .map( BinaryDataType::getValue )
                 .map( dh -> {
                     try
                     {

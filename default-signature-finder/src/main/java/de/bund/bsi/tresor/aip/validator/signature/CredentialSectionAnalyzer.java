@@ -32,9 +32,9 @@ import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
 
-import de.bund.bsi.tr_esor.xaip._1.CredentialType;
-import de.bund.bsi.tr_esor.xaip._1.DataObjectType;
-import de.bund.bsi.tr_esor.xaip._1.DataObjectsSectionType;
+import de.bund.bsi.tr_esor.xaip.CredentialType;
+import de.bund.bsi.tr_esor.xaip.DataObjectType;
+import de.bund.bsi.tr_esor.xaip.DataObjectsSectionType;
 import de.bund.bsi.tresor.aip.validator.api.control.AIPUtil;
 import de.bund.bsi.tresor.aip.validator.api.control.ModuleLogger;
 import de.bund.bsi.tresor.aip.validator.signature.entity.FinderResult;

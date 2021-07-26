@@ -23,11 +23,11 @@ package de.bund.bsi.tresor.aip.validator.api.control;
 
 import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
@@ -47,14 +47,13 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import de.bund.bsi.tr_esor.xaip._1.CredentialType;
-import de.bund.bsi.tr_esor.xaip._1.DataObjectType;
-import de.bund.bsi.tr_esor.xaip._1.DataObjectsSectionType;
-import de.bund.bsi.tr_esor.xaip._1.MetaDataObjectType;
-import de.bund.bsi.tr_esor.xaip._1.PackageHeaderType;
-import de.bund.bsi.tr_esor.xaip._1.PackageInfoUnitType;
-import de.bund.bsi.tr_esor.xaip._1.VersionManifestType;
-import de.bund.bsi.tresor.aip.validator.api.control.AIPUtil;
+import de.bund.bsi.tr_esor.xaip.CredentialType;
+import de.bund.bsi.tr_esor.xaip.DataObjectType;
+import de.bund.bsi.tr_esor.xaip.DataObjectsSectionType;
+import de.bund.bsi.tr_esor.xaip.MetaDataObjectType;
+import de.bund.bsi.tr_esor.xaip.PackageHeaderType;
+import de.bund.bsi.tr_esor.xaip.PackageInfoUnitType;
+import de.bund.bsi.tr_esor.xaip.VersionManifestType;
 import oasis.names.tc.dss._1_0.core.schema.AnyType;
 
 /**

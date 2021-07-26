@@ -33,7 +33,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import javax.activation.DataHandler;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
@@ -43,11 +42,10 @@ import javax.xml.ws.BindingProvider;
 import org.w3c.dom.Node;
 
 import com.sun.xml.ws.client.BindingProviderProperties;
-import com.sun.xml.ws.util.ByteArrayDataSource;
 
 import de.bund.bsi.ecard.api._1.VerifyResponse;
 import de.bund.bsi.tr_esor.api._1.S4_Service;
-import de.bund.bsi.tr_esor.vr._1.CredentialValidityType;
+import de.bund.bsi.tr_esor.vr.CredentialValidityType;
 import de.bund.bsi.tresor.aip.validator.api.control.AIPUtil;
 import de.bund.bsi.tresor.aip.validator.api.control.ModuleLogger;
 import de.bund.bsi.tresor.aip.validator.api.control.VerificationUtil;
@@ -194,7 +192,7 @@ public class VerificationClient
         
         data.ifPresent( binary -> {
             Base64Data b64Data = new Base64Data();
-            b64Data.setValue( new DataHandler( new ByteArrayDataSource( binary, "application/octet-stream" ) ) );
+            b64Data.setValue( binary );
             
             DocumentType document = new DocumentType();
             document.setBase64Data( b64Data );

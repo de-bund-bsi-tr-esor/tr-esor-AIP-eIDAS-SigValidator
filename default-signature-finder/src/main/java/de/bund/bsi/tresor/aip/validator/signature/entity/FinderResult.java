@@ -24,7 +24,7 @@ package de.bund.bsi.tresor.aip.validator.signature.entity;
 import java.io.InputStream;
 import java.util.Optional;
 
-import de.bund.bsi.tr_esor.xaip._1.DataObjectType;
+import de.bund.bsi.tr_esor.xaip.DataObjectType;
 import lombok.AllArgsConstructor;
 import lombok.Value;
 

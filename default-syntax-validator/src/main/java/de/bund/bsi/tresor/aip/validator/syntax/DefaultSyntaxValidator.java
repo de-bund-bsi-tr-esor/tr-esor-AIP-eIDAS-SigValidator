@@ -42,10 +42,10 @@ import javax.xml.validation.SchemaFactory;
 import org.apache.commons.io.IOUtils;
 import org.etsi.uri._02918.v1_2.DataObjectReferenceType;
 
-import de.bund.bsi.tr_esor.vr._1.CredentialValidityType.RelatedObjects;
-import de.bund.bsi.tr_esor.vr._1.XAIPValidityType;
-import de.bund.bsi.tr_esor.xaip._1.DataObjectsSectionType;
-import de.bund.bsi.tr_esor.xaip._1.XAIPType;
+import de.bund.bsi.tr_esor.vr.CredentialValidityType.RelatedObjects;
+import de.bund.bsi.tr_esor.vr.XAIPValidityType;
+import de.bund.bsi.tr_esor.xaip.DataObjectsSectionType;
+import de.bund.bsi.tr_esor.xaip.XAIPType;
 import de.bund.bsi.tresor.aip.validator.api.boundary.SyntaxValidator;
 import de.bund.bsi.tresor.aip.validator.api.control.ModuleLogger;
 import de.bund.bsi.tresor.aip.validator.api.control.VerificationUtil;

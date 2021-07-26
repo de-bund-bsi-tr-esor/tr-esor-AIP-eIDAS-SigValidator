@@ -23,8 +23,8 @@ package de.bund.bsi.tresor.aip.validator.api.boundary;
 
 import java.util.Collection;
 
-import de.bund.bsi.tr_esor.vr._1.CredentialValidityType;
-import de.bund.bsi.tr_esor.vr._1.XAIPValidityType;
+import de.bund.bsi.tr_esor.vr.CredentialValidityType;
+import de.bund.bsi.tr_esor.vr.XAIPValidityType;
 import de.bund.bsi.tresor.aip.validator.api.entity.ModuleContext;
 import oasis.names.tc.dss_x._1_0.profiles.verificationreport.schema_.VerificationReportType;
 

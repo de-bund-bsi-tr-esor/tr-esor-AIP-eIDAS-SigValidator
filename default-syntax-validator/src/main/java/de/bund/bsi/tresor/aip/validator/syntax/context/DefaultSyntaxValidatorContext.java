@@ -26,7 +26,7 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-import de.bund.bsi.tr_esor.vr._1.CredentialValidityType.RelatedObjects;
+import de.bund.bsi.tr_esor.vr.CredentialValidityType.RelatedObjects;
 import de.bund.bsi.tresor.aip.validator.syntax.DefaultSyntaxValidator;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -40,7 +40,7 @@ import javax.xml.ws.soap.MTOM;
 import org.apache.cxf.annotations.SchemaValidation;
 
 import de.bund.bsi.tr_esor.api._1.S4;
-import de.bund.bsi.tr_esor.xaip._1.XAIPType;
+import de.bund.bsi.tr_esor.xaip.XAIPType;
 import de.bund.bsi.tresor.aip.validator.api.control.AIPUtil;
 import de.bund.bsi.tresor.aip.validator.api.entity.AIPValidatorException;
 import de.bund.bsi.tresor.aip.validator.dispatcher.Dispatcher;
@@ -66,8 +66,8 @@ import oasis.names.tc.dss_x._1_0.profiles.verificationreport.schema_.Verificatio
 @WebService( endpointInterface = "de.bund.bsi.tr_esor.api._1.S4",
         serviceName = "S4",
         portName = "S4",
-        targetNamespace = "http://www.bsi.bund.de/tr-esor/api/1.2",
-        wsdlLocation = "/wsdl/tr-esor-S-4-v1.2.wsdl" )
+        targetNamespace = "http://www.bsi.bund.de/tr-esor/api/1.3",
+        wsdlLocation = "/wsdl/tr-esor-S-4-v1.3.wsdl" )
 public class AIPValidator implements S4
 {
     private static final String MAJOR_OK            = "http://www.bsi.bund.de/tr-esor/api/1.2/resultmajor#ok";

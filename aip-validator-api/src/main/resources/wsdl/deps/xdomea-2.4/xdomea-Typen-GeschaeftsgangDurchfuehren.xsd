@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xdomea="urn:xoev-de:xdomea:schema:2.4.0" xmlns:xoev-lc="http://xoev.de/latinchars/1_1/datatypes" targetNamespace="urn:xoev-de:xdomea:schema:2.4.0" version="2.4.0" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <xs:annotation>
+    <xs:appinfo>
+      <standard>
+        <nameLang>xdomea - XÖV-Standard für den IT-gestützten Austausch und die IT-gestützte Aussonderung behördlichen Schriftgutes</nameLang>
+        <nameKurz>xdomea</nameKurz>
+        <nameTechnisch>xdomea</nameTechnisch>
+        <kennung>urn:xoev-de:xdomea:kosit:standard:xdomea</kennung>
+        <beschreibung>xdomea: XÖV-Standard für den IT-gestützten Austausch und die IT-gestützte Aussonderung behördlichen Schriftgutes
+
+Die Digitalisierung der Verwaltung schreitet mit immer höherer Geschwindigkeit voran. Einen weiteren Schub wird das Onlinezugangsgesetz geben. Die Digitalisierung bedeutet aber auch den Ausbau der digitalen Aktenführung in den Verwaltungen. Digitale Schriftgutverwaltung hält somit in immer mehr Verwaltungen Einzug.
+
+Die Zusammenarbeit der verschiedenen Verwaltungen erfordert den Austausch der digitalen Schriftgutobjekte, u.a. 
+
+- in arbeitsteiligen Prozessen,
+- bei Zuständigkeitswechseln,
+- der Abgabe behördlichen Schriftgutes an die Archive von Bund, Ländern und Kommunen.
+
+Der Bedarf, diesen Austausch zu standardisieren, wurde frühzeitig erkannt. So entstand bereits 2003 der Standard xdomea, damals noch als einfaches XML-Schema.
+
+Im Jahr 2009 erfolgte die Veröffentlichung der Version 2.0, die gemäß XÖV-Spezifizierung die Nachrichten-basierte Kommunikation unterstützt. Die Nachrichten unterstützen insbesondere die Verwaltungsprozesse
+
+- Abgabe durchführen,
+- Aktenplan austauschen,
+- Aussonderung durchführen,
+- Geschäftsgang durchführen,
+- Information austauschen und
+- Fachverfahrensdaten austauschen,
+
+können aber auch in anderen Verwaltungsprozessen eingesetzt werden.
+
+Auch der IT-Planungsrat hat den Bedarf zum Austausch von Akten, Vorgängen und Dokumenten festgestellt und die Arbeitsgruppe "AVD" eingesetzt und beauftragt, einen geeigneten Standard zu evaluieren. Die Arbeitsgruppe AVD hat zunächst eine Bedarfsbeschreibung (https://www.it-planungsrat.de/SharedDocs/Downloads/DE/Entscheidungen/24_Sitzung/B39_xdomeaAVD_Anlage1.pdf?__blob=publicationFile&amp;v=4) erstellt, welche insbesondere die Anforderungen an den Austausch von Schriftgutobjekten 		beinhaltet. Die Arbeitsgruppe AVD hat anhand der Anforderungen xdomea bewertet und kam zu 		dem Ergebnis, dass xdomea die Anforderungen der Bedarfsbeschreibung weitestgehend erfüllt und kein anderer geeigneter Standard existiert.
+
+Der IT-Planungsrat hat daraufhin in seiner 24. Sitzung am 02.10.2017 die Anwendung des Standards xdomea für den Austausch von Akten, Vorgängen und Dokumenten beschlossen (https://www.it-planungsrat.de/SharedDocs/Sitzungen/DE/2017/Sitzung_24.html?pos=9).</beschreibung>
+      </standard>
+      <versionStandard>
+        <version>2.4.0</version>
+        <versionXOEVHandbuch>2.1</versionXOEVHandbuch>
+        <versionXGenerator>2.6.1</versionXGenerator>
+        <versionModellierungswerkzeug>18.0</versionModellierungswerkzeug>
+        <nameModellierungswerkzeug>MagicDraw</nameModellierungswerkzeug>
+      </versionStandard>
+    </xs:appinfo>
+  </xs:annotation>
+  <xs:include schemaLocation="xdomea-Baukasten.xsd" />
+  <xs:import schemaLocation="http://xoev.de/latinchars/1_1/datatypes/latinchars.xsd" namespace="http://xoev.de/latinchars/1_1/datatypes" />
+  <xs:complexType name="GeaenderterBeteiligungsschrittType">
+    <xs:annotation>
+      <xs:appinfo>
+        <title>GeaenderterBeteiligungsschritt</title>
+      </xs:appinfo>
+      <xs:documentation>Informationen zu einem geänderten Beteiligungsschritt eines Geschäftsgangs. Geändert kann in diesem Zusammenhang neu erstellt bzw. übersprungen heißen.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="Nummer" type="xoev-lc:String.Latin">
+        <xs:annotation>
+          <xs:documentation>Die Nummer des Beteiligungsschrittes innerhalb der fortlaufenden Nummerierung im Geschäftsgang.
+Die Nummerierung ist innerhalb eines xdomea-Geschäftsgangsobjekts eindeutig. Werden in den xdomea-Geschäftsgang neue Bearbeitungsschritte eingefügt, werden dementsprechend die Nummern der nachfolgenden Beteiligungsschritte verändert. Beteiligungsschritte, die abgeschlossen sind, sind unveränderlich.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Aenderungsart">
+        <xs:annotation>
+          <xs:documentation>Die Änderungsart eines Beteiligungsschrittes.</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+          <xs:choice>
+            <xs:element name="Neu" type="xs:boolean">
+              <xs:annotation>
+                <xs:documentation>Der Beteiligungsschritt wurde dem Laufweg eines Geschäftsgangs neu hinzugefügt.</xs:documentation>
+              </xs:annotation>
+            </xs:element>
+            <xs:element name="Uebersprungen" type="xs:boolean">
+              <xs:annotation>
+                <xs:documentation>Der Beteiligungsschritt wird in dem Laufweg als übersprungen markiert, d.h. der Schritt bleibt im Geschäftsgang erhalten, wird jedoch nicht mehr aktiv beteiligt.</xs:documentation>
+              </xs:annotation>
+            </xs:element>
+          </xs:choice>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="HauptobjektType">
+    <xs:annotation>
+      <xs:appinfo>
+        <title>Hauptobjekt</title>
+        <implementationHint>Akten oder Vorgänge sind als Element im Hauptobjekt nicht erlaubt.</implementationHint>
+      </xs:appinfo>
+      <xs:documentation>Ein Container für die Dokumente, auf die sich die Beteiligungssschritte im externen Geschäftsgang beziehen.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="Dokument" maxOccurs="unbounded" type="xdomea:DokumentType">
+        <xs:annotation>
+          <xs:documentation>Ein in der Geschäftsgang-Nachricht enthaltenes Dokument, auf das sich die Verfügungen im externen Geschäftsgang beziehen.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="NkGeschaeftsgangType">
+    <xs:annotation>
+      <xs:appinfo>
+        <title>NkGeschaeftsgang</title>
+      </xs:appinfo>
+      <xs:documentation>Der Kopf der Nachricht enthält allgemeine Informationen für den Empfänger einer Nachricht, bei der es sich um einen Geschäftsgang handelt.</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="xdomea:NkBasisType">
+        <xs:sequence>
+          <xs:element name="EmpfangsbestaetigungAnInitiator" default="0" type="xs:boolean">
+            <xs:annotation>
+              <xs:documentation>Die Angabe, ob vom Empfänger der Nachricht eine
+Empfangsbestätigung für den Initiator des Geschäftsgangs erwünscht wird.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element name="EmpfangsbestaetigungAnVorgaenger" default="0" type="xs:boolean">
+            <xs:annotation>
+              <xs:documentation>Die Angabe, ob vom Empfänger der Nachricht eine
+Empfangsbestätigung für den Absender der Nachricht erwünscht wird.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="NkRueckmeldungGeschaeftsgangType">
+    <xs:annotation>
+      <xs:appinfo>
+        <title>NkRueckmeldungGeschaeftsgang</title>
+      </xs:appinfo>
+      <xs:documentation>Der Kopf der Nachricht enthält allgemeine Informationen für den Empfänger der Empfangs-/Importnachricht zu einer in Beziehung stehenden Nachricht, die durch den Empfänger versendet wurde und sich auf einen Geschäftsgang bezieht.</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="xdomea:NkBasisType">
+        <xs:sequence>
+          <xs:element name="WeitererEmpfaenger" minOccurs="0" type="xdomea:KontaktType">
+            <xs:annotation>
+              <xs:documentation>Der weitere Empfänger der Nachricht.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+</xs:schema>
+

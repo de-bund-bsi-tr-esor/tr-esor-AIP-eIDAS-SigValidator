@@ -29,11 +29,11 @@ import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.w3._2000._09.xmldsig_.CanonicalizationMethodType;
 
-import de.bund.bsi.tr_esor.vr._1.PackageHeaderValidityType;
-import de.bund.bsi.tr_esor.vr._1.VersionManifestValidityType;
-import de.bund.bsi.tr_esor.xaip._1.PackageHeaderType;
-import de.bund.bsi.tr_esor.xaip._1.PreservationInfoType;
-import de.bund.bsi.tr_esor.xaip._1.VersionManifestType;
+import de.bund.bsi.tr_esor.vr.PackageHeaderValidityType;
+import de.bund.bsi.tr_esor.vr.VersionManifestValidityType;
+import de.bund.bsi.tr_esor.xaip.PackageHeaderType;
+import de.bund.bsi.tr_esor.xaip.PreservationInfoType;
+import de.bund.bsi.tr_esor.xaip.VersionManifestType;
 import de.bund.bsi.tresor.aip.validator.api.control.Canonicalization;
 import de.bund.bsi.tresor.aip.validator.api.control.VerificationUtil;
 import de.bund.bsi.tresor.aip.validator.api.entity.DefaultResult;

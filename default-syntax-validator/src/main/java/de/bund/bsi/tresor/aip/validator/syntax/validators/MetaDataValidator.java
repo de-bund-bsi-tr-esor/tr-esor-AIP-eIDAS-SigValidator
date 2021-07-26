@@ -29,13 +29,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import de.bund.bsi.tr_esor.vr._1.MetaDataObjectValidityType;
-import de.bund.bsi.tr_esor.vr._1.MetaDataSectionValidityType;
-import de.bund.bsi.tr_esor.xaip._1.CheckSumType;
-import de.bund.bsi.tr_esor.xaip._1.DataObjectType;
-import de.bund.bsi.tr_esor.xaip._1.DataObjectsSectionType;
-import de.bund.bsi.tr_esor.xaip._1.MetaDataObjectType;
-import de.bund.bsi.tr_esor.xaip._1.MetaDataSectionType;
+import de.bund.bsi.tr_esor.vr.MetaDataObjectValidityType;
+import de.bund.bsi.tr_esor.vr.MetaDataSectionValidityType;
+import de.bund.bsi.tr_esor.xaip.CheckSumType;
+import de.bund.bsi.tr_esor.xaip.DataObjectType;
+import de.bund.bsi.tr_esor.xaip.DataObjectsSectionType;
+import de.bund.bsi.tr_esor.xaip.MetaDataObjectType;
+import de.bund.bsi.tr_esor.xaip.MetaDataSectionType;
 import de.bund.bsi.tresor.aip.validator.api.control.AIPUtil;
 import de.bund.bsi.tresor.aip.validator.api.control.ModuleLogger;
 import de.bund.bsi.tresor.aip.validator.api.control.VerificationUtil;
@@ -97,6 +97,7 @@ public enum MetaDataValidator
      */
     public MetaDataObjectValidityType validateMetaDataObject( MetaDataObjectType metaData, DataObjectsSectionType dataSection )
     {
+        // TODO dataObjectId is now one of the relatedObjects, relatedObjects in VR is no object but an xpath
         String oid = metaData.getDataObjectID().stream()
                 .map( AIPUtil::idFromObject )
                 .reduce( "", ( a, b ) -> String.join( " ", a, b ) )

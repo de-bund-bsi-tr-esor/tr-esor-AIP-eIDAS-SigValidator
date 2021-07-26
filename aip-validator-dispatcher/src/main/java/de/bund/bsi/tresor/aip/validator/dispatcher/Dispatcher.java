@@ -33,8 +33,8 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
-import de.bund.bsi.tr_esor.vr._1.CredentialValidityType;
-import de.bund.bsi.tr_esor.vr._1.XAIPValidityType;
+import de.bund.bsi.tr_esor.vr.CredentialValidityType;
+import de.bund.bsi.tr_esor.vr.XAIPValidityType;
 import de.bund.bsi.tresor.aip.validator.api.boundary.ProtocolAssembler;
 import de.bund.bsi.tresor.aip.validator.api.boundary.SignatureFinder;
 import de.bund.bsi.tresor.aip.validator.api.boundary.SignatureVerifier;

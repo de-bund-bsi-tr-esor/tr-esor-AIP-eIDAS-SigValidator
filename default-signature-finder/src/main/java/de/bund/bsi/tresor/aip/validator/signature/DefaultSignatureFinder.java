@@ -33,11 +33,11 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 
-import de.bund.bsi.tr_esor.xaip._1.CredentialType;
-import de.bund.bsi.tr_esor.xaip._1.CredentialsSectionType;
-import de.bund.bsi.tr_esor.xaip._1.DataObjectType;
-import de.bund.bsi.tr_esor.xaip._1.DataObjectsSectionType;
-import de.bund.bsi.tr_esor.xaip._1.XAIPType;
+import de.bund.bsi.tr_esor.xaip.CredentialType;
+import de.bund.bsi.tr_esor.xaip.CredentialsSectionType;
+import de.bund.bsi.tr_esor.xaip.DataObjectType;
+import de.bund.bsi.tr_esor.xaip.DataObjectsSectionType;
+import de.bund.bsi.tr_esor.xaip.XAIPType;
 import de.bund.bsi.tresor.aip.validator.api.boundary.SignatureFinder;
 import de.bund.bsi.tresor.aip.validator.api.entity.ModuleContext;
 import de.bund.bsi.tresor.aip.validator.signature.entity.FinderResult;

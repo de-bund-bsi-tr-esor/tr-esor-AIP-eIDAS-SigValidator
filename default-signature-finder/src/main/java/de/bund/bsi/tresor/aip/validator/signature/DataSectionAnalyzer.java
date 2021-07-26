@@ -25,7 +25,7 @@ import java.io.ByteArrayInputStream;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import de.bund.bsi.tr_esor.xaip._1.DataObjectType;
+import de.bund.bsi.tr_esor.xaip.DataObjectType;
 import de.bund.bsi.tresor.aip.validator.api.control.AIPUtil;
 import de.bund.bsi.tresor.aip.validator.signature.checker.CAdESChecker;
 import de.bund.bsi.tresor.aip.validator.signature.checker.PAdESChecker;

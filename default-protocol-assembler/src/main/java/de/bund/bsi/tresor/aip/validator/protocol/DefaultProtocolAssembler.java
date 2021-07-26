@@ -53,10 +53,10 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import de.bund.bsi.tr_esor.vr._1.CredentialValidityType;
-import de.bund.bsi.tr_esor.vr._1.CredentialValidityType.RelatedObjects;
-import de.bund.bsi.tr_esor.vr._1.CredentialsSectionValidityType;
-import de.bund.bsi.tr_esor.vr._1.XAIPValidityType;
+import de.bund.bsi.tr_esor.vr.CredentialValidityType;
+import de.bund.bsi.tr_esor.vr.CredentialValidityType.RelatedObjects;
+import de.bund.bsi.tr_esor.vr.CredentialsSectionValidityType;
+import de.bund.bsi.tr_esor.vr.XAIPValidityType;
 import de.bund.bsi.tresor.aip.validator.api.boundary.ProtocolAssembler;
 import de.bund.bsi.tresor.aip.validator.api.control.AIPUtil;
 import de.bund.bsi.tresor.aip.validator.api.control.ModuleLogger;

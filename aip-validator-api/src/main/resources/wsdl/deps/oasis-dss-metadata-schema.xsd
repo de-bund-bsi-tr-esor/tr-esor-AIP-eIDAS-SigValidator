@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+     Digital Signature Service Metadata Version 1.0
+     Committee Specification 02
+     11 December 2019
+     Copyright (c) OASIS Open 2019. All Rights Reserved.
+     Source: https://docs.oasis-open.org/dss-x/dss-md/v1.0/cs02/schema/
+     Latest version of narrative specification: https://docs.oasis-open.org/dss-x/dss-md/v1.0/dss-md-v1.0.html
+     TC IPR Statement: https://www.oasis-open.org/committees/dss-x/ipr.php
+-->
+<!--
+
+Imported schemes and their namespaces are rewritten!
+They are NOT compatible with the original schema!
+
+Version 2.0 of the DSS/X specification introduces a multi-syntax approach to 
+support both JSON and XML. Therefore it is neccessary to limit the use of
+syntax elements to a common base. Another goal is to support implementors 
+using mapping frameworks.These requirements affect the XML syntax and resulted
+in the modification of existing scheme. These major topics are identified:
+
+- the use of xs:any
+- the 'mixed' content attribute of xs:complexType
+- inline namespace declarations usede within XPath expressions
+- 'choice' constructs that maybe mapped by frameworks in an untyped way
+
+This schema is rewritten to fulfil the requirements mentioned above. The 
+functionalities intended by the initial authors is preserved as good as 
+possible. For details regarding the multi-syntax approach and the DSS-X 
+specification in general see the OASIS DSS-X homepage at 
+https://www.oasis-open.org/committees/tc_home.php?wg_abbrev=dss-x.
+
+-->
+<!--
+
+Imported schemes and their namespaces are rewritten!
+They are NOT compatible with the original schema!
+
+Version 2.0 of the DSS/X specification introduces a multi-syntax approach to 
+support both JSON and XML. Therefore it is neccessary to limit the use of
+syntax elements to a common base. Another goal is to support implementors 
+using mapping frameworks.These requirements affect the XML syntax and resulted
+in the modification of existing scheme. These major topics are identified:
+
+- the use of xs:any
+- the 'mixed' content attribute of xs:complexType
+- inline namespace declarations usede within XPath expressions
+- 'choice' constructs that maybe mapped by frameworks in an untyped way
+
+This schema is rewritten to fulfil the requirements mentioned above. The 
+functionalities intended by the initial authors is preserved as good as 
+possible. For details regarding the multi-syntax approach and the DSS-X 
+specification in general see the OASIS DSS-X homepage at 
+https://www.oasis-open.org/committees/tc_home.php?wg_abbrev=dss-x.
+
+-->
+<xs:schema xmlns:md="http://docs.oasis-open.org/dss-x/ns/metadata" xmlns:dsb="http://docs.oasis-open.org/dss-x/ns/base" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ds-rw="http://docs.oasis-open.org/dss-x/ns/xmldsig/rewritten" targetNamespace="http://docs.oasis-open.org/dss-x/ns/metadata" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<!-- ======================================= -->
+	<!-- OASIS DSS-X Metadata Structure          -->
+	<!-- ======================================= -->
+	<!-- Version CS 02 (27.10.2019)                -->
+	<!-- ======================================= -->
+	<xs:annotation>
+		<xs:documentation xml:lang="en">This schema defines general structures for providing service-related information.</xs:documentation>
+	</xs:annotation>
+	<xs:import namespace="http://docs.oasis-open.org/dss-x/ns/base" schemaLocation="oasis-dss-base-schema.xsd"/>
+	<xs:import namespace="http://docs.oasis-open.org/dss-x/ns/xmldsig/rewritten" schemaLocation="oasis-dss-rw-xmldsig-core-schema.xsd"/>
+	<!-- =================================== -->
+	<!-- Basic components                    -->
+	<!-- =================================== -->
+	<xs:element name="Description" type="dsb:InternationalStringType"/>
+	<xs:element name="Extension" type="md:ExtensionType"/>
+	<xs:complexType name="ExtensionType">
+		<xs:sequence>
+			<xs:element name="Name" type="xs:string"/>
+			<xs:element name="Value" type="xs:string"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="OperationType">
+		<xs:sequence>
+			<xs:element name="Name" type="xs:string"/>
+			<xs:element name="Specification" type="xs:anyURI" minOccurs="0"/>
+			<xs:element ref="md:Description" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="Input" type="md:ParameterType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="Option" type="md:ParameterType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="Output" type="md:ParameterType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="Schema" type="xs:anyURI" minOccurs="0"/>
+			<xs:element ref="md:Extension" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ParameterType">
+		<xs:sequence>
+			<xs:element name="Name" type="xs:string"/>
+			<xs:element name="Specification" type="xs:anyURI" minOccurs="0"/>
+			<xs:element ref="md:Description" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="Format" type="md:FormatType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="Schema" type="xs:anyURI" minOccurs="0"/>
+			<xs:element ref="md:Extension" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="FormatType">
+		<xs:sequence>
+			<xs:element name="FormatID" type="xs:anyURI"/>
+			<xs:element name="Specification" type="xs:anyURI" minOccurs="0"/>
+			<xs:element ref="md:Description" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="Transforms" type="ds-rw:TransformsType" minOccurs="0"/>
+			<xs:element name="Parameter" type="md:ParameterType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="Extension" type="dsb:AnyType" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="IsDefault" type="xs:boolean" use="optional" default="false"/>
+	</xs:complexType>
+	<xs:complexType name="PolicyType">
+		<xs:sequence>
+			<xs:choice>
+				<xs:element name="PolicyByRef" type="md:PolicyByRefType"/>
+				<xs:element name="PolicyByDef" type="dsb:AnyType"/>
+			</xs:choice>
+			<xs:element name="EarlierPolicy" type="xs:anyURI" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element ref="md:Extension" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="Type" type="xs:anyURI" use="optional"/>
+	</xs:complexType>
+	<xs:complexType name="PolicyByRefType">
+		<xs:sequence>
+			<xs:element name="PolicyID" type="xs:anyURI"/>
+			<xs:element name="PolicyLocation" type="xs:anyURI" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- =================================== -->
+	<!-- Provider                            -->
+	<!-- =================================== -->
+	<xs:element name="Provider" type="md:ProviderType"/>
+	<xs:complexType name="ProviderType">
+		<xs:sequence>
+			<xs:element name="Name" type="xs:string"/>
+			<xs:element name="Logo" type="xs:anyURI"/>
+			<xs:element name="Region" type="xs:string"/>
+			<xs:element name="SupportedLanguage" type="xs:language" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element ref="md:Description" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="AuthInfo" type="xs:anyURI" minOccurs="0"/>
+			<xs:element name="Protocol" type="md:ProtocolType" maxOccurs="unbounded"/>
+			<xs:element ref="md:Extension" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- =================================== -->
+	<!-- Protocol                            -->
+	<!-- =================================== -->
+	<xs:element name="Protocol" type="md:ProtocolType"/>
+	<xs:complexType name="ProtocolType">
+		<xs:sequence>
+			<xs:element name="Specification" type="xs:anyURI" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="Version" type="xs:string" minOccurs="0"/>
+			<xs:element ref="md:Description" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="Profile" type="md:ProfileType" maxOccurs="unbounded"/>
+			<xs:element ref="md:Extension" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- =================================== -->
+	<!-- Profile                             -->
+	<!-- =================================== -->
+	<xs:element name="Profile" type="md:ProfileType"/>
+	<xs:complexType name="ProfileType">
+		<xs:sequence>
+			<xs:element name="ProfileIdentifier" type="xs:anyURI"/>
+			<xs:element name="Specification" type="xs:anyURI" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element ref="md:Description" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="Operation" type="md:OperationType" maxOccurs="unbounded"/>
+			<xs:element name="Policy" type="md:PolicyType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element ref="md:Extension" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

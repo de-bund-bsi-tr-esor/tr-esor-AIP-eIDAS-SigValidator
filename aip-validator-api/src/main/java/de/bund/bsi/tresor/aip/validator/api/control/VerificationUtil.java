@@ -28,10 +28,9 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.bouncycastle.util.encoders.Hex;
 import org.bouncycastle.util.io.Streams;
 
-import de.bund.bsi.tr_esor.xaip._1.CheckSumType;
+import de.bund.bsi.tr_esor.xaip.CheckSumType;
 import de.bund.bsi.tresor.aip.validator.api.entity.DefaultResult;
 import de.bund.bsi.tresor.aip.validator.api.entity.DefaultResult.Builder;
 import de.bund.bsi.tresor.aip.validator.api.entity.DefaultResult.Minor;

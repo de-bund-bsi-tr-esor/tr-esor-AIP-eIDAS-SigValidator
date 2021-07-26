@@ -23,8 +23,8 @@ package de.bund.bsi.tresor.aip.validator.api.entity;
 
 import java.util.Optional;
 
-import de.bund.bsi.tr_esor.vr._1.XAIPValidityType;
-import de.bund.bsi.tr_esor.xaip._1.XAIPType;
+import de.bund.bsi.tr_esor.vr.XAIPValidityType;
+import de.bund.bsi.tr_esor.xaip.XAIPType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
