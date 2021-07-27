@@ -66,7 +66,6 @@ public class CredentialSectionAnalyzer
         Set<FinderResult> sigResults = new HashSet<>();
         SignatureObject signObj = credential.getSignatureObject();
         Set<DataObjectType> relatedData = AIPUtil.resolveRelatedDataObjects( dataObjects, credential.getRelatedObjects() );
-        
         SignaturePtr signaturePtr = signObj.getSignaturePtr();
         Optional<byte[]> b64Signature = Optional.ofNullable( signObj.getBase64Signature() ).map( Base64Signature::getValue );
         Optional<org.w3._2000._09.xmldsig_.SignatureType> signType = Optional.ofNullable( signObj.getSignature() );
@@ -90,7 +89,7 @@ public class CredentialSectionAnalyzer
                     .findAny()
                     .flatMap( FinderResult::getData )
                     .map( CredentialSectionAnalyzer::dataContent )
-                    .or( () -> AIPUtil.extractData( dataObject ) );
+                    .or( () -> AIPUtil.extractData( dataObject::getBinaryData, dataObject::getXmlData ) );
             
             Optional<InputStream> optData = optDataBlob.map( ByteArrayInputStream::new );
             

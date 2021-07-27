@@ -106,7 +106,7 @@ public enum DataObjectSectionValidator
         
         Optional.ofNullable( dataObject.getCheckSum() )
                 .map( checkSum -> {
-                    try ( InputStream data = AIPUtil.extractData( dataObject )
+                    try ( InputStream data = AIPUtil.extractData( dataObject::getBinaryData, dataObject::getXmlData )
                             .map( ByteArrayInputStream::new )
                             .orElse( new ByteArrayInputStream( new byte[0] ) ) )
                     {

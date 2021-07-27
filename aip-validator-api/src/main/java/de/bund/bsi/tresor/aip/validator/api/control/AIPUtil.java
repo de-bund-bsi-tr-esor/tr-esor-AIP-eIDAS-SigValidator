@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
 import javax.xml.bind.DataBindingException;
@@ -228,6 +229,22 @@ public class AIPUtil
     }
     
     /**
+     * Returns an xPath pointing to the element where the id matches.<br/>
+     * <br/>
+     * Detailed explaination:<br/>
+     * Selecting every element which has an attributeName ending with 'ID' matching the provided id value.<br/>
+     * 
+     * @param id
+     *            the *objectId
+     * @return the xPath
+     */
+    public static String xPathForObjectId( String id )
+    {
+        // select every element which has an attributeName ending with 'ID' matching the provided value
+        return "//*[@*[ends-with(local-name(), 'ID')]='" + id + "']";
+    }
+    
+    /**
      * Extracting the complete xml data provided by the {@link AnyType} which can contain any data or none
      * 
      * @param anyType
@@ -341,14 +358,16 @@ public class AIPUtil
      * </ul>
      * </ul>
      * 
+     * @param <T>
+     * 
      * @param dataObject
      *            the dataObject to retrieve the data from
      * @return data from the dataObject if any is present
      */
-    public static Optional<byte[]> extractData( DataObjectType dataObject )
+    public static Optional<byte[]> extractData( Supplier<BinaryDataType> binarySupplier, Supplier<AnyType> xmlSupplier )
     {
-        Optional<byte[]> binData = AIPUtil.extractBinData( dataObject.getBinaryData() );
-        Optional<byte[]> xmlData = AIPUtil.extractXmlData( dataObject.getXmlData() )
+        Optional<byte[]> binData = AIPUtil.extractBinData( binarySupplier.get() );
+        Optional<byte[]> xmlData = AIPUtil.extractXmlData( xmlSupplier.get() )
                 .or( () -> binData.filter( AIPUtil::isXml ) );
         
         return binData.or( () -> xmlData );

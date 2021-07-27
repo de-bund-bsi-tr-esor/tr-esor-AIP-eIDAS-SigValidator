@@ -68,6 +68,7 @@ public enum CredentialSectionValidator
      */
     public Map.Entry<String, RelatedObjects> validateCredential( CredentialType credential )
     {
+        // TODO redo, see aipUtil
         RelatedObjects related = new RelatedObjects();
         credential.getRelatedObjects().stream()
                 .filter( DataObjectType.class::isInstance )
