@@ -64,7 +64,7 @@ public class DataSectionAnalyzer
      */
     public static Optional<FinderResult> findSignatures( DataObjectType dataObject )
     {
-        Optional<byte[]> binData = AIPUtil.extractBinData( dataObject.getBinaryData() );
+        Optional<byte[]> binData = AIPUtil.extractBinData( AIPUtil.binaryDataSupplier( dataObject ).get() );
         Optional<byte[]> xmlData = AIPUtil.extractXmlData( dataObject.getXmlData() )
                 .or( () -> binData.filter( AIPUtil::isXml ) );
         

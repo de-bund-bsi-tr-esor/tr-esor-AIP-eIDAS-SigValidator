@@ -81,12 +81,13 @@ public class DefaultSignatureVerifier implements SignatureVerifier
         for ( Entry<String, Set<String>> entry : credIdsByDataId.entrySet() )
         {
             Optional<String> dataId = Optional.ofNullable( entry.getKey() );
+            
             Optional<byte[]> data = Optional.ofNullable( xaip.getDataObjectsSection() ).stream()
                     .map( DataObjectsSectionType::getDataObject )
                     .flatMap( List::stream )
                     .filter( dataObj -> dataId.map( dataObj.getDataObjectID()::equals ).orElse( false ) )
                     .findAny()
-                    .flatMap( AIPUtil::extractData );
+                    .flatMap( dataObj -> AIPUtil.extractData( AIPUtil.binaryDataSupplier( dataObj ), dataObj::getXmlData ) );
             
             Set<String> credIds = entry.getValue();
             if ( credIds.isEmpty() && data.isPresent() )

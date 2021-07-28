@@ -37,6 +37,7 @@ import lombok.Value;
 @AllArgsConstructor
 public class FinderResult
 {
+    // TODO change type, in 1.3 this can also be metaData
     private DataObjectType        dataObject;
     private SignaturePresence     presence;
     private Optional<InputStream> data;

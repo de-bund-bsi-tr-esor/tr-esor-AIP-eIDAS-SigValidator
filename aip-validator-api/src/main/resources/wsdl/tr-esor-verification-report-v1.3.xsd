@@ -133,16 +133,22 @@
 			<element name="metaDataObject" type="tr:metaDataObjectValidityType" maxOccurs="unbounded"/>
 		</sequence>
 	</complexType>
+	<complexType name="relatedObjectsType">
+		<sequence>
+			<element ref="tr:XPath" maxOccurs="unbounded"/>
+		</sequence>
+	</complexType>
 	<complexType name="metaDataObjectValidityType">
 		<sequence>
-			<element name="relatedObjects">
+			<element name="relatedObjects" type="tr:relatedObjectsType"/>
+			<!--
 				<complexType>
 					<sequence>
 						<element ref="tr:XPath" maxOccurs="unbounded"/>
 					</sequence>
 				</complexType>
-			</element>
-<!-- depending on the discussion outcome -->
+			</element> -->
+			<!-- depending on the discussion outcome -->
 			<element name="checkSum" type="vr:VerificationResultType" minOccurs="0"/>
 			<element name="category" type="vr:VerificationResultType" minOccurs="0"/>
 			<element name="classification" type="vr:VerificationResultType" minOccurs="0"/>
@@ -191,13 +197,14 @@
 	<element name="XPath" type="string"/>
 	<complexType name="credentialValidityType">
 		<sequence>
-			<element name="relatedObjects" minOccurs="0">
+			<element name="relatedObjects" minOccurs="0" type="tr:relatedObjectsType"/>
+<!--
 				<complexType>
 					<sequence>
 						<element ref="tr:XPath" maxOccurs="unbounded"/>
 					</sequence>
 				</complexType>
-			</element>
+			</element> -->
 			<choice>
 				<element ref="vr:DetailedSignatureReport"/>
 				<element ref="vr:IndividualCertificateReport"/>

@@ -70,8 +70,8 @@ import oasis.names.tc.dss_x._1_0.profiles.verificationreport.schema_.Verificatio
         wsdlLocation = "/wsdl/tr-esor-S-4-v1.3.wsdl" )
 public class AIPValidator implements S4
 {
-    private static final String MAJOR_OK            = "http://www.bsi.bund.de/tr-esor/api/1.2/resultmajor#ok";
-    private static final String MAJOR_ERROR         = "http://www.bsi.bund.de/tr-esor/api/1.2/resultmajor#error";
+    private static final String MAJOR_OK            = "http://www.bsi.bund.de/tr-esor/api/1.3/resultmajor#ok";
+    private static final String MAJOR_ERROR         = "http://www.bsi.bund.de/tr-esor/api/1.3/resultmajor#error";
     
     private static final QName  VERIFICATION_REPORT = new QName(
             "urn:oasis:names:tc:dss-x:1.0:profiles:verificationreport:schema#",

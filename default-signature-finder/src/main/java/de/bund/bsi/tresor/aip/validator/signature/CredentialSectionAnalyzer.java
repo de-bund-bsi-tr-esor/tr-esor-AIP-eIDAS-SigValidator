@@ -89,7 +89,7 @@ public class CredentialSectionAnalyzer
                     .findAny()
                     .flatMap( FinderResult::getData )
                     .map( CredentialSectionAnalyzer::dataContent )
-                    .or( () -> AIPUtil.extractData( dataObject::getBinaryData, dataObject::getXmlData ) );
+                    .or( () -> AIPUtil.extractData( AIPUtil.binaryDataSupplier( dataObject ), dataObject::getXmlData ) );
             
             Optional<InputStream> optData = optDataBlob.map( ByteArrayInputStream::new );
             

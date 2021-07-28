@@ -38,6 +38,7 @@ import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
+import javax.activation.DataHandler;
 import javax.xml.bind.DataBindingException;
 import javax.xml.bind.JAXB;
 import javax.xml.bind.JAXBContext;
@@ -57,6 +58,7 @@ import org.w3c.dom.Node;
 
 import de.bund.bsi.tr_esor.vr.XAIPValidityType;
 import de.bund.bsi.tr_esor.xaip.BinaryDataType;
+import de.bund.bsi.tr_esor.xaip.BinaryMetaDataType;
 import de.bund.bsi.tr_esor.xaip.CredentialType;
 import de.bund.bsi.tr_esor.xaip.DataObjectType;
 import de.bund.bsi.tr_esor.xaip.DataObjectsSectionType;
@@ -323,14 +325,13 @@ public class AIPUtil
     /**
      * Extracting the content of the binary data if any data is present
      * 
-     * @param data
-     *            the binary data
+     * @param dataHandler
+     *            the binary dataHandler
      * @return the binary data content if present
      */
-    public static Optional<byte[]> extractBinData( BinaryDataType data )
+    public static Optional<byte[]> extractBinData( DataHandler dataHandler )
     {
-        return Optional.ofNullable( data )
-                .map( BinaryDataType::getValue )
+        return Optional.ofNullable( dataHandler )
                 .map( dh -> {
                     try
                     {
@@ -364,13 +365,27 @@ public class AIPUtil
      *            the dataObject to retrieve the data from
      * @return data from the dataObject if any is present
      */
-    public static Optional<byte[]> extractData( Supplier<BinaryDataType> binarySupplier, Supplier<AnyType> xmlSupplier )
+    public static Optional<byte[]> extractData( Supplier<DataHandler> binarySupplier, Supplier<AnyType> xmlSupplier )
     {
         Optional<byte[]> binData = AIPUtil.extractBinData( binarySupplier.get() );
         Optional<byte[]> xmlData = AIPUtil.extractXmlData( xmlSupplier.get() )
                 .or( () -> binData.filter( AIPUtil::isXml ) );
         
         return binData.or( () -> xmlData );
+    }
+    
+    public static Supplier<DataHandler> binaryDataSupplier( MetaDataObjectType metaDataObject )
+    {
+        return () -> Optional.ofNullable( metaDataObject.getBinaryMetaData() )
+                .map( BinaryMetaDataType::getValue )
+                .orElse( null );
+    }
+    
+    public static Supplier<DataHandler> binaryDataSupplier( DataObjectType dataObject )
+    {
+        return () -> Optional.ofNullable( dataObject.getBinaryData() )
+                .map( BinaryDataType::getValue )
+                .orElse( null );
     }
     
     /**

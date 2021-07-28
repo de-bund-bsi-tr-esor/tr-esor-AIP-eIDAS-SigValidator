@@ -24,7 +24,6 @@ package de.bund.bsi.tresor.aip.validator.syntax.validators;
 import static java.util.stream.Collectors.toList;
 
 import java.io.ByteArrayInputStream;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -64,22 +63,15 @@ public enum MetaDataValidator
     public Optional<MetaDataSectionValidityType> validateMetaDataSection( Optional<MetaDataSectionType> metaDataSection,
             DataObjectsSectionType dataSection )
     {
-        List<MetaDataObjectValidityType> metaData = metaDataSection.map( section -> section.getMetaDataObject().stream()
-                .map( meta -> validateMetaDataObject( meta, dataSection ) )
+        return metaDataSection.map( section -> section.getMetaDataObject().stream()
+                .map( meta -> validateMetaDataObject( meta ) )
                 .collect( toList() ) )
-                .orElse( new ArrayList<>() );
-        
-        if ( !metaData.isEmpty() )
-        {
-            MetaDataSectionValidityType result = new MetaDataSectionValidityType();
-            metaData.stream().forEach( result.getMetaDataObject()::add );
-            
-            return Optional.of( result );
-        }
-        else
-        {
-            return Optional.empty();
-        }
+                .map( meta -> {
+                    MetaDataSectionValidityType result = new MetaDataSectionValidityType();
+                    meta.stream().forEach( result.getMetaDataObject()::add );
+                    
+                    return result;
+                } );
     }
     
     /**
@@ -121,7 +113,7 @@ public enum MetaDataValidator
     
     public Optional<VerificationResultType> validateChecksum( MetaDataObjectType metaData )
     {
-        Optional<byte[]> data = AIPUtil.extractData( metaData::getBinaryMetaData, metaData::getXmlMetaData );
+        Optional<byte[]> data = AIPUtil.extractData( AIPUtil.binaryDataSupplier( metaData ), metaData::getXmlMetaData );
         
         return data.map( ByteArrayInputStream::new )
                 .map( in -> VerificationUtil.verifyChecksum( in, metaData.getCheckSum() ) );
