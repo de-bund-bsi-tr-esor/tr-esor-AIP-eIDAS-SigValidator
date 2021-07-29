@@ -246,10 +246,13 @@ Any known issues about the validator are being explained at the bottom of this p
       verifier.wsdlUrl=http://localhost:8080/s4?wsdl
 
 -p, --port <port>
-	Port the server should be published to, 8080 by default
+    Port the server should be published to which is 8080 by default
 
--P, --protocol <protocol>
-	Protocol to be used, `http` by default
+-ks, --keyStore <file>
+    TLS keyStore for the server when https should be used. Also requires the password for the keyStore.
+
+-pass, --password, --keyPass
+    Password for the tls keystore.
 
 -H, --host <hostname>
 	Hostname the server is published to
