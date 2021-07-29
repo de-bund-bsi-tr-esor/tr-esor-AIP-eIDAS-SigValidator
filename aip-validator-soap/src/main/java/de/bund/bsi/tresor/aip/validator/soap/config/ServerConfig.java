@@ -55,22 +55,26 @@ public class ServerConfig
             descriptionKey = MessageBundle.SERVER_PORT )
     private int                 port         = 8080;
     
-    @Parameter( order = 4, names = { "-P", "--protocol" },
-            descriptionKey = MessageBundle.SERVER_PROTOCOL )
-    private String              protocol     = "http";
-    
-    @Parameter( order = 5, names = { "-H", "--host" },
+    @Parameter( order = 4, names = { "-H", "--host" },
             descriptionKey = MessageBundle.SERVER_HOST )
     private String              host         = "localhost";
     
-    @Parameter( order = 6, names = { "--path" },
+    @Parameter( order = 5, names = { "--path" },
             descriptionKey = MessageBundle.SERVER_PATH )
     private String              path         = "/xaip-validate";
     
-    @Parameter( order = 7, names = { "-d", "--debug", "--verbose" }, descriptionKey = MessageBundle.SERVER_VERBOSE )
+    @Parameter( order = 6, names = { "-ks", "--keyStore" },
+            descriptionKey = MessageBundle.SERVER_KEYSTORE )
+    private Path                keyStore;
+    
+    @Parameter( order = 7, names = { "-pass", "--password", "--keyPass" },
+            descriptionKey = MessageBundle.SERVER_KEYSTORE_PASS, password = true )
+    private String              keyPass;
+    
+    @Parameter( order = 8, names = { "-d", "--debug", "--verbose" }, descriptionKey = MessageBundle.SERVER_VERBOSE )
     private boolean             verbose      = false;
     
-    @Parameter( order = 8, names = { "-h", "--help" }, help = true, descriptionKey = MessageBundle.SERVER_HELP )
+    @Parameter( order = 9, names = { "-h", "--help" }, help = true, descriptionKey = MessageBundle.SERVER_HELP )
     private boolean             help;
     
     // -- Following values are default parameter for the server
