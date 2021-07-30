@@ -144,7 +144,8 @@ public class AIPUtilTest
         
         List<Object> relatedObjects = asList( dataObjectId, dataObjectType );
         
-        Set<DataObjectType> result = AIPUtil.resolveRelatedDataObjects( dataSection, relatedObjects );
+        Set<DataObjectType> result = AIPUtil.resolveRelatedDataObjects( dataSection, DataObjectsSectionType::getDataObject,
+                relatedObjects );
         
         assertThat( result, is( notNullValue() ) );
         assertThat( result, hasSize( 2 ) );
@@ -166,7 +167,8 @@ public class AIPUtilTest
         
         List<Object> relatedObjects = asList( "unrelatedId", new DataObjectType() );
         
-        Set<DataObjectType> result = AIPUtil.resolveRelatedDataObjects( dataSection, relatedObjects );
+        Set<DataObjectType> result = AIPUtil.resolveRelatedDataObjects( dataSection, DataObjectsSectionType::getDataObject,
+                relatedObjects );
         
         result.stream().map( DataObjectType::getDataObjectID ).forEach( System.out::println );
         

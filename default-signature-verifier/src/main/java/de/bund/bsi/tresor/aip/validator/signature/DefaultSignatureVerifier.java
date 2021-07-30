@@ -33,7 +33,7 @@ import org.dom4j.Document;
 import org.dom4j.io.SAXReader;
 
 import de.bund.bsi.tr_esor.vr.CredentialValidityType;
-import de.bund.bsi.tr_esor.vr.CredentialValidityType.RelatedObjects;
+import de.bund.bsi.tr_esor.vr.RelatedObjectsType;
 import de.bund.bsi.tr_esor.xaip.CredentialType;
 import de.bund.bsi.tr_esor.xaip.CredentialsSectionType;
 import de.bund.bsi.tr_esor.xaip.DataObjectsSectionType;
@@ -174,7 +174,8 @@ public class DefaultSignatureVerifier implements SignatureVerifier
             for ( CredentialValidityType credential : req )
             {
                 String id = dataId.get();
-                RelatedObjects relatedObjects = Optional.ofNullable( credential.getRelatedObjects() ).orElse( new RelatedObjects() );
+                RelatedObjectsType relatedObjects = Optional.ofNullable( credential.getRelatedObjects() )
+                        .orElse( new RelatedObjectsType() );
                 List<String> xPath = Optional.ofNullable( relatedObjects.getXPath() ).orElse( new ArrayList<>() );
                 if ( !xPath.contains( id ) )
                 {

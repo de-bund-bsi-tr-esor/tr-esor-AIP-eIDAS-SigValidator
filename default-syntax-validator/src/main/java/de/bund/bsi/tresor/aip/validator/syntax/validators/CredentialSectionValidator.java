@@ -29,10 +29,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 
-import de.bund.bsi.tr_esor.vr.CredentialValidityType.RelatedObjects;
+import de.bund.bsi.tr_esor.vr.RelatedObjectsType;
 import de.bund.bsi.tr_esor.xaip.CredentialType;
 import de.bund.bsi.tr_esor.xaip.CredentialsSectionType;
 import de.bund.bsi.tr_esor.xaip.DataObjectType;
+import de.bund.bsi.tr_esor.xaip.MetaDataObjectType;
 import de.bund.bsi.tresor.aip.validator.api.control.AIPUtil;
 
 /**
@@ -51,7 +52,7 @@ public enum CredentialSectionValidator
      *            the credential section
      * @return the validation result
      */
-    public Map<String, RelatedObjects> validateCredentialsSection( Optional<CredentialsSectionType> credentialsSection )
+    public Map<String, RelatedObjectsType> validateCredentialsSection( Optional<CredentialsSectionType> credentialsSection )
     {
         return credentialsSection.map( section -> section.getCredential().stream()
                 .map( this::validateCredential )
@@ -66,14 +67,19 @@ public enum CredentialSectionValidator
      *            the credential
      * @return the validation result
      */
-    public Map.Entry<String, RelatedObjects> validateCredential( CredentialType credential )
+    public Map.Entry<String, RelatedObjectsType> validateCredential( CredentialType credential )
     {
-        // TODO redo, see aipUtil
-        RelatedObjects related = new RelatedObjects();
+        RelatedObjectsType related = new RelatedObjectsType();
         credential.getRelatedObjects().stream()
                 .filter( DataObjectType.class::isInstance )
                 .map( AIPUtil::idFromObject )
                 .map( id -> "//dataObject[@dataObjectID='" + id + "']" )
+                .forEach( related.getXPath()::add );
+        
+        credential.getRelatedObjects().stream()
+                .filter( MetaDataObjectType.class::isInstance )
+                .map( AIPUtil::idFromObject )
+                .map( id -> "//metaDataObject[@metaDataID='" + id + "']" )
                 .forEach( related.getXPath()::add );
         
         if ( related.getXPath().isEmpty() )
@@ -81,6 +87,6 @@ public enum CredentialSectionValidator
             related.getXPath().add( "//credential[@credentialID='" + credential.getCredentialID() + "']" );
         }
         
-        return new AbstractMap.SimpleEntry<String, RelatedObjects>( credential.getCredentialID(), related );
+        return new AbstractMap.SimpleEntry<String, RelatedObjectsType>( credential.getCredentialID(), related );
     }
 }

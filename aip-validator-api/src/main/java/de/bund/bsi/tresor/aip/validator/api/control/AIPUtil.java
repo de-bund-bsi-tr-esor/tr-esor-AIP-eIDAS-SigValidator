@@ -31,10 +31,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
@@ -53,6 +54,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.etsi.uri._02918.v1_2.DataObjectReferenceType;
 import org.w3c.dom.Node;
 
@@ -155,35 +157,31 @@ public class AIPUtil
     /**
      * Resolving the relatedObjects and returning the resolved dataObjects
      * 
-     * @param dataSection
-     *            the dataSection containing the dataObjects
+     * @param <R>
+     *            the dataType of the section
+     * @param <T>
+     *            the section type
+     * @param section
+     *            section containing the data
+     * @param sectionType
+     *            function to extract the dataType from the section, e.g. DataObjectsSection::getDataObject
      * @param relatedObjects
      *            the relatedObjects
-     * @return a set of resolved dataObjects
+     * @return a set of resolved objects from the section
      */
-    public static Set<DataObjectType> resolveRelatedDataObjects( DataObjectsSectionType dataSection, List<Object> relatedObjects )
+    public static <R, T> Set<R> resolveRelatedDataObjects( T section, Function<T, Collection<R>> sectionType,
+            List<Object> relatedObjects )
     {
         Set<String> ids = relatedObjects.stream()
-                .map( ref -> {
-                    if ( ref instanceof DataObjectType )
-                    {
-                        return ((DataObjectType) ref).getDataObjectID();
-                    }
-                    else if ( ref instanceof String )
-                    {
-                        return (String) ref;
-                    }
-                    
-                    return null;
-                } )
-                .filter( Objects::nonNull )
+                .map( AIPUtil::idFromObject )
+                .filter( StringUtils::isNotBlank )
                 .collect( toSet() );
         
-        return Optional.ofNullable( dataSection )
-                .map( DataObjectsSectionType::getDataObject )
+        return Optional.ofNullable( section )
+                .map( sectionType::apply )
                 .orElse( new ArrayList<>() )
                 .stream()
-                .filter( obj -> ids.contains( obj.getDataObjectID() ) )
+                .filter( obj -> ids.contains( AIPUtil.idFromObject( obj ) ) )
                 .collect( toSet() );
     }
     
@@ -359,11 +357,11 @@ public class AIPUtil
      * </ul>
      * </ul>
      * 
-     * @param <T>
-     * 
-     * @param dataObject
-     *            the dataObject to retrieve the data from
-     * @return data from the dataObject if any is present
+     * @param binarySupplier
+     *            supplier for the binaryData of an objectType
+     * @param xmlSupplier
+     *            supplier for the xmData of an objectType
+     * @return the optional data
      */
     public static Optional<byte[]> extractData( Supplier<DataHandler> binarySupplier, Supplier<AnyType> xmlSupplier )
     {
@@ -374,6 +372,13 @@ public class AIPUtil
         return binData.or( () -> xmlData );
     }
     
+    /**
+     * Providing a supplier for the binaryData of a {@link MetaDataObjectType}
+     * 
+     * @param metaDataObject
+     *            the metaDataObject
+     * @return the supplier
+     */
     public static Supplier<DataHandler> binaryDataSupplier( MetaDataObjectType metaDataObject )
     {
         return () -> Optional.ofNullable( metaDataObject.getBinaryMetaData() )
@@ -381,6 +386,13 @@ public class AIPUtil
                 .orElse( null );
     }
     
+    /**
+     * Providing a supplier for the binaryData of a {@link DataObjectType}
+     * 
+     * @param dataObject
+     *            the dataObject
+     * @return the supplier
+     */
     public static Supplier<DataHandler> binaryDataSupplier( DataObjectType dataObject )
     {
         return () -> Optional.ofNullable( dataObject.getBinaryData() )

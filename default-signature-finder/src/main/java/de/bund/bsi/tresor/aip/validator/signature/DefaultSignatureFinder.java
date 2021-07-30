@@ -28,6 +28,7 @@ import static java.util.stream.Collectors.toSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
@@ -37,8 +38,11 @@ import de.bund.bsi.tr_esor.xaip.CredentialType;
 import de.bund.bsi.tr_esor.xaip.CredentialsSectionType;
 import de.bund.bsi.tr_esor.xaip.DataObjectType;
 import de.bund.bsi.tr_esor.xaip.DataObjectsSectionType;
+import de.bund.bsi.tr_esor.xaip.MetaDataObjectType;
+import de.bund.bsi.tr_esor.xaip.MetaDataSectionType;
 import de.bund.bsi.tr_esor.xaip.XAIPType;
 import de.bund.bsi.tresor.aip.validator.api.boundary.SignatureFinder;
+import de.bund.bsi.tresor.aip.validator.api.control.AIPUtil;
 import de.bund.bsi.tresor.aip.validator.api.entity.ModuleContext;
 import de.bund.bsi.tresor.aip.validator.signature.entity.FinderResult;
 import de.bund.bsi.tresor.aip.validator.signature.entity.SignaturePresence;
@@ -59,41 +63,60 @@ public class DefaultSignatureFinder implements SignatureFinder
     public Map<String, Set<String>> findSignatures( ModuleContext context, XAIPType xaip )
     {
         DataObjectsSectionType dataSection = xaip.getDataObjectsSection();
+        MetaDataSectionType metaDataSection = xaip.getMetaDataSection();
         
-        Set<FinderResult> dataSectionResults = Optional.ofNullable( dataSection )
+        Set<FinderResult<DataObjectType>> dataSectionResults = Optional.ofNullable( dataSection )
                 .map( DataObjectsSectionType::getDataObject )
                 .orElse( emptyList() )
                 .stream()
-                .map( DataSectionAnalyzer::findSignatures )
+                .map( DataAnalyzer::findSignatures )
                 .filter( Optional::isPresent )
                 .map( Optional::get )
                 .collect( toSet() );
         
-        Map<CredentialType, Set<FinderResult>> credentialSectionResults = Optional.ofNullable( xaip.getCredentialsSection() )
-                .map( CredentialsSectionType::getCredential )
+        Set<FinderResult<MetaDataObjectType>> metadataSectionResults = Optional.ofNullable( metaDataSection )
+                .map( MetaDataSectionType::getMetaDataObject )
                 .orElse( emptyList() )
                 .stream()
+                .map( DataAnalyzer::findSignatures )
+                .filter( Optional::isPresent )
+                .map( Optional::get )
+                .collect( toSet() );
+        
+        List<CredentialType> credentials = Optional.ofNullable( xaip.getCredentialsSection() )
+                .map( CredentialsSectionType::getCredential )
+                .orElse( emptyList() );
+        
+        Map<CredentialType, Set<FinderResult<DataObjectType>>> dataObjectResults = credentials.stream()
                 .map( c -> CredentialSectionAnalyzer.analyzeCredential( c, dataSection, dataSectionResults ) )
                 .collect( toMap( Entry::getKey, Entry::getValue ) );
         
-        return mapCredIdsByDataId( mergeResults( dataSectionResults, credentialSectionResults ) );
+        Map<CredentialType, Set<FinderResult<MetaDataObjectType>>> metadataObjectResults = credentials.stream()
+                .map( c -> CredentialSectionAnalyzer.analyzeCredential( c, metaDataSection, metadataSectionResults ) )
+                .collect( toMap( Entry::getKey, Entry::getValue ) );
+        
+        Map<String, Set<String>> mappedIds = new HashMap<>();
+        mappedIds.putAll( mapCredIdsByDataId( mergeResults( dataSectionResults, dataObjectResults ) ) );
+        mappedIds.putAll( mapCredIdsByDataId( mergeResults( metadataSectionResults, metadataObjectResults ) ) );
+        
+        return mappedIds;
     }
     
-    Map<CredentialType, Set<FinderResult>> mergeResults( Set<FinderResult> dataSectionResults,
-            Map<CredentialType, Set<FinderResult>> credentialSectionResults )
+    <T> Map<CredentialType, Set<FinderResult<T>>> mergeResults( Set<FinderResult<T>> dataSectionResults,
+            Map<CredentialType, Set<FinderResult<T>>> credentialSectionResults )
     {
-        Iterator<FinderResult> iterator = dataSectionResults.iterator();
+        Iterator<FinderResult<T>> iterator = dataSectionResults.iterator();
         while ( iterator.hasNext() )
         {
-            FinderResult dataSectionResult = iterator.next();
-            Optional<String> dataSectionObjId = Optional.ofNullable( dataSectionResult.getDataObject() )
-                    .map( DataObjectType::getDataObjectID );
+            FinderResult<T> dataSectionResult = iterator.next();
+            Optional<String> dataSectionObjId = Optional.ofNullable( dataSectionResult.getDataContainer() )
+                    .map( AIPUtil::idFromObject );
             
-            for ( Set<FinderResult> credentialResult : credentialSectionResults.values() )
+            for ( Set<FinderResult<T>> credentialResult : credentialSectionResults.values() )
             {
                 if ( credentialResult.stream()
-                        .anyMatch( r -> Optional.ofNullable( r.getDataObject() )
-                                .map( DataObjectType::getDataObjectID )
+                        .anyMatch( r -> Optional.ofNullable( r.getDataContainer() )
+                                .map( AIPUtil::idFromObject )
                                 .equals( dataSectionObjId ) ) )
                 {
                     iterator.remove();
@@ -108,23 +131,23 @@ public class DefaultSignatureFinder implements SignatureFinder
     }
     
     // can contain null-valued keys when a credentialSection occurs without data refs
-    Map<String, Set<String>> mapCredIdsByDataId( Map<CredentialType, Set<FinderResult>> result )
+    <T> Map<String, Set<String>> mapCredIdsByDataId( Map<CredentialType, Set<FinderResult<T>>> result )
     {
         Map<String, Set<String>> credIdsByDataId = new HashMap<>();
-        for ( Entry<CredentialType, Set<FinderResult>> entry : result.entrySet() )
+        for ( Entry<CredentialType, Set<FinderResult<T>>> entry : result.entrySet() )
         {
             Set<String> credId = Optional.ofNullable( entry.getKey() )
                     .map( CredentialType::getCredentialID )
                     .map( Set::of )
                     .orElse( new HashSet<>() );
             
-            for ( FinderResult finderResult : entry.getValue() )
+            for ( FinderResult<T> finderResult : entry.getValue() )
             {
                 // TODO might want to log some informations
                 if ( finderResult.getPresence() != SignaturePresence.MISSING )
                 {
-                    String dataId = Optional.ofNullable( finderResult.getDataObject() )
-                            .map( DataObjectType::getDataObjectID )
+                    String dataId = Optional.ofNullable( finderResult.getDataContainer() )
+                            .map( AIPUtil::idFromObject )
                             .orElse( null );
                     
                     credIdsByDataId.computeIfAbsent( dataId, k -> new HashSet<>() ).addAll( credId );

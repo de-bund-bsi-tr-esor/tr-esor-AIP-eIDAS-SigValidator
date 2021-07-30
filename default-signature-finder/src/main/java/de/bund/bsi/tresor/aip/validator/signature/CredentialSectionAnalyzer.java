@@ -25,6 +25,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.AbstractMap;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
@@ -35,6 +36,8 @@ import org.apache.commons.io.IOUtils;
 import de.bund.bsi.tr_esor.xaip.CredentialType;
 import de.bund.bsi.tr_esor.xaip.DataObjectType;
 import de.bund.bsi.tr_esor.xaip.DataObjectsSectionType;
+import de.bund.bsi.tr_esor.xaip.MetaDataObjectType;
+import de.bund.bsi.tr_esor.xaip.MetaDataSectionType;
 import de.bund.bsi.tresor.aip.validator.api.control.AIPUtil;
 import de.bund.bsi.tresor.aip.validator.api.control.ModuleLogger;
 import de.bund.bsi.tresor.aip.validator.signature.entity.FinderResult;
@@ -54,18 +57,52 @@ public class CredentialSectionAnalyzer
      * 
      * @param credential
      *            the credential type
-     * @param dataObjects
+     * @param dataSection
      *            the dataObjectsSection containing the dataObjects
-     * @param dataSectionResults
+     * @param sectionResults
      *            the result of the dataSectionAnalyzer
      * @return an entry where the credential is being used as a key and possible signature are the value
      */
-    public static Map.Entry<CredentialType, Set<FinderResult>> analyzeCredential( CredentialType credential,
-            DataObjectsSectionType dataObjects, Set<FinderResult> dataSectionResults )
+    public static Map.Entry<CredentialType, Set<FinderResult<DataObjectType>>> analyzeCredential( CredentialType credential,
+            DataObjectsSectionType dataSection, Set<FinderResult<DataObjectType>> sectionResults )
     {
-        Set<FinderResult> sigResults = new HashSet<>();
+        Set<FinderResult<DataObjectType>> sigResults = new HashSet<>();
+        Set<DataObjectType> relatedData = AIPUtil.resolveRelatedDataObjects( dataSection, DataObjectsSectionType::getDataObject,
+                credential.getRelatedObjects() );
+        
+        sigResults.addAll( analyzeCredential( credential, relatedData, sectionResults ) );
+        
+        return new AbstractMap.SimpleEntry<>( credential, sigResults );
+    }
+    
+    /**
+     * Analyzing the credential and returning an entry of the credential with all possible signatures which can be verified
+     * 
+     * @param credential
+     *            the credential type
+     * @param metaDataSection
+     *            the dataObjectsSection containing the dataObjects
+     * @param sectionResults
+     *            the result of the dataSectionAnalyzer
+     * @return an entry where the credential is being used as a key and possible signature are the value
+     */
+    public static Map.Entry<CredentialType, Set<FinderResult<MetaDataObjectType>>> analyzeCredential( CredentialType credential,
+            MetaDataSectionType metaDataSection, Set<FinderResult<MetaDataObjectType>> sectionResults )
+    {
+        Set<FinderResult<MetaDataObjectType>> sigResults = new HashSet<>();
+        Set<MetaDataObjectType> relatedData = AIPUtil.resolveRelatedDataObjects( metaDataSection, MetaDataSectionType::getMetaDataObject,
+                credential.getRelatedObjects() );
+        
+        sigResults.addAll( analyzeCredential( credential, relatedData, sectionResults ) );
+        
+        return new AbstractMap.SimpleEntry<>( credential, sigResults );
+    }
+    
+    static <T> Set<FinderResult<T>> analyzeCredential( CredentialType credential, Collection<T> relatedData,
+            Set<FinderResult<T>> anyDataSectionResults )
+    {
+        Set<FinderResult<T>> sigResults = new HashSet<>();
         SignatureObject signObj = credential.getSignatureObject();
-        Set<DataObjectType> relatedData = AIPUtil.resolveRelatedDataObjects( dataObjects, credential.getRelatedObjects() );
         SignaturePtr signaturePtr = signObj.getSignaturePtr();
         Optional<byte[]> b64Signature = Optional.ofNullable( signObj.getBase64Signature() ).map( Base64Signature::getValue );
         Optional<org.w3._2000._09.xmldsig_.SignatureType> signType = Optional.ofNullable( signObj.getSignature() );
@@ -73,34 +110,36 @@ public class CredentialSectionAnalyzer
         if ( relatedData.isEmpty() )
         {
             // should check signatureObject/signature
-            b64Signature.flatMap( data -> DataSectionAnalyzer.findSignatures( null, Optional.of( data ) ) )
-                    .ifPresent( sigResults::add );
+            b64Signature.flatMap( data -> DataAnalyzer.findSignatures( null, Optional.of( data ) ) )
+                    .ifPresent( r -> sigResults.add( new FinderResult<T>( null, r.getPresence(), r.getData() ) ) );
             
             if ( signType.map( org.w3._2000._09.xmldsig_.SignatureType::getObject ).map( l -> !l.isEmpty() ).orElse( false ) )
             {
-                sigResults.add( new FinderResult( null, SignaturePresence.PRESENT, Optional.empty() ) );
+                sigResults.add( new FinderResult<T>( null, SignaturePresence.PRESENT, Optional.empty() ) );
             }
         }
         
-        for ( DataObjectType dataObject : relatedData )
+        for ( T dataObject : relatedData )
         {
-            Optional<byte[]> optDataBlob = dataSectionResults.stream()
-                    .filter( r -> dataObject.getDataObjectID().equals( r.getDataObject().getDataObjectID() ) )
+            String oid = AIPUtil.idFromObject( dataObject );
+            
+            Optional<byte[]> optDataBlob = anyDataSectionResults.stream()
+                    .filter( r -> oid.equals( AIPUtil.idFromObject( r.getDataContainer() ) ) )
                     .findAny()
                     .flatMap( FinderResult::getData )
                     .map( CredentialSectionAnalyzer::dataContent )
-                    .or( () -> AIPUtil.extractData( AIPUtil.binaryDataSupplier( dataObject ), dataObject::getXmlData ) );
+                    .or( () -> dataSupplier( dataObject ) );
             
             Optional<InputStream> optData = optDataBlob.map( ByteArrayInputStream::new );
             
             // TODO: only when optData present; is this correct?
             if ( optData.isPresent() && (signType.isPresent() || signObj.getTimestamp() != null) )
             {
-                sigResults.add( new FinderResult( dataObject, SignaturePresence.PRESENT, optData ) );
+                sigResults.add( new FinderResult<T>( dataObject, SignaturePresence.PRESENT, optData ) );
             }
             else if ( b64Signature.isPresent() )
             {
-                b64Signature.flatMap( data -> DataSectionAnalyzer.findSignatures( dataObject, Optional.of( data ) ) )
+                b64Signature.flatMap( data -> DataAnalyzer.findSignatures( dataObject, Optional.of( data ) ) )
                         .ifPresent( sigResults::add );
             }
             else if ( signaturePtr != null )
@@ -109,11 +148,28 @@ public class CredentialSectionAnalyzer
             }
             else
             {
-                sigResults.add( new FinderResult( dataObject, SignaturePresence.UNKNOWN, optData ) );
+                sigResults.add( new FinderResult<T>( dataObject, SignaturePresence.UNKNOWN, optData ) );
             }
         }
         
-        return new AbstractMap.SimpleEntry<>( credential, sigResults );
+        return sigResults;
+    }
+    
+    static <T> Optional<byte[]> dataSupplier( T anyDataObj )
+    {
+        Optional<byte[]> data = Optional.empty();
+        if ( anyDataObj instanceof MetaDataObjectType )
+        {
+            MetaDataObjectType metaData = (MetaDataObjectType) anyDataObj;
+            data = AIPUtil.extractData( AIPUtil.binaryDataSupplier( metaData ), metaData::getXmlMetaData );
+        }
+        else if ( anyDataObj instanceof DataObjectType )
+        {
+            DataObjectType metaData = (DataObjectType) anyDataObj;
+            data = AIPUtil.extractData( AIPUtil.binaryDataSupplier( metaData ), metaData::getXmlData );
+        }
+        
+        return data;
     }
     
     static byte[] dataContent( InputStream stream )
@@ -130,21 +186,23 @@ public class CredentialSectionAnalyzer
         }
     }
     
-    static FinderResult analyzePointer( SignaturePtr pointer, DataObjectType dataObj, Optional<InputStream> optData )
+    // anyDataObject can be either metaDataObject or dataObject
+    static <T> FinderResult<T> analyzePointer( SignaturePtr pointer, T anyDataObject, Optional<InputStream> optData )
     {
         Object document = pointer.getWhichDocument();
         String oid = AIPUtil.idFromObject( document );
-        if ( dataObj.getDataObjectID().equals( oid ) )
+        
+        if ( AIPUtil.idFromObject( anyDataObject ).equals( oid ) )
         {
-            return new FinderResult( dataObj, SignaturePresence.PRESENT, optData );
+            return new FinderResult<T>( anyDataObject, SignaturePresence.PRESENT, optData );
         }
         
         // TODO might convert document to byte[] in another form
         if ( document instanceof byte[] )
         {
-            return DataSectionAnalyzer.analyzeBinData( dataObj, (byte[]) document );
+            return DataAnalyzer.analyzeBinData( anyDataObject, (byte[]) document );
         }
         
-        return new FinderResult( dataObj, SignaturePresence.MISSING, optData );
+        return new FinderResult<T>( anyDataObject, SignaturePresence.MISSING, optData );
     }
 }

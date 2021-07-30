@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import javax.activation.DataHandler;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
@@ -41,6 +42,7 @@ import javax.xml.ws.BindingProvider;
 
 import org.w3c.dom.Node;
 
+import com.sun.istack.ByteArrayDataSource;
 import com.sun.xml.ws.client.BindingProviderProperties;
 
 import de.bund.bsi.ecard.api._1.VerifyResponse;
@@ -192,7 +194,7 @@ public class VerificationClient
         
         data.ifPresent( binary -> {
             Base64Data b64Data = new Base64Data();
-            b64Data.setValue( binary );
+            b64Data.setValue( new DataHandler( new ByteArrayDataSource( binary, "application/octet-stream" ) ) );
             
             DocumentType document = new DocumentType();
             document.setBase64Data( b64Data );

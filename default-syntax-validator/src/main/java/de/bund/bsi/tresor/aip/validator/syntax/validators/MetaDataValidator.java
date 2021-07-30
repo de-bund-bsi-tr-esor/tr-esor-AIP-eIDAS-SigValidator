@@ -29,8 +29,8 @@ import java.util.List;
 import java.util.Optional;
 
 import de.bund.bsi.tr_esor.vr.MetaDataObjectValidityType;
-import de.bund.bsi.tr_esor.vr.MetaDataObjectValidityType.RelatedObjects;
 import de.bund.bsi.tr_esor.vr.MetaDataSectionValidityType;
+import de.bund.bsi.tr_esor.vr.RelatedObjectsType;
 import de.bund.bsi.tr_esor.xaip.DataObjectsSectionType;
 import de.bund.bsi.tr_esor.xaip.MetaDataObjectType;
 import de.bund.bsi.tr_esor.xaip.MetaDataSectionType;
@@ -79,8 +79,6 @@ public enum MetaDataValidator
      * 
      * @param metaData
      *            the metaData to validate
-     * @param dataSection
-     *            the dataObjectsSection for the dataChecksum verification
      * @return the validation result
      */
     public MetaDataObjectValidityType validateMetaDataObject( MetaDataObjectType metaData )
@@ -98,19 +96,33 @@ public enum MetaDataValidator
         return result;
     }
     
-    public RelatedObjects pathRelatedObjects( List<Object> relatedObjects )
+    /**
+     * Returning a {@link RelatedObjectsType} which contain the xpath to the related objects
+     * 
+     * @param relatedObjects
+     *            the related objects
+     * @return the {@link RelatedObjectsType} which contains the xpaths
+     */
+    public RelatedObjectsType pathRelatedObjects( List<Object> relatedObjects )
     {
         List<String> xPaths = relatedObjects.stream()
                 .map( AIPUtil::idFromObject )
                 .map( AIPUtil::xPathForObjectId )
                 .collect( toList() );
         
-        RelatedObjects objects = new RelatedObjects();
+        RelatedObjectsType objects = new RelatedObjectsType();
         objects.getXPath().addAll( xPaths );
         
         return objects;
     }
     
+    /**
+     * Validating the checksum of the metaData if any is present
+     * 
+     * @param metaData
+     *            the metaData
+     * @return the verificationResult
+     */
     public Optional<VerificationResultType> validateChecksum( MetaDataObjectType metaData )
     {
         Optional<byte[]> data = AIPUtil.extractData( AIPUtil.binaryDataSupplier( metaData ), metaData::getXmlMetaData );

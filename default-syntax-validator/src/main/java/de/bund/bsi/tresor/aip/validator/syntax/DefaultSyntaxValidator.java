@@ -42,7 +42,7 @@ import javax.xml.validation.SchemaFactory;
 import org.apache.commons.io.IOUtils;
 import org.etsi.uri._02918.v1_2.DataObjectReferenceType;
 
-import de.bund.bsi.tr_esor.vr.CredentialValidityType.RelatedObjects;
+import de.bund.bsi.tr_esor.vr.RelatedObjectsType;
 import de.bund.bsi.tr_esor.vr.XAIPValidityType;
 import de.bund.bsi.tr_esor.xaip.DataObjectsSectionType;
 import de.bund.bsi.tr_esor.xaip.XAIPType;
@@ -125,7 +125,7 @@ public class DefaultSyntaxValidator implements SyntaxValidator
             
             dataValidator.validateDataSection( optXaip.map( XAIPType::getDataObjectsSection ) ).ifPresent( report::setDataObjectsSection );
             
-            Map<String, RelatedObjects> credential = credentialValidator
+            Map<String, RelatedObjectsType> credential = credentialValidator
                     .validateCredentialsSection( optXaip.map( XAIPType::getCredentialsSection ) );
             
             DefaultSyntaxValidatorContext syntaxContext = new DefaultSyntaxValidatorContext( data, credential );
