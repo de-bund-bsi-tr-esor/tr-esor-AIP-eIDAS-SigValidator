@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsd:schema targetNamespace="http://uri.etsi.org/02918/v1.2.1#"
-	xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns="http://uri.etsi.org/02918/v1.2.1#"
-	xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
-	attributeFormDefault="unqualified">
-	<xsd:import namespace="http://www.w3.org/2000/09/xmldsig#"
-		schemaLocation="xmldsig-core-schema.xsd"/>
+<xsd:schema xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns="http://uri.etsi.org/02918/v1.2.1#" xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://uri.etsi.org/02918/v1.2.1#" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xsd:import namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="xmldsig-core-schema.xsd"/>
 	<xsd:element name="ASiCManifest" type="ASiCManifestType">
 		<xsd:annotation>
 			<xsd:documentation>Schema for ASiCManifest – See ETSI EN 319 162</xsd:documentation>
@@ -27,8 +23,7 @@
 		<xsd:sequence>
 			<xsd:element ref="ds:DigestMethod"/>
 			<xsd:element ref="ds:DigestValue"/>
-			<xsd:element name="DataObjectReferenceExtensions" type="ExtensionsListType"
-				minOccurs="0"/>
+			<xsd:element name="DataObjectReferenceExtensions" type="ExtensionsListType" minOccurs="0"/>
 		</xsd:sequence>
 		<xsd:attribute name="URI" type="xsd:anyURI" use="required"/>
 		<xsd:attribute name="MimeType" type="xsd:string" use="optional"/>

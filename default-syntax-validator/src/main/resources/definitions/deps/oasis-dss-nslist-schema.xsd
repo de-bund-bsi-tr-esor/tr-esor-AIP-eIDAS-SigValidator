@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+     Digital Signature Service Core Protocols, Elements, and Bindings Version 2.0
+     Committee Specification 02
+     11 December 2019
+     Copyright (c) OASIS Open 2019. All Rights Reserved.
+     Source: http://docs.oasis-open.org/dss-x/dss-core/v2.0/cs02/schema/
+     Latest version of narrative specification: http://docs.oasis-open.org/dss-x/dss-core/v2.0/dss-core-v2.0.html
+     TC IPR Statement: https://www.oasis-open.org/committees/dss-x/ipr.php
+-->
+<xs:schema xmlns:nsl="http://docs.oasis-open.org/dss-x/ns/nsList"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           
+           
+           
+           
+           xmlns:dss2="http://docs.oasis-open.org/dss-x/ns/core"
+           xmlns:dsb="http://docs.oasis-open.org/dss-x/ns/base"
+           xmlns:ds-rw="http://docs.oasis-open.org/dss-x/ns/xmldsig/rewritten"
+           xmlns:saml2-rw="http://docs.oasis-open.org/dss-x/ns/saml2/rewritten"
+           targetNamespace="http://docs.oasis-open.org/dss-x/ns/nsList"
+           elementFormDefault="qualified"
+           attributeFormDefault="unqualified">
+
+	  <xs:annotation>
+		    <xs:documentation xml:lang="en">This schema defines common structure used by the Digital Signature Service Core Protocols, Elements, and Bindings Committee Specification version 2.0 and other specifications</xs:documentation>
+	  </xs:annotation>
+	
+	  <xs:import namespace="http://www.w3.org/XML/1998/namespace"
+              schemaLocation="xml.xsd"/>
+
+	  <!-- =================================== -->
+	  <!-- Holder for namespace prefix / URI   -->
+	  <!-- pairs used e.g. in XPath            -->
+	  <!-- expressions.                        -->
+	  <!-- =================================== -->
+	
+	  <xs:complexType name="NsPrefixMappingType">
+		    <xs:sequence>
+			      <xs:element name="NamespaceURI" type="xs:anyURI"/>
+			      <xs:element name="NamespacePrefix" type="xs:string"/>
+		    </xs:sequence>
+	  </xs:complexType>
+
+</xs:schema>

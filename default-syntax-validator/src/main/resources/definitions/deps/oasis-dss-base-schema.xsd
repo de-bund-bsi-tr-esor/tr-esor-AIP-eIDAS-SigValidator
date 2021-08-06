@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+     Digital Signature Service Core Protocols, Elements, and Bindings Version 2.0
+     Committee Specification 02
+     11 December 2019
+     Copyright (c) OASIS Open 2019. All Rights Reserved.
+     Source: http://docs.oasis-open.org/dss-x/dss-core/v2.0/cs02/schema/
+     Latest version of narrative specification: http://docs.oasis-open.org/dss-x/dss-core/v2.0/dss-core-v2.0.html
+     TC IPR Statement: https://www.oasis-open.org/committees/dss-x/ipr.php
+-->
+<xs:schema xmlns:dsb="http://docs.oasis-open.org/dss-x/ns/base" xmlns:nsl="http://docs.oasis-open.org/dss-x/ns/nsList" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ds-rw="http://docs.oasis-open.org/dss-x/ns/xmldsig/rewritten" xmlns:xml="http://www.w3.org/XML/1998/namespace" targetNamespace="http://docs.oasis-open.org/dss-x/ns/base" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:annotation>
+		<xs:documentation xml:lang="en">This schema defines general structure used by the Digital Signature Service Core Protocols, Elements, and Bindings Committee Specification version 2.0 and other specifications</xs:documentation>
+	</xs:annotation>
+	<xs:import namespace="http://www.w3.org/XML/1998/namespace" schemaLocation="xml.xsd"/>
+	<xs:import namespace="http://docs.oasis-open.org/dss-x/ns/nsList" schemaLocation="oasis-dss-nslist-schema.xsd"/>
+	<xs:import namespace="http://docs.oasis-open.org/dss-x/ns/xmldsig/rewritten" schemaLocation="oasis-dss-rw-xmldsig-core-schema.xsd"/>
+	<!-- =================================== -->
+	<!-- Versatile structures separated from -->
+	<!-- the DSS-X core schema to be easily  -->
+	<!-- reused by other schemes.            -->
+	<!-- =================================== -->
+	<xs:complexType name="InternationalStringType">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute ref="xml:lang" use="required"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="DigestInfoType">
+		<xs:sequence>
+			<xs:element name="DigestMethod" type="xs:string"/>
+			<xs:element name="DigestValue" type="xs:base64Binary"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="AttachmentReferenceType">
+		<xs:sequence>
+			<xs:element name="DigestInfo" type="dsb:DigestInfoType" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="AttRefURI" type="xs:anyURI" use="required"/>
+	</xs:complexType>
+	<!-- =================================== -->
+	<!-- Implement the xs:any functionality  -->
+	<!-- using a base64 blob.                -->
+	<!-- =================================== -->
+	<xs:complexType name="AnyType">
+		<xs:complexContent>
+			<xs:extension base="dsb:Base64DataType"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="Base64Data" type="dsb:Base64DataType"/>
+	<xs:complexType name="Base64DataType">
+		<xs:sequence>
+			<xs:choice minOccurs="0">
+				<xs:element name="Value" type="xs:base64Binary"/>
+				<xs:element name="AttRef" type="dsb:AttachmentReferenceType"/>
+			</xs:choice>
+			<xs:element name="Transforms" type="ds-rw:TransformsType" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="MimeType" type="xs:string" use="optional"/>
+		<xs:attribute name="ID" type="xs:ID" use="optional"/>
+		<xs:attribute name="IDREF" type="xs:IDREF" use="optional"/>
+	</xs:complexType>
+	<xs:complexType name="SignaturePtrType">
+		<xs:sequence>
+			<xs:element name="NsPrefixMapping" type="nsl:NsPrefixMappingType" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="WhichData" type="xs:IDREF" use="required"/>
+		<xs:attribute name="XPath" type="xs:string" use="optional"/>
+		<xs:attribute name="XPathQualifier" type="xs:anyURI" use="optional" default="http://www.w3.org/TR/2010/REC-xpath20-20101214/"/>
+	</xs:complexType>
+	<xs:element name="Result" type="dsb:ResultType"/>
+	<xs:complexType name="ResultType">
+		<xs:sequence>
+			<xs:element name="ResultMajor">
+				<xs:simpleType>
+					<xs:restriction base="xs:anyURI">
+						<xs:enumeration value="urn:oasis:names:tc:dss:1.0:resultmajor:Success"/>
+						<xs:enumeration value="urn:oasis:names:tc:dss:1.0:resultmajor:RequesterError"/>
+						<xs:enumeration value="urn:oasis:names:tc:dss:1.0:resultmajor:ResponderError"/>
+						<xs:enumeration value="urn:oasis:names:tc:dss:1.0:resultmajor:InsufficientInformation"/>
+						<xs:enumeration value="urn:oasis:names:tc:dss:1.0:profiles:asynchronousprocessing:resultmajor:Pending"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="ResultMinor" type="xs:anyURI" minOccurs="0"/>
+			<xs:element name="ResultMessage" type="dsb:InternationalStringType" minOccurs="0"/>
+			<xs:element name="ProblemReference" type="xs:string" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="OptionalInputs" type="dsb:OptionalInputsType"/>
+	<xs:complexType name="OptionalInputsType">
+		<xs:sequence>
+			<xs:element name="ServicePolicy" type="xs:anyURI" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="Language" type="xs:language" minOccurs="0"/>
+			<xs:element name="Other" type="dsb:AnyType" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="OptionalOutputs" type="dsb:OptionalOutputsType"/>
+	<xs:complexType name="OptionalOutputsType">
+		<xs:sequence>
+			<xs:element name="AppliedPolicy" type="xs:anyURI" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="Other" type="dsb:AnyType" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="RequestBaseType" abstract="true">
+		<xs:sequence>
+			<xs:element name="Profile" type="xs:anyURI" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="RequestID" type="xs:string" use="optional"/>
+	</xs:complexType>
+	<xs:complexType name="ResponseBaseType" abstract="true">
+		<xs:sequence>
+			<xs:element name="Result" type="dsb:ResultType"/>
+			<xs:element name="AppliedProfile" type="xs:anyURI" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="RequestID" type="xs:string" use="optional"/>
+		<xs:attribute name="ResponseID" type="xs:string" use="optional"/>
+	</xs:complexType>
+	<xs:element name="ServicePolicy" type="xs:anyURI"/>
+	<xs:element name="ServiceDescription" type="xs:anyURI"/>
+</xs:schema>
