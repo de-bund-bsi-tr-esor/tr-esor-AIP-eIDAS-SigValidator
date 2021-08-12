@@ -85,7 +85,7 @@ import oasis.names.tc.dss_x._1_0.profiles.verificationreport.schema_.Verificatio
 public class DefaultProtocolAssembler implements ProtocolAssembler
 {
     private final String vendor  = "BSI";
-    private final String version = "1.0.0";
+    private final String version = "1.1.0";
     
     @Override
     public VerificationReportType assembleProtocols( ModuleContext context, XAIPValidityType xaipReport,

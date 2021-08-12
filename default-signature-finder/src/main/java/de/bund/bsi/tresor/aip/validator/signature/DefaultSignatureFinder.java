@@ -22,6 +22,7 @@
 package de.bund.bsi.tresor.aip.validator.signature;
 
 import static java.util.Collections.emptyList;
+import static java.util.Collections.emptySet;
 import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Collectors.toSet;
 
@@ -57,7 +58,7 @@ import lombok.Getter;
 public class DefaultSignatureFinder implements SignatureFinder
 {
     private final String vendor  = "BSI";
-    private final String version = "1.0.0";
+    private final String version = "1.1.0";
     
     @Override
     public Map<String, Set<String>> findSignatures( ModuleContext context, XAIPType xaip )
@@ -98,6 +99,25 @@ public class DefaultSignatureFinder implements SignatureFinder
         Map<String, Set<String>> mappedIds = new HashMap<>();
         mappedIds.putAll( mapCredIdsByDataId( mergeResults( dataSectionResults, dataObjectResults ) ) );
         mappedIds.putAll( mapCredIdsByDataId( mergeResults( metadataSectionResults, metadataObjectResults ) ) );
+        
+        // TODO is this correct?
+        // following code is required since FinderResult cant be <?>
+        // i don't think a credential can be related to a specific id and null at the same time
+        // being mapped to multiple specific id's (multiple relatedObjects) OR null (no relation) looks more likely
+        Set<String> nullMappedCredIds = Optional.ofNullable( mappedIds.remove( null ) ).orElse( emptySet() );
+        Iterator<String> it = nullMappedCredIds.iterator();
+        while ( it.hasNext() )
+        {
+            if ( mappedIds.entrySet().stream().anyMatch( e -> e.getValue().contains( it.next() ) ) )
+            {
+                it.remove();
+            }
+        }
+        
+        if ( !nullMappedCredIds.isEmpty() )
+        {
+            mappedIds.put( null, nullMappedCredIds );
+        }
         
         return mappedIds;
     }
