@@ -39,7 +39,7 @@ import javax.xml.ws.soap.MTOM;
 
 import org.apache.cxf.annotations.SchemaValidation;
 
-import de.bund.bsi.tr_esor.api._1.S4;
+import de.bund.bsi.ecard.api._1.S4;
 import de.bund.bsi.tr_esor.xaip.XAIPType;
 import de.bund.bsi.tresor.aip.validator.api.control.AIPUtil;
 import de.bund.bsi.tresor.aip.validator.api.entity.AIPValidatorException;
@@ -63,10 +63,10 @@ import oasis.names.tc.dss_x._1_0.profiles.verificationreport.schema_.Verificatio
 @MTOM
 @SchemaValidation
 @AllArgsConstructor
-@WebService( endpointInterface = "de.bund.bsi.tr_esor.api._1.S4",
+@WebService( endpointInterface = "de.bund.bsi.ecard.api._1.S4",
         serviceName = "S4",
         portName = "S4",
-        targetNamespace = "http://www.bsi.bund.de/tr-esor/api/1.3",
+        targetNamespace = "http://www.bsi.bund.de/ecard/api/1.1",
         wsdlLocation = "/wsdl/tr-esor-S-4-v1.3.wsdl" )
 public class AIPValidator implements S4
 {

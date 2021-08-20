@@ -257,7 +257,7 @@ public class AIPUtil
                 .map( AnyType::getAny )
                 .map( List::isEmpty )
                 .orElse( true );
-        
+        // TODO canonicalize
         Optional<byte[]> xmlData = Optional.empty();
         if ( !isEmpty )
         {
