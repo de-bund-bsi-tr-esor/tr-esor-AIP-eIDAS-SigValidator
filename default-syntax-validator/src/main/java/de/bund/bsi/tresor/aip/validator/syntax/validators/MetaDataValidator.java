@@ -125,10 +125,15 @@ public enum MetaDataValidator
      */
     public Optional<VerificationResultType> validateChecksum( MetaDataObjectType metaData )
     {
-        Optional<byte[]> data = AIPUtil.extractData( AIPUtil.binaryDataSupplier( metaData ), metaData::getXmlMetaData );
+        if ( metaData.getCheckSum() != null )
+        {
+            Optional<byte[]> data = AIPUtil.extractData( AIPUtil.binaryDataSupplier( metaData ), metaData::getXmlMetaData );
+            
+            return data.map( ByteArrayInputStream::new )
+                    .map( in -> VerificationUtil.verifyChecksum( in, metaData.getCheckSum() ) );
+        }
         
-        return data.map( ByteArrayInputStream::new )
-                .map( in -> VerificationUtil.verifyChecksum( in, metaData.getCheckSum() ) );
+        return Optional.empty();
     }
     
     /**
