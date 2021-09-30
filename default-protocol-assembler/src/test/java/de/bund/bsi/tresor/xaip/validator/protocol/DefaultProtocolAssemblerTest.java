@@ -49,7 +49,7 @@ class DefaultProtocolAssemblerTest
     @Test
     void testGetVersion()
     {
-        assertEquals( "1.0.0", new DefaultProtocolAssembler().getVersion() );
+        assertEquals( "1.1.0", new DefaultProtocolAssembler().getVersion() );
     }
     
 }
