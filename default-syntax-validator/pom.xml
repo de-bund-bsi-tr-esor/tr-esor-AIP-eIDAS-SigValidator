@@ -27,6 +27,21 @@
             <artifactId>bcmail-jdk15on</artifactId>
             <version>1.64</version>
         </dependency>
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+            <artifactId>dss-asic-cades</artifactId>
+            <version>5.8</version>
+        </dependency>
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+            <artifactId>dss-asic-xades</artifactId>
+            <version>5.8</version>
+        </dependency>
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+            <artifactId>dss-utils-apache-commons</artifactId>
+            <version>5.8</version>
+        </dependency>
         <!-- test dependencies -->
         <dependency>
             <groupId>javax.xml.bind</groupId>

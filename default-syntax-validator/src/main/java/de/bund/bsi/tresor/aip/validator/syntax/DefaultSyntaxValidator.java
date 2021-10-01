@@ -56,6 +56,7 @@ import de.bund.bsi.tresor.aip.validator.api.entity.DefaultResult.ResultLanguage;
 import de.bund.bsi.tresor.aip.validator.api.entity.ModuleContext;
 import de.bund.bsi.tresor.aip.validator.api.entity.SyntaxValidationResult;
 import de.bund.bsi.tresor.aip.validator.syntax.context.DefaultSyntaxValidatorContext;
+import de.bund.bsi.tresor.aip.validator.syntax.validators.ASiCAIPValidator;
 import de.bund.bsi.tresor.aip.validator.syntax.validators.CredentialSectionValidator;
 import de.bund.bsi.tresor.aip.validator.syntax.validators.DataObjectSectionValidator;
 import de.bund.bsi.tresor.aip.validator.syntax.validators.MetaDataValidator;
@@ -77,6 +78,7 @@ public class DefaultSyntaxValidator implements SyntaxValidator
     private final String               version             = "1.1.0";
     private String                     schemaDir;
     
+    private ASiCAIPValidator           asicAipValidator    = ASiCAIPValidator.INSTANCE;
     private MetaDataValidator          metaValidator       = MetaDataValidator.INSTANCE;
     private PackageHeaderValidator     packageValidator    = PackageHeaderValidator.INSTANCE;
     private DataObjectSectionValidator dataValidator       = DataObjectSectionValidator.INSTANCE;
@@ -103,6 +105,11 @@ public class DefaultSyntaxValidator implements SyntaxValidator
         {
             IOUtils.copy( xaipCandidate, baos );
             byte[] data = baos.toByteArray();
+            
+            if ( asicAipValidator.isASiC( data ) )
+            {
+                data = asicAipValidator.findAIPCandidate( data );
+            }
             
             JAXBContext jaxbContext = JAXBContext.newInstance( XAIPType.class, DataObjectReferenceType.class );
             Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
