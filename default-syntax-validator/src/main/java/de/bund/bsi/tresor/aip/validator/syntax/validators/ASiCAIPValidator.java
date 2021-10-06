@@ -66,14 +66,23 @@ public enum ASiCAIPValidator
         return false;
     }
     
-    public byte[] findAIPCandidate( byte[] data ) throws IOException
+    /**
+     * Checking if the zipped archive contains an aip candidate
+     * 
+     * @param zippedData
+     *            the zipped data
+     * @return the aip candidate
+     * @throws IOException
+     *             when an exception occurs
+     */
+    public byte[] findAIPCandidate( byte[] zippedData ) throws IOException
     {
         Optional<File> unzipped = Optional.empty();
         List<File> validAIPFiles = new ArrayList<>();
         
         try
         {
-            unzipped = Optional.ofNullable( unzip( data ) );
+            unzipped = Optional.ofNullable( unzip( zippedData ) );
             
             // do ifPresent?
             if ( unzipped.isPresent() )
@@ -100,7 +109,7 @@ public enum ASiCAIPValidator
             }
             else if ( validAIPFiles.size() == 1 )
             {
-                data = FileUtils.readFileToByteArray( validAIPFiles.get( 0 ) );
+                zippedData = FileUtils.readFileToByteArray( validAIPFiles.get( 0 ) );
             }
         }
         finally
@@ -108,9 +117,16 @@ public enum ASiCAIPValidator
             unzipped.ifPresent( FileUtils::deleteQuietly );
         }
         
-        return data;
+        return zippedData;
     }
     
+    /**
+     * Checking if the inputStream contains an aip
+     * 
+     * @param in
+     *            the inputStream
+     * @return if the inputStream contains an aip
+     */
     boolean isAIP( InputStream in )
     {
         try
@@ -124,6 +140,15 @@ public enum ASiCAIPValidator
         }
     }
     
+    /**
+     * Unzipping the file
+     * 
+     * @param zip
+     *            the zipped data
+     * @return the unzipped file
+     * @throws IOException
+     *             when an error occurs
+     */
     File unzip( byte[] zip ) throws IOException
     {
         File unzipped = Files.createTempDirectory( "xVal" ).toFile();
