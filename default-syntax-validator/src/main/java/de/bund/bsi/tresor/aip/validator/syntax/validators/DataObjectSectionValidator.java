@@ -188,7 +188,6 @@ public enum DataObjectSectionValidator
         {
             String digestAlg = optDigestAlgorithm.get();
             Path filePath = optFilePath.get();
-            
             if ( !Files.isReadable( filePath ) )
             {
                 builder.minor( Minor.NO_PERMISSION ).message( "reading a file requires read permission", ResultLanguage.ENGLISH );

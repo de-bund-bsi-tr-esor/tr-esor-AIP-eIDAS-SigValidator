@@ -265,7 +265,7 @@ public class AIPUtil
             {
                 DOMResult result = new DOMResult();
                 JAXBElement<AnyType> xml = new JAXBElement<AnyType>( XML_DATA_QNAME, AnyType.class, anyType );
-                JAXBContext context = JAXBContext.newInstance( AnyType.class );
+                JAXBContext context = JAXBContext.newInstance( AnyType.class, DataObjectReferenceType.class );
                 context.createMarshaller().marshal( xml, result );
                 
                 Node xmlContent = result.getNode().getFirstChild();
