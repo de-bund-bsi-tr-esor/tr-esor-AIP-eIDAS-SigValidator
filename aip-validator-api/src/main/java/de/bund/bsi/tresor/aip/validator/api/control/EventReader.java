@@ -73,9 +73,14 @@ public class EventReader
         StartElement startElement = event.asStartElement();
         QName qName = startElement.getName();
         
-        if ( isDataObjectElement( qName ) || isMetaDataObjectElement( qName ) )
+        if ( isDataObjectElement( qName ) )
         {
             currentOid = startElement.getAttributeByName( new QName( dataObjectIdAttribute ) ).getValue();
+        }
+        
+        if ( isMetaDataObjectElement( qName ) )
+        {
+            currentOid = startElement.getAttributeByName( new QName( metaDataObjectIdAttribute ) ).getValue();
         }
         
         if ( currentOid != null && isXmlDataElement( qName ) )
