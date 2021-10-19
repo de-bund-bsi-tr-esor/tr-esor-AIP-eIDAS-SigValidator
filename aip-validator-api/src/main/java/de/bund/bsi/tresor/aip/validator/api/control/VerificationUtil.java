@@ -21,12 +21,17 @@
  */
 package de.bund.bsi.tresor.aip.validator.api.control;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import org.apache.commons.io.IOUtils;
+import org.apache.xml.security.c14n.CanonicalizationException;
+import org.apache.xml.security.c14n.InvalidCanonicalizerException;
+import org.apache.xml.security.parser.XMLParserException;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.util.io.Streams;
 
@@ -74,12 +79,15 @@ public class VerificationUtil
     public static VerificationResultType verifyChecksum( InputStream content, CheckSumType checksum )
     {
         Builder result = DigestAlgorithm.fromXmlSyntax( checksum.getCheckSumAlgorithm() )
+                .map( DigestAlgorithm::getJavaName )
                 .map( digestAlg -> {
                     Builder builder = DefaultResult.invalid();
                     try
                     {
-                        MessageDigest md = MessageDigest.getInstance( digestAlg.getJavaName(), new BouncyCastleProvider() );
-                        try ( DigestInputStream digestIn = new DigestInputStream( content, md ) )
+                        byte[] canonXml = Canonicalization.canonicalize( IOUtils.toByteArray( content ) );
+                        MessageDigest md = MessageDigest.getInstance( digestAlg, new BouncyCastleProvider() );
+                        try ( ByteArrayInputStream in = new ByteArrayInputStream( canonXml );
+                                DigestInputStream digestIn = new DigestInputStream( in, md ) )
                         {
                             Streams.drain( digestIn );
                             byte[] digest = digestIn.getMessageDigest().digest();
@@ -94,6 +102,10 @@ public class VerificationUtil
                                 builder.minor( Minor.CHECKSUM_INVALID );
                             }
                         }
+                    }
+                    catch ( XMLParserException | CanonicalizationException | InvalidCanonicalizerException e )
+                    {
+                        builder.minor( Minor.UNKNOWN_C14N_METHOD );
                     }
                     catch ( IOException e )
                     {

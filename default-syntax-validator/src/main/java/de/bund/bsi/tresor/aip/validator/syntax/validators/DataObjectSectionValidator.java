@@ -24,6 +24,8 @@ package de.bund.bsi.tresor.aip.validator.syntax.validators;
 import static java.util.stream.Collectors.toList;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -32,6 +34,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.etsi.uri._02918.v1_2.DataObjectReferenceType;
@@ -71,11 +74,12 @@ public enum DataObjectSectionValidator
      *            the dataObjectsSection to validate
      * @return the dataObjectsSection validation result
      */
-    public Optional<DataObjectsSectionValidityType> validateDataSection( Optional<DataObjectsSectionType> dataObjectsSection )
+    public Optional<DataObjectsSectionValidityType> validateDataSection(
+            Optional<DataObjectsSectionType> dataObjectsSection, Map<String, File> xmlData )
     {
         List<DataObjectValidityType> data = dataObjectsSection
                 .map( section -> section.getDataObject().stream()
-                        .map( obj -> validateDataObject( obj ) )
+                        .map( obj -> validateDataObject( obj, xmlData ) )
                         .collect( toList() ) )
                 .orElse( new ArrayList<>() );
         
@@ -99,18 +103,23 @@ public enum DataObjectSectionValidator
      *            the dataObject to validate
      * @return the dataObject validation result
      */
-    public DataObjectValidityType validateDataObject( DataObjectType dataObject )
+    public DataObjectValidityType validateDataObject( DataObjectType dataObject, Map<String, File> xmlData )
     {
         DataObjectValidityType result = new DataObjectValidityType();
-        result.setDataObjectID( dataObject.getDataObjectID() );
+        String oid = dataObject.getDataObjectID();
         
+        result.setDataObjectID( oid );
+        
+        Optional<File> optXmlFile = Optional.ofNullable( xmlData.get( oid ) );
         Optional.ofNullable( dataObject.getCheckSum() )
                 .map( checkSum -> {
-                    try ( InputStream data = AIPUtil.extractData( AIPUtil.binaryDataSupplier( dataObject ), dataObject::getXmlData )
-                            .map( ByteArrayInputStream::new )
-                            .orElse( new ByteArrayInputStream( new byte[0] ) ) )
+                    // aipUtil is using domParser can not be used for checksum verification for xmlData
+                    try ( InputStream stream = optXmlFile.isPresent() ? new FileInputStream( optXmlFile.get() )
+                            : AIPUtil.extractData( AIPUtil.binaryDataSupplier( dataObject ), dataObject::getXmlData )
+                                    .map( ByteArrayInputStream::new )
+                                    .orElse( new ByteArrayInputStream( new byte[0] ) ) )
                     {
-                        return VerificationUtil.verifyChecksum( data, checkSum );
+                        return VerificationUtil.verifyChecksum( stream, checkSum );
                     }
                     catch ( IllegalStateException | IOException e )
                     {

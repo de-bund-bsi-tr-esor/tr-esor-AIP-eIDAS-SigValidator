@@ -26,6 +26,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -34,11 +35,14 @@ import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.stream.XMLEventReader;
+import javax.xml.stream.XMLInputFactory;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.etsi.uri._02918.v1_2.DataObjectReferenceType;
 
@@ -47,6 +51,8 @@ import de.bund.bsi.tr_esor.vr.XAIPValidityType;
 import de.bund.bsi.tr_esor.xaip.DataObjectsSectionType;
 import de.bund.bsi.tr_esor.xaip.XAIPType;
 import de.bund.bsi.tresor.aip.validator.api.boundary.SyntaxValidator;
+import de.bund.bsi.tresor.aip.validator.api.control.AIPUtil;
+import de.bund.bsi.tresor.aip.validator.api.control.EventReader;
 import de.bund.bsi.tresor.aip.validator.api.control.ModuleLogger;
 import de.bund.bsi.tresor.aip.validator.api.control.VerificationUtil;
 import de.bund.bsi.tresor.aip.validator.api.entity.AIPValidatorException;
@@ -101,6 +107,7 @@ public class DefaultSyntaxValidator implements SyntaxValidator
                 .message( "xaip is schema conform", ResultLanguage.ENGLISH )
                 .build();
         
+        Map<String, File> xmlDataByOid = new HashMap<>();
         try ( ByteArrayOutputStream baos = new ByteArrayOutputStream() )
         {
             IOUtils.copy( xaipCandidate, baos );
@@ -110,6 +117,8 @@ public class DefaultSyntaxValidator implements SyntaxValidator
             {
                 data = asicAipValidator.findAIPCandidate( data );
             }
+            
+            xmlDataByOid = xmlData( data );
             
             JAXBContext jaxbContext = JAXBContext.newInstance( XAIPType.class, DataObjectReferenceType.class );
             Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
@@ -127,10 +136,11 @@ public class DefaultSyntaxValidator implements SyntaxValidator
             packageValidator.validatePackageHeader( optXaip.map( XAIPType::getPackageHeader ) )
                     .ifPresent( report::setPackageHeader );
             
-            metaValidator.validateMetaDataSection( optXaip.map( XAIPType::getMetaDataSection ), dataSection )
+            metaValidator.validateMetaDataSection( optXaip.map( XAIPType::getMetaDataSection ), dataSection, xmlDataByOid )
                     .ifPresent( report::setMetaDataSection );
             
-            dataValidator.validateDataSection( optXaip.map( XAIPType::getDataObjectsSection ) ).ifPresent( report::setDataObjectsSection );
+            dataValidator.validateDataSection( optXaip.map( XAIPType::getDataObjectsSection ), xmlDataByOid )
+                    .ifPresent( report::setDataObjectsSection );
             
             Map<String, RelatedObjectsType> credential = credentialValidator
                     .validateCredentialsSection( optXaip.map( XAIPType::getCredentialsSection ) );
@@ -145,6 +155,10 @@ public class DefaultSyntaxValidator implements SyntaxValidator
                     .minor( Minor.INVALID_FORMAT )
                     .message( "xaip is not schema conform: " + e.getMessage(), ResultLanguage.ENGLISH )
                     .build();
+        }
+        finally
+        {
+            xmlDataByOid.values().forEach( FileUtils::deleteQuietly );
         }
         
         report.setReportVersion( "1.3" );
@@ -180,5 +194,25 @@ public class DefaultSyntaxValidator implements SyntaxValidator
         }
         
         return schemas;
+    }
+    
+    /**
+     * Creating tempFiles for embedded xmlData which are being used for checksum verification. This in combination of c14n is required for a
+     * correct checksum verification since the domParser (used by {@link AIPUtil}) will not contain all the required bytes.
+     * 
+     * @param data
+     *            the xaipData
+     * @return the xaipData content by their objectId
+     * @throws Exception
+     */
+    Map<String, File> xmlData( byte[] data ) throws Exception
+    {
+        XMLInputFactory xmlInputFactory = XMLInputFactory.newInstance();
+        XMLEventReader reader = xmlInputFactory.createXMLEventReader( new ByteArrayInputStream( data ) );
+        
+        EventReader eventReader = new EventReader();
+        eventReader.read( reader );
+        
+        return eventReader.getFiles();
     }
 }

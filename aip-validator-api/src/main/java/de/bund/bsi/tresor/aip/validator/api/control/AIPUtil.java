@@ -245,7 +245,8 @@ public class AIPUtil
     }
     
     /**
-     * Extracting the complete xml data provided by the {@link AnyType} which can contain any data or none
+     * Extracting the complete xml data provided by the {@link AnyType} which can contain any data or none. The data is not canonicalized
+     * and will not be returned with the same bytes which are inside the actual xmlData element since it will go through a dom parser
      * 
      * @param anyType
      *            anyType from the dataObjectType containing any xmlData
@@ -257,7 +258,7 @@ public class AIPUtil
                 .map( AnyType::getAny )
                 .map( List::isEmpty )
                 .orElse( true );
-        // TODO canonicalize
+        
         Optional<byte[]> xmlData = Optional.empty();
         if ( !isEmpty )
         {
@@ -268,7 +269,9 @@ public class AIPUtil
                 JAXBContext context = JAXBContext.newInstance( AnyType.class, DataObjectReferenceType.class );
                 context.createMarshaller().marshal( xml, result );
                 
-                Node xmlContent = result.getNode().getFirstChild();
+                Node xmlContent = result.getNode()
+                        .getFirstChild() // removes <anyType>
+                        .getFirstChild();// removes <xmlData>
                 
                 TransformerFactory transformerFactory = TransformerFactory.newInstance();
                 Transformer transformer = transformerFactory.newTransformer();

@@ -24,8 +24,13 @@ package de.bund.bsi.tresor.aip.validator.syntax.validators;
 import static java.util.stream.Collectors.toList;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import de.bund.bsi.tr_esor.vr.MetaDataObjectValidityType;
@@ -35,8 +40,10 @@ import de.bund.bsi.tr_esor.xaip.DataObjectsSectionType;
 import de.bund.bsi.tr_esor.xaip.MetaDataObjectType;
 import de.bund.bsi.tr_esor.xaip.MetaDataSectionType;
 import de.bund.bsi.tresor.aip.validator.api.control.AIPUtil;
+import de.bund.bsi.tresor.aip.validator.api.control.ModuleLogger;
 import de.bund.bsi.tresor.aip.validator.api.control.VerificationUtil;
 import de.bund.bsi.tresor.aip.validator.api.entity.DefaultResult;
+import de.bund.bsi.tresor.aip.validator.api.entity.DefaultResult.Minor;
 import de.bund.bsi.tresor.aip.validator.api.entity.DefaultResult.ResultLanguage;
 import de.bund.bsi.tresor.aip.validator.api.entity.aip.Category;
 import de.bund.bsi.tresor.aip.validator.api.entity.aip.Classification;
@@ -61,10 +68,10 @@ public enum MetaDataValidator
      * @return the metaData section validation result
      */
     public Optional<MetaDataSectionValidityType> validateMetaDataSection( Optional<MetaDataSectionType> metaDataSection,
-            DataObjectsSectionType dataSection )
+            DataObjectsSectionType dataSection, Map<String, File> xmlDataByOid )
     {
         return metaDataSection.map( section -> section.getMetaDataObject().stream()
-                .map( meta -> validateMetaDataObject( meta ) )
+                .map( meta -> validateMetaDataObject( meta, xmlDataByOid ) )
                 .collect( toList() ) )
                 .map( meta -> {
                     MetaDataSectionValidityType result = new MetaDataSectionValidityType();
@@ -81,12 +88,12 @@ public enum MetaDataValidator
      *            the metaData to validate
      * @return the validation result
      */
-    public MetaDataObjectValidityType validateMetaDataObject( MetaDataObjectType metaData )
+    public MetaDataObjectValidityType validateMetaDataObject( MetaDataObjectType metaData, Map<String, File> xmlDataByOid )
     {
         MetaDataObjectValidityType result = new MetaDataObjectValidityType();
         result.setMetaDataID( metaData.getMetaDataID() );
         
-        validateChecksum( metaData ).ifPresent( result::setCheckSum );
+        validateChecksum( metaData, xmlDataByOid ).ifPresent( result::setCheckSum );
         validateCategory( metaData.getCategory() ).ifPresent( result::setCategory );
         validateClassification( metaData.getCategory(), metaData.getClassification() ).ifPresent( result::setClassification );
         
@@ -123,17 +130,24 @@ public enum MetaDataValidator
      *            the metaData
      * @return the verificationResult
      */
-    public Optional<VerificationResultType> validateChecksum( MetaDataObjectType metaData )
+    public Optional<VerificationResultType> validateChecksum( MetaDataObjectType metaData, Map<String, File> xmlDataByOid )
     {
-        if ( metaData.getCheckSum() != null )
-        {
-            Optional<byte[]> data = AIPUtil.extractData( AIPUtil.binaryDataSupplier( metaData ), metaData::getXmlMetaData );
-            
-            return data.map( ByteArrayInputStream::new )
-                    .map( in -> VerificationUtil.verifyChecksum( in, metaData.getCheckSum() ) );
-        }
-        
-        return Optional.empty();
+        return Optional.ofNullable( metaData.getCheckSum() )
+                .map( checksum -> {
+                    Optional<File> optXmlFile = Optional.ofNullable( xmlDataByOid.get( metaData.getMetaDataID() ) );
+                    try ( InputStream stream = optXmlFile.isPresent() ? new FileInputStream( optXmlFile.get() )
+                            : AIPUtil.extractData( AIPUtil.binaryDataSupplier( metaData ), metaData::getXmlMetaData )
+                                    .map( ByteArrayInputStream::new )
+                                    .orElse( new ByteArrayInputStream( new byte[0] ) ) )
+                    {
+                        return VerificationUtil.verifyChecksum( stream, metaData.getCheckSum() );
+                    }
+                    catch ( IllegalStateException | IOException e )
+                    {
+                        ModuleLogger.log( "could not retrieve data for checksum validation", e );
+                        return VerificationUtil.verificationResult( DefaultResult.error().minor( Minor.NO_DATA_ACCESS_WARNING ).build() );
+                    }
+                } );
     }
     
     /**

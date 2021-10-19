@@ -134,18 +134,21 @@ public enum PackageHeaderValidator
     {
         return Optional.ofNullable( canonicalizationMethod )
                 .map( CanonicalizationMethodType::getAlgorithm )
-                .map( Canonicalization::isValidCanonicalization )
-                .map( validMethod -> {
+                .map( method -> {
                     Result result = DefaultResult.valid()
                             .message( "using valid algorithm " + canonicalizationMethod.getAlgorithm(), ResultLanguage.ENGLISH )
                             .build();
                     
-                    if ( !validMethod )
+                    if ( !Canonicalization.isValidCanonicalization( method ) )
                     {
                         result = DefaultResult.invalid()
                                 .minor( Minor.UNKNOWN_C14N_METHOD )
                                 .message( "using invalid algorithm " + canonicalizationMethod.getAlgorithm(), ResultLanguage.ENGLISH )
                                 .build();
+                    }
+                    else
+                    {
+                        Canonicalization.setC14nMethod( method );
                     }
                     
                     return VerificationUtil.verificationResult( result );
