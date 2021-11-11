@@ -42,6 +42,12 @@
             <artifactId>dss-utils-apache-commons</artifactId>
             <version>5.8</version>
         </dependency>
+        <!-- create asic -->
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+            <artifactId>dss-token</artifactId>
+            <version>5.8</version>
+        </dependency>
         <!-- test dependencies -->
         <dependency>
             <groupId>javax.xml.bind</groupId>
