@@ -8,12 +8,15 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.security.KeyStore;
 import java.security.KeyStore.PasswordProtection;
 import java.security.KeyStore.PrivateKeyEntry;
 import java.util.ArrayList;
 import java.util.Optional;
 import java.util.Set;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import javax.xml.bind.JAXB;
 import javax.xml.bind.JAXBContext;
@@ -65,27 +68,25 @@ public class ASiCAIPConverter
     
     public static void main( String[] args ) throws Exception
     {
-        XAIPType xaip = JAXB.unmarshal( new File( "/home/wolffs/Dokumente/13.xaip" ), XAIPType.class );
-        
         String pw = "kennwort";
         String entry = "wolffs";
         String ksPath = "/home/wolffs/wolffs-test";
+        File outputFile = new File( "/tmp/resultAsic" );
+        File inputXaip = new File( "/home/wolffs/Dokumente/13.xaip" );
         
         System.out.println( "> starting converstion" );
         
-        File resultFile = new File( "/tmp/resultAsic" );
-        FileUtils.deleteQuietly( resultFile );
+        XAIPType xaip = JAXB.unmarshal( inputXaip, XAIPType.class );
         
         ASiCAIPConverter converter = new ASiCAIPConverter( ksPath, pw, entry );
-        converter.convert( xaip, "v0", resultFile );
+        converter.convert( xaip, "v0", outputFile );
         
         System.out.println( "> finished conversion" );
     }
     
-    // TODO extension
-    
     public void convert( XAIPType xaip, String version, File output ) throws Exception
     {
+        FileUtils.deleteQuietly( output );
         output.mkdir();
         
         String aoid = findAOID( xaip );
@@ -93,14 +94,38 @@ public class ASiCAIPConverter
         createMetaInf( output, xaip, aoid, version );
         createMimeFile( output, "application/vnd.etsi.asic-e+zip" );
         
-        // TODO zip
+        File file = new File( output.getParent(), aoid + ".asic" );
+        zip( output.toPath(), file.toPath() );
+        FileUtils.deleteQuietly( output );
+    }
+    
+    void zip( Path source, Path target ) throws IOException
+    {
+        try ( ZipOutputStream zip = new ZipOutputStream( Files.newOutputStream( target ) ) )
+        {
+            Files.walk( source )
+                    .filter( path -> !Files.isDirectory( path ) )
+                    .forEach( path -> {
+                        ZipEntry zipEntry = new ZipEntry( source.relativize( path ).toString() );
+                        try
+                        {
+                            zip.putNextEntry( zipEntry );
+                            Files.copy( path, zip );
+                            zip.closeEntry();
+                        }
+                        catch ( IOException e )
+                        {
+                            throw new IllegalStateException( "could not create zip", e );
+                        }
+                    } );
+        }
     }
     
     // DONE
     void createContainerFile( File asic, XAIPType xaip, String aoid )
     {
         File xaipFile = new File( asic, aoid + ".xaip" );
-        JAXB.marshal( xaip, xaipFile );
+        JAXB.marshal( new de.bund.bsi.tr_esor.xaip.ObjectFactory().createXAIP( xaip ), xaipFile );
     }
     
     // DONE
@@ -139,7 +164,7 @@ public class ASiCAIPConverter
         File manifestFile = new File( metaInf, "ASiCManifest-" + aoid + ".xml" );
         
         SigReferenceType sigRef = new SigReferenceType();
-        sigRef.setURI( "file://" + sigFile.getName() );
+        sigRef.setURI( "file://META-INF/" + sigFile.getName() );
         sigRef.setMimeType( "application/pkcs7-signature" );
         
         ContainerIDType containerId = new ContainerIDType();
