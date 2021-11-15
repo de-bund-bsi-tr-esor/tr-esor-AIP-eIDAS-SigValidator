@@ -35,8 +35,6 @@ import org.etsi.uri._02918.v1_2.ExtensionsListType;
 import org.etsi.uri._02918.v1_2.ObjectFactory;
 import org.etsi.uri._02918.v1_2.SigReferenceType;
 import org.etsi.uri._19512.v1_1.ContainerIDType;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
 
 import de.bund.bsi.tr_esor.xaip.DataObjectType;
 import de.bund.bsi.tr_esor.xaip.PackageHeaderType;
@@ -57,7 +55,6 @@ import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 /**
  * @author wolffs
  */
-@Disabled
 public class ASiCAIPConverter
 {
     private final byte[] ksBytes;
@@ -71,8 +68,7 @@ public class ASiCAIPConverter
         this.password = Optional.ofNullable( password ).orElse( "" ).toCharArray();
     }
     
-    @Test
-    public void execute() throws Exception
+    public static void main( String[] args ) throws Exception
     {
         // Configuration
         String pw = "kennwort";
@@ -282,7 +278,7 @@ public class ASiCAIPConverter
         {
             DataObjectReferenceType dataRef = new DataObjectReferenceType();
             dataRef.setMimeType( "application/octet-stream" );
-            dataRef.setURI( "xaip://data/" + oid ); // TODO something like this?
+            dataRef.setURI( "aip://dataObjectID/" + oid ); // TODO something like this?
             
             manifest.getDataObjectReference().add( dataRef );
         }
@@ -348,4 +344,6 @@ public class ASiCAIPConverter
                 .map( PackageHeaderType::getAOID )
                 .orElseThrow( () -> new IllegalStateException( "missing aoid which is not specified for this format" ) );
     }
+    
+    // aip:data/
 }
