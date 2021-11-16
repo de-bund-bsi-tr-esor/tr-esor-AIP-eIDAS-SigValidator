@@ -23,25 +23,19 @@ package de.bund.bsi.tresor.aip.validator.syntax.validators;
 
 import static java.util.stream.Collectors.toList;
 
-import java.io.ByteArrayInputStream;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import de.bund.bsi.tr_esor.vr._1.CredentialValidityType.RelatedObjects;
 import de.bund.bsi.tr_esor.vr._1.MetaDataObjectValidityType;
 import de.bund.bsi.tr_esor.vr._1.MetaDataSectionValidityType;
-import de.bund.bsi.tr_esor.xaip._1.CheckSumType;
-import de.bund.bsi.tr_esor.xaip._1.DataObjectType;
 import de.bund.bsi.tr_esor.xaip._1.DataObjectsSectionType;
 import de.bund.bsi.tr_esor.xaip._1.MetaDataObjectType;
 import de.bund.bsi.tr_esor.xaip._1.MetaDataSectionType;
 import de.bund.bsi.tresor.aip.validator.api.control.AIPUtil;
-import de.bund.bsi.tresor.aip.validator.api.control.ModuleLogger;
 import de.bund.bsi.tresor.aip.validator.api.control.VerificationUtil;
 import de.bund.bsi.tresor.aip.validator.api.entity.DefaultResult;
-import de.bund.bsi.tresor.aip.validator.api.entity.DefaultResult.Builder;
-import de.bund.bsi.tresor.aip.validator.api.entity.DefaultResult.Minor;
 import de.bund.bsi.tresor.aip.validator.api.entity.DefaultResult.ResultLanguage;
 import de.bund.bsi.tresor.aip.validator.api.entity.aip.Category;
 import de.bund.bsi.tresor.aip.validator.api.entity.aip.Classification;
@@ -68,22 +62,15 @@ public enum MetaDataValidator
     public Optional<MetaDataSectionValidityType> validateMetaDataSection( Optional<MetaDataSectionType> metaDataSection,
             DataObjectsSectionType dataSection )
     {
-        List<MetaDataObjectValidityType> metaData = metaDataSection.map( section -> section.getMetaDataObject().stream()
-                .map( meta -> validateMetaDataObject( meta, dataSection ) )
+        return metaDataSection.map( section -> section.getMetaDataObject().stream()
+                .map( meta -> validateMetaDataObject( meta ) )
                 .collect( toList() ) )
-                .orElse( new ArrayList<>() );
-        
-        if ( !metaData.isEmpty() )
-        {
-            MetaDataSectionValidityType result = new MetaDataSectionValidityType();
-            metaData.stream().forEach( result.getMetaDataObject()::add );
-            
-            return Optional.of( result );
-        }
-        else
-        {
-            return Optional.empty();
-        }
+                .map( meta -> {
+                    MetaDataSectionValidityType result = new MetaDataSectionValidityType();
+                    meta.stream().forEach( result.getMetaDataObject()::add );
+                    
+                    return result;
+                } );
     }
     
     /**
@@ -91,76 +78,39 @@ public enum MetaDataValidator
      * 
      * @param metaData
      *            the metaData to validate
-     * @param dataSection
-     *            the dataObjectsSection for the dataChecksum verification
      * @return the validation result
      */
-    public MetaDataObjectValidityType validateMetaDataObject( MetaDataObjectType metaData, DataObjectsSectionType dataSection )
+    public MetaDataObjectValidityType validateMetaDataObject( MetaDataObjectType metaData )
     {
-        String oid = metaData.getDataObjectID().stream()
-                .map( AIPUtil::idFromObject )
-                .reduce( "", ( a, b ) -> String.join( " ", a, b ) )
-                .trim();
-        
         MetaDataObjectValidityType result = new MetaDataObjectValidityType();
         result.setMetaDataID( metaData.getMetaDataID() );
-        result.setDataObjectID( oid );
         
         validateCategory( metaData.getCategory() ).ifPresent( result::setCategory );
         validateClassification( metaData.getCategory(), metaData.getClassification() ).ifPresent( result::setClassification );
         
-        // result.setDataObjectCheckSum( value ); // FIXME bug in spec
         result.setContent( VerificationUtil.verificationResult( DefaultResult.valid().build() ) );
         
         return result;
     }
     
     /**
-     * Verifies the provided checksum with the referenced dataObject
+     * Returning a {@link RelatedObjectsType} which contain the xpath to the related objects
      * 
-     * @param checksum
-     *            the checksum
-     * @param dataSection
-     *            the dataObjectsSection
-     * @param dataRefs
-     *            the dataReferences
-     * @return the verificationResult
+     * @param relatedObjects
+     *            the related objects
+     * @return the {@link RelatedObjectsType} which contains the xpaths
      */
-    public Optional<VerificationResultType> validateDataChecksum( CheckSumType checksum, DataObjectsSectionType dataSection,
-            List<Object> dataRefs )
+    public RelatedObjects pathRelatedObjects( List<Object> relatedObjects )
     {
-        List<Object> references = Optional.ofNullable( dataRefs ).orElse( new ArrayList<>() );
-        if ( references.size() > 1 )
-        {
-            ModuleLogger.log( "WARN - dataChecksum verification found multiple dataRef pointer but can only verify single dataRefs" );
-        }
+        List<String> xPaths = relatedObjects.stream()
+                .map( AIPUtil::idFromObject )
+                .map( AIPUtil::xPathForObjectId )
+                .collect( toList() );
         
-        return references.stream()
-                .findFirst()
-                .map( ref -> {
-                    Builder builder = DefaultResult.error();
-                    Optional<DataObjectType> dataObject = Optional.empty();
-                    
-                    if ( ref instanceof String )
-                    {
-                        dataObject = AIPUtil.findDataObjectById( dataSection, (String) ref );
-                    }
-                    else if ( ref instanceof DataObjectType )
-                    {
-                        dataObject = Optional.of( (DataObjectType) ref );
-                    }
-                    else
-                    {
-                        builder.minor( Minor.PARAMETER_ERROR )
-                                .message( "dataRef is not pointing to a valid dataObject", ResultLanguage.ENGLISH );
-                    }
-                    
-                    return dataObject.flatMap( AIPUtil::extractData )
-                            .map( ByteArrayInputStream::new )
-                            .map( content -> VerificationUtil.verifyChecksum( content, checksum ) )
-                            .orElse( VerificationUtil.verificationResult( builder.build() ) );
-                    
-                } );
+        RelatedObjects objects = new RelatedObjects();
+        objects.getXPath().addAll( xPaths );
+        
+        return objects;
     }
     
     /**

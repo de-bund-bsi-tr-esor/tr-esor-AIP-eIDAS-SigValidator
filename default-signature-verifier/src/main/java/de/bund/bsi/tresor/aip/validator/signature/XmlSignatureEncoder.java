@@ -47,7 +47,8 @@ public class XmlSignatureEncoder
     {
         nsContext.put( "ds", "http://www.w3.org/2000/09/xmldsig#" );
         nsContext.put( "dss", "urn:oasis:names:tc:dss:1.0:core:schema" );
-        nsContext.put( "esor", "http://www.bsi.bund.de/tr-esor/xaip/1.2" );
+        nsContext.put( "esor", "http://www.bsi.bund.de/tr-esor/xaip/1." );
+        // TODO change ns
         
         DocumentFactory.getInstance().setXPathNamespaceURIs( nsContext );
     }

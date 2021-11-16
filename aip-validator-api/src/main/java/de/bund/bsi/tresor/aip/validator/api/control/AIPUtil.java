@@ -31,12 +31,15 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
+import javax.activation.DataHandler;
 import javax.xml.bind.DataBindingException;
 import javax.xml.bind.JAXB;
 import javax.xml.bind.JAXBContext;
@@ -51,6 +54,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.etsi.uri._02918.v1_2.DataObjectReferenceType;
 import org.w3c.dom.Node;
 
@@ -76,11 +80,11 @@ public class AIPUtil
     /**
      * Namespace and name of the XAIP element
      */
-    public static final QName XML_DATA_QNAME    = new QName( "http://www.bsi.bund.de/tr-esor/xaip/1.2", "xmlData" );
+    public static final QName XML_DATA_QNAME    = new QName( "http://www.bsi.bund.de/tr-esor/xaip", "xmlData" );
     public static final QName XML_ANY_QNAME     = new QName( "oasis.names.tc.dss._1_0.core.schema.AnyType", "xmlAny" );
     
-    public static final QName XAIP_QNAME        = new QName( "http://www.bsi.bund.de/tr-esor/xaip/1.2", "XAIP" );
-    public static final QName XAIP_REPORT_QNAME = new QName( "http://www.bsi.bund.de/tr-esor/vr/1.2", "XAIPReport" );
+    public static final QName XAIP_QNAME        = new QName( "http://www.bsi.bund.de/tr-esor/xaip", "XAIP" );
+    public static final QName XAIP_REPORT_QNAME = new QName( "http://www.bsi.bund.de/tr-esor/vr", "XAIPReport" );
     
     /**
      * Creating a proper JAXBElement of the xaipType which can be used for marshalling since the generated wsdl types do not contain a
@@ -152,35 +156,31 @@ public class AIPUtil
     /**
      * Resolving the relatedObjects and returning the resolved dataObjects
      * 
-     * @param dataSection
-     *            the dataSection containing the dataObjects
+     * @param <R>
+     *            the dataType of the section
+     * @param <T>
+     *            the section type
+     * @param section
+     *            section containing the data
+     * @param sectionType
+     *            function to extract the dataType from the section, e.g. DataObjectsSection::getDataObject
      * @param relatedObjects
      *            the relatedObjects
-     * @return a set of resolved dataObjects
+     * @return a set of resolved objects from the section
      */
-    public static Set<DataObjectType> resolveRelatedDataObjects( DataObjectsSectionType dataSection, List<Object> relatedObjects )
+    public static <R, T> Set<R> resolveRelatedDataObjects( T section, Function<T, Collection<R>> sectionType,
+            List<Object> relatedObjects )
     {
         Set<String> ids = relatedObjects.stream()
-                .map( ref -> {
-                    if ( ref instanceof DataObjectType )
-                    {
-                        return ((DataObjectType) ref).getDataObjectID();
-                    }
-                    else if ( ref instanceof String )
-                    {
-                        return (String) ref;
-                    }
-                    
-                    return null;
-                } )
-                .filter( Objects::nonNull )
+                .map( AIPUtil::idFromObject )
+                .filter( StringUtils::isNotBlank )
                 .collect( toSet() );
         
-        return Optional.ofNullable( dataSection )
-                .map( DataObjectsSectionType::getDataObject )
+        return Optional.ofNullable( section )
+                .map( sectionType::apply )
                 .orElse( new ArrayList<>() )
                 .stream()
-                .filter( obj -> ids.contains( obj.getDataObjectID() ) )
+                .filter( obj -> ids.contains( AIPUtil.idFromObject( obj ) ) )
                 .collect( toSet() );
     }
     
@@ -228,6 +228,37 @@ public class AIPUtil
     }
     
     /**
+     * Returns an xPath pointing to the element where the id matches.<br/>
+     * <br/>
+     * Detailed explaination:<br/>
+     * Selecting every element which has an attributeName ending with 'ID' matching the provided id value.<br/>
+     * 
+     * @param id
+     *            the *objectId
+     * @return the xPath
+     */
+    public static String xPathForObjectId( String id )
+    {
+        // select every element which has an attributeName ending with 'ID' matching the provided value
+        return "//*[@*[ends-with(local-name(), 'ID')]='" + id + "']";
+    }
+    
+    /**
+     * Extracting content from metaData
+     * 
+     * @param metaData
+     *            the metaData
+     * @return the content if present
+     */
+    public static Optional<byte[]> extractMetaData( MetaDataObjectType metaData )
+    {
+        AnyType any = new AnyType();
+        any.getAny().addAll( metaData.getAny() );
+        
+        return AIPUtil.extractXmlData( any );
+    }
+    
+    /**
      * Extracting the complete xml data provided by the {@link AnyType} which can contain any data or none
      * 
      * @param anyType
@@ -240,7 +271,7 @@ public class AIPUtil
                 .map( AnyType::getAny )
                 .map( List::isEmpty )
                 .orElse( true );
-        
+        // TODO canonicalize
         Optional<byte[]> xmlData = Optional.empty();
         if ( !isEmpty )
         {
@@ -306,14 +337,13 @@ public class AIPUtil
     /**
      * Extracting the content of the binary data if any data is present
      * 
-     * @param data
-     *            the binary data
+     * @param dataHandler
+     *            the binary dataHandler
      * @return the binary data content if present
      */
-    public static Optional<byte[]> extractBinData( BinaryData data )
+    public static Optional<byte[]> extractBinData( DataHandler dataHandler )
     {
-        return Optional.ofNullable( data )
-                .map( BinaryData::getValue )
+        return Optional.ofNullable( dataHandler )
                 .map( dh -> {
                     try
                     {
@@ -341,17 +371,33 @@ public class AIPUtil
      * </ul>
      * </ul>
      * 
-     * @param dataObject
-     *            the dataObject to retrieve the data from
-     * @return data from the dataObject if any is present
+     * @param binarySupplier
+     *            supplier for the binaryData of an objectType
+     * @param xmlSupplier
+     *            supplier for the xmData of an objectType
+     * @return the optional data
      */
-    public static Optional<byte[]> extractData( DataObjectType dataObject )
+    public static Optional<byte[]> extractData( Supplier<DataHandler> binarySupplier, Supplier<AnyType> xmlSupplier )
     {
-        Optional<byte[]> binData = AIPUtil.extractBinData( dataObject.getBinaryData() );
-        Optional<byte[]> xmlData = AIPUtil.extractXmlData( dataObject.getXmlData() )
+        Optional<byte[]> binData = AIPUtil.extractBinData( binarySupplier.get() );
+        Optional<byte[]> xmlData = AIPUtil.extractXmlData( xmlSupplier.get() )
                 .or( () -> binData.filter( AIPUtil::isXml ) );
         
         return binData.or( () -> xmlData );
+    }
+    
+    /**
+     * Providing a supplier for the binaryData of a {@link DataObjectType}
+     * 
+     * @param dataObject
+     *            the dataObject
+     * @return the supplier
+     */
+    public static Supplier<DataHandler> binaryDataSupplier( DataObjectType dataObject )
+    {
+        return () -> Optional.ofNullable( dataObject.getBinaryData() )
+                .map( BinaryData::getValue )
+                .orElse( null );
     }
     
     /**

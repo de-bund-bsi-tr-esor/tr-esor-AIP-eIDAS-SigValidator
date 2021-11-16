@@ -74,7 +74,7 @@ public class DefaultSyntaxValidator implements SyntaxValidator
     private static final String        SCHEMA_DIR_PROPERTY = "validator.schemaDir";
     
     private final String               vendor              = "BSI";
-    private final String               version             = "1.0.0";
+    private final String               version             = "1.1.0";
     private String                     schemaDir;
     
     private MetaDataValidator          metaValidator       = MetaDataValidator.INSTANCE;

@@ -24,7 +24,6 @@ package de.bund.bsi.tresor.aip.validator.signature.entity;
 import java.io.InputStream;
 import java.util.Optional;
 
-import de.bund.bsi.tr_esor.xaip._1.DataObjectType;
 import lombok.AllArgsConstructor;
 import lombok.Value;
 
@@ -32,28 +31,32 @@ import lombok.Value;
  * Representation of a found signature which contains the relevant data and the dataObject
  * 
  * @author wolffs
+ * @param <T>
  */
 @Value
 @AllArgsConstructor
-public class FinderResult
+public class FinderResult<T>
 {
-    private DataObjectType        dataObject;
+    // can be either metaDataObjectType or dataObjectType
+    private T                     dataContainer;
     private SignaturePresence     presence;
     private Optional<InputStream> data;
     
     /**
      * Creating a new FinderResult
      * 
-     * @param dataObject
+     * @param <T>
+     * 
+     * @param dataContainer
      *            the dataObject containing a signature
      * @param presence
      *            the presence of a signature
      * @param data
      *            the data of the dataObject (might be an embedded signature)
      */
-    public FinderResult( DataObjectType dataObject, SignaturePresence presence, InputStream data )
+    public FinderResult( T dataContainer, SignaturePresence presence, InputStream data )
     {
-        this.dataObject = dataObject;
+        this.dataContainer = dataContainer;
         this.presence = presence;
         this.data = Optional.ofNullable( data );
     }

@@ -63,15 +63,15 @@ import oasis.names.tc.dss_x._1_0.profiles.verificationreport.schema_.Verificatio
 @MTOM
 @SchemaValidation
 @AllArgsConstructor
-@WebService( endpointInterface = "de.bund.bsi.tr_esor.api._1.S4",
+@WebService( endpointInterface = "de.bund.bsi.ecard.api._1.S4",
         serviceName = "S4",
         portName = "S4",
-        targetNamespace = "http://www.bsi.bund.de/tr-esor/api/1.2",
-        wsdlLocation = "/wsdl/tr-esor-S-4-v1.2.wsdl" )
+        targetNamespace = "http://www.bsi.bund.de/ecard/api/1.1",
+        wsdlLocation = "/wsdl/tr-esor-S-4-v1.3.wsdl" )
 public class AIPValidator implements S4
 {
-    private static final String MAJOR_OK            = "http://www.bsi.bund.de/tr-esor/api/1.2/resultmajor#ok";
-    private static final String MAJOR_ERROR         = "http://www.bsi.bund.de/tr-esor/api/1.2/resultmajor#error";
+    private static final String MAJOR_OK            = "http://www.bsi.bund.de/tr-esor/api/1.3/resultmajor#ok";
+    private static final String MAJOR_ERROR         = "http://www.bsi.bund.de/tr-esor/api/1.3/resultmajor#error";
     
     private static final QName  VERIFICATION_REPORT = new QName(
             "urn:oasis:names:tc:dss-x:1.0:profiles:verificationreport:schema#",

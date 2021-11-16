@@ -42,8 +42,8 @@ import javax.xml.ws.BindingProvider;
 
 import org.w3c.dom.Node;
 
+import com.sun.istack.ByteArrayDataSource;
 import com.sun.xml.ws.client.BindingProviderProperties;
-import com.sun.xml.ws.util.ByteArrayDataSource;
 
 import de.bund.bsi.ecard.api._1.VerifyResponse;
 import de.bund.bsi.tr_esor.api._1.S4_Service;

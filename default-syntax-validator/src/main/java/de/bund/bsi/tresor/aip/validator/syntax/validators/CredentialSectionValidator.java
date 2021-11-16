@@ -33,6 +33,7 @@ import de.bund.bsi.tr_esor.vr._1.CredentialValidityType.RelatedObjects;
 import de.bund.bsi.tr_esor.xaip._1.CredentialType;
 import de.bund.bsi.tr_esor.xaip._1.CredentialsSectionType;
 import de.bund.bsi.tr_esor.xaip._1.DataObjectType;
+import de.bund.bsi.tr_esor.xaip._1.MetaDataObjectType;
 import de.bund.bsi.tresor.aip.validator.api.control.AIPUtil;
 
 /**
@@ -73,6 +74,12 @@ public enum CredentialSectionValidator
                 .filter( DataObjectType.class::isInstance )
                 .map( AIPUtil::idFromObject )
                 .map( id -> "//dataObject[@dataObjectID='" + id + "']" )
+                .forEach( related.getXPath()::add );
+        
+        credential.getRelatedObjects().stream()
+                .filter( MetaDataObjectType.class::isInstance )
+                .map( AIPUtil::idFromObject )
+                .map( id -> "//metaDataObject[@metaDataID='" + id + "']" )
                 .forEach( related.getXPath()::add );
         
         if ( related.getXPath().isEmpty() )

@@ -23,11 +23,11 @@ package de.bund.bsi.tresor.aip.validator.api.control;
 
 import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
@@ -54,7 +54,6 @@ import de.bund.bsi.tr_esor.xaip._1.MetaDataObjectType;
 import de.bund.bsi.tr_esor.xaip._1.PackageHeaderType;
 import de.bund.bsi.tr_esor.xaip._1.PackageInfoUnitType;
 import de.bund.bsi.tr_esor.xaip._1.VersionManifestType;
-import de.bund.bsi.tresor.aip.validator.api.control.AIPUtil;
 import oasis.names.tc.dss._1_0.core.schema.AnyType;
 
 /**
@@ -145,7 +144,8 @@ public class AIPUtilTest
         
         List<Object> relatedObjects = asList( dataObjectId, dataObjectType );
         
-        Set<DataObjectType> result = AIPUtil.resolveRelatedDataObjects( dataSection, relatedObjects );
+        Set<DataObjectType> result = AIPUtil.resolveRelatedDataObjects( dataSection, DataObjectsSectionType::getDataObject,
+                relatedObjects );
         
         assertThat( result, is( notNullValue() ) );
         assertThat( result, hasSize( 2 ) );
@@ -167,7 +167,8 @@ public class AIPUtilTest
         
         List<Object> relatedObjects = asList( "unrelatedId", new DataObjectType() );
         
-        Set<DataObjectType> result = AIPUtil.resolveRelatedDataObjects( dataSection, relatedObjects );
+        Set<DataObjectType> result = AIPUtil.resolveRelatedDataObjects( dataSection, DataObjectsSectionType::getDataObject,
+                relatedObjects );
         
         result.stream().map( DataObjectType::getDataObjectID ).forEach( System.out::println );
         

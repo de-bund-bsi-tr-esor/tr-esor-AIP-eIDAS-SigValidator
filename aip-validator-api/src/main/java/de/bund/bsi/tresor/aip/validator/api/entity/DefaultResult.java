@@ -22,9 +22,9 @@
 package de.bund.bsi.tresor.aip.validator.api.entity;
 
 import java.net.URI;
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.stream.Stream;
-import java.util.Arrays;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -43,6 +43,7 @@ public class DefaultResult
 {
     private static final String NS_TRESOR_API_1_1   = "http://www.bsi.bund.de/tr-esor/api/1.1";
     private static final String NS_TRESOR_API_1_2   = "http://www.bsi.bund.de/tr-esor/api/1.2";
+    private static final String NS_TRESOR_API_1_3   = "http://www.bsi.bund.de/tr-esor/api/1.3";
     
     private static final String NS_ECARD_API_1_1    = "http://www.bsi.bund.de/ecard/api/1.1";
     private static final String NS_ECARD_TRESOR_1_2 = "http://www.bsi.bund.de/ecard/tr-esor/1.2";

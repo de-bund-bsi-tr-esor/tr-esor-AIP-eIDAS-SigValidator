@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xdomea="urn:xoev-de:xdomea:schema:2.4.0" targetNamespace="urn:xoev-de:xdomea:schema:2.4.0" version="2.4.0" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <xs:annotation>
+    <xs:appinfo>
+      <standard>
+        <nameLang>xdomea - XÖV-Standard für den IT-gestützten Austausch und die IT-gestützte Aussonderung behördlichen Schriftgutes</nameLang>
+        <nameKurz>xdomea</nameKurz>
+        <nameTechnisch>xdomea</nameTechnisch>
+        <kennung>urn:xoev-de:xdomea:kosit:standard:xdomea</kennung>
+        <beschreibung>xdomea: XÖV-Standard für den IT-gestützten Austausch und die IT-gestützte Aussonderung behördlichen Schriftgutes
+
+Die Digitalisierung der Verwaltung schreitet mit immer höherer Geschwindigkeit voran. Einen weiteren Schub wird das Onlinezugangsgesetz geben. Die Digitalisierung bedeutet aber auch den Ausbau der digitalen Aktenführung in den Verwaltungen. Digitale Schriftgutverwaltung hält somit in immer mehr Verwaltungen Einzug.
+
+Die Zusammenarbeit der verschiedenen Verwaltungen erfordert den Austausch der digitalen Schriftgutobjekte, u.a. 
+
+- in arbeitsteiligen Prozessen,
+- bei Zuständigkeitswechseln,
+- der Abgabe behördlichen Schriftgutes an die Archive von Bund, Ländern und Kommunen.
+
+Der Bedarf, diesen Austausch zu standardisieren, wurde frühzeitig erkannt. So entstand bereits 2003 der Standard xdomea, damals noch als einfaches XML-Schema.
+
+Im Jahr 2009 erfolgte die Veröffentlichung der Version 2.0, die gemäß XÖV-Spezifizierung die Nachrichten-basierte Kommunikation unterstützt. Die Nachrichten unterstützen insbesondere die Verwaltungsprozesse
+
+- Abgabe durchführen,
+- Aktenplan austauschen,
+- Aussonderung durchführen,
+- Geschäftsgang durchführen,
+- Information austauschen und
+- Fachverfahrensdaten austauschen,
+
+können aber auch in anderen Verwaltungsprozessen eingesetzt werden.
+
+Auch der IT-Planungsrat hat den Bedarf zum Austausch von Akten, Vorgängen und Dokumenten festgestellt und die Arbeitsgruppe "AVD" eingesetzt und beauftragt, einen geeigneten Standard zu evaluieren. Die Arbeitsgruppe AVD hat zunächst eine Bedarfsbeschreibung (https://www.it-planungsrat.de/SharedDocs/Downloads/DE/Entscheidungen/24_Sitzung/B39_xdomeaAVD_Anlage1.pdf?__blob=publicationFile&amp;v=4) erstellt, welche insbesondere die Anforderungen an den Austausch von Schriftgutobjekten 		beinhaltet. Die Arbeitsgruppe AVD hat anhand der Anforderungen xdomea bewertet und kam zu 		dem Ergebnis, dass xdomea die Anforderungen der Bedarfsbeschreibung weitestgehend erfüllt und kein anderer geeigneter Standard existiert.
+
+Der IT-Planungsrat hat daraufhin in seiner 24. Sitzung am 02.10.2017 die Anwendung des Standards xdomea für den Austausch von Akten, Vorgängen und Dokumenten beschlossen (https://www.it-planungsrat.de/SharedDocs/Sitzungen/DE/2017/Sitzung_24.html?pos=9).</beschreibung>
+      </standard>
+      <versionStandard>
+        <version>2.4.0</version>
+        <versionXOEVHandbuch>2.1</versionXOEVHandbuch>
+        <versionXGenerator>2.6.1</versionXGenerator>
+        <versionModellierungswerkzeug>18.0</versionModellierungswerkzeug>
+        <nameModellierungswerkzeug>MagicDraw</nameModellierungswerkzeug>
+      </versionStandard>
+    </xs:appinfo>
+  </xs:annotation>
+  <xs:include schemaLocation="xdomea-Baukasten.xsd" />
+  <xs:element name="Aktenplan.Aktenplan.0301">
+    <xs:annotation>
+      <xs:appinfo>
+        <implementationHint>Die austauschenden Behörden müssen die für den Aktenplan erforderliche Konfiguration abstimmen, wenn dieser übernommen werden soll.</implementationHint>
+      </xs:appinfo>
+      <xs:documentation>Die Nachricht beschreibt den Export eines Aktenplans zur Information oder Übernahme in ein anderes System.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Kopf" type="xdomea:NkNichtFVDatenWeitereEmpfaengerMitEmpfangsbestaetigungType">
+          <xs:annotation>
+            <xs:documentation>Der Kopf der Nachricht enthält allgemeine Informationen für den Empfänger der Aktenplan-Nachricht.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="Aktenplan" type="xdomea:AktenplanType">
+          <xs:annotation>
+            <xs:documentation>Der zu übergebende Aktenplan enthält ein aufgabenbezogenes mehrstufiges Ordnungssystem mit hierarchischer Gliederung für das Bilden und Kennzeichnen von Akten und Vorgängen sowie das Zuordnen von Dokumenten.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Aktenplan.EmpfangBestaetigen.0302">
+    <xs:annotation>
+      <xs:documentation>Die Nachricht beschreibt den erfolgreichen Empfang des Aktenplans.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Kopf" type="xdomea:NkBasisType">
+          <xs:annotation>
+            <xs:documentation>Der Kopf der Nachricht enthält allgemeine Informationen für den Empfänger der Empfangsbestätigung.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
+

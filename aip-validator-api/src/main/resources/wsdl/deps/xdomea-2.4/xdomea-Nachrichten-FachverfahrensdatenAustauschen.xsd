@@ -1,0 +1,683 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xdomea="urn:xoev-de:xdomea:schema:2.4.0" targetNamespace="urn:xoev-de:xdomea:schema:2.4.0" version="2.4.0" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <xs:annotation>
+    <xs:appinfo>
+      <standard>
+        <nameLang>xdomea - XÖV-Standard für den IT-gestützten Austausch und die IT-gestützte Aussonderung behördlichen Schriftgutes</nameLang>
+        <nameKurz>xdomea</nameKurz>
+        <nameTechnisch>xdomea</nameTechnisch>
+        <kennung>urn:xoev-de:xdomea:kosit:standard:xdomea</kennung>
+        <beschreibung>xdomea: XÖV-Standard für den IT-gestützten Austausch und die IT-gestützte Aussonderung behördlichen Schriftgutes
+
+Die Digitalisierung der Verwaltung schreitet mit immer höherer Geschwindigkeit voran. Einen weiteren Schub wird das Onlinezugangsgesetz geben. Die Digitalisierung bedeutet aber auch den Ausbau der digitalen Aktenführung in den Verwaltungen. Digitale Schriftgutverwaltung hält somit in immer mehr Verwaltungen Einzug.
+
+Die Zusammenarbeit der verschiedenen Verwaltungen erfordert den Austausch der digitalen Schriftgutobjekte, u.a. 
+
+- in arbeitsteiligen Prozessen,
+- bei Zuständigkeitswechseln,
+- der Abgabe behördlichen Schriftgutes an die Archive von Bund, Ländern und Kommunen.
+
+Der Bedarf, diesen Austausch zu standardisieren, wurde frühzeitig erkannt. So entstand bereits 2003 der Standard xdomea, damals noch als einfaches XML-Schema.
+
+Im Jahr 2009 erfolgte die Veröffentlichung der Version 2.0, die gemäß XÖV-Spezifizierung die Nachrichten-basierte Kommunikation unterstützt. Die Nachrichten unterstützen insbesondere die Verwaltungsprozesse
+
+- Abgabe durchführen,
+- Aktenplan austauschen,
+- Aussonderung durchführen,
+- Geschäftsgang durchführen,
+- Information austauschen und
+- Fachverfahrensdaten austauschen,
+
+können aber auch in anderen Verwaltungsprozessen eingesetzt werden.
+
+Auch der IT-Planungsrat hat den Bedarf zum Austausch von Akten, Vorgängen und Dokumenten festgestellt und die Arbeitsgruppe "AVD" eingesetzt und beauftragt, einen geeigneten Standard zu evaluieren. Die Arbeitsgruppe AVD hat zunächst eine Bedarfsbeschreibung (https://www.it-planungsrat.de/SharedDocs/Downloads/DE/Entscheidungen/24_Sitzung/B39_xdomeaAVD_Anlage1.pdf?__blob=publicationFile&amp;v=4) erstellt, welche insbesondere die Anforderungen an den Austausch von Schriftgutobjekten 		beinhaltet. Die Arbeitsgruppe AVD hat anhand der Anforderungen xdomea bewertet und kam zu 		dem Ergebnis, dass xdomea die Anforderungen der Bedarfsbeschreibung weitestgehend erfüllt und kein anderer geeigneter Standard existiert.
+
+Der IT-Planungsrat hat daraufhin in seiner 24. Sitzung am 02.10.2017 die Anwendung des Standards xdomea für den Austausch von Akten, Vorgängen und Dokumenten beschlossen (https://www.it-planungsrat.de/SharedDocs/Sitzungen/DE/2017/Sitzung_24.html?pos=9).</beschreibung>
+      </standard>
+      <versionStandard>
+        <version>2.4.0</version>
+        <versionXOEVHandbuch>2.1</versionXOEVHandbuch>
+        <versionXGenerator>2.6.1</versionXGenerator>
+        <versionModellierungswerkzeug>18.0</versionModellierungswerkzeug>
+        <nameModellierungswerkzeug>MagicDraw</nameModellierungswerkzeug>
+      </versionStandard>
+    </xs:appinfo>
+  </xs:annotation>
+  <xs:include schemaLocation="xdomea-Baukasten.xsd" />
+  <xs:include schemaLocation="xdomea-Typen-FachverfahrensdatenAustauschen.xsd" />
+  <xs:element name="FVDaten.DokumentAktualisieren.0601">
+    <xs:annotation>
+      <xs:appinfo>
+        <implementationHint>Für die Aktualisierung eines Dokuments ist die in den Eingabeparametern übergebene UUID relevant. Eine UUID in IdentifikationSGO.ID ist hierfür irrelevant.</implementationHint>
+      </xs:appinfo>
+      <xs:documentation>Die Nachricht beschreibt die Aktualisierung eines bereits im DMS vorhandenes Dokuments.
+Als Rückgabeparameter sollte die Bestätigung des erfolgreichen Aktualisierens mit der ID des Dokuments gesendet werden.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Kopf" type="xdomea:NkKeineRueckmeldungFVDatenType">
+          <xs:annotation>
+            <xs:documentation>Der Kopf der Nachricht enthält allgemeine Informationen für den Empfänger der Nachricht.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="DokumentZumAktualisieren" maxOccurs="unbounded" type="xdomea:DokumentZumAktualisierenType">
+          <xs:annotation>
+            <xs:documentation>Die Informationen zu dem Dokument, das im DMS aktualisiert werden soll.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="FVDaten.SGOAnsehen.0602">
+    <xs:annotation>
+      <xs:documentation>Die Nachricht beschreibt die Übergabe eines Schriftgutobjekts, das im DMS angezeigt werden soll.
+Als Rückgabeparameter sollte die Bestätigung des erfolgreichen Öffnens des Schriftgutobjekts zur Ansicht mit seiner ID gesendet werden.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Kopf" type="xdomea:NkKeineRueckmeldungFVDatenType">
+          <xs:annotation>
+            <xs:documentation>Der Kopf der Nachricht enthält allgemeine Informationen für den Empfänger der Nachricht.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="SchriftgutobjektZumAnsehen" type="xdomea:SchriftgutobjektZumAnsehenOderBearbeitenType">
+          <xs:annotation>
+            <xs:documentation>Die Informationen zu dem Schriftgutobjekt, das angesehen werden soll.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="FVDaten.SGOBearbeiten.0603">
+    <xs:annotation>
+      <xs:documentation>Die Nachricht beschreibt die Übergabe eines Schriftgutobjekts, das zur Bearbeitung geöffnet werden soll.
+Als Rückgabeparameter sollte die Bestätigung des erfolgreichen Öffnens des Schriftgutobjekts zur Bearbeitung mit seiner ID gesendet werden.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Kopf" type="xdomea:NkKeineRueckmeldungFVDatenType">
+          <xs:annotation>
+            <xs:documentation>Der Kopf der Nachricht enthält allgemeine Informationen für den Empfänger der Nachricht.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="SchriftgutobjektZumBearbeiten" type="xdomea:SchriftgutobjektZumAnsehenOderBearbeitenType">
+          <xs:annotation>
+            <xs:documentation>Die Informationen zu dem Schriftgutobjekt, das bearbeitet werden soll.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="FVDaten.SGOErstellen.0604">
+    <xs:annotation>
+      <xs:documentation>Die Nachricht beschreibt die Übergabe von neuen Schriftgutobjekts zur Erstellung im DMS.
+Als Rückgabeparameter sollte jeweils die Bestätigung des erfolgreichen Erstellens des Schriftgutobjekts mit seiner ID im DMS gesendet werden.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Kopf" type="xdomea:NkKeineRueckmeldungFVDatenType">
+          <xs:annotation>
+            <xs:documentation>Der Kopf der Nachricht enthält allgemeine Informationen für den Empfänger der Nachricht.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="SchriftgutobjektZumErstellen" maxOccurs="unbounded" type="xdomea:SchriftgutobjektZumErstellenType">
+          <xs:annotation>
+            <xs:documentation>Die Informationen zu dem neuen Schriftgutobjekt, das erstellt werden soll.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="FVDaten.SGOAblegen.0605">
+    <xs:annotation>
+      <xs:appinfo>
+        <implementationHint>Als Ergebnis wird immer ein neues Dokument angelegt. Wird dem Dokument über IdentifikationSGO.ID eine ID mitgegeben, ist sie zu ignorieren.</implementationHint>
+      </xs:appinfo>
+      <xs:documentation>Die Nachricht beschreibt die Übergabe von neuen Schriftgutobjekten an das DMS zur Ablage.
+Als Rückgabeparameter sollte jeweils die Bestätigung des erfolgreichen Ablegens des Schriftgutobjekts mit seiner ID gesendet werden.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Kopf" type="xdomea:NkKeineRueckmeldungFVDatenType">
+          <xs:annotation>
+            <xs:documentation>Der Kopf der Nachricht enthält allgemeine Informationen für den Empfänger der Nachricht.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="SchriftgutobjektZumAblegen" maxOccurs="unbounded" type="xdomea:SchriftgutobjektZumAblegenType">
+          <xs:annotation>
+            <xs:documentation>Die Informationen zu dem Schriftgutobjekt, das abgelegt werden soll.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="FVDaten.SGODrucken.0606">
+    <xs:annotation>
+      <xs:documentation>Die Nachricht beschreibt die Übergabe von zu druckenden Schriftgutobjekten.
+Als Rückgabeparameter sollte jeweils die Bestätigung des erfolgreichen Druckens des Schriftgutobjekts mit seiner ID gesendet werden.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Kopf" type="xdomea:NkKeineRueckmeldungFVDatenType">
+          <xs:annotation>
+            <xs:documentation>Der Kopf der Nachricht enthält allgemeine Informationen für den Empfänger der Nachricht.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="SchriftgutobjektZumDrucken" maxOccurs="unbounded" type="xdomea:SchriftgutobjektZumDruckenType">
+          <xs:annotation>
+            <xs:documentation>Die Informationen zum zu druckenden Schriftgutobjekt.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="FVDaten.ProtokolleintragErstellen.0607">
+    <xs:annotation>
+      <xs:documentation>Die Nachricht ermöglicht die Erstellung eines Protokolleintrags zu einem Objekt im DMS.
+Als Rückgabeparameter sollte jeweils die Bestätigung des erfolgreichen Erstellens des Protokolleintrags mit der dazugehörigen Schriftgutobjekt-ID gesendet werden.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Kopf" type="xdomea:NkKeineRueckmeldungFVDatenType">
+          <xs:annotation>
+            <xs:documentation>Der Kopf der Nachricht enthält allgemeine Informationen für den Empfänger der Nachricht.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="ProtokolleintragZumErstellen" maxOccurs="unbounded" type="xdomea:ProtokolleintragZumErstellenType">
+          <xs:annotation>
+            <xs:documentation>Die Informationen zu dem zu erstellenden Protokolleintrag.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="FVDaten.SGOSuchen.0608">
+    <xs:annotation>
+      <xs:documentation>Die Nachricht beschreibt die Übergabe von Parametern zur Suche nach Schriftgutobjekten im DMS.
+Als Rückgabeparameter sollte die Liste der Schriftgutobjekt mit ihren IDs gesendet werden, auf die die Suchparameter zutreffen.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Kopf" type="xdomea:NkKeineRueckmeldungFVDatenType">
+          <xs:annotation>
+            <xs:documentation>Der Kopf der Nachricht enthält allgemeine Informationen für den Empfänger der Nachricht.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="SchriftgutobjektZumSuchen" type="xdomea:SchriftgutobjektZumSuchenType">
+          <xs:annotation>
+            <xs:documentation>Die Parameter zu einer Suche nach Schriftgutobjekten.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="FVDaten.MetadatenAnlegen.0609">
+    <xs:annotation>
+      <xs:documentation>Die Nachricht ermöglicht das Anlegen eines Metadatums zu einem Objekt im DMS.
+Als Rückgabeparameter sollte die Bestätigung des erfolgreichen Anlegens der Metadaten mit den entsprechenden Namen und Werten sowie der ID und evtl. der Versionsnummer (nur für Dokumente) des Schriftgutobjekts gesendet werden.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Kopf" type="xdomea:NkKeineRueckmeldungFVDatenType">
+          <xs:annotation>
+            <xs:documentation>Der Kopf der Nachricht enthält allgemeine Informationen für den Empfänger der Nachricht.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="MetadatenZumAnlegen" maxOccurs="unbounded" type="xdomea:MetadatenZumBearbeitenType">
+          <xs:annotation>
+            <xs:documentation>Die Informationen zu dem neuen Metadatum.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="FVDaten.MetadatenAktualisieren.0610">
+    <xs:annotation>
+      <xs:documentation>Die Nachricht beschreibt die Aktualisierung eines bereits existierendes Metadatum.
+Als Rückgabeparameter sollte die Bestätigung des erfolgreichen Aktualisierens von Metadaten mit entsprechendem Namen und Wert sowie der ID und evtl. der Versionsnummer (nur für Dokumente) des Schriftgutobjekts gesendet werden.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Kopf" type="xdomea:NkKeineRueckmeldungFVDatenType">
+          <xs:annotation>
+            <xs:documentation>Der Kopf der Nachricht enthält allgemeine Informationen für den Empfänger der Nachricht.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="MetadatenZumAktualisieren" maxOccurs="unbounded" type="xdomea:MetadatenZumBearbeitenType">
+          <xs:annotation>
+            <xs:documentation>Die Informationen zu dem zu aktualisierenden Metadatum.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="FVDaten.MetadatenAnsehen.0611">
+    <xs:annotation>
+      <xs:documentation>Die Nachricht ermöglicht das Auslesen des Wertes zu einem Metadatum.
+Als Rückgabeparameter sollten die Namen und Werte der angeforderten Metadaten gesendet werden.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Kopf" type="xdomea:NkKeineRueckmeldungFVDatenType">
+          <xs:annotation>
+            <xs:documentation>Der Kopf der Nachricht enthält allgemeine Informationen für den Empfänger der Nachricht.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="MetadatenZumAnsehen" maxOccurs="unbounded" type="xdomea:MetadatenZumBearbeitenType">
+          <xs:annotation>
+            <xs:documentation>Die Informationen zu dem Metadatum, das angesehen werden soll.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="FVDaten.MetadatenLoeschen.0612">
+    <xs:annotation>
+      <xs:documentation>Die Nachricht beschreibt die Übergabe eines zu löschenden Metadatums.
+Als Rückgabeparameter sollte die Bestätigung des erfolgreichen Löschens der Metadaten mit den entsprechenden Namen und Werten sowie der ID und evtl. der Versionsnummer (nur für Dokumente) des Schriftgutobjekts gesendet werden.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Kopf" type="xdomea:NkKeineRueckmeldungFVDatenType">
+          <xs:annotation>
+            <xs:documentation>Der Kopf der Nachricht enthält allgemeine Informationen für den Empfänger der Nachricht.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="MetadatenZumLoeschen" maxOccurs="unbounded" type="xdomea:MetadatenZumBearbeitenType">
+          <xs:annotation>
+            <xs:documentation>Die Informationen zu dem zu löschenden Metadatum.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="FVDaten.SGOLoeschenMarkieren.0613">
+    <xs:annotation>
+      <xs:documentation>Die Nachricht beschreibt die Übergabe von Schriftgutobjekten, die im DMS zum Löschen markiert werden sollen (4-Augen-Löschen).
+Als Rückgabeparameter sollte jeweils die Bestätigung des erfolgreichen Markierens des Schriftgutobjekts zur Löschung mit seiner ID gesendet werden.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Kopf" type="xdomea:NkKeineRueckmeldungFVDatenType">
+          <xs:annotation>
+            <xs:documentation>Der Kopf der Nachricht enthält allgemeine Informationen für den Empfänger der Nachricht.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="SchriftgutobjektZumLoeschenMarkieren" maxOccurs="unbounded" type="xdomea:SchriftgutobjektZumLoeschenType">
+          <xs:annotation>
+            <xs:documentation>Die Informationen zu dem Schriftgutobjekt, zum Löschen markiert werden soll.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="FVDaten.SGOLoeschmarkierungAufheben.0614">
+    <xs:annotation>
+      <xs:documentation>Die Nachricht beschreibt die Übergabe von Schriftgutobjekten, für die die Löschmarkierung im DMS aufgehoben werden soll (4-Augen-Löschen).
+Als Rückgabeparameter sollte jeweils die Bestätigung des erfolgreichen Aufhebens der Löschungmarkierung des Schriftgutobjekts mit seiner ID gesendet werden.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Kopf" type="xdomea:NkKeineRueckmeldungFVDatenType">
+          <xs:annotation>
+            <xs:documentation>Der Kopf der Nachricht enthält allgemeine Informationen für den Empfänger der Nachricht.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="SchriftgutobjektZumLoeschmarkierungAufheben" maxOccurs="unbounded" type="xdomea:SchriftgutobjektZumLoeschenType">
+          <xs:annotation>
+            <xs:documentation>Die Informationen zu dem Schriftgutobjekt, dessen Löschmarkierung aufgehoben werden soll.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="FVDaten.SGOEndgueltigLoeschen.0615">
+    <xs:annotation>
+      <xs:documentation>Die Nachricht beschreibt die Übergabe von Schriftgutobjekten zur endgültigen Löschung im DMS.
+Als Rückgabeparameter sollte jeweils die Bestätigung des erfolgreichen endgültigen Löschens des Schriftgutobjekts mit seiner ID gesendet werden.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Kopf" type="xdomea:NkKeineRueckmeldungFVDatenType">
+          <xs:annotation>
+            <xs:documentation>Der Kopf der Nachricht enthält allgemeine Informationen für den Empfänger der Nachricht.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="SchriftgutobjektZumEndgueltigLoeschen" maxOccurs="unbounded" type="xdomea:SchriftgutobjektZumLoeschenType">
+          <xs:annotation>
+            <xs:documentation>Die Informationen zu dem Schriftgutobjekt, das endgültig gelöscht werden soll.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="FVDaten.SGOLoeschstatusAbfragen.0616">
+    <xs:annotation>
+      <xs:documentation>Die Nachricht beschreibt die Übergabe von Schriftgutobjekten, zu denen der Löschstatus im DMS abgefragt werden soll.
+Als Rückgabeparameter sollte jeweils die Bestätigung des erfolgreichen Druckens des Schriftgutobjekts mit seiner ID gesendet werden.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Kopf" type="xdomea:NkKeineRueckmeldungFVDatenType">
+          <xs:annotation>
+            <xs:documentation>Der Kopf der Nachricht enthält allgemeine Informationen für den Empfänger der Nachricht.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="SchriftgutobjektZumLoeschstatusAbfragen" maxOccurs="unbounded" type="xdomea:SchriftgutobjektZumLoeschstatusAbfragenType">
+          <xs:annotation>
+            <xs:documentation>Die Informationen zu dem Schriftgutobjekt, dessen Löschstatus abgefragt werden soll.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="FVDaten.SGOUngueltigKennzeichnen.0617">
+    <xs:annotation>
+      <xs:documentation>Die Nachricht beschreibt die Übergabe von Schriftgutobjekten, die im DMS als ungültig markiert werden sollen.
+Als Rückgabeparameter sollten jeweils die Bestätigung des erfolgreichen Ungültig-Markierens des Schriftgutobjekts mit seiner ID gesendet werden.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Kopf" type="xdomea:NkKeineRueckmeldungFVDatenType">
+          <xs:annotation>
+            <xs:documentation>Der Kopf der Nachricht enthält allgemeine Informationen für den Empfänger der Nachricht.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="SchriftgutobjektZumUngueltigKennzeichnen" maxOccurs="unbounded" type="xdomea:SchriftgutobjektZumLoeschenType">
+          <xs:annotation>
+            <xs:documentation>Die Informationen zu dem Schriftgutobjekt, das als ungültig gekennzeichnet werden soll.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="FVDaten.DatensatzLoeschen.0618">
+    <xs:annotation>
+      <xs:documentation>Die Nachricht beschreibt die Übergabe eines im Fachverfahren vollständig gelöschten Datensatzes, um alle zugehörigen Objekte im DMS ebenfalls zu löschen.
+Als Rückgabeparameter sollte die Löschbestätigung zum Datensatz im DMS mit der Datensatz-ID im Fachverfahren gesendet werden.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Kopf" type="xdomea:NkKeineRueckmeldungFVDatenType">
+          <xs:annotation>
+            <xs:documentation>Der Kopf der Nachricht enthält allgemeine Informationen für den Empfänger der Nachricht.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="DatensatzZumLoeschen" maxOccurs="unbounded" type="xdomea:DatensatzZumLoeschenType">
+          <xs:annotation>
+            <xs:documentation>Die Information zu dem im Fachverfahren gelöschten Datensatz, zu dem auch alle vorhandenen Objekte im DMS gelöscht werden sollen.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="FVDaten.BenachrichtigungAbrufen.0619">
+    <xs:annotation>
+      <xs:documentation>Die Nachricht beschreibt die Abfrage eventuell bereitgestellter Daten (Benachrichtigungen) durch ein Fachverfahren. Die Bereitstellung von Daten (bspw. neuer Dokumente) erfolgt durch ein DMS, das die Daten zum Abruf für ein Fachverfahren zur Verfügung stellt.
+Als Rückgabeparameter sollten die im System vorliegenden Benachrichtigungen gesendet werden.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Kopf" type="xdomea:NkKeineRueckmeldungFVDatenType">
+          <xs:annotation>
+            <xs:documentation>Der Kopf der Nachricht enthält allgemeine Informationen für den Empfänger der Nachricht.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="FVDaten.VertretungAktivierenOderDeaktivieren.0620">
+    <xs:annotation>
+      <xs:documentation>Diese Nachricht beschreibt die Übergabe von Informationen zum Aktiveren oder zum Deaktivieren einer Vertretung im DMS.
+Als Rückgabeparameter sollte die Liste von Vertretern (Benutzer/Rolle) mit ihrem Namen und ihrem Aktivierungsstatus gesendet werden.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Kopf" type="xdomea:NkKeineRueckmeldungFVDatenType">
+          <xs:annotation>
+            <xs:documentation>Der Kopf der Nachricht enthält allgemeine Informationen für den Empfänger der Nachricht.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="VertretungZumAktivierenOderDeaktivieren" maxOccurs="unbounded" type="xdomea:VertretungZumAktivierenOderDeaktivierenType">
+          <xs:annotation>
+            <xs:documentation>Die Informationen zur Aktivierung oder zur Deaktivierung einer Vertretung.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="FVDaten.VertretungsstatusAbfragen.0621">
+    <xs:annotation>
+      <xs:documentation>Die Nachricht beschreibt die Abfrage zu den verfügbaren bzw. aktiven Vertretungen eines Benutzer oder einer Rolle im DMS.
+Als Rückgabeparameter sollte die Liste von Vertretern (Benutzer/Rolle) mit ihrem Namen und ihrem Aktivierungsstatus gesendet werden.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Kopf" type="xdomea:NkKeineRueckmeldungFVDatenType">
+          <xs:annotation>
+            <xs:documentation>Der Kopf der Nachricht enthält allgemeine Informationen für den Empfänger der Nachricht.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="VertretungsstatusZumAbfragen" maxOccurs="unbounded" type="xdomea:VertretungsstatusZumAbfragenType">
+          <xs:annotation>
+            <xs:documentation>Die Informationen zu dem Benutzer oder der Rolle, für den die Statusabfrage durchgeführt werden soll.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="FVDaten.ZustaendigkeitAendern.0622">
+    <xs:annotation>
+      <xs:documentation>Die Nachricht beschreibt die Übergabe von Informationen bei dem Zuständigkeitswechsel eines Schriftgutobjekts im Fachverfahren, z.B. bei Widerspruchsverfahren, mit dem Ziel, die Zuständigkeit im DMS anzupassen.
+Als Rückgabeparameter sollte die Bestätigung des erfolgreichen Aktualisierens der Metadaten des Schriftgutobjekts mit ID des Schriftgutobjekts, alte und neue zuständige Stelle, alte und neue Aktenplanheit, alte und neue Akte sowie weitere geänderte Metadaten gesendet werden.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Kopf" type="xdomea:NkKeineRueckmeldungFVDatenType">
+          <xs:annotation>
+            <xs:documentation>Der Kopf der Nachricht enthält allgemeine Informationen für den Empfänger der Nachricht.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="ZustaendigkeitZumAendern" maxOccurs="unbounded" type="xdomea:ZustaendigkeitZumAendernType">
+          <xs:annotation>
+            <xs:documentation>Die Informationen zu der bisherigen und neuen Zuständigkeit des Schriftgutobjekts.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="FVDaten.GesamtprotokollAblegen.0623">
+    <xs:annotation>
+      <xs:documentation>Diese Nachricht ermöglicht es, alle aktenrelevanten Bearbeitungs- und Protokollinformationen aus einem Fachverfahren in einem DMS abzulegen. Die Nachricht ist immer mit der zdA-Verfügung zu übermitteln. Sie kann zudem kann manuell aus dem Fachverfahren angestoßen werden. Damit wird sichergestellt, dass im DMS die für die Nachvollziehbarkeit erforderliche vollständige elektronische Akte geführt wird.
+Als Rückgabeparameter sollte die Bestätigung des erfolgreichen Ablegens mit der dazugehörigen Schriftgutobjekt-ID gesendet werden.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Kopf" type="xdomea:NkKeineRueckmeldungFVDatenType">
+          <xs:annotation>
+            <xs:documentation>Der Kopf der Nachricht enthält allgemeine Informationen für den Empfänger der Nachricht.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="GesamtprotokollZumAblegen" maxOccurs="unbounded" type="xdomea:GesamtprotokollZumAblegenType">
+          <xs:annotation>
+            <xs:documentation>Die Informationen zum Gesamtprotokoll, das an das DMS übermittelt werden soll.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="FVDaten.SGOZDAVerfuegen.0624">
+    <xs:annotation>
+      <xs:documentation>Die Nachricht beschreibt die Übergabe von Schriftgutobjekten, die zu den Akten verfügt werden sollen.
+Als Rückgabeparameter sollten jeweils die Bestätigung des erfolgreichen zdA-Verfügens des Schriftgutobjekts mit seiner ID gesendet werden.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Kopf" type="xdomea:NkKeineRueckmeldungFVDatenType">
+          <xs:annotation>
+            <xs:documentation>Der Kopf der Nachricht enthält allgemeine Informationen für den Empfänger der Nachricht.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="SchriftgutobjektZumZDAVerfuegen" maxOccurs="unbounded" type="xdomea:SchriftgutobjektZumZDAVerfuegenType">
+          <xs:annotation>
+            <xs:documentation>Die Informationen zu dem Schriftgutobjekt, das zdA-verfügt werden soll.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="FVDaten.SystemstatusAbfragen.0625">
+    <xs:annotation>
+      <xs:documentation>Die Nachricht beschreibt die Abfrage zum Systemstatus.
+Als Rückgabeparameter sollte die Liste von Systemstatus mit der SystemstatusID und dem dazugehörigen aktuellen Status gesendet werden.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Kopf" type="xdomea:NkKeineRueckmeldungFVDatenType">
+          <xs:annotation>
+            <xs:documentation>Der Kopf der Nachricht enthält allgemeine Informationen für den Empfänger der Nachricht.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="SystemstatusZumAbfragen" maxOccurs="unbounded" type="xdomea:SystemstatusZumAbfragenType">
+          <xs:annotation>
+            <xs:documentation>Die angeforderte Information zum Systemstatus.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="FVDaten.KonfigurationsparameterErstellen.0626">
+    <xs:annotation>
+      <xs:documentation>Die Nachricht beschreibt das Anlegen eines neuen Konfigurationsparameters.
+Als Rückgabeparameter sollte die Bestätigung des erfolgreichen Anlegens eines neuen Konfigurationsparameters mit entsprechendem Namen und Wert gesendet werden.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Kopf" type="xdomea:NkKeineRueckmeldungFVDatenType">
+          <xs:annotation>
+            <xs:documentation>Der Kopf der Nachricht enthält allgemeine Informationen für den Empfänger der Nachricht.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="KonfigurationsparameterZumErstellen" type="xdomea:KonfigurationsparameterZumErstellenType">
+          <xs:annotation>
+            <xs:documentation>Die Informationen zu dem neuen Konfigurationsparameter sowie zu dessen Ersteller.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="FVDaten.KonfigurationsparameterAktualisieren.0627">
+    <xs:annotation>
+      <xs:documentation>Die Nachricht beschreibt die Übergabe eines bereits existierenden Konfigurationsparameters zur Aktualisierung.
+Als Rückgabeparameter sollte die Bestätigung des erfolgreichen Aktualisierens der Konfigurationsparamter mit entsprechendem Name und Wert gesendet werden.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Kopf" type="xdomea:NkKeineRueckmeldungFVDatenType">
+          <xs:annotation>
+            <xs:documentation>Der Kopf der Nachricht enthält allgemeine Informationen für den Empfänger der Nachricht.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="KonfigurationsparameterZumAktualisieren" maxOccurs="unbounded" type="xdomea:FeldType">
+          <xs:annotation>
+            <xs:documentation>Die Information zum zu aktualisierenden Konfigurationsparameter.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="FVDaten.KonfigurationsparameterAbrufen.0628">
+    <xs:annotation>
+      <xs:documentation>Die Nachricht beschreibt den Abruf eines Konfigurationsparameters.
+Als Rückgabeparameter sollten der Name (immer) sowie soweit vorhanden der Datentyp, die Beschreibung und der Wert des Konfigurationsparameters gesendet werden.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Kopf" type="xdomea:NkKeineRueckmeldungFVDatenType">
+          <xs:annotation>
+            <xs:documentation>Der Kopf der Nachricht enthält allgemeine Informationen für den Empfänger der Nachricht.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="KonfigurationsparameterZumAbrufen" maxOccurs="unbounded" type="xdomea:KonfigurationsparameterZumAbrufenType">
+          <xs:annotation>
+            <xs:documentation>Die Informationen zu dem abzurufenden Konfigurationsparameter.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="FVDaten.EmpfangBestaetigen.0629">
+    <xs:annotation>
+      <xs:documentation>Die Nachricht beschreibt den erfolgreichen Empfang einer Fachverfahrensdaten-Nachricht.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Kopf" type="xdomea:NkFVDatenType">
+          <xs:annotation>
+            <xs:documentation>Der Kopf der Nachricht enthält allgemeine Informationen für den Empfänger der Empfangsbestätigung.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="FVDaten.ImportBestaetigen.0630">
+    <xs:annotation>
+      <xs:documentation>Diese Nachricht beschreibt den erfolgreichen oder nicht erfolgreichen Import von Daten.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Kopf" type="xdomea:NkRueckmeldungFVDatenImportType">
+          <xs:annotation>
+            <xs:documentation>Der Kopf der Nachricht enthält allgemeine Informationen für den Empfänger der Nachricht.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="ErfolgOderMisserfolg" type="xdomea:ErfolgOderMisserfolgDMSType">
+          <xs:annotation>
+            <xs:documentation>Die Information über den erfolgreichen oder nicht erfolgreichen Import von Daten.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="FVDaten.PrimaerdokumentExportieren.0631">
+    <xs:annotation>
+      <xs:documentation>Die Nachricht beschreibt den Export von Primärdokumenten zu einem Schriftgutobjekt (Dokument) aus einem DMS in ein Fachverfahren.
+Als Rückgabeparameter sollte der Ablageort der Primärdokumente gesendet werden.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Kopf" type="xdomea:NkKeineRueckmeldungFVDatenType">
+          <xs:annotation>
+            <xs:documentation>Der Kopf der Nachricht enthält allgemeine Informationen für den Empfänger der Nachricht.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="DokumentZumExportieren" type="xdomea:DokumentZumExportierenType">
+          <xs:annotation>
+            <xs:documentation>Die Informationen zu dem Dokument, dessen Primärdokumente exportiert werden sollen.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="FVDaten.SGOZDAAufheben.0632">
+    <xs:annotation>
+      <xs:documentation>Die Nachricht beschreibt das Aufheben der zdA-Verfügung  eines Schriftgutobjekts.
+Als Rückgabeparameter sollte die Bestätigung des erfolgreichen Wiederauflebens mit der ID des Schriftgutobjekts gesendet werden.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Kopf" type="xdomea:NkKeineRueckmeldungFVDatenType">
+          <xs:annotation>
+            <xs:documentation>Der Kopf der Nachricht enthält allgemeine Informationen für den Empfänger der Nachricht.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="SGOZumZDAAufheben" maxOccurs="unbounded" type="xdomea:SchriftgutobjektZumZDAAufhebenType">
+          <xs:annotation>
+            <xs:documentation>Die Informationen zu dem Schriftgutobjekt, dessen zdA-Verfügung im DMS aufgehoben werden soll.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
+

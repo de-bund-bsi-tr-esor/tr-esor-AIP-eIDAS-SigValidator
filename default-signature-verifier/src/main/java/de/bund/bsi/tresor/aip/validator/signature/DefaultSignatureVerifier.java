@@ -37,6 +37,7 @@ import de.bund.bsi.tr_esor.vr._1.CredentialValidityType.RelatedObjects;
 import de.bund.bsi.tr_esor.xaip._1.CredentialType;
 import de.bund.bsi.tr_esor.xaip._1.CredentialsSectionType;
 import de.bund.bsi.tr_esor.xaip._1.DataObjectsSectionType;
+import de.bund.bsi.tr_esor.xaip._1.MetaDataSectionType;
 import de.bund.bsi.tr_esor.xaip._1.XAIPType;
 import de.bund.bsi.tresor.aip.validator.api.boundary.SignatureVerifier;
 import de.bund.bsi.tresor.aip.validator.api.control.AIPUtil;
@@ -80,19 +81,14 @@ public class DefaultSignatureVerifier implements SignatureVerifier
         List<CredentialValidityType> resultList = new ArrayList<>();
         for ( Entry<String, Set<String>> entry : credIdsByDataId.entrySet() )
         {
-            Optional<String> dataId = Optional.ofNullable( entry.getKey() );
-            Optional<byte[]> data = Optional.ofNullable( xaip.getDataObjectsSection() ).stream()
-                    .map( DataObjectsSectionType::getDataObject )
-                    .flatMap( List::stream )
-                    .filter( dataObj -> dataId.map( dataObj.getDataObjectID()::equals ).orElse( false ) )
-                    .findAny()
-                    .flatMap( AIPUtil::extractData );
+            Optional<String> oid = Optional.ofNullable( entry.getKey() );
+            Optional<byte[]> data = binaryDataFromObject( xaip, oid );
             
             Set<String> credIds = entry.getValue();
             if ( credIds.isEmpty() && data.isPresent() )
             {
-                List<CredentialValidityType> result = verifySignature( dataId.get(), null, Optional.empty(), data, syntaxContext );
-                resultList.addAll( addMissingRelations( dataId, result ) );
+                List<CredentialValidityType> result = verifySignature( oid.get(), null, Optional.empty(), data, syntaxContext );
+                resultList.addAll( addMissingRelations( oid, result ) );
             }
             else
             {
@@ -105,13 +101,35 @@ public class DefaultSignatureVerifier implements SignatureVerifier
                             .map( CredentialType::getSignatureObject )
                             .findAny();
                     
-                    List<CredentialValidityType> result = verifySignature( dataId.orElse( null ), credId, signObj, data, syntaxContext );
-                    resultList.addAll( addMissingRelations( dataId, result ) );
+                    List<CredentialValidityType> result = verifySignature( oid.orElse( null ), credId, signObj, data, syntaxContext );
+                    resultList.addAll( addMissingRelations( oid, result ) );
                 }
             }
         }
         
         return resultList;
+    }
+    
+    Optional<byte[]> binaryDataFromObject( XAIPType xaip, Optional<String> oid )
+    {
+        Optional<byte[]> data = Optional.ofNullable( xaip.getDataObjectsSection() ).stream()
+                .map( DataObjectsSectionType::getDataObject )
+                .flatMap( List::stream )
+                .filter( dataObj -> oid.map( dataObj.getDataObjectID()::equals ).orElse( false ) )
+                .findAny()
+                .flatMap( dataObj -> AIPUtil.extractData( AIPUtil.binaryDataSupplier( dataObj ), dataObj::getXmlData ) );
+        
+        if ( data.isEmpty() )
+        {
+            data = Optional.ofNullable( xaip.getMetaDataSection() ).stream()
+                    .map( MetaDataSectionType::getMetaDataObject )
+                    .flatMap( List::stream )
+                    .filter( metaObj -> oid.map( metaObj.getMetaDataID()::equals ).orElse( false ) )
+                    .findAny()
+                    .flatMap( AIPUtil::extractMetaData );
+        }
+        
+        return data;
     }
     
     List<CredentialValidityType> verifySignature( String dataId, String credId, Optional<SignatureObject> signatureObject,
@@ -173,11 +191,12 @@ public class DefaultSignatureVerifier implements SignatureVerifier
             for ( CredentialValidityType credential : req )
             {
                 String id = dataId.get();
-                RelatedObjects relatedObjects = Optional.ofNullable( credential.getRelatedObjects() ).orElse( new RelatedObjects() );
+                RelatedObjects relatedObjects = Optional.ofNullable( credential.getRelatedObjects() )
+                        .orElse( new RelatedObjects() );
                 List<String> xPath = Optional.ofNullable( relatedObjects.getXPath() ).orElse( new ArrayList<>() );
                 if ( !xPath.contains( id ) )
                 {
-                    relatedObjects.getXPath().add( "//dataObject[@dataObjectID='" + id + "']" );
+                    relatedObjects.getXPath().add( AIPUtil.xPathForObjectId( id ) );
                     credential.setRelatedObjects( relatedObjects );
                 }
             }
