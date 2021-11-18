@@ -1,7 +1,5 @@
 package tools;
 
-import static java.util.stream.Collectors.toSet;
-
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -12,18 +10,15 @@ import java.nio.file.Path;
 import java.security.KeyStore;
 import java.security.KeyStore.PasswordProtection;
 import java.security.KeyStore.PrivateKeyEntry;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import javax.xml.bind.JAXB;
 import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
@@ -36,9 +31,9 @@ import org.etsi.uri._02918.v1_2.ObjectFactory;
 import org.etsi.uri._02918.v1_2.SigReferenceType;
 import org.etsi.uri._19512.v1_1.ContainerIDType;
 
-import de.bund.bsi.tr_esor.xaip.DataObjectType;
 import de.bund.bsi.tr_esor.xaip.PackageHeaderType;
 import de.bund.bsi.tr_esor.xaip.XAIPType;
+import de.bund.bsi.tresor.aip.validator.api.control.AIPUtil;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.signature.CAdESService;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
@@ -75,8 +70,8 @@ public class ASiCAIPConverter
         String entry = "wolffs";
         String ksPath = "/home/wolffs/wolffs-test";
         File outputFile = new File( "/tmp/resultAsic" );
-        // File inputXaip = new File( "/home/wolffs/Dokumente/13.xaip" );
-        File inputXaip = new File( "/tmp/sample.xaip" );
+        File inputXaip = new File( "/home/wolffs/Dokumente/13.xaip" );
+        // File inputXaip = new File( "/tmp/sample.xaip" );
         //////////////////////////////////////////////////////////////////////
         
         System.out.println( "> starting converstion" );
@@ -185,7 +180,7 @@ public class ASiCAIPConverter
         File metaInf = new File( asic, "META-INF" );
         metaInf.mkdir();
         
-        Map<String, Set<String>> oidsByVersion = oidsByVersion( xaip );
+        Map<String, Set<String>> oidsByVersion = AIPUtil.oidsByVersion( xaip );
         
         for ( Entry<String, Set<String>> entry : oidsByVersion.entrySet() )
         {
@@ -197,43 +192,6 @@ public class ASiCAIPConverter
             
             createSig( manifest, sigFile );
         }
-    }
-    
-    /**
-     * Mapping the oids by their version
-     * 
-     * @param xaip
-     *            the xaip
-     * @return the map
-     */
-    Map<String, Set<String>> oidsByVersion( XAIPType xaip )
-    {
-        Map<String, Set<String>> oidsByVersion = new HashMap<>();
-        
-        Optional.ofNullable( xaip )
-                .map( XAIPType::getPackageHeader )
-                .map( PackageHeaderType::getVersionManifest )
-                .orElseThrow( () -> new IllegalStateException( "missing versions in xaip" ) )
-                .stream()
-                .forEach( manifest -> {
-                    String version = manifest.getVersionID();
-                    Set<String> oids = manifest.getPackageInfoUnit().stream()
-                            .flatMap( info -> {
-                                return Stream.concat(
-                                        info.getProtectedObjectPointer().stream(),
-                                        info.getUnprotectedObjectPointer().stream() )
-                                        .map( JAXBElement::getValue )
-                                        .filter( DataObjectType.class::isInstance )
-                                        .map( DataObjectType.class::cast )
-                                        .map( DataObjectType::getDataObjectID );
-                                
-                            } )
-                            .collect( toSet() );
-                            
-                    oidsByVersion.put( version, oids );
-                } );
-        
-        return oidsByVersion;
     }
     
     /**
@@ -257,7 +215,7 @@ public class ASiCAIPConverter
         File manifestFile = new File( metaInf, "ASiCManifest-" + version + ".xml" );
         
         SigReferenceType sigRef = new SigReferenceType();
-        sigRef.setURI( "file://META-INF/" + sigFile.getName() );
+        sigRef.setURI( "META-INF/" + sigFile.getName() );
         sigRef.setMimeType( "application/pkcs7-signature" );
         
         ContainerIDType containerId = new ContainerIDType();

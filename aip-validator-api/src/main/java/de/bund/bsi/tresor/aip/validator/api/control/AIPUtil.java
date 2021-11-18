@@ -32,12 +32,15 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import javax.activation.DataHandler;
 import javax.xml.bind.DataBindingException;
@@ -111,6 +114,20 @@ public class AIPUtil
     public static JAXBElement<XAIPValidityType> asElement( XAIPValidityType xaipReport )
     {
         return new JAXBElement<XAIPValidityType>( XAIP_REPORT_QNAME, XAIPValidityType.class, xaipReport );
+    }
+    
+    /**
+     * Searching the aoid of the xaip
+     * 
+     * @param xaip
+     *            the xaip
+     * @return the aoid
+     */
+    public static Optional<String> findAoid( XAIPType xaip )
+    {
+        return Optional.ofNullable( xaip )
+                .map( XAIPType::getPackageHeader )
+                .map( PackageHeaderType::getAOID );
     }
     
     /**
@@ -401,6 +418,43 @@ public class AIPUtil
         return () -> Optional.ofNullable( dataObject.getBinaryData() )
                 .map( BinaryDataType::getValue )
                 .orElse( null );
+    }
+    
+    /**
+     * Mapping the oids by their version
+     * 
+     * @param xaip
+     *            the xaip
+     * @return the map
+     */
+    public static Map<String, Set<String>> oidsByVersion( XAIPType xaip )
+    {
+        Map<String, Set<String>> oidsByVersion = new HashMap<>();
+        
+        Optional.ofNullable( xaip )
+                .map( XAIPType::getPackageHeader )
+                .map( PackageHeaderType::getVersionManifest )
+                .orElseThrow( () -> new IllegalStateException( "missing versions in xaip" ) )
+                .stream()
+                .forEach( manifest -> {
+                    String version = manifest.getVersionID();
+                    Set<String> oids = manifest.getPackageInfoUnit().stream()
+                            .flatMap( info -> {
+                                return Stream.concat(
+                                        info.getProtectedObjectPointer().stream(),
+                                        info.getUnprotectedObjectPointer().stream() )
+                                        .map( JAXBElement::getValue )
+                                        .filter( DataObjectType.class::isInstance )
+                                        .map( DataObjectType.class::cast )
+                                        .map( DataObjectType::getDataObjectID );
+                                
+                            } )
+                            .collect( toSet() );
+                            
+                    oidsByVersion.put( version, oids );
+                } );
+        
+        return oidsByVersion;
     }
     
     /**

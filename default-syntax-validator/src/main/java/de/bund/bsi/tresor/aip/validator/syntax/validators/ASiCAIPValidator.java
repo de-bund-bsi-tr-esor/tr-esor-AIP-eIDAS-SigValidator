@@ -9,16 +9,28 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import javax.xml.bind.DataBindingException;
 import javax.xml.bind.JAXB;
 
 import org.apache.commons.io.FileUtils;
+import org.etsi.uri._02918.v1_2.ASiCManifestType;
+import org.etsi.uri._02918.v1_2.DataObjectReferenceType;
+import org.etsi.uri._02918.v1_2.ExtensionsListType;
+import org.etsi.uri._02918.v1_2.SigReferenceType;
+import org.etsi.uri._19512.v1_1.ContainerIDType;
 
 import de.bund.bsi.tr_esor.xaip.XAIPType;
+import de.bund.bsi.tresor.aip.validator.api.control.AIPUtil;
 import de.bund.bsi.tresor.aip.validator.api.control.ModuleLogger;
 import eu.europa.esig.dss.asic.cades.validation.ASiCContainerWithCAdESValidatorFactory;
 import eu.europa.esig.dss.asic.xades.validation.ASiCContainerWithXAdESValidatorFactory;
@@ -109,7 +121,12 @@ public enum ASiCAIPValidator
             }
             else if ( validAIPFiles.size() == 1 )
             {
-                zippedData = FileUtils.readFileToByteArray( validAIPFiles.get( 0 ) );
+                File xaipFile = validAIPFiles.get( 0 );
+                zippedData = FileUtils.readFileToByteArray( xaipFile );
+                
+                unzipped.ifPresent( asicDir -> {
+                    validateASiCAIPStructure( asicDir, xaipFile );
+                } );
             }
         }
         finally
@@ -118,6 +135,104 @@ public enum ASiCAIPValidator
         }
         
         return zippedData;
+    }
+    
+    public void validateASiCAIPStructure( File asicDir, File xaipFile )
+    {
+        XAIPType xaip = JAXB.unmarshal( xaipFile, XAIPType.class );
+        File metaInf = Arrays.stream( asicDir.listFiles() )
+                .filter( file -> file.isDirectory() )
+                .filter( file -> file.getName().equals( "META-INF" ) )
+                .findAny()
+                .orElseThrow( () -> new IllegalArgumentException( "missing asic META-INF directory" ) );
+        
+        validateMetaInf( xaip, metaInf );
+    }
+    
+    void validateMetaInf( XAIPType xaip, File metaInf )
+    {
+        String aoid = AIPUtil.findAoid( xaip ).orElseThrow( () -> new IllegalArgumentException( "missing aoid in xaip" ) );
+        Map<String, Set<String>> oidsByVersion = AIPUtil.oidsByVersion( xaip );
+        
+        Map<String, Set<String>> errorsByManifest = new HashMap<>();
+        for ( File file : metaInf.listFiles() )
+        {
+            try
+            {
+                ASiCManifestType manifest = JAXB.unmarshal( file, ASiCManifestType.class );
+                Set<String> errors = validateManifest( metaInf, manifest, aoid, oidsByVersion );
+                
+                if ( !errors.isEmpty() )
+                {
+                    errorsByManifest.put( file.getName(), errors );
+                }
+            }
+            catch ( DataBindingException e )
+            {
+                // ignore if file is not manifest
+            }
+        }
+        
+        if ( !oidsByVersion.isEmpty() )
+        {
+            throw new IllegalArgumentException( "missing aisc-manifest for versions: " + oidsByVersion.keySet().toString() );
+        }
+        
+        if ( !errorsByManifest.isEmpty() )
+        {
+            throw new IllegalArgumentException( "invalid asic-aip structure: " + errorsByManifest.toString() );
+        }
+    }
+    
+    Set<String> validateManifest( File metaInf, ASiCManifestType manifest, String aoid, Map<String, Set<String>> oidsByVersion )
+    {
+        Set<String> errors = new HashSet<>();
+        SigReferenceType sigReference = manifest.getSigReference();
+        String uri = sigReference.getURI();
+        
+        ExtensionsListType extensions = manifest.getASiCManifestExtensions();
+        Optional<ContainerIDType> optContainer = extensions.getExtension().stream()
+                .filter( ContainerIDType.class::isInstance )
+                .map( ContainerIDType.class::cast )
+                .findAny();
+        
+        if ( !Arrays.stream( metaInf.list() )
+                .anyMatch( name -> name.equals( uri.substring( 0, uri.lastIndexOf( File.separatorChar ) ) ) ) )
+        {
+            errors.add( "missing sigRef" );
+        }
+        
+        if ( optContainer.isPresent() )
+        {
+            ContainerIDType container = optContainer.get();
+            String manifestAoid = container.getPOID();
+            String manifestVersion = container.getVersionID();
+            
+            Set<String> oids = new HashSet<>();
+            if ( !aoid.equals( manifestAoid ) )
+            {
+                errors.add( "aoid mismatch" );
+            }
+            
+            if ( oidsByVersion.containsKey( manifestVersion ) )
+            {
+                oids = oidsByVersion.remove( manifestVersion );
+            }
+            else
+            {
+                errors.add( "referencing non existing version" );
+            }
+            
+            if ( !oids.stream()
+                    .allMatch( oid -> manifest.getDataObjectReference().stream()
+                            .map( DataObjectReferenceType::getURI )
+                            .anyMatch( ref -> ref.contains( oid ) ) ) )
+            {
+                errors.add( "missing or invalid oid-ref" );
+            }
+        }
+        
+        return errors;
     }
     
     /**
