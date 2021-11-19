@@ -21,6 +21,7 @@ import java.util.zip.ZipInputStream;
 
 import javax.xml.bind.DataBindingException;
 import javax.xml.bind.JAXB;
+import javax.xml.transform.dom.DOMSource;
 
 import org.apache.commons.io.FileUtils;
 import org.etsi.uri._02918.v1_2.ASiCManifestType;
@@ -28,6 +29,7 @@ import org.etsi.uri._02918.v1_2.DataObjectReferenceType;
 import org.etsi.uri._02918.v1_2.ExtensionsListType;
 import org.etsi.uri._02918.v1_2.SigReferenceType;
 import org.etsi.uri._19512.v1_1.ContainerIDType;
+import org.w3c.dom.Element;
 
 import de.bund.bsi.tr_esor.xaip.XAIPType;
 import de.bund.bsi.tresor.aip.validator.api.control.AIPUtil;
@@ -125,9 +127,9 @@ public enum ASiCAIPValidator
                 zippedData = FileUtils.readFileToByteArray( xaipFile );
                 
                 // TODO enable when asic validation is implemented
-                // unzipped.ifPresent( asicDir -> {
-                // validateASiCAIPStructure( asicDir, xaipFile );
-                // } );
+                unzipped.ifPresent( asicDir -> {
+                    validateASiCAIPStructure( asicDir, xaipFile );
+                } );
             }
         }
         finally
@@ -186,7 +188,8 @@ public enum ASiCAIPValidator
             }
             catch ( DataBindingException e )
             {
-                // ignore if file is not manifest
+                ModuleLogger.log( "manifest search: skipping " + file.getName() );
+                ModuleLogger.verbose( "file is not an asicManifest: " + file.getName(), e );
             }
         }
         
@@ -219,15 +222,23 @@ public enum ASiCAIPValidator
         Set<String> errors = new HashSet<>();
         SigReferenceType sigReference = manifest.getSigReference();
         String uri = sigReference.getURI();
+        String substring = uri.substring( uri.lastIndexOf( File.separatorChar ) + 1 );
         
         ExtensionsListType extensions = manifest.getASiCManifestExtensions();
         Optional<ContainerIDType> optContainer = extensions.getExtension().stream()
+                .map( f -> f.getContent() )
+                .flatMap( List::stream )
+                .filter( Element.class::isInstance )
+                .map( Element.class::cast )
+                // .map( JAXBElement.class::cast )
+                // .map( JAXBElement::getValue )
+                .map( e -> JAXB.unmarshal( new DOMSource( e ), ContainerIDType.class ) )
                 .filter( ContainerIDType.class::isInstance )
                 .map( ContainerIDType.class::cast )
                 .findAny();
         
         if ( !Arrays.stream( metaInf.list() )
-                .anyMatch( name -> name.equals( uri.substring( 0, uri.lastIndexOf( File.separatorChar ) ) ) ) )
+                .anyMatch( name -> name.equals( substring ) ) )
         {
             errors.add( "missing sigRef" );
         }

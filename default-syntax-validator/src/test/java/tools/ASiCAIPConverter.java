@@ -103,7 +103,7 @@ public class ASiCAIPConverter
         createMetaInf( output, xaip, aoid );
         createMimeFile( output, "application/vnd.etsi.asic-e+zip" );
         
-        File file = new File( output.getParent(), aoid + ".asic" );
+        File file = new File( output.getParent(), aoid + ".asice" );
         zip( output.toPath(), file.toPath() );
         FileUtils.deleteQuietly( output );
     }
@@ -258,6 +258,7 @@ public class ASiCAIPConverter
      *            the output file
      * @throws Exception
      */
+    // ER statt CaDes
     void createSig( File manifest, File sigFile ) throws Exception
     {
         DSSDocument toSignDocument = new FileDocument( manifest );
