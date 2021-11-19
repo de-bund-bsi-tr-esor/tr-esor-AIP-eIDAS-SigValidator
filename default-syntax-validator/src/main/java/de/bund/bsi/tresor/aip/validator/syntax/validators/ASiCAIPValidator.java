@@ -124,9 +124,10 @@ public enum ASiCAIPValidator
                 File xaipFile = validAIPFiles.get( 0 );
                 zippedData = FileUtils.readFileToByteArray( xaipFile );
                 
-                unzipped.ifPresent( asicDir -> {
-                    validateASiCAIPStructure( asicDir, xaipFile );
-                } );
+                // TODO enable when asic validation is implemented
+                // unzipped.ifPresent( asicDir -> {
+                // validateASiCAIPStructure( asicDir, xaipFile );
+                // } );
             }
         }
         finally
@@ -137,6 +138,14 @@ public enum ASiCAIPValidator
         return zippedData;
     }
     
+    /**
+     * Validating the asicAIP container structure
+     * 
+     * @param asicDir
+     *            the unzipped asic directory
+     * @param xaipFile
+     *            the xaip file
+     */
     public void validateASiCAIPStructure( File asicDir, File xaipFile )
     {
         XAIPType xaip = JAXB.unmarshal( xaipFile, XAIPType.class );
@@ -149,6 +158,14 @@ public enum ASiCAIPValidator
         validateMetaInf( xaip, metaInf );
     }
     
+    /**
+     * Validating the metaInf
+     * 
+     * @param xaip
+     *            the xaip from the asic container
+     * @param metaInf
+     *            the asic metaInf folder
+     */
     void validateMetaInf( XAIPType xaip, File metaInf )
     {
         String aoid = AIPUtil.findAoid( xaip ).orElseThrow( () -> new IllegalArgumentException( "missing aoid in xaip" ) );
@@ -184,6 +201,19 @@ public enum ASiCAIPValidator
         }
     }
     
+    /**
+     * Validating the asic manifest against the provided xaip informations
+     * 
+     * @param metaInf
+     *            the asic metaInf dir
+     * @param manifest
+     *            the asic manifest
+     * @param aoid
+     *            the aoid of the asic-xaip
+     * @param oidsByVersion
+     *            the oids of the asic-xaip by the versions
+     * @return a set of errorMessages
+     */
     Set<String> validateManifest( File metaInf, ASiCManifestType manifest, String aoid, Map<String, Set<String>> oidsByVersion )
     {
         Set<String> errors = new HashSet<>();

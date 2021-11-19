@@ -38,6 +38,9 @@ public class EventReader
     @Getter
     private Map<String, File>   files                     = new HashMap<>();
     
+    /**
+     * Creating a new eventReader
+     */
     public EventReader()
     {
         ObjectFactory factory = new ObjectFactory();
@@ -49,6 +52,15 @@ public class EventReader
     }
     
     // keep reading after endEvent and before startEvent since this will exclude the xmlData tag itself
+    
+    /**
+     * Reading from the {@link XMLEventReader} and storing data in a temp dir for checksumVerificaiton later on
+     * 
+     * @param reader
+     *            the xmlEventReader
+     * @throws Exception
+     *             when an error occurs
+     */
     public void read( XMLEventReader reader ) throws Exception
     {
         while ( reader.hasNext() )

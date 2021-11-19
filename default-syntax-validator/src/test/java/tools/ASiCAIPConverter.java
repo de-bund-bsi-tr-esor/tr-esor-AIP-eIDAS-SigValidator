@@ -236,7 +236,7 @@ public class ASiCAIPConverter
         {
             DataObjectReferenceType dataRef = new DataObjectReferenceType();
             dataRef.setMimeType( "application/octet-stream" );
-            dataRef.setURI( "aip://dataObjectID/" + oid ); // TODO something like this?
+            dataRef.setURI( "xaip://" + aoid + ".xaip?q=/*:XAIP/*:dataObjectsSection/*:dataObject[@dataObjectID='" + oid + "']" );
             
             manifest.getDataObjectReference().add( dataRef );
         }
@@ -286,6 +286,7 @@ public class ASiCAIPConverter
         
         DSSDocument signedDocument = service.signDocument( toSignDocument, parameters, signatureValue );
         signedDocument.writeTo( new FileOutputStream( sigFile ) );
+        signingToken.close();
     }
     
     /**
