@@ -33,7 +33,6 @@ import java.util.Optional;
 
 import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
@@ -102,7 +101,6 @@ public class DefaultSyntaxValidator implements SyntaxValidator
     {
         Optional<XAIPType> optXaip = Optional.empty();
         XAIPValidityType report = new XAIPValidityType();
-        
         Result result = DefaultResult.valid()
                 .message( "xaip is schema conform", ResultLanguage.ENGLISH )
                 .build();
@@ -112,12 +110,10 @@ public class DefaultSyntaxValidator implements SyntaxValidator
         {
             IOUtils.copy( xaipCandidate, baos );
             byte[] data = baos.toByteArray();
-            
             if ( asicAipValidator.isASiC( data ) )
             {
                 data = asicAipValidator.findAIPCandidate( data );
             }
-            
             xmlDataByOid = xmlData( data );
             
             JAXBContext jaxbContext = JAXBContext.newInstance( XAIPType.class, DataObjectReferenceType.class );
@@ -127,18 +123,14 @@ public class DefaultSyntaxValidator implements SyntaxValidator
             Schema schema = schemaFactory.newSchema( sources( new File( schemaDir ) ).stream().toArray( Source[]::new ) );
             
             jaxbUnmarshaller.setSchema( schema );
-            JAXBElement<XAIPType> element = jaxbUnmarshaller.unmarshal(
-                    new StreamSource( new ByteArrayInputStream( data ) ), XAIPType.class );
-            
-            optXaip = Optional.ofNullable( element.getValue() );
+            optXaip = Optional.ofNullable(
+                    jaxbUnmarshaller.unmarshal( new StreamSource( new ByteArrayInputStream( data ) ), XAIPType.class ).getValue() );
             DataObjectsSectionType dataSection = optXaip.map( XAIPType::getDataObjectsSection ).orElse( null );
             
             packageValidator.validatePackageHeader( optXaip.map( XAIPType::getPackageHeader ) )
                     .ifPresent( report::setPackageHeader );
-            
             metaValidator.validateMetaDataSection( optXaip.map( XAIPType::getMetaDataSection ), dataSection, xmlDataByOid )
                     .ifPresent( report::setMetaDataSection );
-            
             dataValidator.validateDataSection( optXaip.map( XAIPType::getDataObjectsSection ), xmlDataByOid )
                     .ifPresent( report::setDataObjectsSection );
             

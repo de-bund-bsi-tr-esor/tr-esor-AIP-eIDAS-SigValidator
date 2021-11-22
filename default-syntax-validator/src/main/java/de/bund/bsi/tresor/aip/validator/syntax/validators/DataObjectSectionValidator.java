@@ -72,6 +72,8 @@ public enum DataObjectSectionValidator
      * 
      * @param dataObjectsSection
      *            the dataObjectsSection to validate
+     * @param xmlData
+     *            the tmp xmlData mapped by the oid
      * @return the dataObjectsSection validation result
      */
     public Optional<DataObjectsSectionValidityType> validateDataSection(
@@ -101,6 +103,8 @@ public enum DataObjectSectionValidator
      * 
      * @param dataObject
      *            the dataObject to validate
+     * @param xmlData
+     *            the tmp xmlData mapped by the oid
      * @return the dataObject validation result
      */
     public DataObjectValidityType validateDataObject( DataObjectType dataObject, Map<String, File> xmlData )

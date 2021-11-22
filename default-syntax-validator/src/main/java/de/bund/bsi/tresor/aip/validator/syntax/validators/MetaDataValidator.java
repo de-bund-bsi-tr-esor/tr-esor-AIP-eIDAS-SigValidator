@@ -65,6 +65,8 @@ public enum MetaDataValidator
      *            the metaData section to validate
      * @param dataSection
      *            the dataObjectsSection for the dataChecksum verification
+     * @param xmlDataByOid
+     *            the tmp xmlData mapped by the oid
      * @return the metaData section validation result
      */
     public Optional<MetaDataSectionValidityType> validateMetaDataSection( Optional<MetaDataSectionType> metaDataSection,
@@ -86,6 +88,9 @@ public enum MetaDataValidator
      * 
      * @param metaData
      *            the metaData to validate
+     * @param xmlDataByOid
+     *            the tmp xmlData mapped by the oid
+     *            
      * @return the validation result
      */
     public MetaDataObjectValidityType validateMetaDataObject( MetaDataObjectType metaData, Map<String, File> xmlDataByOid )
@@ -128,6 +133,8 @@ public enum MetaDataValidator
      * 
      * @param metaData
      *            the metaData
+     * @param xmlDataByOid
+     *            the tmp xmlData mapped by the oid
      * @return the verificationResult
      */
     public Optional<VerificationResultType> validateChecksum( MetaDataObjectType metaData, Map<String, File> xmlDataByOid )

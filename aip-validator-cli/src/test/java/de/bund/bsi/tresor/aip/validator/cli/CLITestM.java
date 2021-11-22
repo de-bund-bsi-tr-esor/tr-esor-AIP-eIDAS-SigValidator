@@ -13,13 +13,14 @@ import javax.xml.bind.Marshaller;
 import javax.xml.namespace.QName;
 
 import org.etsi.uri._02918.v1_2.DataObjectReferenceType;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.w3._2000._09.xmldsig_.DigestMethodType;
 
-import de.bund.bsi.tr_esor.xaip._1.XAIPType;
+import de.bund.bsi.tr_esor.xaip.XAIPType;
 import oasis.names.tc.dss._1_0.core.schema.AnyType;
 
 /***
@@ -27,7 +28,7 @@ import oasis.names.tc.dss._1_0.core.schema.AnyType;
  * 
  * @author wolffs
  */
-// @Disabled
+@Disabled
 public class CLITestM
 {
     
