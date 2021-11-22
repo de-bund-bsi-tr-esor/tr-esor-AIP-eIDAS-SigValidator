@@ -70,12 +70,33 @@ public class Canonicalization
         return VALID_C14N.contains( url );
     }
     
+    /**
+     * Canonicalizing the input by the configured c14n method
+     * 
+     * @param input
+     *            the xmlData
+     * @return the canonicalized xmlData
+     * @throws CanonicalizationException
+     *             when the xml could not be canonicalized
+     * @throws InvalidCanonicalizerException
+     *             when the canonicalizer could not be created
+     * @throws IOException
+     *             when an io exception occurs
+     */
     public static byte[] canonicalize( byte[] input )
-            throws XMLParserException, CanonicalizationException, InvalidCanonicalizerException, IOException
+            throws CanonicalizationException, InvalidCanonicalizerException, IOException
     {
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        Canonicalizer.getInstance( c14nMethod ).canonicalize( input, out, true );
-        
-        return out.toByteArray();
+        try
+        {
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            Canonicalizer.getInstance( c14nMethod ).canonicalize( input, out, true );
+            
+            return out.toByteArray();
+        }
+        catch ( XMLParserException e )
+        {
+            // input data is no xml
+            return input;
+        }
     }
 }

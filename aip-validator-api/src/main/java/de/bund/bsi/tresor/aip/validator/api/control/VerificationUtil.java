@@ -31,7 +31,6 @@ import java.security.NoSuchAlgorithmException;
 import org.apache.commons.io.IOUtils;
 import org.apache.xml.security.c14n.CanonicalizationException;
 import org.apache.xml.security.c14n.InvalidCanonicalizerException;
-import org.apache.xml.security.parser.XMLParserException;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.util.io.Streams;
 
@@ -103,7 +102,7 @@ public class VerificationUtil
                             }
                         }
                     }
-                    catch ( XMLParserException | CanonicalizationException | InvalidCanonicalizerException e )
+                    catch ( CanonicalizationException | InvalidCanonicalizerException e )
                     {
                         builder.minor( Minor.UNKNOWN_C14N_METHOD );
                     }
