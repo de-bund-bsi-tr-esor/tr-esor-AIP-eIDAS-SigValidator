@@ -13,7 +13,6 @@ import javax.xml.bind.Marshaller;
 import javax.xml.namespace.QName;
 
 import org.etsi.uri._02918.v1_2.DataObjectReferenceType;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -28,7 +27,7 @@ import oasis.names.tc.dss._1_0.core.schema.AnyType;
  * 
  * @author wolffs
  */
-@Disabled
+// @Disabled
 public class CLITestM
 {
     
@@ -46,12 +45,10 @@ public class CLITestM
     // private static final String TEST_FILE = "/home/wolffs/Dokumente/asic/asicAip/cades-asic-1.3.zip";
     // private static final String TEST_FILE = "/home/wolffs/Dokumente/asic/asicAip/asic-lxaip-1.3.zip";
     // private static final String TEST_FILE = "/home/wolffs/Downloads/asic/xaip/asic_cades.zip.xaip";
-    // private static final String TEST_FILE = "/tmp/gitExample.xaip";
     
-    private static final String TEST_FILE             = "/tmp/dxaipVerifyIT-e8a7c58a-12d0-4578-abc0-abe61a8ae80e.asice";
+    // private static final String TEST_FILE = "/tmp/dxaipVerifyIT-e8a7c58a-12d0-4578-abc0-abe61a8ae80e.asice";
     // private static final String TEST_FILE = "/home/wolffs/Downloads/40387ca1-4497-40fa-acfa-9976132b1001.asice";
-    
-    // private static final String TEST_FILE = "/tmp/tst/sample2.txt";
+    private static final String TEST_FILE             = "/home/wolffs/Downloads/xaip-asic-s-b64sig-onefile-ok.xml";
     
     private static final String TEST_RESULT_FILE      = "/tmp/report.xml";
     

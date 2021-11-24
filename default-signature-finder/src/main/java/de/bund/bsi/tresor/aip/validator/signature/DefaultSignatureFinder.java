@@ -105,14 +105,8 @@ public class DefaultSignatureFinder implements SignatureFinder
         // i don't think a credential can be related to a specific id and null at the same time
         // being mapped to multiple specific id's (multiple relatedObjects) OR null (no relation) looks more likely
         Set<String> nullMappedCredIds = Optional.ofNullable( mappedIds.remove( null ) ).orElse( emptySet() );
-        Iterator<String> it = nullMappedCredIds.iterator();
-        while ( it.hasNext() )
-        {
-            if ( mappedIds.entrySet().stream().anyMatch( e -> e.getValue().contains( it.next() ) ) )
-            {
-                it.remove();
-            }
-        }
+        nullMappedCredIds.removeIf( credId -> mappedIds.entrySet().stream()
+                .anyMatch( mappedId -> mappedId.getValue().contains( credId ) ) );
         
         if ( !nullMappedCredIds.isEmpty() )
         {

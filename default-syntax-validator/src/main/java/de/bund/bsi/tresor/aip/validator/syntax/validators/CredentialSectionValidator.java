@@ -27,6 +27,7 @@ import static java.util.stream.Collectors.toMap;
 import java.util.AbstractMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Optional;
 
 import de.bund.bsi.tr_esor.vr.RelatedObjectsType;
@@ -55,7 +56,8 @@ public enum CredentialSectionValidator
     public Map<String, RelatedObjectsType> validateCredentialsSection( Optional<CredentialsSectionType> credentialsSection )
     {
         return credentialsSection.map( section -> section.getCredential().stream()
-                .map( this::validateCredential )
+                .map( this::relationsXPath )
+                .filter( Objects::nonNull )
                 .collect( toMap( Entry::getKey, Entry::getValue ) ) )
                 .orElse( emptyMap() );
     }
@@ -65,9 +67,9 @@ public enum CredentialSectionValidator
      * 
      * @param credential
      *            the credential
-     * @return the validation result
+     * @return the relationsXPath by credentialId or null if no relation could be resolved
      */
-    public Map.Entry<String, RelatedObjectsType> validateCredential( CredentialType credential )
+    public Map.Entry<String, RelatedObjectsType> relationsXPath( CredentialType credential )
     {
         RelatedObjectsType related = new RelatedObjectsType();
         credential.getRelatedObjects().stream()
@@ -82,11 +84,13 @@ public enum CredentialSectionValidator
                 .map( id -> "//metaDataObject[@metaDataID='" + id + "']" )
                 .forEach( related.getXPath()::add );
         
-        if ( related.getXPath().isEmpty() )
-        {
-            related.getXPath().add( "//credential[@credentialID='" + credential.getCredentialID() + "']" );
-        }
+        credential.getRelatedObjects().stream()
+                .filter( CredentialType.class::isInstance )
+                .map( AIPUtil::idFromObject )
+                .map( id -> "//credential[@credentialID='" + id + "']" )
+                .forEach( related.getXPath()::add );
         
-        return new AbstractMap.SimpleEntry<String, RelatedObjectsType>( credential.getCredentialID(), related );
+        return related.getXPath().isEmpty() ? null
+                : new AbstractMap.SimpleEntry<String, RelatedObjectsType>( credential.getCredentialID(), related );
     }
 }

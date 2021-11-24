@@ -48,6 +48,13 @@
         </developer>
     </developers>
 
+    <repositories>
+        <repository>
+            <id>dss-repo</id>
+            <url>https://ec.europa.eu/cefdigital/artifact/content/groups/public/</url>
+        </repository>
+    </repositories>
+
     <dependencyManagement>
         <dependencies>
             <!-- external dependencies -->

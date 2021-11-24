@@ -28,6 +28,7 @@ import java.util.function.Supplier;
 import de.bund.bsi.tr_esor.xaip.DataObjectType;
 import de.bund.bsi.tr_esor.xaip.MetaDataObjectType;
 import de.bund.bsi.tresor.aip.validator.api.control.AIPUtil;
+import de.bund.bsi.tresor.aip.validator.signature.checker.ASiCChecker;
 import de.bund.bsi.tresor.aip.validator.signature.checker.CAdESChecker;
 import de.bund.bsi.tresor.aip.validator.signature.checker.PAdESChecker;
 import de.bund.bsi.tresor.aip.validator.signature.checker.XAdESChecker;
@@ -125,8 +126,11 @@ public class DataAnalyzer
      */
     public static <T> FinderResult<T> analyzeBinData( T dataObject, byte[] data )
     {
-        SignaturePresence presence = SignaturePresence
-                .fromBoolean( PAdESChecker.INSTANCE.isPAdES( data ) || CAdESChecker.INSTANCE.isCAdES( data ) );
+        boolean isPAdES = PAdESChecker.INSTANCE.isPAdES( data );
+        boolean isCAdES = CAdESChecker.INSTANCE.isCAdES( data );
+        boolean isASiC = ASiCChecker.INSTANCE.isASiC( data );
+        
+        SignaturePresence presence = SignaturePresence.fromBoolean( isPAdES || isCAdES || isASiC );
         
         return new FinderResult<T>( dataObject, presence, new ByteArrayInputStream( data ) );
     }
