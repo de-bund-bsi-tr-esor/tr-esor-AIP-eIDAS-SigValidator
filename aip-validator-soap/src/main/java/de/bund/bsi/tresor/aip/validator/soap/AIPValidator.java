@@ -39,7 +39,7 @@ import javax.xml.ws.soap.MTOM;
 
 import org.apache.cxf.annotations.SchemaValidation;
 
-import de.bund.bsi.tr_esor.api._1.S4;
+import de.bund.bsi.ecard.api._1.S4;
 import de.bund.bsi.tr_esor.xaip._1.XAIPType;
 import de.bund.bsi.tresor.aip.validator.api.control.AIPUtil;
 import de.bund.bsi.tresor.aip.validator.api.entity.AIPValidatorException;
