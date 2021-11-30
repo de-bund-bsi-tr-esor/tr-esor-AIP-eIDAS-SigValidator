@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<wsdl:definitions targetNamespace="http://www.bsi.bund.de/tr-esor/api/1.2"
+<wsdl:definitions targetNamespace="http://www.bsi.bund.de/ecard/api/1.1"
 	xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
 	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
 	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
 	xmlns:dss="urn:oasis:names:tc:dss:1.0:core:schema"
-	xmlns:tr="http://www.bsi.bund.de/tr-esor/api/1.2"
+	xmlns:tr="http://www.bsi.bund.de/ecard/api/1.1"
 	>
 
  	<!--============================================================-->

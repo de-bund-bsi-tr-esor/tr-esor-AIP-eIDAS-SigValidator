@@ -45,8 +45,8 @@ import org.w3c.dom.Node;
 import com.sun.istack.ByteArrayDataSource;
 import com.sun.xml.ws.client.BindingProviderProperties;
 
+import de.bund.bsi.ecard.api._1.S4_Service;
 import de.bund.bsi.ecard.api._1.VerifyResponse;
-import de.bund.bsi.tr_esor.api._1.S4_Service;
 import de.bund.bsi.tr_esor.vr._1.CredentialValidityType;
 import de.bund.bsi.tresor.aip.validator.api.control.AIPUtil;
 import de.bund.bsi.tresor.aip.validator.api.control.ModuleLogger;
