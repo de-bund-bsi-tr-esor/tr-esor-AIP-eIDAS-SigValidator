@@ -21,6 +21,7 @@
  */
 package de.bund.bsi.tresor.aip.validator.api.control;
 
+import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 
 import java.io.ByteArrayInputStream;
@@ -482,4 +483,18 @@ public class AIPUtil
             return false;
         }
     }
+    
+    public static List<JAXBElement<Object>> versionPointer( VersionManifestType version )
+    {
+        return Optional.ofNullable( version.getPackageInfoUnit() ).orElse( new ArrayList<>() ).stream()
+                .flatMap( e -> {
+                    List<JAXBElement<Object>> list = new ArrayList<>();
+                    Optional.ofNullable( e.getProtectedObjectPointer() ).ifPresent( list::addAll );
+                    Optional.ofNullable( e.getUnprotectedObjectPointer() ).ifPresent( list::addAll );
+                    
+                    return list.stream();
+                } ).collect( toList() );
+        
+    }
+    
 }

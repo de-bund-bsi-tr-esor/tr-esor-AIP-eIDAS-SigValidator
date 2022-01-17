@@ -157,7 +157,6 @@ public class DefaultProtocolAssembler implements ProtocolAssembler
             
             XPathExpression expr = xpath.compile( "//ns:DetailedSignatureReport/ns:SignatureOK/ns:SigMathOK/ns:ResultMajor" );
             NodeList result = (NodeList) expr.evaluate( doc, XPathConstants.NODESET );
-            
             for ( int i = 0; i < result.getLength(); i++ )
             {
                 Node node = result.item( i );
