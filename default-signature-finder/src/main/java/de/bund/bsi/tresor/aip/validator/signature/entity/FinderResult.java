@@ -32,6 +32,7 @@ import lombok.Value;
  * 
  * @author wolffs
  * @param <T>
+ *            type of the result
  */
 @Value
 @AllArgsConstructor
@@ -44,8 +45,6 @@ public class FinderResult<T>
     
     /**
      * Creating a new FinderResult
-     * 
-     * @param <T>
      * 
      * @param dataContainer
      *            the dataObject containing a signature

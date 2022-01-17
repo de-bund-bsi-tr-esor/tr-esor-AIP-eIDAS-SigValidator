@@ -34,9 +34,9 @@ public enum SignaturePresence
     
     /**
      * Parsing a signaturePresence from the provided boolean:<br/>
-     * <li><code>true</code> > {@link #PRESENT}
-     * <li><code>false</code> > {@link #MISSING}
-     * <li><code>null</code> > {@link #UNKNOWN}
+     * <li><code>true</code> {@link #PRESENT}
+     * <li><code>false</code> {@link #MISSING}
+     * <li><code>null</code> {@link #UNKNOWN}
      * 
      * @param value
      *            the boolean value

@@ -153,7 +153,8 @@ public class DefaultSyntaxValidator implements SyntaxValidator
             xmlDataByOid.values().forEach( FileUtils::deleteQuietly );
         }
         
-        report.setReportVersion( "1.3" );
+        report.setXAIPVersion( "1.3.0" );
+        report.setReportVersion( "1.3.0" );
         report.setFormatOK( VerificationUtil.verificationResult( result ) );
         
         return new SyntaxValidationResult( optXaip, report );

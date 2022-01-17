@@ -48,14 +48,14 @@ public interface ValidatorModule
     
     /**
      * Optional method for configuring the module. This method only needs to be implemented when the module depends on external
-     * configuration.</br>
+     * configuration.<br/>
      * The property map will contain any module arguments being passed to the XAIPValidator on startup either via multiple arguments or a
-     * property file containing all properties.</br>
-     * </br>
-     * <b>Examples:</b></br>
-     * </br>
-     * <b>Input:</b> <code>java -jar xaip-validator-cli.jar -Margument.first=foo -Margument.second=bar</code></br>
-     * <b>Resolves to:</b></br>
+     * property file containing all properties.<br/>
+     * <br/>
+     * <b>Examples:</b><br/>
+     * <br/>
+     * <b>Input:</b> <code>java -jar xaip-validator-cli.jar -Margument.first=foo -Margument.second=bar</code><br/>
+     * <b>Resolves to:</b><br/>
      * <table border=1>
      * <tr>
      * <td>argument.first</td>
@@ -66,9 +66,9 @@ public interface ValidatorModule
      * <td>bar</td>
      * </tr>
      * </table>
-     * </br>
-     * <b>Input:</b> <code>java -jar xaip-validator-cli.jar --config example.properties</code></br>
-     * <b>Resolves to:</b></br>
+     * <br/>
+     * <b>Input:</b> <code>java -jar xaip-validator-cli.jar --config example.properties</code><br/>
+     * <b>Resolves to:</b><br/>
      * <table border=1>
      * <tr>
      * <td>argument.first</td>
@@ -79,11 +79,11 @@ public interface ValidatorModule
      * <td>bar</td>
      * </tr>
      * </table>
-     * </br>
-     * <b>Content of example.properties:</br>
+     * <br/>
+     * <b>Content of example.properties:<br/>
      * <table border=1>
      * <tr>
-     * <td>argument.first=foo</br>
+     * <td>argument.first=foo<br/>
      * argument.second=bar</td>
      * </tr>
      * </table>
