@@ -84,11 +84,12 @@ public class AIPUtil
     /**
      * Namespace and name of the XAIP element
      */
-    public static final QName XML_DATA_QNAME    = new QName( "http://www.bsi.bund.de/tr-esor/xaip", "xmlData" );
-    public static final QName XML_ANY_QNAME     = new QName( "oasis.names.tc.dss._1_0.core.schema.AnyType", "xmlAny" );
+    public static final String NS                = "http://www.bsi.bund.de/tr-esor/xaip";
+    public static final QName  XML_DATA_QNAME    = new QName( "http://www.bsi.bund.de/tr-esor/xaip", "xmlData" );
+    public static final QName  XML_ANY_QNAME     = new QName( "oasis.names.tc.dss._1_0.core.schema.AnyType", "xmlAny" );
     
-    public static final QName XAIP_QNAME        = new QName( "http://www.bsi.bund.de/tr-esor/xaip", "XAIP" );
-    public static final QName XAIP_REPORT_QNAME = new QName( "http://www.bsi.bund.de/tr-esor/vr", "XAIPReport" );
+    public static final QName  XAIP_QNAME        = new QName( "http://www.bsi.bund.de/tr-esor/xaip", "XAIP" );
+    public static final QName  XAIP_REPORT_QNAME = new QName( "http://www.bsi.bund.de/tr-esor/vr", "XAIPReport" );
     
     /**
      * Creating a proper JAXBElement of the xaipType which can be used for marshalling since the generated wsdl types do not contain a
@@ -258,7 +259,9 @@ public class AIPUtil
     public static String xPathForObjectId( String id )
     {
         // select every element which has an attributeName ending with 'ID' matching the provided value
-        return "//*[@*[ends-with(local-name(), 'ID')]='" + id + "']";
+        // old expression: //*[@*[ends-with(local-name(), 'ID')]='" + id + "']
+        
+        return "//*[namespace-uri()='" + NS + "'][@*[ends-with(local-name(), 'ID')]='" + id + "']";
     }
     
     /**
