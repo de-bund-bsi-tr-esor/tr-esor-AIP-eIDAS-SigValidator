@@ -1,4 +1,4 @@
-package tools;
+package de.bund.bsi.tresor.aip.validator.syntax.validators.asic;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;

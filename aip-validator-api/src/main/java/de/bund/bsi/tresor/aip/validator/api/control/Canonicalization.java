@@ -50,13 +50,23 @@ public class Canonicalization
     @Getter
     @Setter
     // using static reference since this will only set by packageValidator, uses have to be after this validator
-    public static String            c14nMethod = Canonicalizer.ALGO_ID_C14N_EXCL_OMIT_COMMENTS;
+    public static String            c14nMethod = defaultC14nMethod();
     
     public static final Set<String> VALID_C14N = Set.of(
             Canonicalizer.ALGO_ID_C14N_EXCL_OMIT_COMMENTS,
             Canonicalizer.ALGO_ID_C14N_EXCL_WITH_COMMENTS,
             Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS,
             Canonicalizer.ALGO_ID_C14N_WITH_COMMENTS );
+    
+    /**
+     * Returns the default c14n method which should be used when no c14n is provided
+     * 
+     * @return the default c14n method
+     */
+    public static String defaultC14nMethod()
+    {
+        return Canonicalizer.ALGO_ID_C14N_EXCL_OMIT_COMMENTS;
+    }
     
     /**
      * Checking if the c14n url is supported

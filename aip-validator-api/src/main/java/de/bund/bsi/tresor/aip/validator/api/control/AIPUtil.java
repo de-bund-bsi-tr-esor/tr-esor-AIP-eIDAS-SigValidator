@@ -393,6 +393,23 @@ public class AIPUtil
         return binData.or( () -> xmlData );
     }
     
+    public static <T> Optional<byte[]> dataSupplier( T anyDataObj )
+    {
+        Optional<byte[]> data = Optional.empty();
+        if ( anyDataObj instanceof MetaDataObjectType )
+        {
+            MetaDataObjectType metaData = (MetaDataObjectType) anyDataObj;
+            data = AIPUtil.extractData( AIPUtil.binaryDataSupplier( metaData ), metaData::getXmlMetaData );
+        }
+        else if ( anyDataObj instanceof DataObjectType )
+        {
+            DataObjectType dataObj = (DataObjectType) anyDataObj;
+            data = AIPUtil.extractData( AIPUtil.binaryDataSupplier( dataObj ), dataObj::getXmlData );
+        }
+        
+        return data;
+    }
+    
     /**
      * Providing a supplier for the binaryData of a {@link MetaDataObjectType}
      * 

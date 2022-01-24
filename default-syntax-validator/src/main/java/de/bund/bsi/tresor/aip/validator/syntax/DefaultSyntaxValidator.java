@@ -112,8 +112,10 @@ public class DefaultSyntaxValidator implements SyntaxValidator
             byte[] data = baos.toByteArray();
             if ( asicAipValidator.isASiC( data ) )
             {
+                // data = asicAipValidator.validateASiCAIP(data);
                 data = asicAipValidator.findAIPCandidate( data );
             }
+            
             xmlDataByOid = xmlData( data );
             
             JAXBContext jaxbContext = JAXBContext.newInstance( XAIPType.class, DataObjectReferenceType.class );

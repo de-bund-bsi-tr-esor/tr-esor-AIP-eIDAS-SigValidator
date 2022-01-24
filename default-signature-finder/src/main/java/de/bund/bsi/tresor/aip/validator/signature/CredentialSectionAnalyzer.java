@@ -128,7 +128,7 @@ public class CredentialSectionAnalyzer
                     .findAny()
                     .flatMap( FinderResult::getData )
                     .map( CredentialSectionAnalyzer::dataContent )
-                    .or( () -> dataSupplier( dataObject ) );
+                    .or( () -> AIPUtil.dataSupplier( dataObject ) );
             
             Optional<InputStream> optData = optDataBlob.map( ByteArrayInputStream::new );
             
@@ -153,23 +153,6 @@ public class CredentialSectionAnalyzer
         }
         
         return sigResults;
-    }
-    
-    static <T> Optional<byte[]> dataSupplier( T anyDataObj )
-    {
-        Optional<byte[]> data = Optional.empty();
-        if ( anyDataObj instanceof MetaDataObjectType )
-        {
-            MetaDataObjectType metaData = (MetaDataObjectType) anyDataObj;
-            data = AIPUtil.extractData( AIPUtil.binaryDataSupplier( metaData ), metaData::getXmlMetaData );
-        }
-        else if ( anyDataObj instanceof DataObjectType )
-        {
-            DataObjectType metaData = (DataObjectType) anyDataObj;
-            data = AIPUtil.extractData( AIPUtil.binaryDataSupplier( metaData ), metaData::getXmlData );
-        }
-        
-        return data;
     }
     
     static byte[] dataContent( InputStream stream )
