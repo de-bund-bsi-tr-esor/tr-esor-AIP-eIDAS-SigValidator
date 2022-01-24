@@ -26,6 +26,7 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.ServiceLoader;
 import java.util.Set;
 
@@ -101,7 +102,12 @@ public enum Dispatcher
         {
             syntaxResult.getXaip().ifPresent( xaip -> {
                 Map<String, Set<String>> signatures = sigFinder.findSignatures( ctx, xaip );
-                ModuleLogger.log( signatures.size() + " signatures found" );
+                Integer size = signatures.entrySet().stream()
+                        .map( Entry::getValue )
+                        .map( Set::size )
+                        .reduce( 0, ( a, b ) -> a + b );
+                
+                ModuleLogger.log( size + " signatures found" );
                 ModuleLogger.log( "finished signature search" );
                 
                 credentialReports.addAll( sigVerifier.verify( ctx, xaip, signatures ) );

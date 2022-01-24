@@ -101,9 +101,7 @@ public class DefaultSyntaxValidator implements SyntaxValidator
     {
         Optional<XAIPType> optXaip = Optional.empty();
         XAIPValidityType report = new XAIPValidityType();
-        Result result = DefaultResult.valid()
-                .message( "xaip is schema conform", ResultLanguage.ENGLISH )
-                .build();
+        Result result = DefaultResult.valid().message( "xaip is schema conform", ResultLanguage.ENGLISH ).build();
         
         Map<String, File> xmlDataByOid = new HashMap<>();
         try ( ByteArrayOutputStream baos = new ByteArrayOutputStream() )
