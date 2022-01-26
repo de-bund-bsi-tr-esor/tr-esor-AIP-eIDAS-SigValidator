@@ -37,9 +37,18 @@ import javax.xml.bind.JAXBException;
 import javax.xml.namespace.QName;
 import javax.xml.ws.soap.MTOM;
 
+import org.apache.commons.lang3.NotImplementedException;
 import org.apache.cxf.annotations.SchemaValidation;
 
-import de.bund.bsi.ecard.api._1.S4;
+import de.bund.bsi.ecard.api._1.ECard;
+import de.bund.bsi.ecard.api._1.GetCertificate;
+import de.bund.bsi.ecard.api._1.GetCertificateResponse;
+import de.bund.bsi.ecard.api._1.ShowViewer;
+import de.bund.bsi.ecard.api._1.ShowViewerResponse;
+import de.bund.bsi.ecard.api._1.SignRequest;
+import de.bund.bsi.ecard.api._1.SignResponse;
+import de.bund.bsi.ecard.api._1.VerifyRequest;
+import de.bund.bsi.ecard.api._1.VerifyResponse;
 import de.bund.bsi.tr_esor.xaip.XAIPType;
 import de.bund.bsi.tresor.aip.validator.api.control.AIPUtil;
 import de.bund.bsi.tresor.aip.validator.api.entity.AIPValidatorException;
@@ -52,9 +61,9 @@ import oasis.names.tc.dss._1_0.core.schema.DocumentType;
 import oasis.names.tc.dss._1_0.core.schema.InlineXMLType;
 import oasis.names.tc.dss._1_0.core.schema.InputDocuments;
 import oasis.names.tc.dss._1_0.core.schema.InternationalStringType;
+import oasis.names.tc.dss._1_0.core.schema.RequestBaseType;
 import oasis.names.tc.dss._1_0.core.schema.ResponseBaseType;
 import oasis.names.tc.dss._1_0.core.schema.Result;
-import oasis.names.tc.dss._1_0.core.schema.VerifyRequest;
 import oasis.names.tc.dss_x._1_0.profiles.verificationreport.schema_.VerificationReportType;
 
 /**
@@ -63,12 +72,12 @@ import oasis.names.tc.dss_x._1_0.profiles.verificationreport.schema_.Verificatio
 @MTOM
 @SchemaValidation
 @AllArgsConstructor
-@WebService( endpointInterface = "de.bund.bsi.ecard.api._1.S4",
-        serviceName = "S4",
-        portName = "S4",
+@WebService( endpointInterface = "de.bund.bsi.ecard.api._1.ECard",
+        serviceName = "eCard",
+        portName = "eCard",
         targetNamespace = "http://www.bsi.bund.de/ecard/api/1.1",
-        wsdlLocation = "/wsdl/tr-esor-S-4-v1.3.wsdl" )
-public class AIPValidator implements S4
+        wsdlLocation = "/wsdl/eCard.wsdl" )
+public class AIPValidator implements ECard
 {
     private static final String MAJOR_OK            = "http://www.bsi.bund.de/tr-esor/api/1.3/resultmajor#ok";
     private static final String MAJOR_ERROR         = "http://www.bsi.bund.de/tr-esor/api/1.3/resultmajor#error";
@@ -79,8 +88,55 @@ public class AIPValidator implements S4
     
     private ServerConfig        config;
     
+    VerificationReportType dispatch( XAIPType xaip )
+    {
+        ByteArrayOutputStream xaipProvider = new ByteArrayOutputStream();
+        JAXB.marshal( AIPUtil.asElement( xaip ), xaipProvider );
+        
+        ByteArrayOutputStream resultOutput = new ByteArrayOutputStream();
+        DispatcherArgs args = DispatcherArgs.builder()
+                .input( new ByteArrayInputStream( xaipProvider.toByteArray() ) )
+                .output( resultOutput )
+                .verbose( config.isVerbose() )
+                .log( config.getLog() )
+                .verify( config.isVerify() )
+                .moduleConfig( config.getModuleConfig() )
+                .build();
+        
+        Dispatcher.INSTANCE.dispatch( args );
+        
+        return JAXB.unmarshal( new ByteArrayInputStream( resultOutput.toByteArray() ), VerificationReportType.class );
+    }
+    
+    List<XAIPType> findXAIPs( List<Object> objects ) throws JAXBException
+    {
+        return objects.stream()
+                .filter( DocumentType.class::isInstance )
+                .map( DocumentType.class::cast )
+                .map( DocumentType::getInlineXML )
+                .map( InlineXMLType::getAny )
+                .filter( JAXBElement.class::isInstance )
+                .map( JAXBElement.class::cast )
+                .map( JAXBElement::getValue )
+                .filter( XAIPType.class::isInstance )
+                .map( XAIPType.class::cast )
+                .collect( toList() );
+    }
+    
     @Override
-    public ResponseBaseType verify( VerifyRequest parameters )
+    public GetCertificateResponse getCertificate( GetCertificate parameters )
+    {
+        throw new NotImplementedException();
+    }
+    
+    @Override
+    public SignResponse signRequest( SignRequest parameters )
+    {
+        throw new NotImplementedException();
+    }
+    
+    @Override
+    public VerifyResponse verifyRequest( VerifyRequest parameters )
     {
         Result result = new Result();
         result.setResultMajor( MAJOR_ERROR );
@@ -120,45 +176,28 @@ public class AIPValidator implements S4
         AnyType outputs = new AnyType();
         outputs.getAny().addAll( reports );
         
-        ResponseBaseType response = new ResponseBaseType();
+        VerifyResponse response = new VerifyResponse();
         response.setResult( result );
         response.setOptionalOutputs( outputs );
         
         return response;
     }
     
-    VerificationReportType dispatch( XAIPType xaip )
+    @Override
+    public ShowViewerResponse showViewer( ShowViewer parameters )
     {
-        ByteArrayOutputStream xaipProvider = new ByteArrayOutputStream();
-        JAXB.marshal( AIPUtil.asElement( xaip ), xaipProvider );
-        
-        ByteArrayOutputStream resultOutput = new ByteArrayOutputStream();
-        DispatcherArgs args = DispatcherArgs.builder()
-                .input( new ByteArrayInputStream( xaipProvider.toByteArray() ) )
-                .output( resultOutput )
-                .verbose( config.isVerbose() )
-                .log( config.getLog() )
-                .verify( config.isVerify() )
-                .moduleConfig( config.getModuleConfig() )
-                .build();
-        
-        Dispatcher.INSTANCE.dispatch( args );
-        
-        return JAXB.unmarshal( new ByteArrayInputStream( resultOutput.toByteArray() ), VerificationReportType.class );
+        throw new NotImplementedException();
     }
     
-    List<XAIPType> findXAIPs( List<Object> objects ) throws JAXBException
+    @Override
+    public ResponseBaseType encryptRequest( RequestBaseType parameters )
     {
-        return objects.stream()
-                .filter( DocumentType.class::isInstance )
-                .map( DocumentType.class::cast )
-                .map( DocumentType::getInlineXML )
-                .map( InlineXMLType::getAny )
-                .filter( JAXBElement.class::isInstance )
-                .map( JAXBElement.class::cast )
-                .map( JAXBElement::getValue )
-                .filter( XAIPType.class::isInstance )
-                .map( XAIPType.class::cast )
-                .collect( toList() );
+        throw new NotImplementedException();
+    }
+    
+    @Override
+    public ResponseBaseType decryptRequest( RequestBaseType parameters )
+    {
+        throw new NotImplementedException();
     }
 }

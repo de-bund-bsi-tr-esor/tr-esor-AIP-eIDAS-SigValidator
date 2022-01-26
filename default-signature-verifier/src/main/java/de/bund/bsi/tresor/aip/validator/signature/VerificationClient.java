@@ -33,7 +33,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import javax.activation.DataHandler;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
@@ -42,10 +41,10 @@ import javax.xml.ws.BindingProvider;
 
 import org.w3c.dom.Node;
 
-import com.sun.istack.ByteArrayDataSource;
 import com.sun.xml.ws.client.BindingProviderProperties;
 
-import de.bund.bsi.ecard.api._1.S4_Service;
+import de.bund.bsi.ecard.api._1.ECard_Service;
+import de.bund.bsi.ecard.api._1.VerifyRequest;
 import de.bund.bsi.ecard.api._1.VerifyResponse;
 import de.bund.bsi.tr_esor.vr.CredentialValidityType;
 import de.bund.bsi.tresor.aip.validator.api.control.AIPUtil;
@@ -64,7 +63,6 @@ import oasis.names.tc.dss._1_0.core.schema.ResponseBaseType;
 import oasis.names.tc.dss._1_0.core.schema.Result;
 import oasis.names.tc.dss._1_0.core.schema.SignatureObject;
 import oasis.names.tc.dss._1_0.core.schema.SignaturePtr;
-import oasis.names.tc.dss._1_0.core.schema.VerifyRequest;
 import oasis.names.tc.dss_x._1_0.profiles.verificationreport.schema_.DetailedSignatureReportType;
 import oasis.names.tc.dss_x._1_0.profiles.verificationreport.schema_.IndividualReportType;
 import oasis.names.tc.dss_x._1_0.profiles.verificationreport.schema_.TimeStampValidityType;
@@ -74,7 +72,7 @@ import oasis.names.tc.dss_x._1_0.profiles.verificationreport.schema_.TimeStampVa
  */
 public class VerificationClient
 {
-    private S4_Service            service;
+    private ECard_Service         service;
     private DefaultVerifierConfig config;
     
     /**
@@ -110,10 +108,10 @@ public class VerificationClient
             if ( connection.getResponseCode() == 200 )
             {
                 service = TokenSupplier.supplyToken( config )
-                        .map( token -> new S4_Service( wsdlUrl, new IdentityTokenHeaderFeature( token ) ) )
-                        .orElseGet( () -> new S4_Service( wsdlUrl ) );
+                        .map( token -> new ECard_Service( wsdlUrl, new IdentityTokenHeaderFeature( token ) ) )
+                        .orElseGet( () -> new ECard_Service( wsdlUrl ) );
                 
-                Map<String, Object> requestContext = ((BindingProvider) service.getS4()).getRequestContext();
+                Map<String, Object> requestContext = ((BindingProvider) service.getECard()).getRequestContext();
                 requestContext.put( BindingProviderProperties.CONNECT_TIMEOUT, config.getConnectTimeout() );
                 requestContext.put( BindingProviderProperties.REQUEST_TIMEOUT, config.getRequestTimeout() );
             }
@@ -160,7 +158,7 @@ public class VerificationClient
             
             if ( request.getSignatureObject() != null || hasInputDocument )
             {
-                return convertResponse( reqId, service.getS4().verify( request ) );
+                return convertResponse( reqId, service.getECard().verifyRequest( request ) );
             }
             else
             {
@@ -185,7 +183,7 @@ public class VerificationClient
     VerifyRequest createRequest( String id, Optional<SignatureObject> signatureObject, Optional<byte[]> data )
     {
         VerifyRequest request = new VerifyRequest();
-        signatureObject.ifPresent( request::setSignatureObject );
+        signatureObject.ifPresent( obj -> request.getSignatureObject().add( convert( obj ) ) );
         
         String documentId = signatureObject.map( SignatureObject::getSignaturePtr )
                 .map( SignaturePtr::getWhichDocument )
@@ -194,7 +192,7 @@ public class VerificationClient
         
         data.ifPresent( binary -> {
             Base64Data b64Data = new Base64Data();
-            b64Data.setValue( new DataHandler( new ByteArrayDataSource( binary, "application/octet-stream" ) ) );
+            b64Data.setValue( binary );
             
             DocumentType document = new DocumentType();
             document.setBase64Data( b64Data );
@@ -206,6 +204,19 @@ public class VerificationClient
         } );
         
         return request;
+    }
+    
+    de.bund.bsi.ecard.api._1.SignatureObject convert( SignatureObject obj )
+    {
+        de.bund.bsi.ecard.api._1.SignatureObject sigObj = new de.bund.bsi.ecard.api._1.SignatureObject();
+        sigObj.setBase64Signature( obj.getBase64Signature() );
+        sigObj.setOther( obj.getOther() );
+        sigObj.setSignature( obj.getSignature() );
+        sigObj.setSignaturePtr( obj.getSignaturePtr() );
+        sigObj.setTimestamp( obj.getTimestamp() );
+        sigObj.getSchemaRefs().addAll( obj.getSchemaRefs() );
+        
+        return sigObj;
     }
     
     /**

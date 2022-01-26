@@ -54,8 +54,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import de.bund.bsi.tr_esor.vr.CredentialValidityType;
+import de.bund.bsi.tr_esor.vr.CredentialValidityType.RelatedObjects;
 import de.bund.bsi.tr_esor.vr.CredentialsSectionValidityType;
-import de.bund.bsi.tr_esor.vr.RelatedObjectsType;
 import de.bund.bsi.tr_esor.vr.XAIPValidityType;
 import de.bund.bsi.tresor.aip.validator.api.boundary.ProtocolAssembler;
 import de.bund.bsi.tresor.aip.validator.api.control.AIPUtil;
@@ -193,7 +193,7 @@ public class DefaultProtocolAssembler implements ProtocolAssembler
     
     Set<CredentialValidityType> addRelations( ModuleContext context, Set<CredentialValidityType> reports )
     {
-        Map<String, RelatedObjectsType> relatedObjectByCredId = context.find( DefaultSyntaxValidatorContext.class )
+        Map<String, RelatedObjects> relatedObjectByCredId = context.find( DefaultSyntaxValidatorContext.class )
                 .map( DefaultSyntaxValidatorContext::getRelatedObjectByCredId )
                 .orElse( emptyMap() );
         

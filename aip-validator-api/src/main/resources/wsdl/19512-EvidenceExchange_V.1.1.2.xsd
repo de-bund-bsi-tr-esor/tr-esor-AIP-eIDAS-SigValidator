@@ -3,7 +3,7 @@
 <!-- This document is part of ETSI TS 119 512 v.1.1.2 -->
 <!-- ================================================ -->
 <schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:ex="http://uri.etsi.org/19512/exchange/v1.1.2#" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ds-rw="http://docs.oasis-open.org/dss-x/ns/xmldsig/rewritten" xmlns:pres="http://uri.etsi.org/19512/v1.1.2#" targetNamespace="http://uri.etsi.org/19512/exchange/v1.1.2#" elementFormDefault="qualified" attributeFormDefault="unqualified" version="1.1.2">
-	<import namespace="http://docs.oasis-open.org/dss-x/ns/xmldsig/rewritten" schemaLocation="http://docs.oasis-open.org/dss-x/dss-core/v2.0/cs02/schema/oasis-dss-rw-xmldsig-core-schema.xsd"/>
+	<import namespace="http://docs.oasis-open.org/dss-x/ns/xmldsig/rewritten" schemaLocation="./deps/oasis-dss-rw-xmldsig-core-schema.xsd"/>
 	<import namespace="http://uri.etsi.org/19512/v1.1.2#" schemaLocation="19512-Preservation-API_V.1.1.2.xsd"/>
 	<!-- ======================================= -->
 	<!-- Evidence Exchange Format				 -->

@@ -8,7 +8,7 @@
 	<xs:import namespace="urn:oasis:names:tc:SAML:2.0:assertion" schemaLocation="./deps/saml-schema-assertion-2.0.xsd"/>
 	<xs:import namespace="http://www.w3.org/2005/05/xmlmime" schemaLocation="./deps/xmlmime.xsd"/>
 	<!--============================================================-->
-	<!-- Version 1.3.0 vom 05.03.2021                                                                            -->
+	<!-- Version 1.3.0 vom 30.11.2021                                                                            -->
 	<!--============================================================-->
 	<!--============================================================-->
 	<!-- XAIP gesamt -->
@@ -47,6 +47,7 @@
 			<xs:element name="preservationInfo" type="xaip:preservationInfoType"/>
 			<xs:element name="submissionInfo" type="xaip:submissionInfoType" minOccurs="0"/>
 			<xs:element name="packageInfoUnit" type="xaip:packageInfoUnitType" maxOccurs="unbounded"/>
+			<xs:element ref="xaip:idAssignmentList" minOccurs="0"/>
 			<xs:element name="extension" type="xaip:extensionType" minOccurs="0"/>
 		</xs:sequence>
 		<xs:attribute name="VersionID" type="xs:ID" use="required"/>
@@ -219,5 +220,19 @@
 	</xs:complexType>
 	<xs:complexType name="placeHolderType">
 		<xs:attribute name="objectID" type="xs:ID" use="required"/>
+	</xs:complexType>
+	<xs:element name="idAssignmentList" type="xaip:idAssignmentListType"/>
+	<xs:complexType name="idAssignmentListType">
+		<xs:sequence>
+			<xs:element ref="xaip:idAssignmentPointer" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="idAssignmentListID" type="xs:ID" use="required"/>
+	</xs:complexType>
+	<xs:element name="idAssignmentPointer" type="xaip:idAssignmentPointerType"/>
+	<xs:complexType name="idAssignmentPointerType">
+		<xs:sequence>
+			<xs:element ref="xaip:checkSum"/>
+		</xs:sequence>
+		<xs:attribute name="objectRef" type="xs:IDREF" use="required"/>
 	</xs:complexType>
 </xs:schema>

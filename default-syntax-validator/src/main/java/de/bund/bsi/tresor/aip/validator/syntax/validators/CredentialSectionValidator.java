@@ -30,7 +30,7 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
 
-import de.bund.bsi.tr_esor.vr.RelatedObjectsType;
+import de.bund.bsi.tr_esor.vr.CredentialValidityType.RelatedObjects;
 import de.bund.bsi.tr_esor.xaip.CredentialType;
 import de.bund.bsi.tr_esor.xaip.CredentialsSectionType;
 import de.bund.bsi.tr_esor.xaip.DataObjectType;
@@ -53,7 +53,7 @@ public enum CredentialSectionValidator
      *            the credential section
      * @return the validation result
      */
-    public Map<String, RelatedObjectsType> validateCredentialsSection( Optional<CredentialsSectionType> credentialsSection )
+    public Map<String, RelatedObjects> validateCredentialsSection( Optional<CredentialsSectionType> credentialsSection )
     {
         return credentialsSection.map( section -> section.getCredential().stream()
                 .map( this::relationsXPath )
@@ -69,9 +69,9 @@ public enum CredentialSectionValidator
      *            the credential
      * @return the relationsXPath by credentialId or null if no relation could be resolved
      */
-    public Map.Entry<String, RelatedObjectsType> relationsXPath( CredentialType credential )
+    public Map.Entry<String, RelatedObjects> relationsXPath( CredentialType credential )
     {
-        RelatedObjectsType related = new RelatedObjectsType();
+        RelatedObjects related = new RelatedObjects();
         credential.getRelatedObjects().stream()
                 .filter( DataObjectType.class::isInstance )
                 .map( AIPUtil::idFromObject )
@@ -91,6 +91,6 @@ public enum CredentialSectionValidator
                 .forEach( related.getXPath()::add );
         
         return related.getXPath().isEmpty() ? null
-                : new AbstractMap.SimpleEntry<String, RelatedObjectsType>( credential.getCredentialID(), related );
+                : new AbstractMap.SimpleEntry<String, RelatedObjects>( credential.getCredentialID(), related );
     }
 }

@@ -34,8 +34,8 @@ import java.util.Map;
 import java.util.Optional;
 
 import de.bund.bsi.tr_esor.vr.MetaDataObjectValidityType;
+import de.bund.bsi.tr_esor.vr.MetaDataObjectValidityType.RelatedObjects;
 import de.bund.bsi.tr_esor.vr.MetaDataSectionValidityType;
-import de.bund.bsi.tr_esor.vr.RelatedObjectsType;
 import de.bund.bsi.tr_esor.xaip.DataObjectsSectionType;
 import de.bund.bsi.tr_esor.xaip.MetaDataObjectType;
 import de.bund.bsi.tr_esor.xaip.MetaDataSectionType;
@@ -115,14 +115,14 @@ public enum MetaDataValidator
      *            the related objects
      * @return the {@link RelatedObjectsType} which contains the xpaths
      */
-    public RelatedObjectsType pathRelatedObjects( List<Object> relatedObjects )
+    public RelatedObjects pathRelatedObjects( List<Object> relatedObjects )
     {
         List<String> xPaths = relatedObjects.stream()
                 .map( AIPUtil::idFromObject )
                 .map( AIPUtil::xPathForObjectId )
                 .collect( toList() );
         
-        RelatedObjectsType objects = new RelatedObjectsType();
+        RelatedObjects objects = new RelatedObjects();
         objects.getXPath().addAll( xPaths );
         
         return objects;
