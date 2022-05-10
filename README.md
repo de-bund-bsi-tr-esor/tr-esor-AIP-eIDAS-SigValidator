@@ -22,7 +22,7 @@ cd tr-esor-AIP-eIDAS-SigValidator
 
 mvn clean package
 
-java -jar aip-validator-cli/target/aip-validator-cli.jar -i ~/sample.xaip -Mvalidator.schemaDir=default-syntax-validator/src/main/resources/definition
+java -jar aip-validator-cli/target/aip-validator-cli.jar -i ~/sample.xaip -Mvalidator.schemaDir=default-syntax-validator/src/main/resources/definitions
 
 # CLI
 # Mac/Linux/Windows
@@ -34,7 +34,7 @@ java -jar aip-validator-cli/target/aip-validator-cli.jar -i ~/sample.xaip -Mvali
 java -cp "aip-validator-soap/target/aip-validator-soap-1.0.8-2.jar:aip-validator-soap/target/dependency/*" de.bund.bsi.tresor.aip.validator.soap.Server -Mvalidator.schemaDir=default-syntax-validator/src/main/resources/definitions -Mverifier.wsdlUrl="http://host:port/VerificationService/S4?wsdl"
 
 # Windows
-java -cp "aip-validator-soap/target/aip-validator-soap-1.0.8-2.jar;target/dependency/*" de.bund.bsi.tresor.aip.validator.soap.Server -Mvalidator.schemaDir=default-syntax-validator/src/main/resources/definition -Mverifier.wsdlUrl="https://host:port/VerificationService/S4?wsdl"
+java -cp "aip-validator-soap/target/aip-validator-soap-1.0.8-2.jar;target/dependency/*" de.bund.bsi.tresor.aip.validator.soap.Server -Mvalidator.schemaDir=default-syntax-validator/src/main/resources/definitions -Mverifier.wsdlUrl="https://host:port/VerificationService/S4?wsdl"
 ```
 
 ## Prerequisites
@@ -98,7 +98,7 @@ cd tr-esor-AIP-eIDAS-SigValidator
 mvn clean package
 mvn javadoc:aggregate -Ddoclint=none
 
-java -jar aip-validator-cli/target/aip-validator-cli.jar -i ~/sample.xaip -Mvalidator.schemaDir=default-syntax-validator/src/main/resources/definition
+java -jar aip-validator-cli/target/aip-validator-cli.jar -i ~/sample.xaip -Mvalidator.schemaDir=default-syntax-validator/src/main/resources/definitions
 
 
 ```
@@ -178,7 +178,7 @@ Any known issues about the validator are being explained at the bottom of this p
     Example: -c config.properties
 
     Content of config.properties:
-      validator.schemaDir=/tmp/xaip/definition
+      validator.schemaDir=/tmp/xaip/definitions
       verifier.wsdlUrl=http://localhost:8080/s4?wsdl
 
 -i, --in, --input <file>
@@ -242,7 +242,7 @@ Any known issues about the validator are being explained at the bottom of this p
     Example: -c config.properties
 
     Content of config.properties:
-      validator.schemaDir=/tmp/xaip/definition
+      validator.schemaDir=/tmp/xaip/definitions
       verifier.wsdlUrl=http://localhost:8080/s4?wsdl
 
 -p, --port <port>
