@@ -35,10 +35,12 @@ import javax.xml.bind.JAXB;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.namespace.QName;
+import javax.xml.transform.dom.DOMSource;
 import javax.xml.ws.soap.MTOM;
 
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.cxf.annotations.SchemaValidation;
+import org.w3c.dom.Node;
 
 import de.bund.bsi.ecard.api._1.ECard;
 import de.bund.bsi.ecard.api._1.GetCertificate;
@@ -115,11 +117,9 @@ public class AIPValidator implements ECard
                 .map( DocumentType.class::cast )
                 .map( DocumentType::getInlineXML )
                 .map( InlineXMLType::getAny )
-                .filter( JAXBElement.class::isInstance )
-                .map( JAXBElement.class::cast )
-                .map( JAXBElement::getValue )
-                .filter( XAIPType.class::isInstance )
-                .map( XAIPType.class::cast )
+                .filter( Node.class::isInstance )
+                .map( Node.class::cast )
+                .map( node -> JAXB.unmarshal( new DOMSource( node ), XAIPType.class ) )
                 .collect( toList() );
     }
     
@@ -179,6 +179,7 @@ public class AIPValidator implements ECard
         VerifyResponse response = new VerifyResponse();
         response.setResult( result );
         response.setOptionalOutputs( outputs );
+        response.setProfile( getClass().getCanonicalName() );
         
         return response;
     }

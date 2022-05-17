@@ -56,10 +56,10 @@ public final class CLI
      */
     public static void main( String[] argv )
     {
-        if ( true )
-        {
-            throw new IllegalStateException( "TODO: test soap server and verification service with new ecard api" );
-        }
+        // if ( true )
+        // {
+        // throw new IllegalStateException( "TODO: test soap server and verification service with new ecard api" );
+        // }
         // disable no optimization to prevent warning output
         System.setProperty( "com.sun.xml.bind.v2.bytecode.ClassTailor.noOptimize", "true" );
         Optional.ofNullable( LogManager.getLogManager().getLogger( "" ) ).ifPresent( logger -> logger.setLevel( Level.WARNING ) );
