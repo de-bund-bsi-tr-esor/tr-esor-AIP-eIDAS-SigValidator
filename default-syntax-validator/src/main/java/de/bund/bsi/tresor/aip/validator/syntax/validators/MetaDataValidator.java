@@ -109,11 +109,11 @@ public enum MetaDataValidator
     }
     
     /**
-     * Returning a {@link RelatedObjectsType} which contain the xpath to the related objects
+     * Returning a {@link RelatedObjects} which contain the xpath to the related objects
      * 
      * @param relatedObjects
      *            the related objects
-     * @return the {@link RelatedObjectsType} which contains the xpaths
+     * @return the {@link RelatedObjects} which contains the xpaths
      */
     public RelatedObjects pathRelatedObjects( List<Object> relatedObjects )
     {
