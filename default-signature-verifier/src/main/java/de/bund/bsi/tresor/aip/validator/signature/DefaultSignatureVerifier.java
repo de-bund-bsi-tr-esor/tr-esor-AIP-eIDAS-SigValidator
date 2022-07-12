@@ -29,6 +29,7 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.io.SAXReader;
 
@@ -42,9 +43,13 @@ import de.bund.bsi.tr_esor.xaip.XAIPType;
 import de.bund.bsi.tresor.aip.validator.api.boundary.SignatureVerifier;
 import de.bund.bsi.tresor.aip.validator.api.control.AIPUtil;
 import de.bund.bsi.tresor.aip.validator.api.control.ModuleLogger;
+import de.bund.bsi.tresor.aip.validator.api.control.VerificationUtil;
+import de.bund.bsi.tresor.aip.validator.api.entity.DefaultResult;
+import de.bund.bsi.tresor.aip.validator.api.entity.DefaultResult.ResultLanguage;
 import de.bund.bsi.tresor.aip.validator.api.entity.ModuleContext;
 import de.bund.bsi.tresor.aip.validator.syntax.context.DefaultSyntaxValidatorContext;
 import lombok.Getter;
+import oasis.names.tc.dss._1_0.core.schema.Result;
 import oasis.names.tc.dss._1_0.core.schema.SignatureObject;
 
 /**
@@ -108,6 +113,37 @@ public class DefaultSignatureVerifier implements SignatureVerifier
         }
         
         return resultList;
+    }
+    
+    @Override
+    public List<CredentialValidityType> validate( ModuleContext context, XAIPType xaip, Map<String, Set<String>> credIdsByDataId )
+    {
+        Result skippedResult = DefaultResult.indetermined()
+                .message( "the signature validation has been skipped", ResultLanguage.ENGLISH )
+                .build();
+        
+        List<CredentialValidityType> result = new ArrayList<>();
+        for ( Entry<String, Set<String>> entry : credIdsByDataId.entrySet() )
+        {
+            String dataId = entry.getKey();
+            for ( String credId : entry.getValue() )
+            {
+                CredentialValidityType validityType = new CredentialValidityType();
+                validityType.setCredentialID( credId );
+                validityType.setOther( VerificationUtil.verificationResult( skippedResult ) );
+                
+                if ( StringUtils.isNoneBlank( dataId ) )
+                {
+                    RelatedObjects relatedObjects = new RelatedObjects();
+                    relatedObjects.getXPath().add( AIPUtil.xPathForObjectId( dataId ) );
+                    validityType.setRelatedObjects( relatedObjects );
+                }
+                
+                result.add( validityType );
+            }
+        }
+        
+        return result;
     }
     
     Optional<byte[]> binaryDataFromObject( XAIPType xaip, Optional<String> oid )
@@ -219,5 +255,4 @@ public class DefaultSignatureVerifier implements SignatureVerifier
             return optFavor ? alternativeFavorite : optional;
         }
     }
-    
 }

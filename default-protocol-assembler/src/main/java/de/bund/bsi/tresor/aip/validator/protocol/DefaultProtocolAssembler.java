@@ -31,8 +31,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Predicate;
-import java.util.stream.Stream;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
@@ -60,7 +58,6 @@ import de.bund.bsi.tr_esor.vr.XAIPValidityType;
 import de.bund.bsi.tresor.aip.validator.api.boundary.ProtocolAssembler;
 import de.bund.bsi.tresor.aip.validator.api.control.AIPUtil;
 import de.bund.bsi.tresor.aip.validator.api.control.ModuleLogger;
-import de.bund.bsi.tresor.aip.validator.api.control.VerificationUtil;
 import de.bund.bsi.tresor.aip.validator.api.entity.DefaultResult;
 import de.bund.bsi.tresor.aip.validator.api.entity.DefaultResult.Major;
 import de.bund.bsi.tresor.aip.validator.api.entity.DefaultResult.ResultLanguage;
@@ -74,7 +71,6 @@ import oasis.names.tc.dss._1_0.core.schema.VerificationTimeInfoType;
 import oasis.names.tc.dss_x._1_0.profiles.verificationreport.schema_.IndividualReportType;
 import oasis.names.tc.dss_x._1_0.profiles.verificationreport.schema_.SignedObjectIdentifierType;
 import oasis.names.tc.dss_x._1_0.profiles.verificationreport.schema_.VerificationReportType;
-import oasis.names.tc.dss_x._1_0.profiles.verificationreport.schema_.VerificationResultType;
 
 /**
  * Implementation of the ProtocolAssembler module from the XAIPValidator.
@@ -178,19 +174,6 @@ public class DefaultProtocolAssembler implements ProtocolAssembler
         return DefaultResult.major( resultMajor ).message( resultMessage, ResultLanguage.ENGLISH ).build();
     }
     
-    Result createResult( VerificationResultType vrResult )
-    {
-        Major formatOk = Major.fromUri( vrResult.getResultMajor() ).orElse( Major.RESPONDER_ERROR );
-        Major resultMajor = formatOk.isPositiv() ? Major.SUCCESS : Major.RESPONDER_ERROR;
-        
-        Result result = new Result();
-        result.setResultMajor( resultMajor.getUri() );
-        result.setResultMinor( vrResult.getResultMinor() );
-        result.setResultMessage( vrResult.getResultMessage() );
-        
-        return result;
-    }
-    
     Set<CredentialValidityType> addRelations( ModuleContext context, Set<CredentialValidityType> reports )
     {
         Map<String, RelatedObjects> relatedObjectByCredId = context.find( DefaultSyntaxValidatorContext.class )
@@ -204,29 +187,5 @@ public class DefaultProtocolAssembler implements ProtocolAssembler
         }
         
         return reports;
-    }
-    
-    CredentialValidityType ensureReportContent( CredentialValidityType type )
-    {
-        boolean hasAnyReport = Stream.of( type.getDetailedSignatureReport(),
-                type.getEvidenceRecordReport(),
-                type.getIndividualAttributeCertificateReport(),
-                type.getIndividualCertificateReport(),
-                type.getIndividualCRLReport(),
-                type.getIndividualOCSPReport(),
-                type.getIndividualTimeStampReport(),
-                type.getOther() )
-                .anyMatch( Predicate.not( Objects::isNull ) );
-        
-        if ( !hasAnyReport )
-        {
-            Result result = DefaultResult.major( Major.WARNING )
-                    .message( "could not determine any result", ResultLanguage.ENGLISH )
-                    .build();
-            
-            type.setOther( VerificationUtil.verificationResult( result ) );
-        }
-        
-        return type;
     }
 }

@@ -98,22 +98,29 @@ public enum Dispatcher
         XAIPValidityType xaipReport = syntaxResult.getSyntaxReport();
         List<CredentialValidityType> credentialReports = new ArrayList<>();
         
-        if ( args.isVerify() )
-        {
-            syntaxResult.getXaip().ifPresent( xaip -> {
-                Map<String, Set<String>> signatures = sigFinder.findSignatures( ctx, xaip );
-                Integer size = signatures.entrySet().stream()
-                        .map( Entry::getValue )
-                        .map( Set::size )
-                        .reduce( 0, ( a, b ) -> a + b );
-                
-                ModuleLogger.log( size + " signatures found" );
-                ModuleLogger.log( "finished signature search" );
-                
+        // TODO use result from sigFinder to add requirements
+        // usage of assembler might be an option at this point
+        syntaxResult.getXaip().ifPresent( xaip -> {
+            Map<String, Set<String>> signatures = sigFinder.findSignatures( ctx, xaip );
+            Integer size = signatures.entrySet().stream()
+                    .map( Entry::getValue )
+                    .map( Set::size )
+                    .reduce( 0, ( a, b ) -> a + b );
+            
+            ModuleLogger.log( size + " signatures found" );
+            ModuleLogger.log( "finished signature search" );
+            
+            if ( args.isVerify() )
+            {
                 credentialReports.addAll( sigVerifier.verify( ctx, xaip, signatures ) );
-                ModuleLogger.log( "finished signature verification" );
-            } );
-        }
+            }
+            else
+            {
+                credentialReports.addAll( sigVerifier.validate( ctx, xaip, signatures ) );
+            }
+            
+            ModuleLogger.log( "finished signature verification" );
+        } );
         
         VerificationReportType verificationReport = protocolAssembler.assembleProtocols( ctx, xaipReport, credentialReports );
         ModuleLogger.log( "finished protocol assembling" );

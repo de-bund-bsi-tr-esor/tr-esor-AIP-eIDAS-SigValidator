@@ -73,4 +73,41 @@ public interface SignatureVerifier extends ValidatorModule
      */
     public List<CredentialValidityType> verify( ModuleContext context, XAIPType xaip, Map<String, Set<String>> credIdsByDataId );
     
+    /**
+     * This method will be called instead of verify when the signatureValidation is disabled. </br>
+     * </br>
+     * Signature will not be verified in this operation. XPath expressions to the signatures will be added to the credentialSection instead
+     * to display the signatures found by the signatureFinder.</br>
+     * </br>
+     * Resolving the {@link DataObjectType} and {@link CredentialType} by the provided ids from the {@link SignatureFinder} and adding xPath
+     * relations for the signatures.</br>
+     * 
+     * @param context
+     *            moduleContext which can be used to add additional results/arguments for subsequent modules or evaluate those additional
+     *            data
+     * @param xaip
+     *            the xaip to validate
+     * @param credIdsByDataId
+     *            a set of credentialIds as value mapped by the dataObjectId as key which contain a signature.</br>
+     *            The entries can contain any permutation of:</br>
+     *            <ul>
+     *            <li>dataObjectId without any credentialIds</li>
+     *            <ul>
+     *            <li>when the dataObject contains an embedded signature</li>
+     *            </ul>
+     *            <li>dataObjectId with credentialId(s)</li>
+     *            <ul>
+     *            <li>when the dataObject contains an embedded signature and the credential holds a pointer to those data</li>
+     *            <li>when the dataObject contains a detached signature which is hold by the credential</li>
+     *            <li>when the credential holds a timestamp</li>
+     *            </ul>
+     *            <li>credentialId(s) mapped to the key <code>null</code></li>
+     *            <ul>
+     *            <li>when the credential contains data with an embedded signature without any dataObject reference</li>
+     *            </ul>
+     *            </ul>
+     * @return the verification result in form of an {@link IndividualReportType}s
+     */
+    public List<CredentialValidityType> validate( ModuleContext context, XAIPType xaip, Map<String, Set<String>> credIdsByDataId );
+    
 }
