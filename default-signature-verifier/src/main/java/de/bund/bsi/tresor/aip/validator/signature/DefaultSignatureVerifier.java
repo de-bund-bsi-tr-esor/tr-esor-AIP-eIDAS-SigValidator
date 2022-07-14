@@ -61,7 +61,7 @@ import oasis.names.tc.dss._1_0.core.schema.SignatureObject;
 public class DefaultSignatureVerifier implements SignatureVerifier
 {
     private final String          vendor  = "BSI";
-    private final String          version = "1.0.0";
+    private final String          version = "1.1.0";
     
     private DefaultVerifierConfig config;
     private VerificationClient    client;
