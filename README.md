@@ -361,6 +361,9 @@ e-mail: anfrage@procilon.de
 
 - 1.0.0
 	- inital version
+- 1.1.0
+	- proper usage of eCard API
+	- adding local xPath informations when disabling the verification
 
 ### Default Assembler ###
 
