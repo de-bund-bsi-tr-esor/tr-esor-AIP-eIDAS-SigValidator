@@ -322,7 +322,7 @@ The following issues are known:
 
 ## Test Environment ##
 
-- Use the following URL for the validation service: https://tresortest.protectr.de/VerificationService/S4?wsdl
+- Use the following URL for the validation service: https://staging.protectr.de/VerificationService/S4?wsdl
 - Some test material can be found in aip-validator-cli/src/test/resources/samples
 
 ## License ##
