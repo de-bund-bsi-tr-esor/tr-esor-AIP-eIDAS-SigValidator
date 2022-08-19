@@ -326,7 +326,7 @@ The following issues are known:
 
 ## Test Environment ##
 
-- Use the following URL for the validation service: https://tresortest.protectr.de/Test_VerificationService/eCard?wsdl
+- Use the following URL for the validation service: https://tresortest.protectr.de/VerificationService/eCard?wsdl
 - Some test material can be found in aip-validator-cli/src/test/resources/samples
 
 ## License ##
