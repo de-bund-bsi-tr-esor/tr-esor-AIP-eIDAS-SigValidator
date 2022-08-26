@@ -24,6 +24,10 @@ package de.bund.bsi.tresor.aip.validator.signature;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.AbstractMap;
 import java.util.Collection;
 import java.util.HashSet;
@@ -32,10 +36,12 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
+import org.etsi.uri._02918.v1_2.DataObjectReferenceType;
 
 import de.bund.bsi.tr_esor.xaip.CredentialType;
 import de.bund.bsi.tr_esor.xaip.DataObjectType;
 import de.bund.bsi.tr_esor.xaip.DataObjectsSectionType;
+import de.bund.bsi.tr_esor.xaip.ExtensionType;
 import de.bund.bsi.tr_esor.xaip.MetaDataObjectType;
 import de.bund.bsi.tr_esor.xaip.MetaDataSectionType;
 import de.bund.bsi.tresor.aip.validator.api.control.AIPUtil;
@@ -102,10 +108,17 @@ public class CredentialSectionAnalyzer
             Set<FinderResult<T>> anyDataSectionResults )
     {
         Set<FinderResult<T>> sigResults = new HashSet<>();
-        SignatureObject signObj = credential.getSignatureObject();
-        SignaturePtr signaturePtr = signObj.getSignaturePtr();
-        Optional<byte[]> b64Signature = Optional.ofNullable( signObj.getBase64Signature() ).map( Base64Signature::getValue );
-        Optional<org.w3._2000._09.xmldsig_.SignatureType> signType = Optional.ofNullable( signObj.getSignature() );
+        
+        Optional<byte[]> lxaipData = Optional.ofNullable( credential.getOther() )
+                .map( ExtensionType::getAny )
+                .flatMap( AIPUtil::findDataReferences )
+                .map( DataObjectReferenceType::getURI )
+                .map( CredentialSectionAnalyzer::dataFromURI );
+        
+        Optional<SignatureObject> signObj = Optional.ofNullable( credential.getSignatureObject() );
+        Optional<SignaturePtr> optPtr = signObj.map( SignatureObject::getSignaturePtr );
+        Optional<byte[]> b64Signature = signObj.map( SignatureObject::getBase64Signature ).map( Base64Signature::getValue );
+        Optional<org.w3._2000._09.xmldsig_.SignatureType> signType = signObj.map( SignatureObject::getSignature );
         
         if ( relatedData.isEmpty() )
         {
@@ -132,8 +145,12 @@ public class CredentialSectionAnalyzer
             
             Optional<InputStream> optData = optDataBlob.map( ByteArrayInputStream::new );
             
+            if ( lxaipData.isPresent() )
+            {
+                sigResults.add( new FinderResult<T>( dataObject, SignaturePresence.PRESENT, lxaipData.map( ByteArrayInputStream::new ) ) );
+            }
             // TODO: only when optData present; is this correct?
-            if ( optData.isPresent() && (signType.isPresent() || signObj.getTimestamp() != null) )
+            else if ( optData.isPresent() && (signType.isPresent() || signObj.map( SignatureObject::getTimestamp ).isPresent()) )
             {
                 sigResults.add( new FinderResult<T>( dataObject, SignaturePresence.PRESENT, optData ) );
             }
@@ -142,9 +159,9 @@ public class CredentialSectionAnalyzer
                 b64Signature.flatMap( data -> DataAnalyzer.findSignatures( dataObject, Optional.of( data ) ) )
                         .ifPresent( sigResults::add );
             }
-            else if ( signaturePtr != null )
+            else if ( optPtr.isPresent() )
             {
-                sigResults.add( analyzePointer( signaturePtr, dataObject, optData ) );
+                sigResults.add( analyzePointer( optPtr.get(), dataObject, optData ) );
             }
             else
             {
@@ -153,6 +170,21 @@ public class CredentialSectionAnalyzer
         }
         
         return sigResults;
+    }
+    
+    static byte[] dataFromURI( String url )
+    {
+        try
+        {
+            return Files.readAllBytes( Paths.get( new URL( url ).toURI() ) );
+        }
+        catch ( IOException | URISyntaxException e )
+        {
+            // could not read lxaip data
+            ModuleLogger.verbose( "could not retrieve lxaip data from dataObject", e );
+        }
+        
+        return null;
     }
     
     static <T> Optional<byte[]> dataSupplier( T anyDataObj )

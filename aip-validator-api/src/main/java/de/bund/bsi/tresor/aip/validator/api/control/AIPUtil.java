@@ -26,9 +26,10 @@ import static java.util.stream.Collectors.toSet;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -131,6 +132,14 @@ public class AIPUtil
                 .map( PackageHeaderType::getAOID );
     }
     
+    public static Optional<DataObjectReferenceType> findDataReferences( DataObjectType dataObject )
+    {
+        return Optional.ofNullable( dataObject )
+                .map( DataObjectType::getXmlData )
+                .map( AnyType::getAny )
+                .flatMap( AIPUtil::findDataReferences );
+    }
+    
     /**
      * Searching for any {@link DataObjectReferenceType} which is being used in lxaip's
      * 
@@ -138,11 +147,9 @@ public class AIPUtil
      *            the dataObject
      * @return the optional dataObjectReference
      */
-    public static Optional<DataObjectReferenceType> findDataReferences( DataObjectType dataObject )
+    public static Optional<DataObjectReferenceType> findDataReferences( List<Object> xmlAnyType )
     {
-        return Optional.ofNullable( dataObject )
-                .map( DataObjectType::getXmlData )
-                .map( AnyType::getAny )
+        return Optional.ofNullable( xmlAnyType )
                 .stream()
                 .flatMap( List::stream )
                 .filter( JAXBElement.class::isInstance )
@@ -323,18 +330,18 @@ public class AIPUtil
         try ( ByteArrayInputStream xmlIn = new ByteArrayInputStream( xmlData ) )
         {
             DataObjectReferenceType dataRef = JAXB.unmarshal( xmlIn, DataObjectReferenceType.class );
-            Optional<Path> optPath = Optional.ofNullable( dataRef.getURI() ).map( Paths::get );
+            Optional<String> optUrl = Optional.ofNullable( dataRef.getURI() );
             
-            if ( optPath.isPresent() )
+            if ( optUrl.isPresent() )
             {
-                result = Optional.of( Files.readAllBytes( optPath.get() ) );
+                result = Optional.of( Files.readAllBytes( Paths.get( new URL( optUrl.get() ).toURI() ) ) );
             }
         }
         catch ( DataBindingException e )
         {
             // no lxaip
         }
-        catch ( IOException e )
+        catch ( IOException | URISyntaxException e )
         {
             // could not read lxaip data
             ModuleLogger.verbose( "could not retrieve lxaip data from dataObject", e );

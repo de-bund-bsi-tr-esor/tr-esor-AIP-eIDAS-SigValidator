@@ -21,23 +21,34 @@
  */
 package de.bund.bsi.tresor.aip.validator.signature;
 
+import static de.bund.bsi.tresor.aip.validator.signature.XmlSignatureEncoder.b64EncodeCredentialXmlSignatureObject;
+import static de.bund.bsi.tresor.aip.validator.signature.XmlSignatureEncoder.b64EncodeDataObjectPlainXml;
+
+import java.io.IOException;
 import java.io.InputStream;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.io.SAXReader;
+import org.etsi.uri._02918.v1_2.DataObjectReferenceType;
 
 import de.bund.bsi.tr_esor.vr.CredentialValidityType;
 import de.bund.bsi.tr_esor.vr.CredentialValidityType.RelatedObjects;
 import de.bund.bsi.tr_esor.xaip.CredentialType;
 import de.bund.bsi.tr_esor.xaip.CredentialsSectionType;
 import de.bund.bsi.tr_esor.xaip.DataObjectsSectionType;
+import de.bund.bsi.tr_esor.xaip.ExtensionType;
 import de.bund.bsi.tr_esor.xaip.MetaDataSectionType;
 import de.bund.bsi.tr_esor.xaip.XAIPType;
 import de.bund.bsi.tresor.aip.validator.api.boundary.SignatureVerifier;
@@ -49,6 +60,7 @@ import de.bund.bsi.tresor.aip.validator.api.entity.DefaultResult.ResultLanguage;
 import de.bund.bsi.tresor.aip.validator.api.entity.ModuleContext;
 import de.bund.bsi.tresor.aip.validator.syntax.context.DefaultSyntaxValidatorContext;
 import lombok.Getter;
+import oasis.names.tc.dss._1_0.core.schema.Base64Signature;
 import oasis.names.tc.dss._1_0.core.schema.Result;
 import oasis.names.tc.dss._1_0.core.schema.SignatureObject;
 
@@ -103,8 +115,10 @@ public class DefaultSignatureVerifier implements SignatureVerifier
                             .map( CredentialsSectionType::getCredential )
                             .flatMap( List::stream )
                             .filter( credObj -> credObj.getCredentialID().equals( credId ) )
-                            .map( CredentialType::getSignatureObject )
+                            .map( this::resolveCredential )
+                            .filter( Objects::nonNull )
                             .findAny();
+                    // TODO lxaip from esor:other/asic:DataObjectReference
                     
                     List<CredentialValidityType> result = verifySignature( oid.orElse( null ), credId, signObj, data, syntaxContext );
                     resultList.addAll( addMissingRelations( oid, result ) );
@@ -187,12 +201,12 @@ public class DefaultSignatureVerifier implements SignatureVerifier
                     Document document = new SAXReader().read( rawXaip );
                     if ( encodeDataObj )
                     {
-                        encodedXmlData = XmlSignatureEncoder.b64EncodeDataObjectPlainXml( document, dataId );
+                        encodedXmlData = b64EncodeDataObjectPlainXml( document, dataId );
                     }
                     
                     if ( encodeCredObj )
                     {
-                        encodedSignatureObj = XmlSignatureEncoder.b64EncodeCredentialXmlSignatureObject( document, credId );
+                        encodedSignatureObj = b64EncodeCredentialXmlSignatureObject( document, credId );
                     }
                     
                     encodedXmlData = chooseData( dataObjContent, encodedXmlData );
@@ -210,14 +224,9 @@ public class DefaultSignatureVerifier implements SignatureVerifier
             
             ModuleLogger.log( "[ WARN ]xml data found bound to id " + reqId
                     + " but could not parse raw xaip input which can result into an invalid signature verification" );
-            
-            return client.request( reqId, signatureObject, dataObjContent );
         }
-        else
-        {
-            
-            return client.request( reqId, signatureObject, dataObjContent );
-        }
+        
+        return client.request( reqId, signatureObject, dataObjContent );
     }
     
     List<CredentialValidityType> addMissingRelations( Optional<String> dataId, List<CredentialValidityType> req )
@@ -255,4 +264,37 @@ public class DefaultSignatureVerifier implements SignatureVerifier
             return optFavor ? alternativeFavorite : optional;
         }
     }
+    
+    SignatureObject resolveCredential( CredentialType type )
+    {
+        Optional<SignatureObject> other = Optional.ofNullable( type.getOther() )
+                .map( ExtensionType::getAny )
+                .flatMap( AIPUtil::findDataReferences )
+                .map( DataObjectReferenceType::getURI )
+                .map( url -> {
+                    try
+                    {
+                        return Files.readAllBytes( Paths.get( new URL( url ).toURI() ) );
+                    }
+                    catch ( IOException | URISyntaxException e )
+                    {
+                        // could not read lxaip data
+                        ModuleLogger.verbose( "could not retrieve lxaip data from credential", e );
+                        return null;
+                    }
+                } )
+                .map( data -> {
+                    // TODO proper conversion
+                    Base64Signature base64Sig = new Base64Signature();
+                    base64Sig.setValue( data );
+                    
+                    SignatureObject signatureObject = new SignatureObject();
+                    signatureObject.setBase64Signature( base64Sig );
+                    
+                    return signatureObject;
+                } );
+        
+        return Optional.ofNullable( type.getSignatureObject() ).orElseGet( () -> other.orElse( null ) );
+    }
+    
 }
