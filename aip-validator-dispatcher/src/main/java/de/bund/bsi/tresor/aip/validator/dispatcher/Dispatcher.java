@@ -105,6 +105,8 @@ public enum Dispatcher
             Integer size = signatures.entrySet().stream()
                     .map( Entry::getValue )
                     .map( Set::size )
+                    // embedded signatures in dataObject do not provide a credential but should count towards the found signatures output
+                    .map( entries -> entries == 0 ? 1 : entries )
                     .reduce( 0, ( a, b ) -> a + b );
             
             ModuleLogger.log( size + " signatures found" );
