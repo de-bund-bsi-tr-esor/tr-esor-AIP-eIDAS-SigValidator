@@ -3,6 +3,13 @@
 # tr-esor-AIP-eIDAS-SigValidator
 The tr-esor-AIP-eIDAS-SigValidator (or short AIP-Validator) is a tool designed for validation of XML formatted Archival Information Package (XAIP) and logical XML formatted Archival Information Packge (LXAIP). Using a modular structure and plugin mechanism, the validator is validating an XAIP by using those modules which can vary by their implementation.
 
+Supported signature formats are:
+- asic
+- asic-aip
+- cades
+- pades
+- xades
+
 Validation will be done step by step in following order:
 
 1. Dispatcher loading modules
@@ -160,7 +167,7 @@ Any known issues about the validator are being explained at the bottom of this p
     Passing a single module configuration property to the validator.
     The property and requirements for any module configuration properties are defined by the implementing module.
 
-    Example: -Mverifier.wsdlUrl=http://localhost:8080/s4?wsdl
+    Example: -Mverifier.wsdlUrl=http://localhost:8080/eCard?wsdl
 
     This example is using the property config verifier.wsdlUrl which is a required config property 
     of the DefaultVerifierModule. Instead of passing multiple module properties as an argument, a config file
@@ -179,7 +186,7 @@ Any known issues about the validator are being explained at the bottom of this p
 
     Content of config.properties:
       validator.schemaDir=/tmp/xaip/definitions
-      verifier.wsdlUrl=http://localhost:8080/s4?wsdl
+      verifier.wsdlUrl=http://localhost:8080/eCard?wsdl
 
 -i, --in, --input <file>
     Passing a <file> as a source for the aip validation.
@@ -224,7 +231,7 @@ Any known issues about the validator are being explained at the bottom of this p
     Passing a single module configuration property to the validator.
     The property and requirements for any module configuration properties are defined by the implementing module.
 
-    Example: -Mverifier.wsdlUrl=http://localhost:8080/s4?wsdl
+    Example: -Mverifier.wsdlUrl=http://localhost:8080/eCard?wsdl
 
     This example is using the property config verifier.wsdlUrl which is a required config property 
     of the DefaultVerifierModule. Instead of passing multiple module properties as an argument, a config file
@@ -243,7 +250,7 @@ Any known issues about the validator are being explained at the bottom of this p
 
     Content of config.properties:
       validator.schemaDir=/tmp/xaip/definitions
-      verifier.wsdlUrl=http://localhost:8080/s4?wsdl
+      verifier.wsdlUrl=http://localhost:8080/eCard?wsdl
 
 -p, --port <port>
 	Port the server should be published to, 8080 by default
@@ -319,7 +326,7 @@ The following issues are known:
 
 ## Test Environment ##
 
-- Use the following URL for the validation service: https://tresortest.protectr.de/VerificationService/S4?wsdl
+- Use the following URL for the validation service: https://tresortest.protectr.de/VerificationService/eCard?wsdl
 - Some test material can be found in aip-validator-cli/src/test/resources/samples
 
 ## License ##
@@ -361,6 +368,9 @@ e-mail: anfrage@procilon.de
 
 - 1.0.0
 	- inital version
+- 1.1.0
+	- proper usage of eCard API
+	- adding local xPath informations when disabling the verification
 
 ### Default Assembler ###
 
