@@ -36,6 +36,7 @@ import javax.xml.bind.Marshaller;
 
 import de.bund.bsi.tr_esor.vr.CredentialValidityType;
 import de.bund.bsi.tr_esor.vr.XAIPValidityType;
+import de.bund.bsi.tresor.aip.validator.api.boundary.DispatcherArguments;
 import de.bund.bsi.tresor.aip.validator.api.boundary.ProtocolAssembler;
 import de.bund.bsi.tresor.aip.validator.api.boundary.SignatureFinder;
 import de.bund.bsi.tresor.aip.validator.api.boundary.SignatureVerifier;
@@ -89,6 +90,8 @@ public enum Dispatcher
     public void dispatch( DispatcherArguments args )
     {
         ModuleContext ctx = new ModuleContext();
+        ctx.put( DispatcherArguments.class, args );
+        
         ModuleLogger.initConfig( args.isVerbose(), args.getLog() );
         loadModules( args.getModuleConfig() );
         

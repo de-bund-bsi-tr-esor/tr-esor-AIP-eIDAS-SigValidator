@@ -38,19 +38,10 @@ import javax.xml.namespace.QName;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.ws.soap.MTOM;
 
-import org.apache.commons.lang3.NotImplementedException;
 import org.apache.cxf.annotations.SchemaValidation;
 import org.w3c.dom.Node;
 
-import de.bund.bsi.ecard.api._1.ECard;
-import de.bund.bsi.ecard.api._1.GetCertificate;
-import de.bund.bsi.ecard.api._1.GetCertificateResponse;
-import de.bund.bsi.ecard.api._1.ShowViewer;
-import de.bund.bsi.ecard.api._1.ShowViewerResponse;
-import de.bund.bsi.ecard.api._1.SignRequest;
-import de.bund.bsi.ecard.api._1.SignResponse;
-import de.bund.bsi.ecard.api._1.VerifyRequest;
-import de.bund.bsi.ecard.api._1.VerifyResponse;
+import de.bund.bsi.ecard.api._1.S4;
 import de.bund.bsi.tr_esor.xaip.XAIPType;
 import de.bund.bsi.tresor.aip.validator.api.control.AIPUtil;
 import de.bund.bsi.tresor.aip.validator.api.entity.AIPValidatorException;
@@ -63,9 +54,9 @@ import oasis.names.tc.dss._1_0.core.schema.DocumentType;
 import oasis.names.tc.dss._1_0.core.schema.InlineXMLType;
 import oasis.names.tc.dss._1_0.core.schema.InputDocuments;
 import oasis.names.tc.dss._1_0.core.schema.InternationalStringType;
-import oasis.names.tc.dss._1_0.core.schema.RequestBaseType;
 import oasis.names.tc.dss._1_0.core.schema.ResponseBaseType;
 import oasis.names.tc.dss._1_0.core.schema.Result;
+import oasis.names.tc.dss._1_0.core.schema.VerifyRequest;
 import oasis.names.tc.dss_x._1_0.profiles.verificationreport.schema_.VerificationReportType;
 
 /**
@@ -74,12 +65,12 @@ import oasis.names.tc.dss_x._1_0.profiles.verificationreport.schema_.Verificatio
 @MTOM
 @SchemaValidation
 @AllArgsConstructor
-@WebService( endpointInterface = "de.bund.bsi.ecard.api._1.ECard",
-        serviceName = "eCard",
-        portName = "eCard",
+@WebService( endpointInterface = "de.bund.bsi.ecard.api._1.S4",
+        serviceName = "S4",
+        portName = "S4",
         targetNamespace = "http://www.bsi.bund.de/ecard/api/1.1",
-        wsdlLocation = "/wsdl/eCard.wsdl" )
-public class AIPValidator implements ECard
+        wsdlLocation = "/wsdl/tr-esor-S-4-v1.3.wsdl" )
+public class AIPValidator implements S4
 {
     private static final String MAJOR_OK            = "http://www.bsi.bund.de/tr-esor/api/1.3/resultmajor#ok";
     private static final String MAJOR_ERROR         = "http://www.bsi.bund.de/tr-esor/api/1.3/resultmajor#error";
@@ -124,19 +115,7 @@ public class AIPValidator implements ECard
     }
     
     @Override
-    public GetCertificateResponse getCertificate( GetCertificate parameters )
-    {
-        throw new NotImplementedException();
-    }
-    
-    @Override
-    public SignResponse signRequest( SignRequest parameters )
-    {
-        throw new NotImplementedException();
-    }
-    
-    @Override
-    public VerifyResponse verifyRequest( VerifyRequest parameters )
+    public ResponseBaseType verify( VerifyRequest parameters )
     {
         Result result = new Result();
         result.setResultMajor( MAJOR_ERROR );
@@ -176,29 +155,11 @@ public class AIPValidator implements ECard
         AnyType outputs = new AnyType();
         outputs.getAny().addAll( reports );
         
-        VerifyResponse response = new VerifyResponse();
+        ResponseBaseType response = new ResponseBaseType();
         response.setResult( result );
         response.setOptionalOutputs( outputs );
         response.setProfile( getClass().getCanonicalName() );
         
         return response;
-    }
-    
-    @Override
-    public ShowViewerResponse showViewer( ShowViewer parameters )
-    {
-        throw new NotImplementedException();
-    }
-    
-    @Override
-    public ResponseBaseType encryptRequest( RequestBaseType parameters )
-    {
-        throw new NotImplementedException();
-    }
-    
-    @Override
-    public ResponseBaseType decryptRequest( RequestBaseType parameters )
-    {
-        throw new NotImplementedException();
     }
 }

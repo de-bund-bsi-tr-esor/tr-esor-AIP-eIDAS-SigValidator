@@ -19,7 +19,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.bund.bsi.tresor.aip.validator.dispatcher;
+package de.bund.bsi.tresor.aip.validator.api.boundary;
 
 import java.io.InputStream;
 import java.io.OutputStream;

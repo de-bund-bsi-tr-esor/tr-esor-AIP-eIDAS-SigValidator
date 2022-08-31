@@ -55,6 +55,7 @@ import de.bund.bsi.tr_esor.vr.CredentialValidityType;
 import de.bund.bsi.tr_esor.vr.CredentialValidityType.RelatedObjects;
 import de.bund.bsi.tr_esor.vr.CredentialsSectionValidityType;
 import de.bund.bsi.tr_esor.vr.XAIPValidityType;
+import de.bund.bsi.tresor.aip.validator.api.boundary.DispatcherArguments;
 import de.bund.bsi.tresor.aip.validator.api.boundary.ProtocolAssembler;
 import de.bund.bsi.tresor.aip.validator.api.control.AIPUtil;
 import de.bund.bsi.tresor.aip.validator.api.control.ModuleLogger;
@@ -80,13 +81,19 @@ import oasis.names.tc.dss_x._1_0.profiles.verificationreport.schema_.Verificatio
 @Getter
 public class DefaultProtocolAssembler implements ProtocolAssembler
 {
-    private final String vendor  = "BSI";
-    private final String version = "1.1.0";
+    private final String        vendor  = "BSI";
+    private final String        version = "1.1.0";
+    
+    private DispatcherArguments args;
     
     @Override
     public VerificationReportType assembleProtocols( ModuleContext context, XAIPValidityType xaipReport,
             Collection<CredentialValidityType> credentialReports )
     {
+        args = context.find( DispatcherArguments.class )
+                .orElseThrow( () -> new IllegalArgumentException(
+                        "defaultProtocolAssembler is using an incompatible version of the dispatcher impl and api" ) );
+        
         var completeReport = new VerificationReportType();
         final Set<CredentialValidityType> reports = addRelations( context, new HashSet<>( credentialReports ) );
         
@@ -169,6 +176,11 @@ public class DefaultProtocolAssembler implements ProtocolAssembler
         {
             resultMajor = Major.RESPONDER_ERROR;
             ModuleLogger.log( "could not analyse and merge signature results into summary", e );
+        }
+        
+        if ( !args.isVerify() )
+        {
+            resultMajor = Major.INSUFFICIENT_INFORMATION;
         }
         
         return DefaultResult.major( resultMajor ).message( resultMessage, ResultLanguage.ENGLISH ).build();

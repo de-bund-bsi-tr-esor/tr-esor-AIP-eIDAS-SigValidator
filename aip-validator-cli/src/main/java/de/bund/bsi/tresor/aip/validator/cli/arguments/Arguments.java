@@ -32,10 +32,10 @@ import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
 import com.beust.jcommander.converters.PathConverter;
 
+import de.bund.bsi.tresor.aip.validator.api.boundary.DispatcherArguments;
 import de.bund.bsi.tresor.aip.validator.cli.MessageBundle;
 import de.bund.bsi.tresor.aip.validator.cli.converter.InputStreamConverter;
 import de.bund.bsi.tresor.aip.validator.cli.converter.OutputStreamConverter;
-import de.bund.bsi.tresor.aip.validator.dispatcher.DispatcherArguments;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

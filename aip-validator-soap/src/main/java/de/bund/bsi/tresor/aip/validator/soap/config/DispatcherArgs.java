@@ -26,7 +26,7 @@ import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-import de.bund.bsi.tresor.aip.validator.dispatcher.DispatcherArguments;
+import de.bund.bsi.tresor.aip.validator.api.boundary.DispatcherArguments;
 import lombok.Builder;
 import lombok.Data;
 
