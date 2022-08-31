@@ -136,9 +136,12 @@ public class DefaultProtocolAssembler implements ProtocolAssembler
     
     Result resultSummary( XAIPValidityType report )
     {
-        Major resultMajor = Major.SUCCESS;
-        String resultMessage = "successfully validated the xaip structure and containing signatures";
+        Major resultMajor = Major.fromUri( report.getFormatOK().getResultMajor() )
+                .map( major -> major.isPositiv() ? Major.SUCCESS : Major.ERROR )
+                .orElse( Major.ERROR );
         
+        String resultMessage = resultMajor.isPositiv() ? "successfully validated the xaip structure and containing signatures"
+                : "error on schema validation";
         try
         {
             JAXBContext context = JAXBContext.newInstance( XAIPValidityType.class );
@@ -178,7 +181,7 @@ public class DefaultProtocolAssembler implements ProtocolAssembler
             ModuleLogger.log( "could not analyse and merge signature results into summary", e );
         }
         
-        if ( !args.isVerify() )
+        if ( resultMajor.isPositiv() && !args.isVerify() )
         {
             resultMajor = Major.INSUFFICIENT_INFORMATION;
             resultMessage = "the signature validation has been skipped";
