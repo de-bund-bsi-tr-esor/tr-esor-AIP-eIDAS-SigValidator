@@ -181,6 +181,7 @@ public class DefaultProtocolAssembler implements ProtocolAssembler
         if ( !args.isVerify() )
         {
             resultMajor = Major.INSUFFICIENT_INFORMATION;
+            resultMessage = "the signature validation has been skipped";
         }
         
         return DefaultResult.major( resultMajor ).message( resultMessage, ResultLanguage.ENGLISH ).build();

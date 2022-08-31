@@ -487,9 +487,7 @@ public class AIPUtil
             
             return hasXmlStart && hasXmlEnd;
         }
-        else
-        {
-            return false;
-        }
+        
+        return false;
     }
 }
