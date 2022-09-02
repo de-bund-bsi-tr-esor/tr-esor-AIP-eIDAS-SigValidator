@@ -1,29 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<schema xmlns="http://www.w3.org/2001/XMLSchema" 
-  xmlns:tr="http://www.bsi.bund.de/tr-esor/api/1.3" 
-  xmlns:xaip="http://www.bsi.bund.de/tr-esor/xaip" 
-  xmlns:ers="urn:ietf:params:xml:ns:ers" 
-  xmlns:ec="http://www.bsi.bund.de/ecard/api/1.1" 
-  xmlns:dss="urn:oasis:names:tc:dss:1.0:core:schema" 
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+  xmlns:tr="http://www.bsi.bund.de/tr-esor/api/1.3"
+  xmlns:xaip="http://www.bsi.bund.de/tr-esor/xaip"
+  xmlns:ers="urn:ietf:params:xml:ns:ers"
+  xmlns:ec="http://www.bsi.bund.de/ecard/api/1.1"
+  xmlns:dss="urn:oasis:names:tc:dss:1.0:core:schema"
   xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" 
-  xmlns:xmime="http://www.w3.org/2005/05/xmlmime" 
-  xmlns:pres="http://uri.etsi.org/19512/v1.1.2#" 
-  targetNamespace="http://www.bsi.bund.de/tr-esor/api/1.3" 
-  elementFormDefault="qualified" attributeFormDefault="unqualified" 
-  version="1.3.0">
+  xmlns:xmime="http://www.w3.org/2005/05/xmlmime"
+  xmlns:pres="http://uri.etsi.org/19512/v1.1.2#"
+  xmlns:asic="http://uri.etsi.org/02918/v1.2.1#"
+  targetNamespace="http://www.bsi.bund.de/tr-esor/api/1.3"
+  elementFormDefault="qualified" attributeFormDefault="unqualified" version="1.3.0">
 	<!-- ======================================= -->
-	<!-- Version 1.3.0 vom 30.11.2020                                    -->
+	<!-- Version 1.3.0 vom 14.03.2022 -->
 	<!-- ======================================= -->
 	<import namespace="http://www.bsi.bund.de/tr-esor/xaip" schemaLocation="tr-esor-xaip-v1.3.xsd"/>
-    <import namespace="http://www.bsi.bund.de/tr-esor/vr" schemaLocation="tr-esor-verification-report-v1.3.xsd" />
+        <import namespace="http://www.bsi.bund.de/tr-esor/vr" schemaLocation="tr-esor-verification-report-v1.3.xsd" />
 	<import namespace="urn:oasis:names:tc:dss:1.0:core:schema" schemaLocation="./deps/oasis-dss-core-schema-v1.0-os.xsd"/>
 	<import namespace="urn:ietf:params:xml:ns:ers" schemaLocation="./deps/xml-ers-rfc6283.xsd"/>
 	<import namespace="http://www.bsi.bund.de/ecard/api/1.1" schemaLocation="./deps/eCard.xsd"/>
 	<import namespace="urn:oasis:names:tc:SAML:2.0:assertion" schemaLocation="./deps/saml-schema-assertion-2.0.xsd"/>
 	<import namespace="http://www.w3.org/2005/05/xmlmime" schemaLocation="./deps/xmlmime.xsd"/>
 	<import namespace="http://uri.etsi.org/19512/v1.1.2#" schemaLocation="19512-Preservation-API_V.1.1.2.xsd"/>
+	<import namespace="http://uri.etsi.org/02918/v1.2.1#" schemaLocation="./deps/en_31916201v010101.xsd"/>
 	<!-- =================================== -->
-	<!--     Uebergreifende Definitionen                            -->
+	<!-- Uebergreifende Definitionen         -->
 	<!-- =================================== -->
 	<complexType name="RequestType">
 		<complexContent>
@@ -47,14 +48,8 @@
 	<element name="AOID" type="string"/>
 	<element name="VerifyUnderSignaturePolicy" type="anyURI"/>
 	<element name="XPathFilter" type="string"/>
-	<element name="ContinueOnSignatureVerificationFailure" type="tr:ContinueOnSignatureVerificationFailureType"/>
-	<complexType name="ContinueOnSignatureVerificationFailureType">
-		<sequence>
-			<element name="ObjectReference" type="string" maxOccurs="unbounded"/>
-		</sequence>
-	</complexType>
 	<!-- ================================ -->
-	<!--    RetrieveInfo                                              -->
+	<!-- RetrieveInfo                     -->
 	<!-- ================================ -->
 	<element name="RetrieveInfoRequest">
 		<complexType>
@@ -80,7 +75,7 @@
 		</complexType>
 	</element>
 	<!-- ================================ -->
-	<!--    ArchiveSubmission                                   -->
+	<!-- ArchiveSubmission                -->
 	<!-- ================================ -->
 	<complexType name="ArchiveDataType" xmime:expectedContentTypes="*/*">
 		<simpleContent>
@@ -123,7 +118,7 @@
 		</complexType>
 	</element>
 	<!-- ========================== -->
-	<!--    ArchiveUpdate                             -->
+	<!-- ArchiveUpdate              -->
 	<!-- ========================== -->
 	<element name="ArchiveUpdateRequest">
 		<complexType>
@@ -148,7 +143,7 @@
 		</complexType>
 	</element>
 	<!-- ================================ -->
-	<!--    ArchiveRetrieval                                       -->
+	<!-- ArchiveRetrieval                 -->
 	<!-- ================================ -->
 	<element name="ArchiveRetrievalRequest">
 		<complexType>
@@ -175,7 +170,7 @@
 		</complexType>
 	</element>
 	<!-- ================================ -->
-	<!--    ArchiveEvidence                                       -->
+	<!-- ArchiveEvidence                  -->
 	<!-- ================================ -->
 	<element name="ArchiveEvidenceRequest">
 		<complexType>
@@ -202,7 +197,7 @@
 		</complexType>
 	</element>
 	<!-- ================================ -->
-	<!--    ArchiveDeletion                                        -->
+	<!-- ArchiveDeletion                  -->
 	<!-- ================================ -->
 	<element name="ArchiveDeletionRequest">
 		<complexType>
@@ -225,7 +220,7 @@
 	</element>
 	<element name="ArchiveDeletionResponse" type="tr:ResponseType"/>
 	<!-- ========================== -->
-	<!--    ArchiveData                                 -->
+	<!-- ArchiveData                -->
 	<!-- ========================== -->
 	<element name="ArchiveDataRequest">
 		<complexType>
@@ -268,7 +263,7 @@
 		</complexType>
 	</element>
 	<!-- ========================== -->
-	<!--    ArchiveTrace                                -->
+	<!-- ArchiveTrace               -->
 	<!-- ========================== -->
 	<element name="ArchiveTraceRequest">
 		<complexType>
@@ -289,6 +284,41 @@
 						<element ref="pres:Trace"/>
 					</sequence>
 				</extension>
+			</complexContent>
+		</complexType>
+	</element>
+	<!-- ========================== -->
+	<!-- Upload                     -->
+	<!-- ========================== -->
+	<element name="UploadResponse">
+		<complexType>
+			<complexContent>
+				<extension base="tr:ResponseType">
+					<sequence>
+						<element ref="asic:DataObjectReference" minOccurs="0" maxOccurs="unbounded"/>
+					</sequence>
+				</extension>
+			</complexContent>
+		</complexType>
+	</element>
+	<!-- ========================== -->
+	<!-- Download                   -->
+	<!-- ========================== -->
+	<element name="DownloadRequest">
+		<complexType>
+			<complexContent>
+				<extension base="tr:RequestType">
+					<sequence>
+						<element ref="asic:DataObjectReference" maxOccurs="unbounded"/>
+					</sequence>
+				</extension>
+			</complexContent>
+		</complexType>
+	</element>
+	<element name="DownloadResponse">
+		<complexType>
+			<complexContent>
+				<extension base="tr:ResponseType"/>
 			</complexContent>
 		</complexType>
 	</element>

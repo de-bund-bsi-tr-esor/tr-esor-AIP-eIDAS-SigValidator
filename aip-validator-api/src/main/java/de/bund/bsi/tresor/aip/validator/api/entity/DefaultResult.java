@@ -124,7 +124,7 @@ public class DefaultResult
          * 
          * @return is positiv
          */
-        public boolean isPositiv()
+        public boolean isPositive()
         {
             return this == OK || this == VALID || this == SUCCESS;
         }
@@ -497,28 +497,48 @@ public class DefaultResult
         Major majorFirst = DefaultResult.getMajor( first );
         Major majorSecond = DefaultResult.getMajor( second );
         
+        Major merged = merge( majorFirst, majorSecond );
+        
+        Result result = merged.equals( majorFirst ) ? first : second;
+        if ( !merged.isPositive() && StringUtils.isBlank( result.getResultMinor() ) )
+        {
+            result.setResultMinor( Minor.INTERNAL_ERROR.getUri() );
+        }
+        
+        return result;
+    }
+    
+    /**
+     * Merging majors, returning the most negative one
+     * 
+     * @param majorFirst
+     *            first major
+     * @param majorSecond
+     *            second major
+     * @return merged major
+     */
+    public static Major merge( Major majorFirst, Major majorSecond )
+    {
+        if ( majorFirst == null )
+            return majorSecond;
+        
+        if ( majorSecond == null )
+            return majorFirst;
+        
         if ( majorFirst == Major.ERROR || majorFirst == Major.INVALID )
-            return first;
+            return majorFirst;
         if ( majorSecond == Major.ERROR || majorSecond == Major.INVALID )
-            return second;
+            return majorSecond;
         
         if ( majorFirst == Major.WARNING || majorSecond == Major.WARNING
                 || majorFirst == Major.INDETERMINED || majorSecond == Major.INDETERMINED )
         {
-            Result result = null;
             if ( majorFirst == Major.WARNING || majorFirst == Major.INDETERMINED )
-                result = first;
+                return majorFirst;
             else if ( majorSecond == Major.WARNING || majorSecond == Major.INDETERMINED )
-                result = second;
-            
-            if ( StringUtils.isBlank( result.getResultMinor() ) )
-            {
-                result.setResultMinor( Minor.INTERNAL_ERROR.getUri() );
-            }
-            
-            return result;
+                return majorSecond;
         }
         
-        return first;
+        return majorFirst;
     }
 }

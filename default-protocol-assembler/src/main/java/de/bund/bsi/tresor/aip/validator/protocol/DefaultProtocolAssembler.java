@@ -21,6 +21,7 @@
  */
 package de.bund.bsi.tresor.aip.validator.protocol;
 
+import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 
 import java.util.Collection;
@@ -48,7 +49,6 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import org.w3c.dom.Document;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import de.bund.bsi.tr_esor.vr.CredentialValidityType;
@@ -72,6 +72,7 @@ import oasis.names.tc.dss._1_0.core.schema.VerificationTimeInfoType;
 import oasis.names.tc.dss_x._1_0.profiles.verificationreport.schema_.IndividualReportType;
 import oasis.names.tc.dss_x._1_0.profiles.verificationreport.schema_.SignedObjectIdentifierType;
 import oasis.names.tc.dss_x._1_0.profiles.verificationreport.schema_.VerificationReportType;
+import oasis.names.tc.dss_x._1_0.profiles.verificationreport.schema_.VerificationResultType;
 
 /**
  * Implementation of the ProtocolAssembler module from the XAIPValidator.
@@ -137,10 +138,10 @@ public class DefaultProtocolAssembler implements ProtocolAssembler
     Result resultSummary( XAIPValidityType report )
     {
         Major resultMajor = Major.fromUri( report.getFormatOK().getResultMajor() )
-                .map( major -> major.isPositiv() ? Major.SUCCESS : Major.ERROR )
+                .map( major -> major.isPositive() ? Major.SUCCESS : Major.ERROR )
                 .orElse( Major.ERROR );
         
-        String resultMessage = resultMajor.isPositiv() ? "successfully validated the xaip structure and containing signatures"
+        String resultMessage = resultMajor.isPositive() ? "successfully validated the xaip structure and containing signatures"
                 : "error on schema validation";
         try
         {
@@ -164,15 +165,21 @@ public class DefaultProtocolAssembler implements ProtocolAssembler
             XPathExpression expr = xpath.compile( "//ns:DetailedSignatureReport/ns:SignatureOK/ns:SigMathOK/ns:ResultMajor" );
             NodeList result = (NodeList) expr.evaluate( doc, XPathConstants.NODESET );
             
+            boolean error = false;
             for ( int i = 0; i < result.getLength(); i++ )
             {
-                Node node = result.item( i );
-                Optional<Major> major = DefaultResult.Major.fromString( node.getTextContent() );
-                if ( major.isPresent() && !major.get().isPositiv() )
+                Optional<Major> major = DefaultResult.Major.fromString( result.item( i ).getTextContent() );
+                if ( major.isPresent() && !major.get().isPositive() )
                 {
-                    resultMajor = Major.REQUESTER_ERROR;
-                    resultMessage = "invalid signature(s) were found";
+                    error = true;
+                    break;
                 }
+            }
+            
+            if ( error || hasCredentialOtherError( report ) )
+            {
+                resultMajor = Major.REQUESTER_ERROR;
+                resultMessage = "invalid signature(s) were found";
             }
         }
         catch ( ParserConfigurationException | XPathExpressionException | JAXBException e )
@@ -181,13 +188,36 @@ public class DefaultProtocolAssembler implements ProtocolAssembler
             ModuleLogger.log( "could not analyse and merge signature results into summary", e );
         }
         
-        if ( resultMajor.isPositiv() && !args.isVerify() )
+        if ( resultMajor.isPositive() && !args.isVerify() )
         {
             resultMajor = Major.INSUFFICIENT_INFORMATION;
             resultMessage = "the signature validation has been skipped";
         }
         
         return DefaultResult.major( resultMajor ).message( resultMessage, ResultLanguage.ENGLISH ).build();
+    }
+    
+    /**
+     * Checking if there are errors inside the 'other'-tag of a credential
+     * 
+     * @param report
+     *            the report
+     * @return if an error was found
+     */
+    boolean hasCredentialOtherError( XAIPValidityType report )
+    {
+        return !Optional.ofNullable( report )
+                .map( XAIPValidityType::getCredentialsSection )
+                .map( CredentialsSectionValidityType::getCredential )
+                .orElse( emptyList() )
+                .stream()
+                .map( CredentialValidityType::getOther )
+                .filter( Objects::nonNull )
+                .map( VerificationResultType::getResultMajor )
+                .map( Major::fromString )
+                .flatMap( Optional::stream )
+                .reduce( Major.SUCCESS, DefaultResult::merge )
+                .isPositive();
     }
     
     Set<CredentialValidityType> addRelations( ModuleContext context, Set<CredentialValidityType> reports )

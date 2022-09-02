@@ -132,6 +132,13 @@ public class AIPUtil
                 .map( PackageHeaderType::getAOID );
     }
     
+    /**
+     * Searching for {@link DataObjectReferenceType} inside a dataObject
+     * 
+     * @param dataObject
+     *            the dataObject
+     * @return the optional dataObjectReference
+     */
     public static Optional<DataObjectReferenceType> findDataReferences( DataObjectType dataObject )
     {
         return Optional.ofNullable( dataObject )
@@ -143,8 +150,8 @@ public class AIPUtil
     /**
      * Searching for any {@link DataObjectReferenceType} which is being used in lxaip's
      * 
-     * @param dataObject
-     *            the dataObject
+     * @param xmlAnyType
+     *            the xmlAnyType
      * @return the optional dataObjectReference
      */
     public static Optional<DataObjectReferenceType> findDataReferences( List<Object> xmlAnyType )

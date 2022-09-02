@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xaip="http://www.bsi.bund.de/tr-esor/xaip" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xades="http://uri.etsi.org/01903/v1.3.2#" xmlns:ers="urn:ietf:params:xml:ns:ers" xmlns:vr="urn:oasis:names:tc:dss-x:1.0:profiles:verificationreport:schema#" xmlns:dss="urn:oasis:names:tc:dss:1.0:core:schema" xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" xmlns:xmime="http://www.w3.org/2005/05/xmlmime" targetNamespace="http://www.bsi.bund.de/tr-esor/xaip" elementFormDefault="qualified" attributeFormDefault="unqualified" version="1.3.0">
 	<xs:import namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="./deps/xmldsig-core-schema.xsd"/>
-	<xs:import namespace="http://uri.etsi.org/01903/v1.3.2#" schemaLocation="./deps/XAdES-1-3-2.xsd"/>
+	<xs:import namespace="http://uri.etsi.org/01903/v1.3.2#" schemaLocation="./deps/XAdES01903v132-201601.xsd"/>
 	<xs:import namespace="urn:ietf:params:xml:ns:ers" schemaLocation="./deps/xml-ers-rfc6283.xsd"/>
 	<xs:import namespace="urn:oasis:names:tc:dss-x:1.0:profiles:verificationreport:schema#" schemaLocation="./deps/oasis-dssx-1.0-profiles-verification-report-cs1.xsd"/>
 	<xs:import namespace="urn:oasis:names:tc:dss:1.0:core:schema" schemaLocation="./deps/oasis-dss-core-schema-v1.0-os.xsd"/>
 	<xs:import namespace="urn:oasis:names:tc:SAML:2.0:assertion" schemaLocation="./deps/saml-schema-assertion-2.0.xsd"/>
 	<xs:import namespace="http://www.w3.org/2005/05/xmlmime" schemaLocation="./deps/xmlmime.xsd"/>
-	<!--============================================================-->
-	<!-- Version 1.3.0 vom 30.11.2021                                                                            -->
-	<!--============================================================-->
-	<!--============================================================-->
+	<!--============================================================ -->
+	<!-- Version 1.3.0 vom 14.03.2022 -->
+	<!--============================================================ -->
+	<!--============================================================ -->
 	<!-- XAIP gesamt -->
-	<!--============================================================-->
+	<!--============================================================ -->
 	<xs:element name="XAIP" type="xaip:XAIPType"/>
 	<xs:complexType name="XAIPType">
 		<xs:sequence>
@@ -23,9 +23,9 @@
 		</xs:sequence>
 		<xs:attribute name="XAIPVersion" use="required" fixed="1.3.0"/>
 	</xs:complexType>
-	<!--============================================================-->
+	<!--============================================================ -->
 	<!-- packageHeaderType -->
-	<!--============================================================-->
+	<!--============================================================ -->
 	<xs:complexType name="packageHeaderType">
 		<xs:sequence>
 			<xs:element name="AOID" type="xs:string" minOccurs="0"/>
@@ -59,16 +59,6 @@
 			<xs:element name="extension" type="xaip:extensionType" minOccurs="0"/>
 		</xs:sequence>
 	</xs:complexType>
-	<!-- Auskommentiert am 5.3.2021, da keine Stellen gefunden, die den Typ referenzieren -->
-	<!--
-	<xs:complexType name="otherContentType">
-		<xs:complexContent>
-			<xs:extension base="xs:anyType">
-				<xs:attribute name="Type" type="xs:anyURI"/>
-			</xs:extension>
-		</xs:complexContent>
-	</xs:complexType>
--->
 	<xs:complexType name="submissionInfoType">
 		<xs:sequence>
 			<xs:element name="clientID" type="saml:NameIDType"/>
@@ -89,9 +79,9 @@
 		</xs:sequence>
 		<xs:attribute name="packageUnitID" type="xs:ID" use="required"/>
 	</xs:complexType>
-	<!--============================================================-->
+	<!--============================================================ -->
 	<!-- MetadataSection -->
-	<!--============================================================-->
+	<!--============================================================ -->
 	<xs:complexType name="metaDataSectionType">
 		<xs:sequence>
 			<xs:element ref="xaip:metaDataObject" maxOccurs="unbounded"/>
@@ -120,9 +110,9 @@
 			</xs:extension>
 		</xs:simpleContent>
 	</xs:complexType>
-	<!--============================================================-->
+	<!--============================================================ -->
 	<!-- DataObjectsSection -->
-	<!--============================================================-->
+	<!--============================================================ -->
 	<xs:complexType name="dataObjectsSectionType">
 		<xs:sequence>
 			<xs:element ref="xaip:dataObject" maxOccurs="unbounded"/>
@@ -169,9 +159,9 @@
 		<xs:attribute name="transformObjectID" type="xs:ID" use="required"/>
 		<xs:attribute name="order" type="xs:string"/>
 	</xs:complexType>
-	<!--============================================================-->
+	<!--============================================================ -->
 	<!-- CredentialsSection -->
-	<!--============================================================-->
+	<!--============================================================ -->
 	<xs:complexType name="credentialsSectionType">
 		<xs:sequence>
 			<xs:element ref="xaip:credential" maxOccurs="unbounded"/>
@@ -199,9 +189,9 @@
 		<xs:attribute name="AOID" type="xs:string"/>
 		<xs:attribute name="VersionID" type="xs:string"/>
 	</xs:complexType>
-	<!--============================================================-->
+	<!--============================================================ -->
 	<!-- Delta-XAIP -->
-	<!--============================================================-->
+	<!--============================================================ -->
 	<xs:element name="DXAIP" type="xaip:DXAIPType"/>
 	<xs:complexType name="DXAIPType">
 		<xs:complexContent>

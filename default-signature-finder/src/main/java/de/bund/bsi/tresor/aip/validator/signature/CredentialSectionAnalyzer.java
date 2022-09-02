@@ -104,11 +104,24 @@ public class CredentialSectionAnalyzer
         return new AbstractMap.SimpleEntry<>( credential, sigResults );
     }
     
+    /**
+     * Analyzing the credential and searching for any type of signatures
+     * 
+     * @param <T>
+     *            the related data type
+     * @param credential
+     *            the credential
+     * @param relatedData
+     *            the related data
+     * @param anyDataSectionResults
+     *            related data results
+     *            
+     * @return a set of results
+     */
     static <T> Set<FinderResult<T>> analyzeCredential( CredentialType credential, Collection<T> relatedData,
             Set<FinderResult<T>> anyDataSectionResults )
     {
         Set<FinderResult<T>> sigResults = new HashSet<>();
-        
         Optional<byte[]> lxaipData = Optional.ofNullable( credential.getOther() )
                 .map( ExtensionType::getAny )
                 .flatMap( AIPUtil::findDataReferences )
@@ -120,9 +133,8 @@ public class CredentialSectionAnalyzer
         Optional<byte[]> b64Signature = signObj.map( SignatureObject::getBase64Signature ).map( Base64Signature::getValue );
         Optional<org.w3._2000._09.xmldsig_.SignatureType> signType = signObj.map( SignatureObject::getSignature );
         
-        if ( relatedData.isEmpty() )
+        if ( relatedData.isEmpty() ) // should check signatureObject/signature
         {
-            // should check signatureObject/signature
             b64Signature.flatMap( data -> DataAnalyzer.findSignatures( null, Optional.of( data ) ) )
                     .ifPresent( r -> sigResults.add( new FinderResult<T>( null, r.getPresence(), r.getData() ) ) );
             
@@ -135,7 +147,6 @@ public class CredentialSectionAnalyzer
         for ( T dataObject : relatedData )
         {
             String oid = AIPUtil.idFromObject( dataObject );
-            
             Optional<byte[]> optDataBlob = anyDataSectionResults.stream()
                     .filter( r -> oid.equals( AIPUtil.idFromObject( r.getDataContainer() ) ) )
                     .findAny()
@@ -144,7 +155,6 @@ public class CredentialSectionAnalyzer
                     .or( () -> dataSupplier( dataObject ) );
             
             Optional<InputStream> optData = optDataBlob.map( ByteArrayInputStream::new );
-            
             if ( lxaipData.isPresent() )
             {
                 sigResults.add( new FinderResult<T>( dataObject, SignaturePresence.PRESENT, lxaipData.map( ByteArrayInputStream::new ) ) );
@@ -156,8 +166,7 @@ public class CredentialSectionAnalyzer
             }
             else if ( b64Signature.isPresent() )
             {
-                b64Signature.flatMap( data -> DataAnalyzer.findSignatures( dataObject, Optional.of( data ) ) )
-                        .ifPresent( sigResults::add );
+                b64Signature.flatMap( data -> DataAnalyzer.findSignatures( dataObject, Optional.of( data ) ) ).ifPresent( sigResults::add );
             }
             else if ( optPtr.isPresent() )
             {

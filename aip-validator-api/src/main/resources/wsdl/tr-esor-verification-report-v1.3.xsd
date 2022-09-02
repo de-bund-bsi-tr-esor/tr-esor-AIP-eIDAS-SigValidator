@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:tr="http://www.bsi.bund.de/tr-esor/vr" xmlns:vr="urn:oasis:names:tc:dss-x:1.0:profiles:verificationreport:schema#" xmlns:xaip="http://www.bsi.bund.de/tr-esor/xaip" xmlns:dss="urn:oasis:names:tc:dss:1.0:core:schema" xmlns:evr="http://uri.etsi.org/19102/v1.2.1#" targetNamespace="http://www.bsi.bund.de/tr-esor/vr" elementFormDefault="qualified" attributeFormDefault="unqualified" version="1.3.0">
 	<!-- ======================================= -->
-	<!-- Version 1.3.0 vom 30.11.2021                                    -->
+	<!-- Version 1.3.0 vom 14.03.2022 -->
 	<!-- ======================================= -->
 	<import namespace="urn:oasis:names:tc:dss:1.0:core:schema" schemaLocation="./deps/oasis-dss-core-schema-v1.0-os.xsd"/>
 	<import namespace="urn:oasis:names:tc:dss-x:1.0:profiles:verificationreport:schema#" schemaLocation="./deps/oasis-dssx-1.0-profiles-verification-report-cs1.xsd"/>
 	<import namespace="http://uri.etsi.org/19102/v1.2.1#" schemaLocation="./deps/TS119102-2-v122.xsd"/>
-	<!-- ========================== -->
+	<!-- ===================================================== -->
 	<!-- EvidenceRecordValidityType, section 3.1 of TR-ESOR-VR -->
-	<!-- ========================== -->
+	<!-- ===================================================== -->
 	<element name="EvidenceRecordReport" type="tr:EvidenceRecordValidityType"/>
 	<complexType name="EvidenceRecordValidityType">
 		<sequence>
@@ -82,19 +82,22 @@
 		</sequence>
 		<attribute name="HashedObject" type="IDREF" use="optional"/>
 	</complexType>
-	<!-- section 3.2.1 of TR-ESOR-VR, introduced in the TR-ESOR-1.3 in order to document the signature validation model -->
-	<element name="CertifictePathValidationStrategy" type="tr:CertificatePathValidationStrategyType"/>
+	<!-- section 3.2.1 of TR-ESOR-VR, introduced in the TR-ESOR-1.3 in order 
+    to document the signature validation model -->
+	<element name="CertificatePathValidationStrategy" type="tr:CertificatePathValidationStrategyType"/>
 	<simpleType name="CertificatePathValidationStrategyType">
 		<restriction base="string">
+			<enumeration value="uri:oid:1.3.6.1.4.1.8301.3.5.1"/>
 			<enumeration value="uri:oid:1.3.6.1.4.1.8301.3.5.2"/>
-			<enumeration value="uri:oid:1.3.6.1.4.1.8301.3.5.2"/>
+			<!-- validityModelChain -->
+			<!-- validityModelShell -->
 		</restriction>
 	</simpleType>
 	<!-- ================ -->
 	<!-- XAIPValidityType: section 4 of TR-ESOR-VR -->
 	<!-- ================ -->
 	<element name="XAIPReport" type="tr:XAIPValidityType"/>
-	<!-- section 4.1 of  TR-ESOR-VR -->
+	<!-- section 4.1 of TR-ESOR-VR -->
 	<complexType name="XAIPValidityType">
 		<sequence>
 			<element name="FormatOK" type="vr:VerificationResultType"/>
@@ -176,6 +179,7 @@
 			<element name="category" type="vr:VerificationResultType" minOccurs="0"/>
 			<element name="classification" type="vr:VerificationResultType" minOccurs="0"/>
 			<element name="content" type="vr:VerificationResultType" minOccurs="0"/>
+			<element name="dataObjectReference" type="tr:dataObjectReferenceValidityType" minOccurs="0"/>
 		</sequence>
 		<attribute name="metaDataID" type="string" use="required"/>
 	</complexType>
@@ -237,10 +241,12 @@
 				<element ref="vr:IndividualOCSPReport"/>
 				<element ref="vr:IndividualTimeStampReport"/>
 				<element ref="tr:EvidenceRecordReport"/>
-				<!-- in order to support ETSI verification reports according to ETSI TS 119102-2 -->
+				<!-- in order to support ETSI verification reports according to ETSI 
+          TS 119102-2 -->
 				<element ref="evr:ValidationReport"/>
 				<element name="other" type="vr:VerificationResultType"/>
 			</choice>
+			<element name="dataObjectReference" type="tr:dataObjectReferenceValidityType" minOccurs="0"/>
 		</sequence>
 		<attribute name="credentialID" type="string" use="required"/>
 	</complexType>
