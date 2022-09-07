@@ -1,5 +1,7 @@
 package de.bund.bsi.tresor.aip.validator.syntax.validators;
 
+import static java.util.Collections.emptyList;
+
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -26,6 +28,7 @@ import javax.xml.transform.dom.DOMSource;
 import org.apache.commons.io.FileUtils;
 import org.etsi.uri._02918.v1_2.ASiCManifestType;
 import org.etsi.uri._02918.v1_2.DataObjectReferenceType;
+import org.etsi.uri._02918.v1_2.ExtensionType;
 import org.etsi.uri._02918.v1_2.ExtensionsListType;
 import org.etsi.uri._02918.v1_2.SigReferenceType;
 import org.etsi.uri._19512.v1_1.ContainerIDType;
@@ -176,6 +179,12 @@ public enum ASiCAIPValidator
         Map<String, Set<String>> errorsByManifest = new HashMap<>();
         for ( File file : metaInf.listFiles() )
         {
+            if ( file.getName().contains( "signature" ) )
+            {
+                ModuleLogger.log( "manifest search: skipping " + file.getName() );
+                continue;
+            }
+            
             try
             {
                 ASiCManifestType manifest = JAXB.unmarshal( file, ASiCManifestType.class );
@@ -195,7 +204,7 @@ public enum ASiCAIPValidator
         
         if ( !oidsByVersion.isEmpty() )
         {
-            throw new IllegalArgumentException( "missing aisc-manifest for versions: " + oidsByVersion.keySet().toString() );
+            ModuleLogger.log( "[WARN] missing optional aisc-manifest containerID for versions: " + oidsByVersion.keySet().toString() );
         }
         
         if ( !errorsByManifest.isEmpty() )
@@ -224,8 +233,11 @@ public enum ASiCAIPValidator
         String uri = sigReference.getURI();
         String substring = uri.substring( uri.lastIndexOf( File.separatorChar ) + 1 );
         
-        ExtensionsListType extensions = manifest.getASiCManifestExtensions();
-        Optional<ContainerIDType> optContainer = extensions.getExtension().stream()
+        List<ExtensionType> extensions = Optional.ofNullable( manifest.getASiCManifestExtensions() )
+                .map( ExtensionsListType::getExtension )
+                .orElse( emptyList() );
+        
+        Optional<ContainerIDType> optContainer = extensions.stream()
                 .map( f -> f.getContent() )
                 .flatMap( List::stream )
                 .filter( Element.class::isInstance )
@@ -287,8 +299,8 @@ public enum ASiCAIPValidator
     {
         try
         {
-            JAXB.unmarshal( in, XAIPType.class );
-            return true;
+            XAIPType type = JAXB.unmarshal( in, XAIPType.class );
+            return Optional.ofNullable( type ).map( XAIPType::getPackageHeader ).isPresent();
         }
         catch ( Exception e )
         {

@@ -34,7 +34,7 @@ public class CLITestM
     /**
      * Configuration of the wsdl url location if the parameter -v is being used
      */
-    private static final String WSDL_URL              = "http://localhost:8080/VerificationService/S4?wsdl";
+    private static final String WSDL_URL              = "https://tresortest.protectr.de/VerificationService/eCard?wsdl";
     // private static final String WSDL_URL = "http://10.3.141.126:8080/VerificationService/S4?wsdl";
     // private static final String WSDL_URL = "https://tresortest.protectr.de/VerificationService/S4?wsdl";
     private static final String SCHEMA_DIR            = ".././default-syntax-validator/src/main/resources/definitions";
@@ -60,7 +60,10 @@ public class CLITestM
     // "/home/wolffs/git/xaipautomated/testdata/abnahme/asic-e/cades/xaip-asic-e-b64data-tstNoMimetype.xml";
     
     // XADES - not working
-    private static final String TEST_FILE             = "/home/wolffs/git/xaipautomated/testdata/abnahme/asic-e/xades/xaip-asic-e-b64data-xades.xml";
+    // private static final String TEST_FILE = "/home/wolffs/git/xaipautomated/testdata/abnahme/asic-e/xades/xaip-asic-e-b64data-xades.xml";
+    
+    private static final String TEST_FILE             = "/home/wolffs/Dokumente/asic/TST-93-ASIC-AIP_LXAIP_OK_SIG_OK/ASIC_AIP_LXAIP_OK_SIG_OK.asice";
+    // private static final String TEST_FILE = "/home/wolffs/Dokumente/asic/cades-asic-aip.zip";
     
     private static final String TEST_RESULT_FILE      = "/tmp/report.xml";
     

@@ -222,7 +222,7 @@ public class DefaultSignatureVerifier implements SignatureVerifier
                 }
             }
             
-            ModuleLogger.log( "[ WARN ]xml data found bound to id " + reqId
+            ModuleLogger.log( "[ WARN ] xml data found bound to id " + reqId
                     + " but could not parse raw xaip input which can result into an invalid signature verification" );
         }
         
