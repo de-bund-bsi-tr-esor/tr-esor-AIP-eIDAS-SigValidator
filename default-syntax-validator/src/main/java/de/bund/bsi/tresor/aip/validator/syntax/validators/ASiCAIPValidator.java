@@ -23,6 +23,9 @@ import java.util.zip.ZipInputStream;
 
 import javax.xml.bind.DataBindingException;
 import javax.xml.bind.JAXB;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.dom.DOMSource;
 
 import org.apache.commons.io.FileUtils;
@@ -176,40 +179,43 @@ public enum ASiCAIPValidator
         String aoid = AIPUtil.findAoid( xaip ).orElseThrow( () -> new IllegalArgumentException( "missing aoid in xaip" ) );
         Map<String, Set<String>> oidsByVersion = AIPUtil.oidsByVersion( xaip );
         
-        Map<String, Set<String>> errorsByManifest = new HashMap<>();
-        for ( File file : metaInf.listFiles() )
+        try
         {
-            if ( file.getName().contains( "signature" ) )
+            JAXBContext context = JAXBContext.newInstance( ASiCManifestType.class );
+            Unmarshaller unmarshaller = context.createUnmarshaller();
+            Map<String, Set<String>> errorsByManifest = new HashMap<>();
+            for ( File file : metaInf.listFiles() )
             {
-                ModuleLogger.log( "manifest search: skipping " + file.getName() );
-                continue;
-            }
-            
-            try
-            {
-                ASiCManifestType manifest = JAXB.unmarshal( file, ASiCManifestType.class );
-                Set<String> errors = validateManifest( metaInf, manifest, aoid, oidsByVersion );
-                
-                if ( !errors.isEmpty() )
+                try
                 {
-                    errorsByManifest.put( file.getName(), errors );
+                    ASiCManifestType manifest = (ASiCManifestType) unmarshaller.unmarshal( file );
+                    Set<String> errors = validateManifest( metaInf, manifest, aoid, oidsByVersion );
+                    
+                    if ( !errors.isEmpty() )
+                    {
+                        errorsByManifest.put( file.getName(), errors );
+                    }
+                }
+                catch ( ClassCastException | JAXBException | DataBindingException e )
+                {
+                    ModuleLogger.log( "manifest search: skipping " + file.getName() );
+                    ModuleLogger.verbose( "file is not an asicManifest: " + file.getName(), e );
                 }
             }
-            catch ( DataBindingException e )
+            
+            if ( !oidsByVersion.isEmpty() )
             {
-                ModuleLogger.log( "manifest search: skipping " + file.getName() );
-                ModuleLogger.verbose( "file is not an asicManifest: " + file.getName(), e );
+                ModuleLogger.log( "[WARN] missing optional aisc-manifest containerID for versions: " + oidsByVersion.keySet().toString() );
+            }
+            
+            if ( !errorsByManifest.isEmpty() )
+            {
+                throw new IllegalArgumentException( "invalid asic-aip structure: " + errorsByManifest.toString() );
             }
         }
-        
-        if ( !oidsByVersion.isEmpty() )
+        catch ( JAXBException e )
         {
-            ModuleLogger.log( "[WARN] missing optional aisc-manifest containerID for versions: " + oidsByVersion.keySet().toString() );
-        }
-        
-        if ( !errorsByManifest.isEmpty() )
-        {
-            throw new IllegalArgumentException( "invalid asic-aip structure: " + errorsByManifest.toString() );
+            throw new IllegalStateException( "could not create unmarshaller for asicManifest", e );
         }
     }
     

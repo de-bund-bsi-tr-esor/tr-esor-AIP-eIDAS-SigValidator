@@ -62,8 +62,9 @@ public class CLITestM
     // XADES - not working
     // private static final String TEST_FILE = "/home/wolffs/git/xaipautomated/testdata/abnahme/asic-e/xades/xaip-asic-e-b64data-xades.xml";
     
-    private static final String TEST_FILE             = "/home/wolffs/Dokumente/asic/TST-93-ASIC-AIP_LXAIP_OK_SIG_OK/ASIC_AIP_LXAIP_OK_SIG_OK.asice";
+    // private static final String TEST_FILE = "/home/wolffs/Dokumente/asic/TST-93-ASIC-AIP_LXAIP_OK_SIG_OK/ASIC_AIP_LXAIP_OK_SIG_OK.asice";
     // private static final String TEST_FILE = "/home/wolffs/Dokumente/asic/cades-asic-aip.zip";
+    private static final String TEST_FILE             = "/home/wolffs/Dokumente/asic/211122-XAIP.asice";
     
     private static final String TEST_RESULT_FILE      = "/tmp/report.xml";
     
