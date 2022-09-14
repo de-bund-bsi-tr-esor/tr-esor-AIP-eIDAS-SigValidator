@@ -25,6 +25,7 @@ import javax.xml.bind.DataBindingException;
 import javax.xml.bind.JAXB;
 import javax.xml.transform.dom.DOMSource;
 
+import de.bund.bsi.tresor.aip.validator.syntax.context.DefaultSyntaxValidatorContext;
 import org.apache.commons.io.FileUtils;
 import org.etsi.uri._02918.v1_2.ASiCManifestType;
 import org.etsi.uri._02918.v1_2.DataObjectReferenceType;
@@ -85,14 +86,16 @@ public enum ASiCAIPValidator
     
     /**
      * Checking if the zipped archive contains an aip candidate
-     * 
+     *
      * @param zippedData
      *            the zipped data
+     * @param syntaxContext
+     *            the context
      * @return the aip candidate
      * @throws IOException
      *             when an exception occurs
      */
-    public byte[] findAIPCandidate( byte[] zippedData ) throws IOException
+    public byte[] findAIPCandidate( byte[] zippedData, DefaultSyntaxValidatorContext syntaxContext ) throws IOException
     {
         Optional<File> unzipped = Optional.empty();
         List<File> validAIPFiles = new ArrayList<>();
@@ -118,6 +121,8 @@ public enum ASiCAIPValidator
                         }
                     }
                 }
+                syntaxContext.setTempPath(  unzipped.get().getAbsolutePath() );
+                System.setProperty( "temp.folder.path", unzipped.get().getAbsolutePath() );
             }
             
             if ( validAIPFiles.size() > 1 )
@@ -137,7 +142,8 @@ public enum ASiCAIPValidator
         }
         finally
         {
-            unzipped.ifPresent( FileUtils::deleteQuietly );
+            //needs to be done later to be able to load the referenced files
+            //unzipped.ifPresent( FileUtils::deleteQuietly );
         }
         
         return zippedData;

@@ -102,7 +102,8 @@ public class DefaultSyntaxValidator implements SyntaxValidator
         Optional<XAIPType> optXaip = Optional.empty();
         XAIPValidityType report = new XAIPValidityType();
         Result result = DefaultResult.valid().message( "xaip is schema conform", ResultLanguage.ENGLISH ).build();
-        
+        DefaultSyntaxValidatorContext syntaxContext = new DefaultSyntaxValidatorContext();
+
         Map<String, File> xmlDataByOid = new HashMap<>();
         try ( ByteArrayOutputStream baos = new ByteArrayOutputStream() )
         {
@@ -110,7 +111,7 @@ public class DefaultSyntaxValidator implements SyntaxValidator
             byte[] data = baos.toByteArray();
             if ( asicAipValidator.isASiC( data ) )
             {
-                data = asicAipValidator.findAIPCandidate( data );
+                data = asicAipValidator.findAIPCandidate( data, syntaxContext );
             }
             xmlDataByOid = xmlData( data );
             
@@ -129,13 +130,13 @@ public class DefaultSyntaxValidator implements SyntaxValidator
                     .ifPresent( report::setPackageHeader );
             metaValidator.validateMetaDataSection( optXaip.map( XAIPType::getMetaDataSection ), dataSection, xmlDataByOid )
                     .ifPresent( report::setMetaDataSection );
-            dataValidator.validateDataSection( optXaip.map( XAIPType::getDataObjectsSection ), xmlDataByOid )
+            dataValidator.validateDataSection( optXaip.map( XAIPType::getDataObjectsSection ), xmlDataByOid, syntaxContext )
                     .ifPresent( report::setDataObjectsSection );
             
             Map<String, RelatedObjects> credential = credentialValidator
                     .validateCredentialsSection( optXaip.map( XAIPType::getCredentialsSection ) );
-            
-            DefaultSyntaxValidatorContext syntaxContext = new DefaultSyntaxValidatorContext( data, credential );
+            syntaxContext.setRawData( data );
+            syntaxContext.setRelatedObjectByCredId( credential );
             context.put( DefaultSyntaxValidatorContext.class, syntaxContext );
         }
         catch ( Exception e )

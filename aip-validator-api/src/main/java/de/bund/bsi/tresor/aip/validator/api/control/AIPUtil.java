@@ -25,7 +25,9 @@ import static java.util.stream.Collectors.toSet;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -341,14 +343,29 @@ public class AIPUtil
             
             if ( optUrl.isPresent() )
             {
-                result = Optional.of( Files.readAllBytes( Paths.get( new URL( optUrl.get() ).toURI() ) ) );
+                try
+                {
+                    result = Optional.of( Files.readAllBytes( Paths.get( URI.create( optUrl.get() ) ) ) );
+                }
+                catch( IllegalArgumentException e )
+                {
+                    if ( e.getMessage().equals( "Missing scheme" ) )
+                    {
+                        result = Optional.of( Files.readAllBytes(Paths.get( URI.create( "file://" + System.getProperty( "temp.folder.path" )
+                                + File.separatorChar + optUrl.get() ) ) ) );
+                    }
+                    else
+                    {
+                        throw e;
+                    }
+                }
             }
         }
         catch ( DataBindingException e )
         {
             // no lxaip
         }
-        catch ( IOException | URISyntaxException e )
+        catch ( IOException e )
         {
             // could not read lxaip data
             ModuleLogger.verbose( "could not retrieve lxaip data from dataObject", e );
