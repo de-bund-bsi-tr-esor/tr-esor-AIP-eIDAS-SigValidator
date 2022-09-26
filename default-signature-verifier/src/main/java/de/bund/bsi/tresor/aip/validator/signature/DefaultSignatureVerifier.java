@@ -24,12 +24,9 @@ package de.bund.bsi.tresor.aip.validator.signature;
 import static de.bund.bsi.tresor.aip.validator.signature.XmlSignatureEncoder.b64EncodeCredentialXmlSignatureObject;
 import static de.bund.bsi.tresor.aip.validator.signature.XmlSignatureEncoder.b64EncodeDataObjectPlainXml;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -280,19 +277,7 @@ public class DefaultSignatureVerifier implements SignatureVerifier
                     }
                     catch( IllegalArgumentException e )
                     {
-                        if ( e.getMessage().equals( "Missing scheme" ) )
-                        {
-                            try
-                            {
-                                return Files.readAllBytes( Paths.get( URI.create( "file://" + System.getProperty( "temp.folder.path" )
-                                        + File.separatorChar + url ) ) );
-                            }
-                            catch ( IOException ex )
-                            {
-                                ModuleLogger.verbose( "could not retrieve lxaip data from dataObject", e );
-                            }
-                        }
-                        return null;
+                        return AIPUtil.loadFileFromRelativeURI( e, url );
                     }
                     catch ( IOException e )
                     {

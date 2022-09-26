@@ -122,7 +122,7 @@ public enum ASiCAIPValidator
                     }
                 }
                 syntaxContext.setTempPath(  unzipped.get().getAbsolutePath() );
-                System.setProperty( "temp.folder.path", unzipped.get().getAbsolutePath() );
+                System.setProperty( AIPUtil.TEMP_FOLDER_PATH, unzipped.get().getAbsolutePath() );
             }
             
             if ( validAIPFiles.size() > 1 )

@@ -211,15 +211,7 @@ public enum DataObjectSectionValidator
         }
         catch( IllegalArgumentException e )
         {
-            if ( e.getMessage().equals( "Missing scheme" ) )
-            {
-                optFilePath = Optional.of( Paths.get( URI.create( "file://" + syntaxContext.getTempPath()
-                        + File.separatorChar + dataObjectReference.getURI() ) ) );
-            }
-            else
-            {
-                throw e;
-            }
+            optFilePath = Optional.of( AIPUtil.loadRelativeURI( e, dataObjectReference.getURI() ) );
         }
         
         if ( optDigestAlgorithm.isPresent() && optFilePath.isPresent() )
