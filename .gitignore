@@ -6,3 +6,5 @@
 /bin/
 /addCopyright.sh
 /cmds.txt
+.idea/*
+*.iml

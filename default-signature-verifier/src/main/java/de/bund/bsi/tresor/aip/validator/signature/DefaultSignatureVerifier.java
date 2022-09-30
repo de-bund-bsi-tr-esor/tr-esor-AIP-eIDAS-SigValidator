@@ -26,8 +26,7 @@ import static de.bund.bsi.tresor.aip.validator.signature.XmlSignatureEncoder.b64
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URISyntaxException;
-import java.net.URL;
+import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -274,9 +273,13 @@ public class DefaultSignatureVerifier implements SignatureVerifier
                 .map( url -> {
                     try
                     {
-                        return Files.readAllBytes( Paths.get( new URL( url ).toURI() ) );
+                        return Files.readAllBytes( Paths.get( URI.create( url ) ) );
                     }
-                    catch ( IOException | URISyntaxException e )
+                    catch( IllegalArgumentException e )
+                    {
+                        return AIPUtil.loadFileFromRelativeURI( e, url );
+                    }
+                    catch ( IOException e )
                     {
                         // could not read lxaip data
                         ModuleLogger.verbose( "could not retrieve lxaip data from credential", e );

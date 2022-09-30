@@ -25,11 +25,12 @@ import static java.util.stream.Collectors.toSet;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -91,6 +92,8 @@ public class AIPUtil
     
     public static final QName  XAIP_QNAME        = new QName( "http://www.bsi.bund.de/tr-esor/xaip", "XAIP" );
     public static final QName  XAIP_REPORT_QNAME = new QName( "http://www.bsi.bund.de/tr-esor/vr", "XAIPReport" );
+    
+    public static final String TEMP_FOLDER_PATH  = "temp.folder.path";
     
     /**
      * Creating a proper JAXBElement of the xaipType which can be used for marshalling since the generated wsdl types do not contain a
@@ -341,20 +344,73 @@ public class AIPUtil
             
             if ( optUrl.isPresent() )
             {
-                result = Optional.of( Files.readAllBytes( Paths.get( new URL( optUrl.get() ).toURI() ) ) );
+                try
+                {
+                    result = Optional.of( Files.readAllBytes( Paths.get( URI.create( optUrl.get() ) ) ) );
+                }
+                catch ( IllegalArgumentException e )
+                {
+                    result = Optional.of( loadFileFromRelativeURI( e, optUrl.get() ) );
+                }
             }
         }
         catch ( DataBindingException e )
         {
             // no lxaip
         }
-        catch ( IOException | URISyntaxException e )
+        catch ( IOException e )
         {
             // could not read lxaip data
             ModuleLogger.verbose( "could not retrieve lxaip data from dataObject", e );
         }
         
         return result;
+    }
+    
+    /**
+     * Checks if the exception was caused by a missing scheme for the relative files uri. Loads the relative file.
+     *
+     * @param e
+     *            the exception thrown
+     * @param url
+     *            the file url
+     * @return the loaded file bytes
+     * @throws IllegalArgumentException
+     */
+    public static byte[] loadFileFromRelativeURI( IllegalArgumentException e, String url )
+            throws IllegalArgumentException
+    {
+        try
+        {
+            return Files.readAllBytes( loadRelativeURI( e, url ) );
+        }
+        catch ( IOException ex )
+        {
+            ModuleLogger.verbose( "Invalid file URI, could not load data from dataObject", ex );
+            throw new IllegalArgumentException( "Invalid file URI, could not load data from dataObject" );
+        }
+    }
+    
+    /**
+     * Checks if the exception was caused by a missing scheme for the relative files uri. creates the file uri path.
+     *
+     * @param e
+     *            the exception thrown
+     * @param url
+     *            the file url
+     * @return the loaded file bytes
+     * @throws IllegalArgumentException
+     */
+    public static Path loadRelativeURI( IllegalArgumentException e, String url )
+            throws IllegalArgumentException
+    {
+        if ( e.getMessage().equals( "Missing scheme" ) )
+        {
+            return Paths.get( URI.create( "file://" + System.getProperty( TEMP_FOLDER_PATH )
+                    + File.separatorChar + url ) );
+        }
+        
+        throw e;
     }
     
     /**
