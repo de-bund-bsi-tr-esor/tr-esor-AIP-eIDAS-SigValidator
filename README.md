@@ -311,7 +311,6 @@ Any known issues about the validator are being explained at the bottom of this p
 
 The following limitations apply:
 
-- The AIPValidator has a strong dependency to the external signature validation service. The current version of the service is not able to validate XML signatures properly. Therefore the validation of AIPs containing XML signatures will lead to validation reports with unsupported signature formats.
 - The processing of XAdES-compliant signature objects is currently not fully supported. This issue will be fixed in one of the next SNAPSHOT releases
 - Information for `TransformInfoType` is currently not generated due to inconsistencies in the verification report scheme
 - Extensions are not evaluated due to their dependency to specific profiles
