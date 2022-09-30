@@ -92,7 +92,7 @@ public class AIPUtil
     
     public static final QName  XAIP_QNAME        = new QName( "http://www.bsi.bund.de/tr-esor/xaip", "XAIP" );
     public static final QName  XAIP_REPORT_QNAME = new QName( "http://www.bsi.bund.de/tr-esor/vr", "XAIPReport" );
-
+    
     public static final String TEMP_FOLDER_PATH  = "temp.folder.path";
     
     /**
@@ -348,7 +348,7 @@ public class AIPUtil
                 {
                     result = Optional.of( Files.readAllBytes( Paths.get( URI.create( optUrl.get() ) ) ) );
                 }
-                catch( IllegalArgumentException e )
+                catch ( IllegalArgumentException e )
                 {
                     result = Optional.of( loadFileFromRelativeURI( e, optUrl.get() ) );
                 }
@@ -366,16 +366,16 @@ public class AIPUtil
         
         return result;
     }
-
+    
     /**
-     * Checks if the exception was caused by a missing scheme for the relative files uri.
-     * Loads the relative file.
+     * Checks if the exception was caused by a missing scheme for the relative files uri. Loads the relative file.
      *
-     * @param e the exception thrown
-     * @param url the file url
+     * @param e
+     *            the exception thrown
+     * @param url
+     *            the file url
      * @return the loaded file bytes
      * @throws IllegalArgumentException
-     * @throws IOException
      */
     public static byte[] loadFileFromRelativeURI( IllegalArgumentException e, String url )
             throws IllegalArgumentException
@@ -386,20 +386,20 @@ public class AIPUtil
         }
         catch ( IOException ex )
         {
-            ModuleLogger.verbose( "Invalid file URI, could not load data from dataObject", e );
+            ModuleLogger.verbose( "Invalid file URI, could not load data from dataObject", ex );
             throw new IllegalArgumentException( "Invalid file URI, could not load data from dataObject" );
         }
     }
-
+    
     /**
-     * Checks if the exception was caused by a missing scheme for the relative files uri.
-     * creates the file uri path.
+     * Checks if the exception was caused by a missing scheme for the relative files uri. creates the file uri path.
      *
-     * @param e the exception thrown
-     * @param url the file url
+     * @param e
+     *            the exception thrown
+     * @param url
+     *            the file url
      * @return the loaded file bytes
      * @throws IllegalArgumentException
-     * @throws IOException
      */
     public static Path loadRelativeURI( IllegalArgumentException e, String url )
             throws IllegalArgumentException
@@ -409,10 +409,8 @@ public class AIPUtil
             return Paths.get( URI.create( "file://" + System.getProperty( TEMP_FOLDER_PATH )
                     + File.separatorChar + url ) );
         }
-        else
-        {
-            throw e;
-        }
+        
+        throw e;
     }
     
     /**
