@@ -3,6 +3,9 @@
 # tr-esor-AIP-eIDAS-SigValidator
 The tr-esor-AIP-eIDAS-SigValidator (or short AIP-Validator) is a tool designed for validation of XML formatted Archival Information Package (XAIP) and logical XML formatted Archival Information Packge (LXAIP). Using a modular structure and plugin mechanism, the validator is validating an XAIP by using those modules which can vary by their implementation.
 
+The master branch is supporting the newest tresor specification which is 1.3.
+Versions of this tool for older specifications can be found in branches with the respective names in it.
+
 Supported signature formats are:
 - asic
 - asic-aip
