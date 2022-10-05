@@ -376,6 +376,7 @@ public class AIPUtil
      *            the file url
      * @return the loaded file bytes
      * @throws IllegalArgumentException
+     *             when the file could not be loaded
      */
     public static byte[] loadFileFromRelativeURI( IllegalArgumentException e, String url )
             throws IllegalArgumentException
@@ -400,6 +401,7 @@ public class AIPUtil
      *            the file url
      * @return the loaded file bytes
      * @throws IllegalArgumentException
+     *             when the file could not be loaded
      */
     public static Path loadRelativeURI( IllegalArgumentException e, String url )
             throws IllegalArgumentException
