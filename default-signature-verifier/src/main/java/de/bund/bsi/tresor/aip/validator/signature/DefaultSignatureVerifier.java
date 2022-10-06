@@ -154,6 +154,20 @@ public class DefaultSignatureVerifier implements SignatureVerifier
                 
                 result.add( validityType );
             }
+            
+            // technically not correct but adding credential for embedded signatures inside the dataObject
+            if ( StringUtils.isNoneBlank( dataId ) && entry.getValue().isEmpty() )
+            {
+                CredentialValidityType validityType = new CredentialValidityType();
+                validityType.setCredentialID( "generated-" + dataId );
+                validityType.setOther( VerificationUtil.verificationResult( skippedResult ) );
+                
+                RelatedObjects relatedObjects = new RelatedObjects();
+                relatedObjects.getXPath().add( AIPUtil.xPathForObjectId( dataId ) );
+                validityType.setRelatedObjects( relatedObjects );
+                
+                result.add( validityType );
+            }
         }
         
         return result;
@@ -275,7 +289,7 @@ public class DefaultSignatureVerifier implements SignatureVerifier
                     {
                         return Files.readAllBytes( Paths.get( URI.create( url ) ) );
                     }
-                    catch( IllegalArgumentException e )
+                    catch ( IllegalArgumentException e )
                     {
                         return AIPUtil.loadFileFromRelativeURI( e, url );
                     }

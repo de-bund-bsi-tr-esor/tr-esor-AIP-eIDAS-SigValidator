@@ -188,7 +188,7 @@ public class DefaultProtocolAssembler implements ProtocolAssembler
             ModuleLogger.log( "could not analyse and merge signature results into summary", e );
         }
         
-        if ( resultMajor.isPositive() && !args.isVerify() )
+        if ( !args.isVerify() )
         {
             resultMajor = Major.INSUFFICIENT_INFORMATION;
             resultMessage = "the signature validation has been skipped";
