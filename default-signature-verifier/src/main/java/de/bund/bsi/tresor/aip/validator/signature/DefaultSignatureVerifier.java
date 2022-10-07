@@ -103,7 +103,8 @@ public class DefaultSignatureVerifier implements SignatureVerifier
             Set<String> credIds = entry.getValue();
             if ( credIds.isEmpty() && data.isPresent() )
             {
-                List<CredentialValidityType> result = verifySignature( oid.get(), null, Optional.empty(), data, syntaxContext );
+                Optional<SignatureObject> sigObj = Optional.of( new SignatureObject() );
+                List<CredentialValidityType> result = verifySignature( "generated-" + oid.get(), null, sigObj, data, syntaxContext );
                 resultList.addAll( addMissingRelations( oid, result ) );
             }
             else
