@@ -138,8 +138,8 @@ public class DefaultProtocolAssembler implements ProtocolAssembler
     Result resultSummary( XAIPValidityType report, boolean hasSignatures )
     {
         Major resultMajor = Major.fromUri( report.getFormatOK().getResultMajor() )
-                .map( major -> major.isPositive() ? Major.SUCCESS : Major.ERROR )
-                .orElse( Major.ERROR );
+                .map( major -> major.isPositive() ? Major.SUCCESS : Major.REQUESTER_ERROR )
+                .orElse( Major.REQUESTER_ERROR );
         
         String positiveMessage = hasSignatures ? "successfully validated the xaip structure and containing signatures"
                 : "successfully validated the xaip structure";
