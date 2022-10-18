@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:tr="http://www.bsi.bund.de/tr-esor/vr" xmlns:vr="urn:oasis:names:tc:dss-x:1.0:profiles:verificationreport:schema#" xmlns:xaip="http://www.bsi.bund.de/tr-esor/xaip" xmlns:dss="urn:oasis:names:tc:dss:1.0:core:schema" xmlns:evr="http://uri.etsi.org/19102/v1.2.1#" targetNamespace="http://www.bsi.bund.de/tr-esor/vr" elementFormDefault="qualified" attributeFormDefault="unqualified" version="1.3.0">
+	<!-- ======================================= -->
+	<!-- Version 1.3.0 vom 14.03.2022 -->
+	<!-- ======================================= -->
+	<import namespace="urn:oasis:names:tc:dss:1.0:core:schema" schemaLocation="./deps/oasis-dss-core-schema-v1.0-os.xsd"/>
+	<import namespace="urn:oasis:names:tc:dss-x:1.0:profiles:verificationreport:schema#" schemaLocation="./deps/oasis-dssx-1.0-profiles-verification-report-cs1.xsd"/>
+	<import namespace="http://uri.etsi.org/19102/v1.2.1#" schemaLocation="./deps/TS119102-2-v122.xsd"/>
+	<!-- ===================================================== -->
+	<!-- EvidenceRecordValidityType, section 3.1 of TR-ESOR-VR -->
+	<!-- ===================================================== -->
+	<element name="EvidenceRecordReport" type="tr:EvidenceRecordValidityType"/>
+	<complexType name="EvidenceRecordValidityType">
+		<sequence>
+			<element name="FormatOK" type="vr:VerificationResultType"/>
+			<element name="Version" type="anyURI" minOccurs="0"/>
+			<element name="DigestAlgorithm" type="vr:AlgorithmValidityType" minOccurs="0" maxOccurs="unbounded"/>
+			<element name="CryptoInfos" minOccurs="0">
+				<complexType>
+					<sequence>
+						<element name="Attribute" type="vr:AttributeType" maxOccurs="unbounded"/>
+					</sequence>
+				</complexType>
+			</element>
+			<element name="EncryptionInfo" minOccurs="0">
+				<complexType>
+					<sequence>
+						<element name="EncryptionInfoType" type="vr:AlgorithmValidityType"/>
+						<element name="EncryptionInfoValue" type="dss:AnyType"/>
+					</sequence>
+				</complexType>
+			</element>
+			<element name="ArchiveTimeStampSequence">
+				<complexType>
+					<sequence minOccurs="0" maxOccurs="unbounded">
+						<element name="ArchiveTimeStampChain">
+							<complexType>
+								<sequence minOccurs="0" maxOccurs="unbounded">
+									<element name="ArchiveTimeStamp" type="vr:ArchiveTimeStampValidityType"/>
+								</sequence>
+							</complexType>
+						</element>
+					</sequence>
+				</complexType>
+			</element>
+		</sequence>
+		<attribute name="Id" type="ID" use="optional"/>
+		<attribute name="ReportVersion" use="required" fixed="1.3.0"/>
+	</complexType>
+	<!-- section 3.2 of TR-ESOR-VR -->
+	<complexType name="ArchiveTimeStampValidityType">
+		<sequence>
+			<element name="FormatOK" type="vr:VerificationResultType"/>
+			<element name="DigestAlgorithm" type="vr:AlgorithmValidityType" minOccurs="0"/>
+			<element name="Attributes" minOccurs="0">
+				<complexType>
+					<sequence>
+						<element name="Attribute" type="vr:AttributeType" maxOccurs="unbounded"/>
+					</sequence>
+				</complexType>
+			</element>
+			<element name="ReducedHashTree" minOccurs="0">
+				<complexType>
+					<sequence maxOccurs="unbounded">
+						<element name="PartialHashTree">
+							<complexType>
+								<sequence maxOccurs="unbounded">
+									<element name="HashValue" type="vr:HashValueType"/>
+								</sequence>
+							</complexType>
+						</element>
+					</sequence>
+				</complexType>
+			</element>
+			<element name="TimeStamp" type="vr:TimeStampValidityType"/>
+		</sequence>
+		<attribute name="Id" type="ID" use="optional"/>
+	</complexType>
+	<complexType name="HashValueType">
+		<sequence>
+			<element name="HashValue" type="hexBinary"/>
+		</sequence>
+		<attribute name="HashedObject" type="IDREF" use="optional"/>
+	</complexType>
+	<!-- section 3.2.1 of TR-ESOR-VR, introduced in the TR-ESOR-1.3 in order 
+    to document the signature validation model -->
+	<element name="CertificatePathValidationStrategy" type="tr:CertificatePathValidationStrategyType"/>
+	<simpleType name="CertificatePathValidationStrategyType">
+		<restriction base="string">
+			<enumeration value="uri:oid:1.3.6.1.4.1.8301.3.5.1"/>
+			<enumeration value="uri:oid:1.3.6.1.4.1.8301.3.5.2"/>
+			<!-- validityModelChain -->
+			<!-- validityModelShell -->
+		</restriction>
+	</simpleType>
+	<!-- ================ -->
+	<!-- XAIPValidityType: section 4 of TR-ESOR-VR -->
+	<!-- ================ -->
+	<element name="XAIPReport" type="tr:XAIPValidityType"/>
+	<!-- section 4.1 of TR-ESOR-VR -->
+	<complexType name="XAIPValidityType">
+		<sequence>
+			<element name="FormatOK" type="vr:VerificationResultType"/>
+			<element name="packageHeader" type="tr:packageHeaderValidityType"/>
+			<element name="metaDataSection" type="tr:metaDataSectionValidityType" minOccurs="0"/>
+			<element name="dataObjectsSection" type="tr:dataObjectsSectionValidityType" minOccurs="0"/>
+			<element name="credentialsSection" type="tr:credentialsSectionValidityType" minOccurs="0"/>
+			<element name="updateSection" type="tr:updateSectionValidityType" minOccurs="0"/>
+		</sequence>
+		<attribute name="XAIPVersion" type="string" use="required"/>
+		<attribute name="ReportVersion" use="required" fixed="1.3.0"/>
+	</complexType>
+	<!-- section 4.2 of TR-ESOR-VR -->
+	<complexType name="packageHeaderValidityType">
+		<sequence>
+			<element name="AOID" type="string" minOccurs="0"/>
+			<element name="versionManifest" type="tr:versionManifestValidityType" minOccurs="0" maxOccurs="unbounded"/>
+			<element name="canonicalizationMethod" type="vr:VerificationResultType" minOccurs="0"/>
+			<element name="extension" type="vr:VerificationResultType" minOccurs="0"/>
+		</sequence>
+		<attribute name="packageID" type="string" use="required"/>
+	</complexType>
+	<!-- section 4.2.1 of TR-ESOR-VR -->
+	<complexType name="versionManifestValidityType">
+		<sequence>
+			<element name="preservationInfo" type="vr:VerificationResultType"/>
+			<element name="submissionInfo" type="tr:submissionInfoValidityType" minOccurs="0"/>
+			<element name="packageInfoUnit" type="tr:packageInfoUnitValidityType" minOccurs="0" maxOccurs="unbounded"/>
+			<element name="idAssignmentList" type="tr:idAssignmentListValidityType" minOccurs="0"/>
+			<element name="extension" type="vr:VerificationResultType" minOccurs="0"/>
+		</sequence>
+		<attribute name="VersionID" type="string" use="required"/>
+	</complexType>
+	<!-- section 4.2.1.1 of TR-ESOR-VR -->
+	<complexType name="submissionInfoValidityType">
+		<sequence>
+			<element name="submissionTime" type="vr:VerificationResultType" minOccurs="0"/>
+			<element name="extension" type="vr:VerificationResultType" minOccurs="0"/>
+		</sequence>
+	</complexType>
+	<!-- section 4.2.1.2 of TR-ESOR-VR -->
+	<complexType name="packageInfoUnitValidityType">
+		<sequence>
+			<element name="objectPointer" type="vr:VerificationResultType"/>
+			<element name="extension" type="vr:VerificationResultType" minOccurs="0"/>
+		</sequence>
+		<attribute name="packageUnitID" type="string" use="required"/>
+	</complexType>
+	<!-- section 4.2.1.3 of TR-ESOR-VR -->
+	<complexType name="idAssignmentListValidityType">
+		<sequence>
+			<element name="idAssignmentPointer" type="tr:idAssignmentPointerValidityType" maxOccurs="unbounded"/>
+		</sequence>
+		<attribute name="idAssignmentListID" type="string" use="required"/>
+	</complexType>
+	<complexType name="idAssignmentPointerValidityType">
+		<sequence>
+			<element name="checkSum" type="vr:VerificationResultType"/>
+		</sequence>
+		<attribute name="objectRef" type="string" use="required"/>
+	</complexType>
+	<!-- section 4.3 of TR-ESOR-VR -->
+	<complexType name="metaDataSectionValidityType">
+		<sequence>
+			<element name="metaDataObject" type="tr:metaDataObjectValidityType" maxOccurs="unbounded"/>
+		</sequence>
+	</complexType>
+	<complexType name="metaDataObjectValidityType">
+		<sequence>
+			<element name="relatedObjects">
+				<complexType>
+					<sequence>
+						<element ref="tr:XPath" maxOccurs="unbounded"/>
+					</sequence>
+				</complexType>
+			</element>
+			<!-- depending on the discussion outcome -->
+			<element name="checkSum" type="vr:VerificationResultType" minOccurs="0"/>
+			<element name="category" type="vr:VerificationResultType" minOccurs="0"/>
+			<element name="classification" type="vr:VerificationResultType" minOccurs="0"/>
+			<element name="content" type="vr:VerificationResultType" minOccurs="0"/>
+			<element name="dataObjectReference" type="tr:dataObjectReferenceValidityType" minOccurs="0"/>
+		</sequence>
+		<attribute name="metaDataID" type="string" use="required"/>
+	</complexType>
+	<!-- section 4.4 in TR-ESOR-VR -->
+	<complexType name="dataObjectsSectionValidityType">
+		<sequence>
+			<element name="dataObject" type="tr:dataObjectValidityType" maxOccurs="unbounded"/>
+		</sequence>
+	</complexType>
+	<complexType name="dataObjectValidityType">
+		<sequence>
+			<element name="metaDataObjectRefs" minOccurs="0">
+				<complexType>
+					<sequence>
+						<element ref="tr:XPath" maxOccurs="unbounded"/>
+					</sequence>
+				</complexType>
+			</element>
+			<element name="FormatOK" type="vr:VerificationResultType" minOccurs="0"/>
+			<element name="checksum" type="vr:VerificationResultType" minOccurs="0"/>
+			<element name="transformInfo" type="tr:transformInfoValidityType" minOccurs="0"/>
+			<element name="dataObjectReference" type="tr:dataObjectReferenceValidityType" minOccurs="0"/>
+		</sequence>
+		<attribute name="dataObjectID" type="string" use="required"/>
+	</complexType>
+	<complexType name="transformInfoValidityType">
+		<sequence>
+			<element name="transformObject" type="vr:VerificationResultType" maxOccurs="unbounded"/>
+		</sequence>
+		<attribute name="transformObjectID" type="string" use="required"/>
+	</complexType>
+	<complexType name="dataObjectReferenceValidityType">
+		<sequence>
+			<element name="FormatOK" type="vr:VerificationResultType"/>
+			<element name="ReferenceOK" type="vr:VerificationResultType"/>
+		</sequence>
+	</complexType>
+	<!-- section 4.5 in TR-ESOR-VR -->
+	<complexType name="credentialsSectionValidityType">
+		<sequence>
+			<element name="credential" type="tr:credentialValidityType" maxOccurs="unbounded"/>
+		</sequence>
+	</complexType>
+	<element name="XPath" type="string"/>
+	<complexType name="credentialValidityType">
+		<sequence>
+			<element name="relatedObjects" minOccurs="0">
+				<complexType>
+					<sequence>
+						<element ref="tr:XPath" maxOccurs="unbounded"/>
+					</sequence>
+				</complexType>
+			</element>
+			<choice>
+				<element ref="vr:DetailedSignatureReport"/>
+				<element ref="vr:IndividualCertificateReport"/>
+				<element ref="vr:IndividualAttributeCertificateReport"/>
+				<element ref="vr:IndividualCRLReport"/>
+				<element ref="vr:IndividualOCSPReport"/>
+				<element ref="vr:IndividualTimeStampReport"/>
+				<element ref="tr:EvidenceRecordReport"/>
+				<!-- in order to support ETSI verification reports according to ETSI 
+          TS 119102-2 -->
+				<element ref="evr:ValidationReport"/>
+				<element name="other" type="vr:VerificationResultType"/>
+			</choice>
+			<element name="dataObjectReference" type="tr:dataObjectReferenceValidityType" minOccurs="0"/>
+		</sequence>
+		<attribute name="credentialID" type="string" use="required"/>
+	</complexType>
+	<!-- section 4.6 in TR-ESOR-VR -->
+	<complexType name="updateSectionValidityType">
+		<sequence>
+			<element name="prevVersion" type="vr:VerificationResultType"/>
+			<element name="placeHolder" type="vr:VerificationResultType" minOccurs="0" maxOccurs="unbounded"/>
+		</sequence>
+	</complexType>
+</schema>

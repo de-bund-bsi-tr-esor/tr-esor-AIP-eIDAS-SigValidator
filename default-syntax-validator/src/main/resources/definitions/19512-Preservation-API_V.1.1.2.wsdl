@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- =============================================== -->
+<!-- This document is part of ETSI TS 119 512 v1.1.2 -->
+<!-- =============================================== -->
+<wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:pres="http://uri.etsi.org/19512/v1.1.2#" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" name="Preservation-API.wsdl" targetNamespace="http://uri.etsi.org/19512/v1.1.2#">
+	<wsdl:types>
+		<xsd:schema elementFormDefault="qualified" targetNamespace="http://uri.etsi.org/19512/v1.1.2#">
+			<xsd:include schemaLocation="19512-Preservation-API_V.1.1.2.xsd"/>
+		</xsd:schema>
+		<!-- Additional types for evidence exchange 
+		<xsd:schema elementFormDefault="qualified"
+					targetNamespace="http://uri.etsi.org/19512/exchange/v1.1.2#">
+			<xsd:include schemaLocation="https://forge.etsi.org/rep/esi/x19_512_preservation_protocol/raw/v1.1.2/19512-EvidenceExchange.xsd" />
+		</xsd:schema>
+		-->
+	</wsdl:types>
+	<wsdl:message name="RetrieveInfoRequest">
+		<wsdl:part name="req" element="pres:RetrieveInfo"/>
+	</wsdl:message>
+	<wsdl:message name="RetrieveInfoResponse">
+		<wsdl:part name="res" element="pres:RetrieveInfoResponse"/>
+	</wsdl:message>
+	<wsdl:message name="PreservePORequest">
+		<wsdl:part name="req" element="pres:PreservePO"/>
+	</wsdl:message>
+	<wsdl:message name="PreservePOResponse">
+		<wsdl:part name="res" element="pres:PreservePOResponse"/>
+	</wsdl:message>
+	<wsdl:message name="RetrievePORequest">
+		<wsdl:part name="req" element="pres:RetrievePO"/>
+	</wsdl:message>
+	<wsdl:message name="RetrievePOResponse">
+		<wsdl:part name="res" element="pres:RetrievePOResponse"/>
+	</wsdl:message>
+	<wsdl:message name="DeletePORequest">
+		<wsdl:part name="req" element="pres:DeletePO"/>
+	</wsdl:message>
+	<wsdl:message name="DeletePOResponse">
+		<wsdl:part name="res" element="pres:DeletePOResponse"/>
+	</wsdl:message>
+	<wsdl:message name="UpdatePOCRequest">
+		<wsdl:part name="req" element="pres:UpdatePOC"/>
+	</wsdl:message>
+	<wsdl:message name="UpdatePOCResponse">
+		<wsdl:part name="res" element="pres:UpdatePOCResponse"/>
+	</wsdl:message>
+	<wsdl:message name="RetrieveTraceRequest">
+		<wsdl:part name="req" element="pres:RetrieveTrace"/>
+	</wsdl:message>
+	<wsdl:message name="RetrieveTraceResponse">
+		<wsdl:part name="res" element="pres:RetrieveTraceResponse"/>
+	</wsdl:message>
+	<wsdl:message name="ValidateEvidenceRequest">
+		<wsdl:part name="req" element="pres:ValidateEvidence"/>
+	</wsdl:message>
+	<wsdl:message name="ValidateEvidenceResponse">
+		<wsdl:part name="res" element="pres:ValidateEvidenceResponse"/>
+	</wsdl:message>
+	<wsdl:message name="SearchRequest">
+		<wsdl:part name="req" element="pres:Search"/>
+	</wsdl:message>
+	<wsdl:message name="SearchResponse">
+		<wsdl:part name="res" element="pres:SearchResponse"/>
+	</wsdl:message>
+	<wsdl:portType name="Preservation">
+		<wsdl:operation name="RetrieveInfo">
+			<wsdl:input message="pres:RetrieveInfoRequest"/>
+			<wsdl:output message="pres:RetrieveInfoResponse"/>
+		</wsdl:operation>
+		<wsdl:operation name="PreservePO">
+			<wsdl:input message="pres:PreservePORequest"/>
+			<wsdl:output message="pres:PreservePOResponse"/>
+		</wsdl:operation>
+		<wsdl:operation name="RetrievePO">
+			<wsdl:input message="pres:RetrievePORequest"/>
+			<wsdl:output message="pres:RetrievePOResponse"/>
+		</wsdl:operation>
+		<wsdl:operation name="DeletePO">
+			<wsdl:input message="pres:DeletePORequest"/>
+			<wsdl:output message="pres:DeletePOResponse"/>
+		</wsdl:operation>
+		<wsdl:operation name="UpdatePOC">
+			<wsdl:input message="pres:UpdatePOCRequest"/>
+			<wsdl:output message="pres:UpdatePOCResponse"/>
+		</wsdl:operation>
+		<wsdl:operation name="RetrieveTrace">
+			<wsdl:input message="pres:RetrieveTraceRequest"/>
+			<wsdl:output message="pres:RetrieveTraceResponse"/>
+		</wsdl:operation>
+		<wsdl:operation name="ValidateEvidence">
+			<wsdl:input message="pres:ValidateEvidenceRequest"/>
+			<wsdl:output message="pres:ValidateEvidenceResponse"/>
+		</wsdl:operation>
+		<wsdl:operation name="Search">
+			<wsdl:input message="pres:SearchRequest"/>
+			<wsdl:output message="pres:SearchResponse"/>
+		</wsdl:operation>
+	</wsdl:portType>
+	<wsdl:binding name="Preservation" type="pres:Preservation">
+		<soap12:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+		<wsdl:operation name="RetrieveInfo">
+			<soap12:operation soapAction="http://uri.etsi.org/19512/v1.1.2#RetrieveInfo"/>
+			<wsdl:input>
+				<soap12:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap12:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="PreservePO">
+			<soap12:operation soapAction="http://uri.etsi.org/19512/v1.1.2#PreservePO"/>
+			<wsdl:input>
+				<soap12:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap12:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="RetrievePO">
+			<soap12:operation soapAction="http://uri.etsi.org/19512/v1.1.2#RetrievePO"/>
+			<wsdl:input>
+				<soap12:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap12:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="DeletePO">
+			<soap12:operation soapAction="http://uri.etsi.org/19512/v1.1.2#DeletePO"/>
+			<wsdl:input>
+				<soap12:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap12:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="UpdatePOC">
+			<soap12:operation soapAction="http://uri.etsi.org/19512/v1.1.2#UpdatePOC"/>
+			<wsdl:input>
+				<soap12:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap12:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="RetrieveTrace">
+			<soap12:operation soapAction="http://uri.etsi.org/19512/v1.1.2#RetrieveTrace"/>
+			<wsdl:input>
+				<soap12:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap12:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="ValidateEvidence">
+			<soap12:operation soapAction="http://uri.etsi.org/19512/v1.1.2#ValidateEvidence"/>
+			<wsdl:input>
+				<soap12:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap12:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="Search">
+			<soap12:operation soapAction="http://uri.etsi.org/19512/v1.1.2#Search"/>
+			<wsdl:input>
+				<soap12:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap12:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+	</wsdl:binding>
+	<wsdl:service name="Preservation">
+		<wsdl:port name="Preservation" binding="pres:Preservation">
+			<soap12:address location="http://127.0.0.1:18080"/>
+		</wsdl:port>
+	</wsdl:service>
+	<!-- =================== -->
+	<!-- Definition of types -->
+	<!-- (only include XSDs) -->
+	<!-- =================== -->
+	<!-- ====================== -->
+	<!-- Definition of messages -->
+	<!-- ====================== -->
+	<!-- ====================== -->
+	<!-- Definition of portType -->
+	<!-- ====================== -->
+	<!-- ===================== -->
+	<!-- Definition of Binding -->
+	<!-- ===================== -->
+	<!-- Definition of Publish-Service -->
+</wsdl:definitions>

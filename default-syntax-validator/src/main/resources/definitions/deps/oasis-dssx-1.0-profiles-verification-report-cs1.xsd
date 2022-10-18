@@ -30,7 +30,7 @@
 		schemaLocation="saml-schema-assertion-2.0.xsd" />
 
 	<import namespace="http://uri.etsi.org/01903/v1.3.2#"
-		schemaLocation="XAdES-1-3-2.xsd" />
+		schemaLocation="XAdES01903v132-201601.xsd" />
 
 	<!-- ============================================================== -->
 	<!-- Optional Input to request individual report for each signature -->

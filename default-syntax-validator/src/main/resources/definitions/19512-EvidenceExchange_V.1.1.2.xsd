@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ================================================ -->
+<!-- This document is part of ETSI TS 119 512 v.1.1.2 -->
+<!-- ================================================ -->
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:ex="http://uri.etsi.org/19512/exchange/v1.1.2#" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ds-rw="http://docs.oasis-open.org/dss-x/ns/xmldsig/rewritten" xmlns:pres="http://uri.etsi.org/19512/v1.1.2#" targetNamespace="http://uri.etsi.org/19512/exchange/v1.1.2#" elementFormDefault="qualified" attributeFormDefault="unqualified" version="1.1.2">
+	<import namespace="http://docs.oasis-open.org/dss-x/ns/xmldsig/rewritten" schemaLocation="./deps/oasis-dss-rw-xmldsig-core-schema.xsd"/>
+	<import namespace="http://uri.etsi.org/19512/v1.1.2#" schemaLocation="19512-Preservation-API_V.1.1.2.xsd"/>
+	<!-- ======================================= -->
+	<!-- Evidence Exchange Format				 -->
+	<!-- ======================================= -->
+	<!-- Version 1.1.2 (24.09.2020)              -->
+	<!-- ======================================= -->
+	<element name="EvidenceExchange" type="ex:EvidenceExchangeType"/>
+	<complexType name="EvidenceExchangeType">
+		<sequence>
+			<element ref="ex:EvidenceInfo" minOccurs="0" maxOccurs="unbounded"/>
+			<element ref="ex:Object" minOccurs="0" maxOccurs="unbounded"/>
+			<element ref="ex:HashTree" minOccurs="0" maxOccurs="unbounded"/>
+			<element name="Other" type="pres:POType" minOccurs="0" maxOccurs="unbounded"/>
+		</sequence>
+	</complexType>
+	<element name="EvidenceInfo" type="ex:EvidenceInfoType"/>
+	<complexType name="EvidenceInfoType">
+		<sequence>
+			<choice>
+				<element ref="pres:Evidence"/>
+				<element name="EvidenceRef" type="xs:IDREF"/>
+			</choice>
+			<element name="HashTreeRef" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+			<element name="ObjectRef" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+			<element name="RelatedEvidenceRef" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+		</sequence>
+		<attribute name="ID" type="xs:ID" use="required"/>
+	</complexType>
+	<element name="Object" type="pres:POType"/>
+	<element name="HashTree" type="ex:HashTreeType"/>
+	<complexType name="HashTreeType">
+		<sequence>
+			<element ref="ex:Node"/>
+			<element ref="ds-rw:DigestMethod"/>
+		</sequence>
+		<attribute name="ID" type="ID" use="required"/>
+		<attribute name="RelatedObjects" type="IDREFS" use="optional"/>
+	</complexType>
+	<complexType name="AbstractNodeType" abstract="true">
+		<sequence>
+			<element ref="ds-rw:DigestValue"/>
+		</sequence>
+	</complexType>
+	<element name="Node" type="ex:NodeType"/>
+	<complexType name="NodeType">
+		<complexContent>
+			<extension base="ex:AbstractNodeType">
+				<choice minOccurs="0" maxOccurs="unbounded">
+					<element ref="ex:Node"/>
+					<element ref="ex:Leaf"/>
+					<element ref="ex:Group"/>
+				</choice>
+			</extension>
+		</complexContent>
+	</complexType>
+	<element name="Leaf" type="ex:LeafType"/>
+	<complexType name="LeafType">
+		<complexContent>
+			<extension base="ex:AbstractNodeType">
+				<sequence>
+					<element ref="ex:Reference" minOccurs="0"/>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<element name="Reference" type="xs:IDREF"/>
+	<element name="Group" type="ex:GroupType"/>
+	<complexType name="GroupType">
+		<complexContent>
+			<extension base="ex:AbstractNodeType">
+				<sequence>
+					<element ref="ex:Leaf" maxOccurs="unbounded"/>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+</schema>
