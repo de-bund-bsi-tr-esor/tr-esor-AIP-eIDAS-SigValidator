@@ -38,6 +38,8 @@ java -jar aip-validator-cli/target/aip-validator-cli.jar -i ~/sample.xaip -Mvali
 # Mac/Linux/Windows
 java -jar aip-validator-cli/target/aip-validator-cli.jar -i ~/sample.xaip -Mvalidator.schemaDir=default-syntax-validator/src/main/resources/definitions
 
+# Online verification using default config for verificaionService and default schemes
+java -jar aip-validator-cli/target/aip-validator-cli.jar -v -c default.conf -i ~/sample.xaip -o ~/report.xml
 
 # SOAP Server
 # Mac/Linux
