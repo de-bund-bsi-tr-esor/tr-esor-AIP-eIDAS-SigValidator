@@ -22,6 +22,7 @@
 package de.bund.bsi.tresor.aip.validator.syntax.context;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
@@ -49,6 +50,8 @@ public class DefaultSyntaxValidatorContext
     private Map<String, RelatedObjects> relatedObjectByCredId = new HashMap<>();
 
     private String tempPath = "";
+
+    private File asicAIPContainer;
     
     /**
      * Returns an new inputStream of raw xaip data

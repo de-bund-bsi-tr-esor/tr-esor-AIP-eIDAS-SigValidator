@@ -24,6 +24,8 @@ package de.bund.bsi.tresor.aip.validator.signature;
 import static de.bund.bsi.tresor.aip.validator.signature.XmlSignatureEncoder.b64EncodeCredentialXmlSignatureObject;
 import static de.bund.bsi.tresor.aip.validator.signature.XmlSignatureEncoder.b64EncodeDataObjectPlainXml;
 
+import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -37,6 +39,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.io.SAXReader;
@@ -101,6 +104,7 @@ public class DefaultSignatureVerifier implements SignatureVerifier
             Optional<byte[]> data = binaryDataFromObject( xaip, oid );
             
             Set<String> credIds = entry.getValue();
+            resultList.addAll( verifyEvidenceRecord( syntaxContext ) );
             if ( credIds.isEmpty() && data.isPresent() )
             {
                 Optional<SignatureObject> sigObj = Optional.of( new SignatureObject() );
@@ -128,7 +132,26 @@ public class DefaultSignatureVerifier implements SignatureVerifier
         
         return resultList;
     }
-    
+
+    private List<CredentialValidityType> verifyEvidenceRecord( Optional<DefaultSyntaxValidatorContext> syntaxContext )
+    {
+        if( syntaxContext.isPresent() )
+        {
+            try ( InputStream in = new FileInputStream( syntaxContext.get().getAsicAIPContainer() ) )
+            {
+                ByteArrayOutputStream out = new ByteArrayOutputStream();
+                IOUtils.copy( in, out );
+                return client.request( "reqId", Optional.of( new SignatureObject() ), Optional.of( out.toByteArray() ) );
+            }
+            catch ( Exception e )
+            {
+                ModuleLogger.log( "[ WARN ] evidence record found in asicAIP, "
+                        + "but could not send the container to the signature verification service" );
+            }
+        }
+        return new ArrayList<>();
+    }
+
     @Override
     public List<CredentialValidityType> validate( ModuleContext context, XAIPType xaip, Map<String, Set<String>> credIdsByDataId )
     {

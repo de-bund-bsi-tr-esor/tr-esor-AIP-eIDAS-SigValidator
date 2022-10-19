@@ -29,6 +29,8 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.dom.DOMSource;
 
 import de.bund.bsi.tresor.aip.validator.syntax.context.DefaultSyntaxValidatorContext;
+import eu.europa.esig.dss.asic.cades.validation.ASiCContainerWithCAdESValidator;
+import eu.europa.esig.dss.asic.xades.validation.ASiCContainerWithXAdESValidator;
 import org.apache.commons.io.FileUtils;
 import org.etsi.uri._02918.v1_2.ASiCManifestType;
 import org.etsi.uri._02918.v1_2.DataObjectReferenceType;
@@ -139,7 +141,7 @@ public enum ASiCAIPValidator
                 
                 // TODO enable when asic validation is implemented
                 unzipped.ifPresent( asicDir -> {
-                    validateASiCAIPStructure( asicDir, xaipFile );
+                    validateASiCAIPStructure( asicDir, xaipFile, syntaxContext );
                 } );
             }
         }
@@ -154,13 +156,12 @@ public enum ASiCAIPValidator
     
     /**
      * Validating the asicAIP container structure
-     * 
-     * @param asicDir
+     *  @param asicDir
      *            the unzipped asic directory
      * @param xaipFile
-     *            the xaip file
+     * @param syntaxContext
      */
-    public void validateASiCAIPStructure( File asicDir, File xaipFile )
+    public void validateASiCAIPStructure( File asicDir, File xaipFile, DefaultSyntaxValidatorContext syntaxContext )
     {
         XAIPType xaip = JAXB.unmarshal( xaipFile, XAIPType.class );
         File metaInf = Arrays.stream( asicDir.listFiles() )
@@ -170,8 +171,9 @@ public enum ASiCAIPValidator
                 .orElseThrow( () -> new IllegalArgumentException( "missing asic META-INF directory" ) );
         
         validateMetaInf( xaip, metaInf );
+        EvidenceRecordFinder.findEvidenceRecord( syntaxContext, asicDir );
     }
-    
+
     /**
      * Validating the metaInf
      * 
