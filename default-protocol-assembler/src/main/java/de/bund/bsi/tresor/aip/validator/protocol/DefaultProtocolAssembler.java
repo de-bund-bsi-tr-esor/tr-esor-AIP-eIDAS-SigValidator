@@ -159,9 +159,10 @@ public class DefaultProtocolAssembler implements ProtocolAssembler
                 }
             }
             
-            if ( error || hasCredentialOtherError( report ) )
+            Major otherMajor = credentialOtherMajor( report );
+            if ( error || !otherMajor.isPositive() )
             {
-                resultMajor = Major.REQUESTER_ERROR;
+                resultMajor = otherMajor.isPositive() ? Major.REQUESTER_ERROR : otherMajor;
                 resultMessage = "invalid signature(s) were found";
             }
         }
@@ -212,9 +213,9 @@ public class DefaultProtocolAssembler implements ProtocolAssembler
      *            the report
      * @return if an error was found
      */
-    boolean hasCredentialOtherError( XAIPValidityType report )
+    Major credentialOtherMajor( XAIPValidityType report )
     {
-        return !Optional.ofNullable( report )
+        return Optional.ofNullable( report )
                 .map( XAIPValidityType::getCredentialsSection )
                 .map( CredentialsSectionValidityType::getCredential )
                 .orElse( emptyList() )
@@ -224,8 +225,7 @@ public class DefaultProtocolAssembler implements ProtocolAssembler
                 .map( VerificationResultType::getResultMajor )
                 .map( Major::fromString )
                 .flatMap( Optional::stream )
-                .reduce( Major.SUCCESS, DefaultResult::merge )
-                .isPositive();
+                .reduce( Major.SUCCESS, DefaultResult::merge );
     }
     
     Set<CredentialValidityType> addRelations( ModuleContext context, Set<CredentialValidityType> reports )

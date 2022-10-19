@@ -23,6 +23,7 @@ package de.bund.bsi.tresor.aip.validator.api.entity;
 
 import java.net.URI;
 import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -41,14 +42,20 @@ import oasis.names.tc.dss._1_0.core.schema.Result;
  */
 public class DefaultResult
 {
-    private static final String NS_TRESOR_API_1_1   = "http://www.bsi.bund.de/tr-esor/api/1.1";
-    private static final String NS_TRESOR_API_1_2   = "http://www.bsi.bund.de/tr-esor/api/1.2";
-    private static final String NS_TRESOR_API_1_3   = "http://www.bsi.bund.de/tr-esor/api/1.3";
+    private static final String         NS_TRESOR_API_1_1   = "http://www.bsi.bund.de/tr-esor/api/1.1";
+    private static final String         NS_TRESOR_API_1_2   = "http://www.bsi.bund.de/tr-esor/api/1.2";
+    private static final String         NS_TRESOR_API_1_3   = "http://www.bsi.bund.de/tr-esor/api/1.3";
     
-    private static final String NS_ECARD_API_1_1    = "http://www.bsi.bund.de/ecard/api/1.1";
-    private static final String NS_ECARD_TRESOR_1_2 = "http://www.bsi.bund.de/ecard/tr-esor/1.2";
+    private static final String         NS_ECARD_API_1_1    = "http://www.bsi.bund.de/ecard/api/1.1";
+    private static final String         NS_ECARD_TRESOR_1_2 = "http://www.bsi.bund.de/ecard/tr-esor/1.2";
     
-    private static final String NS_OASIS_DSS_1_0    = "urn:oasis:names:tc:dss:1.0";
+    private static final String         NS_OASIS_DSS_1_0    = "urn:oasis:names:tc:dss:1.0";
+    
+    private static final EnumSet<Major> errorMajor          = EnumSet.of( Major.INVALID, Major.ERROR, Major.REQUESTER_ERROR,
+            Major.RESPONDER_ERROR );
+    
+    private static final EnumSet<Major> errorMinor          = EnumSet.of( Major.INDETERMINED, Major.INSUFFICIENT_INFORMATION,
+            Major.WARNING );
     
     /**
      * Language of the result
@@ -525,17 +532,17 @@ public class DefaultResult
         if ( majorSecond == null )
             return majorFirst;
         
-        if ( majorFirst == Major.ERROR || majorFirst == Major.INVALID )
+        if ( errorMajor.contains( majorFirst ) )
             return majorFirst;
-        if ( majorSecond == Major.ERROR || majorSecond == Major.INVALID )
+        if ( errorMajor.contains( majorSecond ) )
             return majorSecond;
         
-        if ( majorFirst == Major.WARNING || majorSecond == Major.WARNING
-                || majorFirst == Major.INDETERMINED || majorSecond == Major.INDETERMINED )
+        if ( errorMinor.contains( majorFirst )
+                || errorMinor.contains( majorSecond ) )
         {
-            if ( majorFirst == Major.WARNING || majorFirst == Major.INDETERMINED )
+            if ( errorMinor.contains( majorFirst ) )
                 return majorFirst;
-            else if ( majorSecond == Major.WARNING || majorSecond == Major.INDETERMINED )
+            else if ( errorMinor.contains( majorSecond ) )
                 return majorSecond;
         }
         
