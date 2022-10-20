@@ -183,6 +183,7 @@ public class VerificationClient
     VerifyRequest createRequest( String id, Optional<SignatureObject> signatureObject, Optional<byte[]> data )
     {
         VerifyRequest request = new VerifyRequest();
+        request.setRequestID( id );
         signatureObject.ifPresent( obj -> request.getSignatureObject().add( convert( obj ) ) );
         
         String documentId = signatureObject.map( SignatureObject::getSignaturePtr )

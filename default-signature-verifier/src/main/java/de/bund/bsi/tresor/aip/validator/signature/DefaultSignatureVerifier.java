@@ -24,8 +24,10 @@ package de.bund.bsi.tresor.aip.validator.signature;
 import static de.bund.bsi.tresor.aip.validator.signature.XmlSignatureEncoder.b64EncodeCredentialXmlSignatureObject;
 import static de.bund.bsi.tresor.aip.validator.signature.XmlSignatureEncoder.b64EncodeDataObjectPlainXml;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -37,6 +39,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.io.SAXReader;
@@ -95,13 +98,14 @@ public class DefaultSignatureVerifier implements SignatureVerifier
         Optional<DefaultSyntaxValidatorContext> syntaxContext = context.find( DefaultSyntaxValidatorContext.class );
         
         List<CredentialValidityType> resultList = new ArrayList<>();
+        resultList.addAll( verifyEvidenceRecord( syntaxContext ) );
+        
         for ( Entry<String, Set<String>> entry : credIdsByDataId.entrySet() )
         {
             Optional<String> oid = Optional.ofNullable( entry.getKey() );
             Optional<byte[]> data = binaryDataFromObject( xaip, oid );
             
             Set<String> credIds = entry.getValue();
-            resultList.addAll( verifyEvidenceRecord( syntaxContext ) );
             if ( credIds.isEmpty() && data.isPresent() )
             {
                 Optional<SignatureObject> sigObj = Optional.of( new SignatureObject() );
@@ -136,10 +140,12 @@ public class DefaultSignatureVerifier implements SignatureVerifier
                 .filter( Objects::nonNull )
                 .map( asicAIPContainer -> {
                     List<CredentialValidityType> result = new ArrayList<>();
-                    try
+                    try ( OutputStream out = new FileOutputStream( "/tmp/asicAip-embedded-er.asice" ) )
                     {
+                        IOUtils.write( asicAIPContainer, out );
+                        
                         String requestId = "asicAip-embedded-er";
-                        result = client.request( requestId, Optional.empty(), Optional.of( asicAIPContainer ) );
+                        result = client.request( requestId, Optional.of( new SignatureObject() ), Optional.of( asicAIPContainer ) );
                     }
                     catch ( Exception e )
                     {
