@@ -45,20 +45,20 @@ public enum CAdESChecker
      */
     public boolean isCAdES( byte[] data )
     {
+        boolean isCAdES = false;
         try
         {
             ContentInfo cms = ContentInfo.getInstance( data );
             
-            boolean isCAdES = PKCSObjectIdentifiers.signedData.equals( cms.getContentType() );
-            ModuleLogger.verbose( isCAdES ? "data is CAdES" : "data is not CAdES" );
-            
-            return isCAdES;
+            isCAdES = PKCSObjectIdentifiers.signedData.equals( cms.getContentType() );
         }
         catch ( Exception e )
         {
-            ModuleLogger.verbose( "data is not CAdES", e );
+            // ModuleLogger.verbose( "data is not CAdES",e );
         }
         
-        return false;
+        ModuleLogger.verbose( isCAdES ? "data is CAdES" : "data is not CAdES" );
+        
+        return isCAdES;
     }
 }

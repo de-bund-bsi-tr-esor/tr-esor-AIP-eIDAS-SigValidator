@@ -29,6 +29,7 @@ public enum ASiCChecker
      */
     public boolean isASiC( byte[] data )
     {
+        boolean isASiC = false;
         try
         {
             DSSDocument document = new InMemoryDocument( new ByteArrayInputStream( data ) );
@@ -36,16 +37,15 @@ public enum ASiCChecker
             boolean isCAdESASiC = cadesASiCValidator.isSupported( document );
             boolean isXAdESASiC = xadesASiCValidator.isSupported( document );
             
-            boolean isASiC = isCAdESASiC || isXAdESASiC;
-            ModuleLogger.verbose( isASiC ? "data is ASiC" : "data is not ASiC" );
-            
-            return isASiC;
+            isASiC = isCAdESASiC || isXAdESASiC;
         }
         catch ( Exception e )
         {
-            ModuleLogger.verbose( "data is not ASiC", e );
+            // ModuleLogger.verbose( "data is not ASiC", e );
         }
         
-        return false;
+        ModuleLogger.verbose( isASiC ? "data is ASiC" : "data is not ASiC" );
+        
+        return isASiC;
     }
 }

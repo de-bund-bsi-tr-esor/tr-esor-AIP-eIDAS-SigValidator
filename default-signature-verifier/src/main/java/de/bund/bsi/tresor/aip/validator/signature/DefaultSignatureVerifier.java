@@ -24,10 +24,8 @@ package de.bund.bsi.tresor.aip.validator.signature;
 import static de.bund.bsi.tresor.aip.validator.signature.XmlSignatureEncoder.b64EncodeCredentialXmlSignatureObject;
 import static de.bund.bsi.tresor.aip.validator.signature.XmlSignatureEncoder.b64EncodeDataObjectPlainXml;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -39,7 +37,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.io.SAXReader;
@@ -123,7 +120,6 @@ public class DefaultSignatureVerifier implements SignatureVerifier
                             .map( this::resolveCredential )
                             .filter( Objects::nonNull )
                             .findAny();
-                    // TODO lxaip from esor:other/asic:DataObjectReference
                     
                     List<CredentialValidityType> result = verifySignature( oid.orElse( null ), credId, signObj, data, syntaxContext );
                     resultList.addAll( addMissingRelations( oid, result ) );
@@ -140,11 +136,9 @@ public class DefaultSignatureVerifier implements SignatureVerifier
                 .filter( Objects::nonNull )
                 .map( asicAIPContainer -> {
                     List<CredentialValidityType> result = new ArrayList<>();
-                    try ( OutputStream out = new FileOutputStream( "/tmp/asicAip-embedded-er.asice" ) )
+                    try
                     {
-                        IOUtils.write( asicAIPContainer, out );
-                        
-                        String requestId = "asicAip-embedded-er";
+                        String requestId = "asicAip-embedded-content";
                         result = client.request( requestId, Optional.of( new SignatureObject() ), Optional.of( asicAIPContainer ) );
                     }
                     catch ( Exception e )

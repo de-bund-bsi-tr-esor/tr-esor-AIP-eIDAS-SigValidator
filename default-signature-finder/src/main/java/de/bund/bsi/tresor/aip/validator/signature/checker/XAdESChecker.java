@@ -62,6 +62,7 @@ public enum XAdESChecker
      */
     public boolean isXAdES( byte[] data )
     {
+        boolean isXAdES = false;
         try
         {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -74,20 +75,19 @@ public enum XAdESChecker
             
             NodeList result = (NodeList) expr.evaluate( doc, XPathConstants.NODESET );
             
-            boolean isXAdES = Optional.ofNullable( result )
+            isXAdES = Optional.ofNullable( result )
                     .map( NodeList::getLength )
                     .map( size -> size > 0 )
                     .orElse( false );
             
-            ModuleLogger.verbose( isXAdES ? "data is XAdES" : "data is not XAdES" );
-            
-            return isXAdES;
         }
         catch ( IOException | ParserConfigurationException | SAXException | XPathExpressionException e )
         {
-            ModuleLogger.verbose( "data is not XAdES", e );
+            // ModuleLogger.verbose( "data is not XAdES", e );
         }
         
-        return false;
+        ModuleLogger.verbose( isXAdES ? "data is XAdES" : "data is not XAdES" );
+        
+        return isXAdES;
     }
 }

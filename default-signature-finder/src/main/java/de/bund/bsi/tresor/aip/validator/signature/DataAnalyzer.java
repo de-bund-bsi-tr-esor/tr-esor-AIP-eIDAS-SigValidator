@@ -151,12 +151,24 @@ public class DataAnalyzer
      */
     public static <T> FinderResult<T> analyzeXmlData( T dataObject, byte[] data, boolean considerLxaip )
     {
-        Supplier<SignaturePresence> xadesResult = () -> SignaturePresence.fromBoolean( XAdESChecker.INSTANCE.isXAdES( data ) );
-        SignaturePresence presence = considerLxaip ? AIPUtil.extractLxaipData( data )
-                .map( d -> SignaturePresence.UNKNOWN )
-                .orElseGet( xadesResult ) : xadesResult.get();
+        Supplier<FinderResult<T>> normalCheck = () -> {
+            SignaturePresence sigCheck = SignaturePresence.fromBoolean( XAdESChecker.INSTANCE.isXAdES( data ) );
+            return new FinderResult<T>( dataObject, sigCheck, new ByteArrayInputStream( data ) );
+        };
         
-        return new FinderResult<T>( dataObject, presence, new ByteArrayInputStream( data ) );
+        return considerLxaip ? AIPUtil.extractLxaipData( data )
+                // .map( d -> SignaturePresence.UNKNOWN )
+                .map( d -> {
+                    boolean isPAdES = PAdESChecker.INSTANCE.isPAdES( d );
+                    boolean isCAdES = CAdESChecker.INSTANCE.isCAdES( d );
+                    boolean isXAdES = XAdESChecker.INSTANCE.isXAdES( d );
+                    boolean isASiC = ASiCChecker.INSTANCE.isASiC( d );
+                    
+                    SignaturePresence presence = SignaturePresence.fromBoolean( isPAdES || isCAdES || isASiC || isXAdES );
+                    
+                    return new FinderResult<T>( dataObject, presence, new ByteArrayInputStream( data ) );
+                } )
+                .orElseGet( normalCheck ) : normalCheck.get();
     }
     
 }
