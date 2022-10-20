@@ -24,8 +24,6 @@ package de.bund.bsi.tresor.aip.validator.signature;
 import static de.bund.bsi.tresor.aip.validator.signature.XmlSignatureEncoder.b64EncodeCredentialXmlSignatureObject;
 import static de.bund.bsi.tresor.aip.validator.signature.XmlSignatureEncoder.b64EncodeDataObjectPlainXml;
 
-import java.io.ByteArrayOutputStream;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -39,7 +37,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.io.SAXReader;
@@ -132,26 +129,29 @@ public class DefaultSignatureVerifier implements SignatureVerifier
         
         return resultList;
     }
-
-    private List<CredentialValidityType> verifyEvidenceRecord( Optional<DefaultSyntaxValidatorContext> syntaxContext )
+    
+    List<CredentialValidityType> verifyEvidenceRecord( Optional<DefaultSyntaxValidatorContext> syntaxContext )
     {
-        if( syntaxContext.isPresent() )
-        {
-            try ( InputStream in = new FileInputStream( syntaxContext.get().getAsicAIPContainer() ) )
-            {
-                ByteArrayOutputStream out = new ByteArrayOutputStream();
-                IOUtils.copy( in, out );
-                return client.request( "reqId", Optional.of( new SignatureObject() ), Optional.of( out.toByteArray() ) );
-            }
-            catch ( Exception e )
-            {
-                ModuleLogger.log( "[ WARN ] evidence record found in asicAIP, "
-                        + "but could not send the container to the signature verification service" );
-            }
-        }
-        return new ArrayList<>();
+        return syntaxContext.map( DefaultSyntaxValidatorContext::getAsicAIPContainer )
+                .filter( Objects::nonNull )
+                .map( asicAIPContainer -> {
+                    List<CredentialValidityType> result = new ArrayList<>();
+                    try
+                    {
+                        String requestId = "asicAip-embedded-er";
+                        result = client.request( requestId, Optional.empty(), Optional.of( asicAIPContainer ) );
+                    }
+                    catch ( Exception e )
+                    {
+                        ModuleLogger.log( "[ WARN ] evidence record found in asicAIP, "
+                                + "but could not send the container to the signature verification service" );
+                    }
+                    
+                    return result;
+                } )
+                .orElse( new ArrayList<>() );
     }
-
+    
     @Override
     public List<CredentialValidityType> validate( ModuleContext context, XAIPType xaip, Map<String, Set<String>> credIdsByDataId )
     {
@@ -199,6 +199,8 @@ public class DefaultSignatureVerifier implements SignatureVerifier
     
     Optional<byte[]> binaryDataFromObject( XAIPType xaip, Optional<String> oid )
     {
+        // TODO FIXME Canonicalize before returning xml Data!
+        
         Optional<byte[]> data = Optional.ofNullable( xaip.getDataObjectsSection() ).stream()
                 .map( DataObjectsSectionType::getDataObject )
                 .flatMap( List::stream )

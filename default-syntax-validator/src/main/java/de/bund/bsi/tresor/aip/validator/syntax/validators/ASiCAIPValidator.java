@@ -28,9 +28,6 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.dom.DOMSource;
 
-import de.bund.bsi.tresor.aip.validator.syntax.context.DefaultSyntaxValidatorContext;
-import eu.europa.esig.dss.asic.cades.validation.ASiCContainerWithCAdESValidator;
-import eu.europa.esig.dss.asic.xades.validation.ASiCContainerWithXAdESValidator;
 import org.apache.commons.io.FileUtils;
 import org.etsi.uri._02918.v1_2.ASiCManifestType;
 import org.etsi.uri._02918.v1_2.DataObjectReferenceType;
@@ -43,6 +40,7 @@ import org.w3c.dom.Element;
 import de.bund.bsi.tr_esor.xaip.XAIPType;
 import de.bund.bsi.tresor.aip.validator.api.control.AIPUtil;
 import de.bund.bsi.tresor.aip.validator.api.control.ModuleLogger;
+import de.bund.bsi.tresor.aip.validator.syntax.context.DefaultSyntaxValidatorContext;
 import eu.europa.esig.dss.asic.cades.validation.ASiCContainerWithCAdESValidatorFactory;
 import eu.europa.esig.dss.asic.xades.validation.ASiCContainerWithXAdESValidatorFactory;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -108,8 +106,6 @@ public enum ASiCAIPValidator
         try
         {
             unzipped = Optional.ofNullable( unzip( zippedData ) );
-            
-            // do ifPresent?
             if ( unzipped.isPresent() )
             {
                 File asicAip = unzipped.get();
@@ -126,7 +122,7 @@ public enum ASiCAIPValidator
                         }
                     }
                 }
-                syntaxContext.setTempPath(  unzipped.get().getAbsolutePath() );
+                syntaxContext.setTempPath( unzipped.get().getAbsolutePath() );
                 System.setProperty( AIPUtil.TEMP_FOLDER_PATH, unzipped.get().getAbsolutePath() );
             }
             
@@ -137,9 +133,9 @@ public enum ASiCAIPValidator
             else if ( validAIPFiles.size() == 1 )
             {
                 File xaipFile = validAIPFiles.get( 0 );
+                EvidenceRecordFinder.findEvidenceRecord( syntaxContext, zippedData );
+                // do not change the order of the line above and below
                 zippedData = FileUtils.readFileToByteArray( xaipFile );
-                
-                // TODO enable when asic validation is implemented
                 unzipped.ifPresent( asicDir -> {
                     validateASiCAIPStructure( asicDir, xaipFile, syntaxContext );
                 } );
@@ -147,8 +143,8 @@ public enum ASiCAIPValidator
         }
         finally
         {
-            //needs to be done later to be able to load the referenced files
-            //unzipped.ifPresent( FileUtils::deleteQuietly );
+            // needs to be done later to be able to load the referenced files
+            // unzipped.ifPresent( FileUtils::deleteQuietly );
         }
         
         return zippedData;
@@ -156,7 +152,8 @@ public enum ASiCAIPValidator
     
     /**
      * Validating the asicAIP container structure
-     *  @param asicDir
+     * 
+     * @param asicDir
      *            the unzipped asic directory
      * @param xaipFile
      * @param syntaxContext
@@ -171,9 +168,8 @@ public enum ASiCAIPValidator
                 .orElseThrow( () -> new IllegalArgumentException( "missing asic META-INF directory" ) );
         
         validateMetaInf( xaip, metaInf );
-        EvidenceRecordFinder.findEvidenceRecord( syntaxContext, asicDir );
     }
-
+    
     /**
      * Validating the metaInf
      * 
