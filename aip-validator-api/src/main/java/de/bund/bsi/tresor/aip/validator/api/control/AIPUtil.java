@@ -316,7 +316,8 @@ public class AIPUtil
                 ByteArrayOutputStream bos = new ByteArrayOutputStream();
                 transformer.transform( new DOMSource( xmlContent ), new StreamResult( bos ) );
                 
-                xmlData = Optional.of( bos.toByteArray() );
+                byte[] data = bos.toByteArray();
+                xmlData = Optional.of( extractLxaipData( data ).orElse( data ) );
             }
             catch ( JAXBException | TransformerException e )
             {
