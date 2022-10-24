@@ -162,7 +162,9 @@ public class DefaultProtocolAssembler implements ProtocolAssembler
             Major otherMajor = credentialOtherMajor( report );
             if ( error || !otherMajor.isPositive() )
             {
-                resultMajor = otherMajor.isPositive() ? Major.REQUESTER_ERROR : otherMajor;
+                boolean useOtherMajor = !otherMajor.isPositive() && otherMajor.getUri().contains( ":resultmajor:" );
+                
+                resultMajor = useOtherMajor ? otherMajor : Major.REQUESTER_ERROR;
                 resultMessage = "invalid signature(s) were found";
             }
         }

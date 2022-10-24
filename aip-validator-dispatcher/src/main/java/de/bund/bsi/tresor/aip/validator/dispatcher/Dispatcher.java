@@ -117,7 +117,6 @@ public enum Dispatcher
                     .map( entries -> entries == 0 ? 1 : entries )
                     .reduce( 0, ( a, b ) -> a + b );
             
-            ModuleLogger.verbose( signatures.toString() );
             ModuleLogger.log( size + " signatures found" );
             ModuleLogger.log( "finished signature search" );
             
