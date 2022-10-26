@@ -23,6 +23,7 @@ package de.bund.bsi.tresor.aip.validator.signature;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
+import static java.util.stream.Collectors.toList;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -64,6 +65,8 @@ import oasis.names.tc.dss._1_0.core.schema.Result;
 import oasis.names.tc.dss._1_0.core.schema.SignatureObject;
 import oasis.names.tc.dss._1_0.core.schema.SignaturePtr;
 import oasis.names.tc.dss_x._1_0.profiles.verificationreport.schema_.DetailedSignatureReportType;
+import oasis.names.tc.dss_x._1_0.profiles.verificationreport.schema_.EvidenceRecordValidityType;
+import oasis.names.tc.dss_x._1_0.profiles.verificationreport.schema_.EvidenceRecordValidityType.ArchiveTimeStampSequence;
 import oasis.names.tc.dss_x._1_0.profiles.verificationreport.schema_.IndividualReportType;
 import oasis.names.tc.dss_x._1_0.profiles.verificationreport.schema_.TimeStampValidityType;
 
@@ -264,6 +267,10 @@ public class VerificationClient
                         {
                             result.setIndividualTimeStampReport( (TimeStampValidityType) detail );
                         }
+                        else if ( detail instanceof EvidenceRecordValidityType )
+                        {
+                            result.setEvidenceRecordReport( convert( (EvidenceRecordValidityType) detail ) );
+                        }
                         else
                         {
                             result.setOther( VerificationUtil.verificationResult( report.getResult() ) );
@@ -281,4 +288,67 @@ public class VerificationClient
         
         return resultList;
     }
+    
+    de.bund.bsi.tr_esor.vr.EvidenceRecordValidityType convert( EvidenceRecordValidityType report ) throws JAXBException
+    {
+        var result = new de.bund.bsi.tr_esor.vr.EvidenceRecordValidityType();
+        
+        result.setFormatOK( report.getFormatOK() );
+        result.setId( report.getId() );
+        result.setReportVersion( "1.3.0" );
+        result.setVersion( report.getVersion().toString() );
+        convertTimestampNamespace( report ).ifPresent( result::setArchiveTimeStampSequence );
+        convertCryptoInfosNamespace( report ).ifPresent( result::setCryptoInfos );
+        convertEncryptionInfoNamespace( report ).ifPresent( result::setEncryptionInfo );
+        
+        return result;
+    }
+    
+    Optional<de.bund.bsi.tr_esor.vr.EvidenceRecordValidityType.EncryptionInfo> convertEncryptionInfoNamespace(
+            EvidenceRecordValidityType report )
+    {
+        return Optional.ofNullable( report.getEncryptionInfo() )
+                .map( ei -> {
+                    var info = new de.bund.bsi.tr_esor.vr.EvidenceRecordValidityType.EncryptionInfo();
+                    info.setEncryptionInfoType( ei.getEncryptionInfoType() );
+                    info.setEncryptionInfoValue( ei.getEncryptionInfoValue() );
+                    
+                    return info;
+                } );
+    }
+    
+    Optional<de.bund.bsi.tr_esor.vr.EvidenceRecordValidityType.CryptoInfos> convertCryptoInfosNamespace(
+            EvidenceRecordValidityType report )
+    {
+        return Optional.ofNullable( report.getCryptoInfos() )
+                .map( ci -> {
+                    var info = new de.bund.bsi.tr_esor.vr.EvidenceRecordValidityType.CryptoInfos();
+                    info.getAttribute().addAll( ci.getAttribute() );
+                    
+                    return info;
+                } );
+    }
+    
+    Optional<de.bund.bsi.tr_esor.vr.EvidenceRecordValidityType.ArchiveTimeStampSequence> convertTimestampNamespace(
+            EvidenceRecordValidityType report )
+    {
+        return Optional.ofNullable( report.getArchiveTimeStampSequence() )
+                .map( ArchiveTimeStampSequence::getArchiveTimeStampChain )
+                .map( list -> {
+                    return list.stream()
+                            .map( c -> {
+                                var chain = new de.bund.bsi.tr_esor.vr.EvidenceRecordValidityType.ArchiveTimeStampSequence.ArchiveTimeStampChain();
+                                chain.getArchiveTimeStamp().addAll( c.getArchiveTimeStamp() );
+                                
+                                return chain;
+                            } ).collect( toList() );
+                } )
+                .map( list -> {
+                    var seq = new de.bund.bsi.tr_esor.vr.EvidenceRecordValidityType.ArchiveTimeStampSequence();
+                    seq.getArchiveTimeStampChain().addAll( list );
+                    
+                    return seq;
+                } );
+    }
+    
 }
