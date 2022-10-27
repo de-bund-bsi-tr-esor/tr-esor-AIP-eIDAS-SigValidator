@@ -12,8 +12,23 @@ import eu.europa.esig.dss.asic.xades.validation.ASiCContainerWithXAdESValidator;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 
+/**
+ * Utility to identify the evidenceRecord
+ * 
+ * @author wolffs
+ */
 public class EvidenceRecordFinder
 {
+    
+    /**
+     * Detecting if an evidenceRecord is inside the provided asic and adding the asicContainer to the syntaxContext if an evidenceReport was
+     * found
+     * 
+     * @param syntaxContext
+     *            context of the syntaxValidator
+     * @param asic
+     *            the asic container
+     */
     public static void findEvidenceRecord( DefaultSyntaxValidatorContext syntaxContext, byte[] asic )
     {
         var dssDocument = new InMemoryDocument( asic );
@@ -32,17 +47,6 @@ public class EvidenceRecordFinder
                 .findAny()
                 .ifPresent( doc -> {
                     syntaxContext.setAsicAIPContainer( asic );
-                    
-                    // try ( InputStream in = new FileInputStream( asic ) )
-                    // {
-                    // ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    // IOUtils.copy( in, baos );
-                    // syntaxContext.setAsicAIPContainer( baos.toByteArray() );
-                    // }
-                    // catch ( IOException e )
-                    // {
-                    // ModuleLogger.log( "[WARN] coud not set asic-aip container into context for er-verification" );
-                    // }
                 } );
     }
     

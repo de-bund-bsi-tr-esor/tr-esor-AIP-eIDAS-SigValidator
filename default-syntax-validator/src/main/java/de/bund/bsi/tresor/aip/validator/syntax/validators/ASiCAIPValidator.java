@@ -156,7 +156,9 @@ public enum ASiCAIPValidator
      * @param asicDir
      *            the unzipped asic directory
      * @param xaipFile
+     *            the file
      * @param syntaxContext
+     *            context of the syntaxValidator
      */
     public void validateASiCAIPStructure( File asicDir, File xaipFile, DefaultSyntaxValidatorContext syntaxContext )
     {
