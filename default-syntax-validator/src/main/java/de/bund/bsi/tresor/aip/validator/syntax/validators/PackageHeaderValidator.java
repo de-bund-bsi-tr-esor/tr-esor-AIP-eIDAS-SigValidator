@@ -21,20 +21,38 @@
  */
 package de.bund.bsi.tresor.aip.validator.syntax.validators;
 
+import static java.util.stream.Collectors.toList;
+
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 
+import org.etsi.uri._02918.v1_2.DataObjectReferenceType;
 import org.w3._2000._09.xmldsig_.CanonicalizationMethodType;
+import org.w3._2000._09.xmldsig_.DigestMethodType;
 
+import de.bund.bsi.tr_esor.vr.IdAssignmentListValidityType;
+import de.bund.bsi.tr_esor.vr.IdAssignmentPointerValidityType;
 import de.bund.bsi.tr_esor.vr.PackageHeaderValidityType;
 import de.bund.bsi.tr_esor.vr.VersionManifestValidityType;
+import de.bund.bsi.tr_esor.xaip.CheckSumType;
+import de.bund.bsi.tr_esor.xaip.DataObjectType;
+import de.bund.bsi.tr_esor.xaip.IdAssignmentListType;
+import de.bund.bsi.tr_esor.xaip.MetaDataObjectType;
 import de.bund.bsi.tr_esor.xaip.PackageHeaderType;
 import de.bund.bsi.tr_esor.xaip.PreservationInfoType;
 import de.bund.bsi.tr_esor.xaip.VersionManifestType;
+import de.bund.bsi.tresor.aip.validator.api.control.AIPUtil;
 import de.bund.bsi.tresor.aip.validator.api.control.Canonicalization;
+import de.bund.bsi.tresor.aip.validator.api.control.ModuleLogger;
 import de.bund.bsi.tresor.aip.validator.api.control.VerificationUtil;
 import de.bund.bsi.tresor.aip.validator.api.entity.DefaultResult;
 import de.bund.bsi.tresor.aip.validator.api.entity.DefaultResult.Minor;
@@ -58,9 +76,12 @@ public enum PackageHeaderValidator
      * 
      * @param packageHeader
      *            the packageHeader
+     * @param xmlDataByOid
+     *            the raw xmlData by objectID
      * @return the validation result
      */
-    public Optional<PackageHeaderValidityType> validatePackageHeader( Optional<PackageHeaderType> packageHeader )
+    public Optional<PackageHeaderValidityType> validatePackageHeader( Optional<PackageHeaderType> packageHeader,
+            Map<String, File> xmlDataByOid )
     {
         return packageHeader.map( header -> {
             PackageHeaderValidityType result = new PackageHeaderValidityType();
@@ -71,7 +92,7 @@ public enum PackageHeaderValidator
             validateCanonicalization( header.getCanonicalizationMethod() ).ifPresent( result::setCanonicalizationMethod );
             
             header.getVersionManifest().stream()
-                    .map( this::validateVersionManifest )
+                    .map( m -> validateVersionManifest( m, xmlDataByOid ) )
                     .forEach( result.getVersionManifest()::add );
             
             return result;
@@ -83,17 +104,113 @@ public enum PackageHeaderValidator
      * 
      * @param versionManifest
      *            the version manifest
+     * @param xmlDataByOid
+     *            the raw xmlData by objectID
      * @return the validation result
      */
-    public VersionManifestValidityType validateVersionManifest( VersionManifestType versionManifest )
+    public VersionManifestValidityType validateVersionManifest( VersionManifestType versionManifest, Map<String, File> xmlDataByOid )
     {
         VersionManifestValidityType result = new VersionManifestValidityType();
         result.setVersionID( versionManifest.getVersionID() );
         result.setPreservationInfo( validatePreservation( Optional.ofNullable( versionManifest.getPreservationInfo() ) ) );
+        result.setIdAssignmentList( validateAssignmentList( versionManifest.getIdAssignmentList(), xmlDataByOid ) );
+        
         // result.setSubmissionInfo( value ); does not make sense to verify this on client side
         // result.setExtension( value ); omitted in the current profile, see BSI TR-ESOR-VR
         
         return result;
+    }
+    
+    /**
+     * Validating the idAssignmentList
+     * 
+     * @param idAssignmentListType
+     *            the list
+     * @param xmlDataByOid
+     *            the raw xmlData
+     * @return the result
+     */
+    public IdAssignmentListValidityType validateAssignmentList( IdAssignmentListType idAssignmentListType, Map<String, File> xmlDataByOid )
+    {
+        if ( idAssignmentListType == null )
+        {
+            return null;
+        }
+        
+        List<IdAssignmentPointerValidityType> list = idAssignmentListType.getIdAssignmentPointer().stream()
+                .map( type -> {
+                    Object objectRef = type.getObjectRef();
+                    String oid = AIPUtil.idFromObject( objectRef );
+                    Optional<File> optXmlFile = Optional.ofNullable( xmlDataByOid.get( oid ) );
+                    
+                    IdAssignmentPointerValidityType val = new IdAssignmentPointerValidityType();
+                    val.setObjectRef( oid );
+                    val.setCheckSum( verifyChecksum( objectRef, type.getCheckSum(), optXmlFile ) );
+                    
+                    return val;
+                } )
+                .collect( toList() );
+        
+        IdAssignmentListValidityType report = new IdAssignmentListValidityType();
+        report.setIdAssignmentListID( idAssignmentListType.getIdAssignmentListID() );
+        
+        if ( !list.isEmpty() )
+        {
+            report.getIdAssignmentPointer().addAll( list );
+        }
+        
+        return report;
+    }
+    
+    VerificationResultType verifyChecksum( Object objectRef, CheckSumType checkSum, Optional<File> optXmlFile )
+    {
+        try
+        {
+            Optional<byte[]> data = Optional.empty();
+            if ( objectRef instanceof DataObjectType )
+            {
+                DataObjectType dataObject = (DataObjectType) objectRef;
+                Optional<VerificationResultType> lxaipResult = AIPUtil.findDataReferences( dataObject )
+                        .map( ref -> {
+                            DigestMethodType digestMethod = new DigestMethodType();
+                            digestMethod.setAlgorithm( checkSum.getCheckSumAlgorithm() );
+                            
+                            DataObjectReferenceType assignmentRef = new DataObjectReferenceType();
+                            assignmentRef.setURI( ref.getURI() );
+                            assignmentRef.setDigestMethod( digestMethod );
+                            assignmentRef.setRootfile( ref.isRootfile() );
+                            assignmentRef.setMimeType( ref.getMimeType() );
+                            assignmentRef.setDigestValue( checkSum.getCheckSum() );
+                            assignmentRef.setDataObjectReferenceExtensions( ref.getDataObjectReferenceExtensions() );
+                            
+                            return DataObjectSectionValidator.INSTANCE.verifyLXAIP( assignmentRef );
+                        } );
+                
+                if ( lxaipResult.isPresent() )
+                {
+                    return lxaipResult.get();
+                }
+                
+                data = AIPUtil.extractData( AIPUtil.binaryDataSupplier( dataObject ), dataObject::getXmlData );
+            }
+            else if ( objectRef instanceof MetaDataObjectType )
+            {
+                MetaDataObjectType metaDataObject = (MetaDataObjectType) objectRef;
+                data = AIPUtil.extractData( AIPUtil.binaryDataSupplier( metaDataObject ), metaDataObject::getXmlMetaData );
+            }
+            
+            try ( InputStream stream = optXmlFile.isPresent() ? new FileInputStream( optXmlFile.get() )
+                    : data.map( ByteArrayInputStream::new ).orElse( new ByteArrayInputStream( new byte[0] ) ) )
+            {
+                return VerificationUtil.verifyChecksum( stream, checkSum, false );
+            }
+        }
+        catch ( Exception e )
+        {
+            ModuleLogger.log( "could not retrieve data for checksum validation", e );
+            
+            return VerificationUtil.verificationResult( DefaultResult.error().minor( Minor.NO_DATA_ACCESS_WARNING ).build() );
+        }
     }
     
     /**

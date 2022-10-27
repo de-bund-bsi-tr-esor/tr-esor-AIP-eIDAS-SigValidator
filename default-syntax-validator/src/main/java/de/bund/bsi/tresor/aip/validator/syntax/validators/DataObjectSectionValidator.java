@@ -37,7 +37,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import de.bund.bsi.tresor.aip.validator.syntax.context.DefaultSyntaxValidatorContext;
 import org.etsi.uri._02918.v1_2.DataObjectReferenceType;
 import org.w3._2000._09.xmldsig_.DigestMethodType;
 
@@ -75,17 +74,14 @@ public enum DataObjectSectionValidator
      *            the dataObjectsSection to validate
      * @param xmlData
      *            the tmp xmlData mapped by the oid
-     * @param syntaxContext
-     *            the xontext
      * @return the dataObjectsSection validation result
      */
     public Optional<DataObjectsSectionValidityType> validateDataSection(
-            Optional<DataObjectsSectionType> dataObjectsSection, Map<String, File> xmlData,
-            DefaultSyntaxValidatorContext syntaxContext )
+            Optional<DataObjectsSectionType> dataObjectsSection, Map<String, File> xmlData )
     {
         List<DataObjectValidityType> data = dataObjectsSection
                 .map( section -> section.getDataObject().stream()
-                        .map( obj -> validateDataObject( obj, xmlData, syntaxContext ) )
+                        .map( obj -> validateDataObject( obj, xmlData ) )
                         .collect( toList() ) )
                 .orElse( new ArrayList<>() );
         
@@ -109,12 +105,9 @@ public enum DataObjectSectionValidator
      *            the dataObject to validate
      * @param xmlData
      *            the tmp xmlData mapped by the oid
-     * @param syntaxContext
-     *            the context
      * @return the dataObject validation result
      */
-    public DataObjectValidityType validateDataObject( DataObjectType dataObject, Map<String, File> xmlData,
-            DefaultSyntaxValidatorContext syntaxContext )
+    public DataObjectValidityType validateDataObject( DataObjectType dataObject, Map<String, File> xmlData )
     {
         DataObjectValidityType result = new DataObjectValidityType();
         String oid = dataObject.getDataObjectID();
@@ -130,7 +123,7 @@ public enum DataObjectSectionValidator
                                     .map( ByteArrayInputStream::new )
                                     .orElse( new ByteArrayInputStream( new byte[0] ) ) )
                     {
-                        return VerificationUtil.verifyChecksum( stream, checkSum );
+                        return VerificationUtil.verifyChecksum( stream, checkSum, true );
                     }
                     catch ( IllegalStateException | IOException e )
                     {
@@ -142,9 +135,9 @@ public enum DataObjectSectionValidator
                 .ifPresent( result::setChecksum );
         
         AIPUtil.findDataReferences( dataObject )
-                .map( ( DataObjectReferenceType dataObjectReference ) -> verifyLXAIP( dataObjectReference, syntaxContext ) )
+                .map( ( DataObjectReferenceType dataObjectReference ) -> verifyLXAIP( dataObjectReference ) )
                 .ifPresent( result::setChecksum );
-
+        
         validateTransformInfo( dataObject.getTransformInfo() ).ifPresent( result::setTransformInfo );
         
         return result;
@@ -192,11 +185,9 @@ public enum DataObjectSectionValidator
      * 
      * @param dataObjectReference
      *            the dataObjectReference
-     * @param syntaxContext
-     *            the context
      * @return the checksum verification result
      */
-    public VerificationResultType verifyLXAIP( DataObjectReferenceType dataObjectReference, DefaultSyntaxValidatorContext syntaxContext )
+    public VerificationResultType verifyLXAIP( DataObjectReferenceType dataObjectReference )
     {
         Builder builder = DefaultResult.error();
         Optional<String> optDigestAlgorithm = Optional.ofNullable( dataObjectReference.getDigestMethod() )
@@ -209,7 +200,7 @@ public enum DataObjectSectionValidator
                     .map( URI::create )
                     .map( Paths::get );
         }
-        catch( IllegalArgumentException e )
+        catch ( IllegalArgumentException e )
         {
             optFilePath = Optional.of( AIPUtil.loadRelativeURI( e, dataObjectReference.getURI() ) );
         }
@@ -230,7 +221,7 @@ public enum DataObjectSectionValidator
                 
                 try ( InputStream content = Files.newInputStream( filePath ) )
                 {
-                    return VerificationUtil.verifyChecksum( content, checksum );
+                    return VerificationUtil.verifyChecksum( content, checksum, false );
                 }
                 catch ( IOException e )
                 {

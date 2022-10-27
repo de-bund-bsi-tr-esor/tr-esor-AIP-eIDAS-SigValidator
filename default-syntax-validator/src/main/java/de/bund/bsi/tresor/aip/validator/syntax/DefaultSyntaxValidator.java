@@ -103,7 +103,7 @@ public class DefaultSyntaxValidator implements SyntaxValidator
         XAIPValidityType report = new XAIPValidityType();
         Result result = DefaultResult.valid().message( "xaip is schema conform", ResultLanguage.ENGLISH ).build();
         DefaultSyntaxValidatorContext syntaxContext = new DefaultSyntaxValidatorContext();
-
+        
         Map<String, File> xmlDataByOid = new HashMap<>();
         try ( ByteArrayOutputStream baos = new ByteArrayOutputStream() )
         {
@@ -126,11 +126,11 @@ public class DefaultSyntaxValidator implements SyntaxValidator
                     jaxbUnmarshaller.unmarshal( new StreamSource( new ByteArrayInputStream( data ) ), XAIPType.class ).getValue() );
             DataObjectsSectionType dataSection = optXaip.map( XAIPType::getDataObjectsSection ).orElse( null );
             
-            packageValidator.validatePackageHeader( optXaip.map( XAIPType::getPackageHeader ) )
+            packageValidator.validatePackageHeader( optXaip.map( XAIPType::getPackageHeader ), xmlDataByOid )
                     .ifPresent( report::setPackageHeader );
             metaValidator.validateMetaDataSection( optXaip.map( XAIPType::getMetaDataSection ), dataSection, xmlDataByOid )
                     .ifPresent( report::setMetaDataSection );
-            dataValidator.validateDataSection( optXaip.map( XAIPType::getDataObjectsSection ), xmlDataByOid, syntaxContext )
+            dataValidator.validateDataSection( optXaip.map( XAIPType::getDataObjectsSection ), xmlDataByOid )
                     .ifPresent( report::setDataObjectsSection );
             
             Map<String, RelatedObjects> credential = credentialValidator
