@@ -25,13 +25,11 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 import de.bund.bsi.tr_esor.vr.CredentialValidityType.RelatedObjects;
 import de.bund.bsi.tresor.aip.validator.syntax.DefaultSyntaxValidator;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
@@ -45,10 +43,12 @@ import lombok.NoArgsConstructor;
 public class DefaultSyntaxValidatorContext
 {
     private byte[]                      rawData;
-
+    
     private Map<String, RelatedObjects> relatedObjectByCredId = new HashMap<>();
-
-    private String tempPath = "";
+    
+    private String                      tempPath              = "";
+    
+    private byte[]                      asicAIPContainer;
     
     /**
      * Returns an new inputStream of raw xaip data

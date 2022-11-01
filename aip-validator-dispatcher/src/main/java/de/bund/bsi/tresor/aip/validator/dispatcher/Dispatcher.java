@@ -28,13 +28,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Optional;
 import java.util.ServiceLoader;
 import java.util.Set;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import de.bund.bsi.tr_esor.vr.CredentialValidityType;
 import de.bund.bsi.tr_esor.vr.XAIPValidityType;
@@ -51,7 +53,6 @@ import de.bund.bsi.tresor.aip.validator.api.entity.SyntaxValidationResult;
 import de.bund.bsi.tresor.aip.validator.syntax.context.DefaultSyntaxValidatorContext;
 import oasis.names.tc.dss_x._1_0.profiles.verificationreport.schema_.ObjectFactory;
 import oasis.names.tc.dss_x._1_0.profiles.verificationreport.schema_.VerificationReportType;
-import org.apache.commons.io.FileUtils;
 
 /**
  * Dispatcher element of the XAIPValidator. This is the control segment of the validator which implements the outer API functions of the
@@ -104,7 +105,7 @@ public enum Dispatcher
         
         XAIPValidityType xaipReport = syntaxResult.getSyntaxReport();
         List<CredentialValidityType> credentialReports = new ArrayList<>();
-
+        
         // TODO use result from sigFinder to add requirements
         // usage of assembler might be an option at this point
         syntaxResult.getXaip().ifPresent( xaip -> {
@@ -135,14 +136,12 @@ public enum Dispatcher
         ModuleLogger.log( "finished protocol assembling" );
         
         writeReport( verificationReport, args.getOutput() );
-
-        Optional<DefaultSyntaxValidatorContext> syntaxContext = ctx.find( DefaultSyntaxValidatorContext.class );
-        syntaxContext.ifPresent( c -> {
-            if( c.getTempPath() != null )
-            {
-                FileUtils.deleteQuietly( new File( c.getTempPath() ) );
-            }
-        } );
+        ctx.find( DefaultSyntaxValidatorContext.class )
+                .map( DefaultSyntaxValidatorContext::getTempPath )
+                .filter( StringUtils::isNotBlank )
+                .ifPresent( path -> {
+                    FileUtils.deleteQuietly( new File( path ) );
+                } );
     }
     
     /**

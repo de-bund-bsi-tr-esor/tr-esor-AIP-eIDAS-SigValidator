@@ -95,6 +95,8 @@ public class DefaultSignatureVerifier implements SignatureVerifier
         Optional<DefaultSyntaxValidatorContext> syntaxContext = context.find( DefaultSyntaxValidatorContext.class );
         
         List<CredentialValidityType> resultList = new ArrayList<>();
+        resultList.addAll( verifyEvidenceRecord( syntaxContext ) );
+        
         for ( Entry<String, Set<String>> entry : credIdsByDataId.entrySet() )
         {
             Optional<String> oid = Optional.ofNullable( entry.getKey() );
@@ -118,7 +120,6 @@ public class DefaultSignatureVerifier implements SignatureVerifier
                             .map( this::resolveCredential )
                             .filter( Objects::nonNull )
                             .findAny();
-                    // TODO lxaip from esor:other/asic:DataObjectReference
                     
                     List<CredentialValidityType> result = verifySignature( oid.orElse( null ), credId, signObj, data, syntaxContext );
                     resultList.addAll( addMissingRelations( oid, result ) );
@@ -127,6 +128,28 @@ public class DefaultSignatureVerifier implements SignatureVerifier
         }
         
         return resultList;
+    }
+    
+    List<CredentialValidityType> verifyEvidenceRecord( Optional<DefaultSyntaxValidatorContext> syntaxContext )
+    {
+        return syntaxContext.map( DefaultSyntaxValidatorContext::getAsicAIPContainer )
+                .filter( Objects::nonNull )
+                .map( asicAIPContainer -> {
+                    List<CredentialValidityType> result = new ArrayList<>();
+                    try
+                    {
+                        String requestId = "asicAip-embedded-content";
+                        result = client.request( requestId, Optional.of( new SignatureObject() ), Optional.of( asicAIPContainer ) );
+                    }
+                    catch ( Exception e )
+                    {
+                        ModuleLogger.log( "[ WARN ] evidence record found in asicAIP, "
+                                + "but could not send the container to the signature verification service" );
+                    }
+                    
+                    return result;
+                } )
+                .orElse( new ArrayList<>() );
     }
     
     @Override
@@ -176,6 +199,8 @@ public class DefaultSignatureVerifier implements SignatureVerifier
     
     Optional<byte[]> binaryDataFromObject( XAIPType xaip, Optional<String> oid )
     {
+        // TODO FIXME Canonicalize before returning xml Data!
+        
         Optional<byte[]> data = Optional.ofNullable( xaip.getDataObjectsSection() ).stream()
                 .map( DataObjectsSectionType::getDataObject )
                 .flatMap( List::stream )

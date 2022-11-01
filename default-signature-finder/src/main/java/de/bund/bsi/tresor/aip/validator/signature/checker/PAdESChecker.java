@@ -87,6 +87,7 @@ public enum PAdESChecker
      */
     boolean hasPAdESRequirements( byte[] data )
     {
+        boolean isPAdES = false;
         try
         {
             PDFParser parser = new PDFParser( new RandomAccessBuffer( data ) );
@@ -98,15 +99,17 @@ public enum PAdESChecker
                 List<COSObject> dssObjects = document.getObjectsByType( "DSS" );
                 List<COSObject> sigObjects = document.getObjectsByType( COSName.SIG );
                 
-                return !dssObjects.isEmpty() || !sigObjects.isEmpty();
+                isPAdES = !dssObjects.isEmpty() || !sigObjects.isEmpty();
             }
             
         }
         catch ( IOException e )
         {
-            ModuleLogger.verbose( "data is not PAdES", e );
+            // ModuleLogger.verbose( "data is not PAdES", e );
         }
         
-        return false;
+        ModuleLogger.verbose( isPAdES ? "data is PAdES" : "data is not PAdES" );
+        
+        return isPAdES;
     }
 }

@@ -71,7 +71,7 @@ public class VerificationUtilTest
         
         try ( InputStream is = getClass().getResourceAsStream( "/data.txt" ) )
         {
-            VerificationResultType result = VerificationUtil.verifyChecksum( is, checkSumType );
+            VerificationResultType result = VerificationUtil.verifyChecksum( is, checkSumType, true );
             assertThat( result.getResultMajor(), is( equalTo( Major.VALID.getUri() ) ) );
         }
     }
@@ -97,7 +97,7 @@ public class VerificationUtilTest
         
         try ( InputStream is = getClass().getResourceAsStream( "/data.txt" ) )
         {
-            VerificationResultType result = VerificationUtil.verifyChecksum( is, checkSumType );
+            VerificationResultType result = VerificationUtil.verifyChecksum( is, checkSumType, true );
             assertThat( result.getResultMajor(), is( equalTo( Major.INVALID.getUri() ) ) );
             assertThat( result.getResultMinor(), is( equalTo( Minor.CHECKSUM_INVALID.getUri() ) ) );
         }
