@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xaip:XAIP XAIPVersion="1.3.0" xmlns:xaip="http://www.bsi.bund.de/tr-esor/xaip" xmlns:asic="http://uri.etsi.org/02918/v1.2.1#" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dss="urn:oasis:names:tc:dss:1.0:core:schema">
+	<xaip:packageHeader packageID="PKGID-01">
+		<xaip:packageInfo>Information über diesen AIP</xaip:packageInfo>
+		<xaip:versionManifest VersionID="V001">
+			<xaip:versionInfo>Initiale Version</xaip:versionInfo>
+			<xaip:preservationInfo>
+				<xaip:retentionPeriod>2100-01-01+01:00</xaip:retentionPeriod>
+			</xaip:preservationInfo>
+			<xaip:submissionInfo>
+				<xaip:clientID>BSI-Test-Client</xaip:clientID>
+			</xaip:submissionInfo>
+			<xaip:packageInfoUnit packageUnitID="PKDIUID-01">
+				<xaip:textInfo>Initialer Stand des abgelegten Vorgangs</xaip:textInfo>
+				<xaip:protectedObjectPointer>DO-01</xaip:protectedObjectPointer>
+				<xaip:protectedObjectPointer>MDO-01</xaip:protectedObjectPointer>
+				<xaip:protectedObjectPointer>DO-02</xaip:protectedObjectPointer>
+			</xaip:packageInfoUnit>
+		</xaip:versionManifest>
+		<ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
+	</xaip:packageHeader>
+	<xaip:metaDataSection>
+		<xaip:metaDataObject relatedObjects="DO-01" metaDataID="MDO-01">
+			<!-- reference to file MDO-01.xml -->
+			<xaip:xmlMetaData>
+				<asic:DataObjectReference URI="MDO-01.xml">
+					<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+					<ds:DigestValue>n1MBnMZ/If6L1sONLgi7qacEJ4xvO3WomyyUX0YqH0o=</ds:DigestValue>
+				</asic:DataObjectReference>
+			</xaip:xmlMetaData>
+		</xaip:metaDataObject>
+	</xaip:metaDataSection>
+	<xaip:dataObjectsSection>
+		<xaip:dataObject dataObjectID="DO-01" relatedObjects="MDO-01">
+			<!-- reference to file test-01.txt.txt, alias DO-01.txt -->
+			<xaip:xmlData>
+				<asic:DataObjectReference URI="DO-01.txt">
+					<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+					<!-- Missing element digest value, see directly below, causes schema violation -->
+					<!-- <ds:DigestValue>wy/tbZ9qnMF8SgmKcvMJKCgyVZJP2k/GTYjclk5ffCk=</ds:DigestValue> -->
+				</asic:DataObjectReference>
+			</xaip:xmlData>
+		</xaip:dataObject>
+		<xaip:dataObject dataObjectID="DO-02">
+			<!-- reference to file test-01.pdf, alias DO-02.pdf -->
+			<xaip:xmlData>
+				<asic:DataObjectReference URI="DO-02.pdf">
+					<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+					<ds:DigestValue>z6+H9l1ixXBhhHpa0vYYpAbJ3yPfS53xyuhyMBPdw68=</ds:DigestValue>
+				</asic:DataObjectReference>
+			</xaip:xmlData>
+		</xaip:dataObject>
+	</xaip:dataObjectsSection>
+</xaip:XAIP>
