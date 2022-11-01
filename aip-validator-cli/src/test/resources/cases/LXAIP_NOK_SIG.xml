@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xaip:XAIP XAIPVersion="1.3.0" xmlns:dss="urn:oasis:names:tc:dss:1.0:core:schema" xmlns:ers="http://www.setcce.org/schemas/ers" xmlns:xaip="http://www.bsi.bund.de/tr-esor/xaip" xmlns:v1="http://uri.etsi.org/01903/v1.3.2#" xmlns:vr="urn:oasis:names:tc:dss-x:1.0:profiles:verificationreport:schema#" xmlns:tr="http://www.bsi.bund.de/tr-esor/api/1.3" xmlns:ec="http://www.bsi.bund.de/ecard/api/1.1" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<xaip:packageHeader packageID="PKGID-01">
+		<xaip:packageInfo>Information über diesen AIP</xaip:packageInfo>
+		<xaip:versionManifest VersionID="V001">
+			<xaip:versionInfo>Initiale Version</xaip:versionInfo>
+			<xaip:preservationInfo>
+				<xaip:retentionPeriod>2100-01-01+01:00</xaip:retentionPeriod>
+			</xaip:preservationInfo>
+			<xaip:submissionInfo>
+				<xaip:clientID>BSI Test-Client</xaip:clientID>
+			</xaip:submissionInfo>
+			<xaip:packageInfoUnit packageUnitID="PKDIUID-01">
+				<xaip:textInfo>Initialer Stand des abgelegten Vorgangs</xaip:textInfo>
+				<xaip:protectedObjectPointer>DO-03</xaip:protectedObjectPointer>
+				<xaip:protectedObjectPointer>CR-03</xaip:protectedObjectPointer>
+				<xaip:protectedObjectPointer>MDO-03</xaip:protectedObjectPointer>
+				<xaip:protectedObjectPointer>DO-04</xaip:protectedObjectPointer>
+				<xaip:protectedObjectPointer>CR-04</xaip:protectedObjectPointer>
+			</xaip:packageInfoUnit>
+			<xaip:extension/>
+		</xaip:versionManifest>
+		<ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
+		<xaip:extension/>
+	</xaip:packageHeader>
+	<xaip:metaDataSection>
+		<xaip:metaDataObject metaDataID="MDO-03" relatedObjects="DO-03">
+			<xaip:xmlMetaData>
+				<asic:DataObjectReference URI="XML_MDO_65.xml" xmlns:asic="http://uri.etsi.org/02918/v1.2.1#">
+					<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+					<ds:DigestValue>n1MBnMZ/If6L1sONLgi7qacEJ4xvO3WomyyUX0YqH0o=</ds:DigestValue>
+				</asic:DataObjectReference>
+			</xaip:xmlMetaData>
+		</xaip:metaDataObject>
+	</xaip:metaDataSection>
+	<xaip:dataObjectsSection>
+		<xaip:dataObject dataObjectID="DO-03" relatedObjects="MDO-03">
+			<xaip:xmlData>
+				<asic:DataObjectReference URI="TXT_DATA_65.txt" xmlns:asic="http://uri.etsi.org/02918/v1.2.1#">
+					<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+					<ds:DigestValue>wy/tbZ9qnMF8SgmKcvMJKCgyVZJP2k/GTYjclk5ffCk=</ds:DigestValue>
+				</asic:DataObjectReference>
+			</xaip:xmlData>
+		</xaip:dataObject>
+		<xaip:dataObject dataObjectID="DO-04" xmlns:asic="http://uri.etsi.org/02918/v1.2.1#">
+			<xaip:xmlData>
+				<asic:DataObjectReference URI="PDF_DATA_65.pdf">
+					<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+					<ds:DigestValue>z6+H9l1ixXBhhHpa0vYYpAbJ3yPfS53xyuhyMBPdw68=</ds:DigestValue>
+				</asic:DataObjectReference>
+			</xaip:xmlData>
+		</xaip:dataObject>
+	</xaip:dataObjectsSection>
+	<xaip:credentialsSection xmlns:asic="http://uri.etsi.org/02918/v1.2.1#">
+		<xaip:credential credentialID="CR-03" relatedObjects="DO-03">
+			<xaip:other>
+				<asic:DataObjectReference URI="TXT_DATA_65_NOK.txt.p7s">
+					<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+					<ds:DigestValue>cPMTEfFms2y/UkzT5/gUqHI1WY/jSR+AbNo9QUSm2rY=</ds:DigestValue>
+				</asic:DataObjectReference>
+			</xaip:other>
+		</xaip:credential>
+		<xaip:credential credentialID="CR-04" relatedObjects="DO-04">
+			<xaip:other>
+				<asic:DataObjectReference URI="PDF_DATA_65.pdf.p7s">
+					<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+					<ds:DigestValue>84ifcXtGhp8oG+ppLxeJn9E6VdsiTJGaEXxKOyb6y+A=</ds:DigestValue>
+				</asic:DataObjectReference>
+			</xaip:other>
+		</xaip:credential>
+	</xaip:credentialsSection>
+</xaip:XAIP>
