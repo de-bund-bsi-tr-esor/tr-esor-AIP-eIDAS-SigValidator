@@ -21,16 +21,31 @@
  */
 package de.bund.bsi.tresor.aip.validator.signature;
 
+import static java.util.Objects.nonNull;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Scanner;
+import java.util.regex.Pattern;
 
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+
+import org.apache.commons.lang3.tuple.Pair;
 import org.dom4j.Document;
+import org.dom4j.DocumentException;
 import org.dom4j.DocumentFactory;
 import org.dom4j.Node;
+import org.dom4j.io.SAXReader;
+import org.xml.sax.SAXException;
 
+import de.bund.bsi.tresor.aip.validator.api.control.ModuleLogger;
 import oasis.names.tc.dss._1_0.core.schema.Base64Signature;
 import oasis.names.tc.dss._1_0.core.schema.SignatureObject;
 
@@ -39,10 +54,11 @@ import oasis.names.tc.dss._1_0.core.schema.SignatureObject;
  */
 public class XmlSignatureEncoder
 {
-    private static final String        PLAIN_XML_DATA = "//esor:dataObject[@dataObjectID=''{0}'']/esor:xmlData/*";
-    private static final String        XML_SIG_OBJ    = "//esor:credential[@credentialID=''{0}'']/dss:SignatureObject/ds:Signature";
+    private static final String           PLAIN_XML_DATA = "//esor:dataObject[@dataObjectID=''{0}'']/esor:xmlData/*";
+    private static final String           XML_SIG_OBJ    = "//esor:credential[@credentialID=''{0}'']/dss:SignatureObject/ds:Signature";
     
-    private static Map<String, String> nsContext      = new HashMap<>();
+    private static final SAXParserFactory factory        = SAXParserFactory.newInstance();
+    public static Map<String, String>     nsContext      = new HashMap<>();
     static
     {
         nsContext.put( "ds", "http://www.w3.org/2000/09/xmldsig#" );
@@ -53,21 +69,77 @@ public class XmlSignatureEncoder
     }
     
     /**
-     * Searching if the dataObject with the provided id has any plain xml data and b64-encoding the plain xml if present
+     * Extracting the raw xml bytes of the object with the provided id without changing any byte of the potential signature
      * 
      * @param document
-     *            the xaip document
+     *            the raw xaip
      * @param id
-     *            the dataObjectId
-     * @return the b64encoded plain xml data if the dataObjectId exists with plain xml data
+     *            the dataObjectId or metaDataObjectId
+     * @return any xmlBytes if present
+     * @throws IOException
+     *             when reading the raw xaip failed
+     * @throws SAXException
+     *             when the saxparser creation failed
+     * @throws ParserConfigurationException
+     *             when the saxparser creation failed
      */
-    public static Optional<byte[]> b64EncodeDataObjectPlainXml( Document document, String id )
+    public static Optional<byte[]> b64EncodeDataObjectPlainXml( byte[] document, String id )
+            throws IOException, SAXException, ParserConfigurationException
     {
-        Node node = document.selectSingleNode( MessageFormat.format( PLAIN_XML_DATA, id ) );
+        Optional<byte[]> result = Optional.empty();
+        StringBuilder builder = new StringBuilder();
         
-        return Optional.ofNullable( node )
-                .map( Node::asXML )
-                .map( str -> str.getBytes( StandardCharsets.UTF_8 ) );
+        factory.setNamespaceAware( true );
+        
+        SAXParser saxParser = factory.newSAXParser();
+        XMLDataObjectParser test = new XMLDataObjectParser( id );
+        
+        saxParser.parse( new ByteArrayInputStream( document ), test );
+        
+        Pair<Integer, Integer> end = test.getEnd();
+        Pair<Integer, Integer> start = test.getStart();
+        
+        if ( start == null || end == null )
+        {
+            ModuleLogger.verbose( "no embedded sig in xml found" );
+            // since no embedded xmlSig was found, return empty optional to use regular dataObjectContent in verifier
+            
+            return Optional.empty();
+        }
+        
+        try ( Scanner scanner = new Scanner( new ByteArrayInputStream( document ) ) )
+        {
+            String line;
+            int currentLineNumber = 1;
+            Pattern pattern = Pattern.compile( ".*(?:\r\n|[\n\r])|.+$" );
+            while ( nonNull( line = scanner.findWithinHorizon( pattern, 0 ) ) )
+            {
+                if ( currentLineNumber > end.getKey() )
+                {
+                    break;
+                }
+                else if ( currentLineNumber >= start.getKey() )
+                {
+                    if ( currentLineNumber == start.getKey() )
+                    {
+                        line = line.substring( start.getValue() - 1 );
+                    }
+                    else if ( currentLineNumber == end.getKey() )
+                    {
+                        line = line.substring( 0, end.getValue() - 1 );
+                        line = line.substring( 0, line.lastIndexOf( "<" ) );
+                    }
+                    
+                    builder.append( line );
+                }
+                
+                currentLineNumber++;
+            }
+            
+            result = Optional.of( builder.toString().getBytes( StandardCharsets.UTF_8 ) );
+        }
+        
+        return result;
     }
     
     /**
@@ -93,14 +165,18 @@ public class XmlSignatureEncoder
      * a new signatureObject which will be returned.<br/>
      * This prevents breaking any xml signature/hash which is being build over the signature object by jaxb.
      * 
-     * @param document
-     *            the xaip document
+     * @param rawXaip
+     *            the raw xaip file
      * @param id
      *            the credential id
      * @return the transformed signatureObject when a signature exists unter the provided credentialId
+     * @throws DocumentException
+     *             when the saxparser could not read the raw xaip
      */
-    public static Optional<SignatureObject> b64EncodeCredentialXmlSignatureObject( Document document, String id )
+    public static Optional<SignatureObject> b64EncodeCredentialXmlSignatureObject( byte[] rawXaip, String id ) throws DocumentException
     {
+        Document document = new SAXReader().read( new ByteArrayInputStream( rawXaip ) );
+        
         return b64EncodeCredentialXmlSignature( document, id )
                 .map( b64 -> {
                     Base64Signature b64XmlSig = new Base64Signature();

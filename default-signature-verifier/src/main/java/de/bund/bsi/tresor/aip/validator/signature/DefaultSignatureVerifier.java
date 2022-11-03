@@ -25,7 +25,6 @@ import static de.bund.bsi.tresor.aip.validator.signature.XmlSignatureEncoder.b64
 import static de.bund.bsi.tresor.aip.validator.signature.XmlSignatureEncoder.b64EncodeDataObjectPlainXml;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -38,8 +37,6 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
-import org.dom4j.Document;
-import org.dom4j.io.SAXReader;
 import org.etsi.uri._02918.v1_2.DataObjectReferenceType;
 
 import de.bund.bsi.tr_esor.vr.CredentialValidityType;
@@ -71,8 +68,10 @@ import oasis.names.tc.dss._1_0.core.schema.SignatureObject;
 @Getter
 public class DefaultSignatureVerifier implements SignatureVerifier
 {
-    private final String          vendor  = "BSI";
-    private final String          version = "1.1.0";
+    private final String          vendor        = "BSI";
+    private final String          version       = "1.1.0";
+    
+    private final String          generated_pfx = "generated-";
     
     private DefaultVerifierConfig config;
     private VerificationClient    client;
@@ -106,7 +105,7 @@ public class DefaultSignatureVerifier implements SignatureVerifier
             if ( credIds.isEmpty() && data.isPresent() )
             {
                 Optional<SignatureObject> sigObj = Optional.of( new SignatureObject() );
-                List<CredentialValidityType> result = verifySignature( "generated-" + oid.get(), null, sigObj, data, syntaxContext );
+                List<CredentialValidityType> result = verifySignature( generated_pfx + oid.get(), null, sigObj, data, syntaxContext );
                 resultList.addAll( addMissingRelations( oid, result ) );
             }
             else
@@ -183,7 +182,7 @@ public class DefaultSignatureVerifier implements SignatureVerifier
             if ( StringUtils.isNoneBlank( dataId ) && entry.getValue().isEmpty() )
             {
                 CredentialValidityType validityType = new CredentialValidityType();
-                validityType.setCredentialID( "generated-" + dataId );
+                validityType.setCredentialID( generated_pfx + dataId );
                 validityType.setOther( VerificationUtil.verificationResult( skippedResult ) );
                 
                 RelatedObjects relatedObjects = new RelatedObjects();
@@ -232,20 +231,20 @@ public class DefaultSignatureVerifier implements SignatureVerifier
         {
             Optional<byte[]> encodedXmlData = Optional.empty();
             Optional<SignatureObject> encodedSignatureObj = Optional.empty();
-            Optional<InputStream> optRawXaip = ctx.map( DefaultSyntaxValidatorContext::rawXaipInput );
+            Optional<byte[]> optRawXaip = ctx.map( DefaultSyntaxValidatorContext::getRawData );
             if ( optRawXaip.isPresent() )
             {
-                try ( InputStream rawXaip = optRawXaip.get() )
+                try
                 {
-                    Document document = new SAXReader().read( rawXaip );
+                    byte[] rawXaip = optRawXaip.get();
                     if ( encodeDataObj )
                     {
-                        encodedXmlData = b64EncodeDataObjectPlainXml( document, dataId );
+                        encodedXmlData = b64EncodeDataObjectPlainXml( rawXaip, dataId.replaceAll( generated_pfx, "" ) );
                     }
                     
                     if ( encodeCredObj )
                     {
-                        encodedSignatureObj = b64EncodeCredentialXmlSignatureObject( document, credId );
+                        encodedSignatureObj = b64EncodeCredentialXmlSignatureObject( rawXaip, credId.replaceAll( generated_pfx, "" ) );
                     }
                     
                     encodedXmlData = chooseData( dataObjContent, encodedXmlData );
