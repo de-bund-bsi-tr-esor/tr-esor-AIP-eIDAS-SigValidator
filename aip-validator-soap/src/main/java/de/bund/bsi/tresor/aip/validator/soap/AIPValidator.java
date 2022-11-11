@@ -108,9 +108,21 @@ public class AIPValidator implements S4
                 .map( DocumentType.class::cast )
                 .map( DocumentType::getInlineXML )
                 .map( InlineXMLType::getAny )
-                .filter( Node.class::isInstance )
-                .map( Node.class::cast )
-                .map( node -> JAXB.unmarshal( new DOMSource( node ), XAIPType.class ) )
+                .map( obj -> {
+                    if ( obj instanceof JAXBElement )
+                    {
+                        JAXBElement<XAIPType> elem = (JAXBElement) obj;
+                        return elem.getValue();
+                    }
+                    
+                    if ( obj instanceof Node )
+                    {
+                        Node node = (Node) obj;
+                        return JAXB.unmarshal( new DOMSource( node ), XAIPType.class );
+                    }
+                    
+                    return null;
+                } )
                 .collect( toList() );
     }
     
