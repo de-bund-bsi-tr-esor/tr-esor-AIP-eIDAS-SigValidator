@@ -21,8 +21,6 @@
  */
 package de.bund.bsi.tresor.aip.validator.signature;
 
-import static java.util.Objects.nonNull;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -31,6 +29,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Scanner;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -38,6 +37,7 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.apache.commons.lang3.tuple.Pair;
+import org.bouncycastle.util.Arrays;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentFactory;
@@ -54,11 +54,14 @@ import oasis.names.tc.dss._1_0.core.schema.SignatureObject;
  */
 public class XmlSignatureEncoder
 {
-    private static final String           PLAIN_XML_DATA = "//esor:dataObject[@dataObjectID=''{0}'']/esor:xmlData/*";
-    private static final String           XML_SIG_OBJ    = "//esor:credential[@credentialID=''{0}'']/dss:SignatureObject/ds:Signature";
+    private static final String           PLAIN_XML_DATA    = "//esor:dataObject[@dataObjectID=''{0}'']/esor:xmlData/*";
+    private static final String           XML_SIG_OBJ       = "//esor:credential[@credentialID=''{0}'']/dss:SignatureObject/ds:Signature";
     
-    private static final SAXParserFactory factory        = SAXParserFactory.newInstance();
-    public static Map<String, String>     nsContext      = new HashMap<>();
+    private static final Pattern          LINE_PATTERN      = Pattern.compile( ".*(?:\r\n|[\n\r])|.+$" );
+    private static final Pattern          CLOSING_TAG_START = Pattern.compile( ".*<" );
+    
+    private static final SAXParserFactory factory           = SAXParserFactory.newInstance();
+    public static Map<String, String>     nsContext         = new HashMap<>();
     static
     {
         nsContext.put( "ds", "http://www.w3.org/2000/09/xmldsig#" );
@@ -70,7 +73,7 @@ public class XmlSignatureEncoder
     
     /**
      * Extracting the raw xml bytes of the object with the provided id without changing any byte of the potential signature
-     * 
+     *
      * @param document
      *            the raw xaip
      * @param id
@@ -86,57 +89,86 @@ public class XmlSignatureEncoder
     public static Optional<byte[]> b64EncodeDataObjectPlainXml( byte[] document, String id )
             throws IOException, SAXException, ParserConfigurationException
     {
-        Optional<byte[]> result = Optional.empty();
-        StringBuilder builder = new StringBuilder();
-        
         factory.setNamespaceAware( true );
         
         SAXParser saxParser = factory.newSAXParser();
-        XMLDataObjectParser test = new XMLDataObjectParser( id );
+        XMLDataObjectParser parser = new XMLDataObjectParser( id );
         
-        saxParser.parse( new ByteArrayInputStream( document ), test );
+        saxParser.parse( new ByteArrayInputStream( document ), parser );
         
-        Pair<Integer, Integer> end = test.getEnd();
-        Pair<Integer, Integer> start = test.getStart();
+        Pair<Integer, Integer> end = parser.getEnd();
+        Pair<Integer, Integer> start = parser.getStart();
         
         if ( start == null || end == null )
         {
-            ModuleLogger.verbose( "no embedded sig in xml found" );
             // since no embedded xmlSig was found, return empty optional to use regular dataObjectContent in verifier
+            ModuleLogger.verbose( "no embedded sig in xml found" );
             
             return Optional.empty();
         }
         
-        try ( Scanner scanner = new Scanner( new ByteArrayInputStream( document ) ) )
+        return findPlainXmlData( document, start, end );
+    }
+    
+    /**
+     * Retrieving the bytes of the xmlData from the document by using the provided startTag and endTag positions to determine the location
+     * of the data inside the document.
+     * 
+     * @param document
+     *            the whole aip document
+     * @param startTag
+     *            start of the xmlData tag
+     * @param endTag
+     *            end of the xmlData tag
+     * @return byte[] of the xmlData
+     * @throws IOException
+     *             when data cannot be read properly
+     */
+    static Optional<byte[]> findPlainXmlData( byte[] document, Pair<Integer, Integer> startTag, Pair<Integer, Integer> endTag )
+            throws IOException
+    {
+        Optional<byte[]> result = Optional.empty();
+        try ( ByteArrayInputStream in = new ByteArrayInputStream( document );
+                Scanner scanner = new Scanner( in ) )
         {
-            String line;
+            int from = 0;
+            int until = 0;
             int currentLineNumber = 1;
-            Pattern pattern = Pattern.compile( ".*(?:\r\n|[\n\r])|.+$" );
-            while ( nonNull( line = scanner.findWithinHorizon( pattern, 0 ) ) )
+            Matcher line = LINE_PATTERN.matcher( new ByteCharSequence( document ) );
+            
+            while ( line.find() )
             {
-                if ( currentLineNumber > end.getKey() )
+                if ( currentLineNumber > endTag.getKey() )
                 {
                     break;
                 }
-                else if ( currentLineNumber >= start.getKey() )
+                else if ( currentLineNumber >= startTag.getKey() )
                 {
-                    if ( currentLineNumber == start.getKey() )
+                    if ( currentLineNumber == startTag.getKey() )
                     {
-                        line = line.substring( start.getValue() - 1 );
+                        from = line.start() + startTag.getValue() - 1;
                     }
-                    else if ( currentLineNumber == end.getKey() )
+                    else if ( currentLineNumber == endTag.getKey() )
                     {
-                        line = line.substring( 0, end.getValue() - 1 );
-                        line = line.substring( 0, line.lastIndexOf( "<" ) );
+                        until = line.start() + endTag.getValue();
+                        
+                        byte[] xmlData = Arrays.copyOfRange( document, line.start(), until );
+                        Matcher closingTagStart = CLOSING_TAG_START.matcher( new ByteCharSequence( xmlData ) );
+                        
+                        if ( !closingTagStart.find() )
+                        {
+                            ModuleLogger.verbose( "could not properly extract plain embedded xmlsig" );
+                            return Optional.empty();
+                        }
+                        
+                        // end of XMLDataObjectParser is the position after closing tag so the closing tag has to be removed from the
+                        // result and use +1 to exclude the '<' character from match
+                        xmlData = Arrays.copyOfRange( document, from, until - (xmlData.length - closingTagStart.end() + 1) );
+                        result = Optional.of( xmlData );
                     }
-                    
-                    builder.append( line );
                 }
-                
                 currentLineNumber++;
             }
-            
-            result = Optional.of( builder.toString().getBytes( StandardCharsets.UTF_8 ) );
         }
         
         return result;

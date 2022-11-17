@@ -9,7 +9,6 @@ import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -34,16 +33,34 @@ public class XMLDataObjectParser extends DefaultHandler
     
     private Locator                locator      = null;
     
-    @Getter
-    private Pair<Integer, Integer> start;
-    @Getter
     private Pair<Integer, Integer> end;
+    private Pair<Integer, Integer> start;
     
     @Override
     public void setDocumentLocator( Locator locator )
     {
         this.locator = locator;
     }
+    
+    /**
+     * Returns the position of the xmlData or xmlMetaData startElement after parsing. The position returned is AFTER the tag.
+     * 
+     * @return lineNumber as key, columnNumber as value
+     */
+    public Pair<Integer, Integer> getStart()
+    {
+        return start;
+    };
+    
+    /**
+     * Returns the position of the xmlData or xmlMetaData endElement after parsing. The position returned is AFTER the tag.
+     * 
+     * @return lineNumber as key, columnNumber as value
+     */
+    public Pair<Integer, Integer> getEnd()
+    {
+        return end;
+    };
     
     @Override
     public void startElement( String uri, String localName, String qName, Attributes attributes ) throws SAXException
