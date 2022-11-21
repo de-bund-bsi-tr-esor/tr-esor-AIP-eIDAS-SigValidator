@@ -43,7 +43,6 @@ import oasis.names.tc.dss._1_0.core.schema.Result;
 public class DefaultResult
 {
     private static final String         NS_TRESOR_API_1_1   = "http://www.bsi.bund.de/tr-esor/api/1.1";
-    private static final String         NS_TRESOR_API_1_2   = "http://www.bsi.bund.de/tr-esor/api/1.2";
     private static final String         NS_TRESOR_API_1_3   = "http://www.bsi.bund.de/tr-esor/api/1.3";
     
     private static final String         NS_ECARD_API_1_1    = "http://www.bsi.bund.de/ecard/api/1.1";
@@ -187,25 +186,25 @@ public class DefaultResult
         
         UNKNOWN_ATTRIBUTE( NS_TRESOR_API_1_1, "/resultminor/unknownAttribute", null ),
         
-        NOT_SUPPORTED_( NS_TRESOR_API_1_2, "/resultminor/arl/notSupported", null ),
+        NOT_SUPPORTED_( NS_TRESOR_API_1_3, "/resultminor/arl/notSupported", null ),
         
-        INVALID_FORMAT( NS_TRESOR_API_1_2, "/resultminor/invalidFormat", null ),
+        INVALID_FORMAT( NS_TRESOR_API_1_3, "/resultminor/invalidFormat", null ),
         
-        HASH_VALUE_MISMATCH( NS_TRESOR_API_1_2, "/resultminor/hashValueMismatch", null ),
+        HASH_VALUE_MISMATCH( NS_TRESOR_API_1_3, "/resultminor/hashValueMismatch", null ),
         
-        UNKNOWN_C14N_METHOD( NS_TRESOR_API_1_2, "/resultminor/unknownCanonicalizationMethod", null ),
+        UNKNOWN_C14N_METHOD( NS_TRESOR_API_1_3, "/resultminor/unknownCanonicalizationMethod", null ),
         
-        UNCHECKED_FORMAT_WARN( NS_TRESOR_API_1_2, "/resultminor/uncheckedFormatWarning", null ),
+        UNCHECKED_FORMAT_WARN( NS_TRESOR_API_1_3, "/resultminor/uncheckedFormatWarning", null ),
         
-        PRESERVATION_PERIOD_EXPIRED( NS_TRESOR_API_1_2, "/resultminor/preservationPeriodExpired", null ),
+        PRESERVATION_PERIOD_EXPIRED( NS_TRESOR_API_1_3, "/resultminor/preservationPeriodExpired", null ),
         
-        SUBMISSION_TIME_DEVIATION( NS_TRESOR_API_1_2, "/resultminor/submissionTimeDeviationBeyondLimit", null ),
+        SUBMISSION_TIME_DEVIATION( NS_TRESOR_API_1_3, "/resultminor/submissionTimeDeviationBeyondLimit", null ),
         
-        AMBIGUOUS_OBJECT_POINTER( NS_TRESOR_API_1_2, "/resultminor/ambiguousObjectPointerStatus", null ),
+        AMBIGUOUS_OBJECT_POINTER( NS_TRESOR_API_1_3, "/resultminor/ambiguousObjectPointerStatus", null ),
         
-        CHECKSUM_INVALID( NS_TRESOR_API_1_2, "/resultminor/checkSumInvalid", null ),
+        CHECKSUM_INVALID( NS_TRESOR_API_1_3, "/resultminor/checkSumInvalid", null ),
         
-        CHECKSUM_ALG_NOT_SUPPORTED( NS_TRESOR_API_1_2, "/resultminor/checkSumAlgorithmNotSupportedWarning", null );
+        CHECKSUM_ALG_NOT_SUPPORTED( NS_TRESOR_API_1_3, "/resultminor/checkSumAlgorithmNotSupportedWarning", null );
         
         private final String uri;
         private final String message;
