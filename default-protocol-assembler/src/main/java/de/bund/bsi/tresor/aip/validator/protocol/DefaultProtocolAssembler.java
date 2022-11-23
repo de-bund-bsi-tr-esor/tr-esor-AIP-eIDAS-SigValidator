@@ -177,7 +177,7 @@ public class DefaultProtocolAssembler implements ProtocolAssembler
         if ( !args.isVerify() && hasSignatures )
         {
             resultMajor = Major.INSUFFICIENT_INFORMATION;
-            resultMessage = "the signature validation has been skipped";
+            resultMessage = "the signature validation has been skipped for containing signature(s)";
         }
         
         return DefaultResult.major( resultMajor ).message( resultMessage, ResultLanguage.ENGLISH ).build();
@@ -202,7 +202,8 @@ public class DefaultProtocolAssembler implements ProtocolAssembler
         XPath xpath = xPathfactory.newXPath();
         xpath.setNamespaceContext( nsMapping );
         
-        XPathExpression expr = xpath.compile( "//ns:DetailedSignatureReport/ns:SignatureOK/ns:SigMathOK/ns:ResultMajor" );
+        XPathExpression expr = xpath
+                .compile( "(//ns:IndividualTimeStampReport|//ns:IndividualTimeStampReport)/ns:SignatureOK/ns:SigMathOK/ns:ResultMajor" );
         NodeList result = (NodeList) expr.evaluate( doc, XPathConstants.NODESET );
         
         return result;
