@@ -203,7 +203,7 @@ public class DefaultProtocolAssembler implements ProtocolAssembler
         xpath.setNamespaceContext( nsMapping );
         
         XPathExpression expr = xpath
-                .compile( "(//ns:IndividualTimeStampReport|//ns:IndividualTimeStampReport)/ns:SignatureOK/ns:SigMathOK/ns:ResultMajor" );
+                .compile( "(//ns:DetailedSignatureReport|//ns:IndividualTimeStampReport)/ns:SignatureOK/ns:SigMathOK/ns:ResultMajor" );
         NodeList result = (NodeList) expr.evaluate( doc, XPathConstants.NODESET );
         
         return result;
