@@ -305,7 +305,7 @@ Any known issues about the validator are being explained at the bottom of this p
 
 | ConfigName        | Example                                                   | Description                          |
 |-------------------|-----------------------------------------------------------|--------------------------------------|
-| *verifier.wsdlUrl | https://host:port/VerificationService/S4?wsdl             | url of the verification service wsdl |
+| *verifier.wsdlUrl | https://host:port/VerificationService/eCard?wsdl          | url of the verification service wsdl |
 
 \* - required configuration
 
@@ -324,6 +324,7 @@ The following limitations apply:
 - Information for `TransformInfoType` is currently not generated due to inconsistencies in the verification report scheme
 - Extensions are not evaluated due to their dependency to specific profiles
 - The content of Metadata sections is not evaluated with the exception of their well-formedness
+- The reference implementation of the VerificationService (see test environment) might return an unsupported signature result in case of an invalid ASiC container due to some limitations in the dss-lib
 
 The following issues are known:
 - **[XVAL-1]** When using the paramter `-o` the provided argument has to be a file which is not in the current directory
