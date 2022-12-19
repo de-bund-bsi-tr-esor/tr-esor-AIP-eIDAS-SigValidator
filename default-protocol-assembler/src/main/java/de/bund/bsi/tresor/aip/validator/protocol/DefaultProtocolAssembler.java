@@ -197,13 +197,15 @@ public class DefaultProtocolAssembler implements ProtocolAssembler
         
         NSMapping nsMapping = new NSMapping();
         nsMapping.putNamespace( "ns", "urn:oasis:names:tc:dss-x:1.0:profiles:verificationreport:schema#" );
+        nsMapping.putNamespace( "vr", "http://www.bsi.bund.de/tr-esor/vr" );
         
         XPathFactory xPathfactory = XPathFactory.newInstance();
         XPath xpath = xPathfactory.newXPath();
         xpath.setNamespaceContext( nsMapping );
         
         XPathExpression expr = xpath
-                .compile( "(//ns:DetailedSignatureReport|//ns:IndividualTimeStampReport)/ns:SignatureOK/ns:SigMathOK/ns:ResultMajor" );
+                .compile( "(//ns:DetailedSignatureReport|//ns:IndividualTimeStampReport)/ns:SignatureOK/ns:SigMathOK/ns:ResultMajor" +
+                        "|//vr:EvidenceRecordReport/vr:FormatOK/ns:ResultMajor" );
         NodeList result = (NodeList) expr.evaluate( doc, XPathConstants.NODESET );
         
         return result;
