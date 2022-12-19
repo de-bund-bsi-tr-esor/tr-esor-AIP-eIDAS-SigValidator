@@ -20,7 +20,7 @@
 	<esor:dataObjectsSection>
 		<esor:dataObject dataObjectID="DO-01">
 			<esor:xmlData>
-				<asic:DataObjectReference URI="file:///C:/temp/XSV-LXAIP/TST-100_DO-01.txt">
+				<asic:DataObjectReference URI="file:///your/absolute/path/to/aip-validator-cli/src/test/resources/cases/TST-100_DO-01.txt">
 					<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
 					<ds:DigestValue>wy/tbZ9qnMF8SgmKcvMJKCgyVZJP2k/GTYjclk5ffCk=</ds:DigestValue>
 				</asic:DataObjectReference>
@@ -30,7 +30,7 @@
 	<esor:credentialsSection>
 		<esor:credential credentialID="CR-01" relatedObjects="DO-01">
 			<esor:other>
-				<asic:DataObjectReference URI="file:///C:/temp/XSV-LXAIP/TST-100_CR-01.txt.p7s">
+				<asic:DataObjectReference URI="file:///your/absolute/path/to/aip-validator-cli/src/test/resources/cases/TST-100_CR-01.txt.p7s">
 					<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
 					<ds:DigestValue>cPMTEfFms2y/UkzT5/gUqHI1WY/jSR+AbNo9QUSm2rY=</ds:DigestValue>
 				</asic:DataObjectReference>
