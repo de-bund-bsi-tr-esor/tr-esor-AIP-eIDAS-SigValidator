@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>de.bund.bsi.tr_esor</groupId>
     <artifactId>tr-esor-AIP-eIDAS-SigValidator</artifactId>
-    <version>1.1.0-2</version>
+    <version>1.1.0-3-SNAPSHOT</version>
     <name>AIP-eIDAS-SigValidator</name>
     <description>Validator for TR-ESOR AIP documents </description>
     <packaging>pom</packaging>
