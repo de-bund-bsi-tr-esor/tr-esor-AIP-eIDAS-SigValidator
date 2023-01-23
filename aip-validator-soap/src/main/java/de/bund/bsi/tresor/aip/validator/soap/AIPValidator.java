@@ -28,6 +28,7 @@ import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Optional;
 
 import javax.jws.WebService;
@@ -106,6 +107,27 @@ public class AIPValidator implements S4
         return objects.stream()
                 .filter( DocumentType.class::isInstance )
                 .map( DocumentType.class::cast )
+                .map( type -> {
+                    var optBase64 = base64Xml( type );
+                    var optInline = inlineXml( type );
+                    
+                    return optInline.orElseGet( () -> optBase64.orElse( null ) );
+                } )
+                .filter( Objects::nonNull )
+                .collect( toList() );
+    }
+    
+    Optional<XAIPType> base64Xml( DocumentType type )
+    {
+        return Optional.ofNullable( type )
+                .map( DocumentType::getBase64XML )
+                .map( ByteArrayInputStream::new )
+                .map( stream -> JAXB.unmarshal( stream, XAIPType.class ) );
+    }
+    
+    Optional<XAIPType> inlineXml( DocumentType type )
+    {
+        return Optional.ofNullable( type )
                 .map( DocumentType::getInlineXML )
                 .map( InlineXMLType::getAny )
                 .map( obj -> {
@@ -122,8 +144,7 @@ public class AIPValidator implements S4
                     }
                     
                     return null;
-                } )
-                .collect( toList() );
+                } );
     }
     
     @Override
