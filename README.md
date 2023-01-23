@@ -46,7 +46,7 @@ java -jar aip-validator-cli/target/aip-validator-cli.jar -v -c default.conf -i ~
 java -cp "aip-validator-soap/target/aip-validator-soap-1.1.0-1.jar:aip-validator-soap/target/dependency/*" de.bund.bsi.tresor.aip.validator.soap.Server -Mvalidator.schemaDir=default-syntax-validator/src/main/resources/definitions -Mverifier.wsdlUrl="http://host:port/VerificationService/eCard\?wsdl"
 
 # Windows
-java -cp "aip-validator-soap/target/aip-validator-soap-1.1.0-1.jar;target/dependency/*" de.bund.bsi.tresor.aip.validator.soap.Server -Mvalidator.schemaDir=default-syntax-validator/src/main/resources/definitions -Mverifier.wsdlUrl="https://host:port/VerificationService/eCard\?wsdl"
+java -cp "aip-validator-soap/target/aip-validator-soap-1.1.0-1.jar;aip-validator-soap/target/dependency/*" de.bund.bsi.tresor.aip.validator.soap.Server -Mvalidator.schemaDir=default-syntax-validator/src/main/resources/definitions -Mverifier.wsdlUrl="https://host:port/VerificationService/eCard\?wsdl"
 ```
 
 ## Prerequisites
