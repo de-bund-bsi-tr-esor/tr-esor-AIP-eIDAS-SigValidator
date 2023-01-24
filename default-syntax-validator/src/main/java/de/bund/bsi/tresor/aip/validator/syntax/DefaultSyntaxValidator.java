@@ -94,6 +94,11 @@ public class DefaultSyntaxValidator implements SyntaxValidator
     {
         schemaDir = Optional.ofNullable( properties.get( SCHEMA_DIR_PROPERTY ) )
                 .orElseThrow( () -> new AIPValidatorException( "missing property " + SCHEMA_DIR_PROPERTY ) );
+        
+        if ( !new File( schemaDir ).exists() )
+        {
+            throw new AIPValidatorException( "the provided schema directory " + schemaDir + " does not exist" );
+        }
     }
     
     @Override
