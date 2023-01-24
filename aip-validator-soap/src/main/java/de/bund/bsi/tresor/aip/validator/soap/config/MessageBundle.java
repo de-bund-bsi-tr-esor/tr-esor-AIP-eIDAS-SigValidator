@@ -53,4 +53,6 @@ public abstract class MessageBundle
     
     public static final String         SERVER_USAGE_CONFIG = "server.usage.config";
     
+    public static final String         SERVER_USAGE_VERIFY = "server.usage.verify";
+    
 }
