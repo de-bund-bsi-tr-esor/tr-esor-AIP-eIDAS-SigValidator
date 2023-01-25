@@ -133,11 +133,12 @@ public enum ASiCAIPValidator
             else if ( validAIPFiles.size() == 1 )
             {
                 File xaipFile = validAIPFiles.get( 0 );
-                EvidenceRecordFinder.findEvidenceRecord( syntaxContext, zippedData );
+                EvidenceRecordFinder.findEvidenceRecordManifest( zippedData );
+                syntaxContext.setAsicAIPContainer( zippedData );
                 // do not change the order of the line above and below
                 zippedData = FileUtils.readFileToByteArray( xaipFile );
                 unzipped.ifPresent( asicDir -> {
-                    validateASiCAIPStructure( asicDir, xaipFile, syntaxContext );
+                    validateASiCAIPStructure( asicDir, xaipFile );
                 } );
             }
         }
@@ -157,10 +158,8 @@ public enum ASiCAIPValidator
      *            the unzipped asic directory
      * @param xaipFile
      *            the file
-     * @param syntaxContext
-     *            context of the syntaxValidator
      */
-    public void validateASiCAIPStructure( File asicDir, File xaipFile, DefaultSyntaxValidatorContext syntaxContext )
+    public void validateASiCAIPStructure( File asicDir, File xaipFile )
     {
         XAIPType xaip = JAXB.unmarshal( xaipFile, XAIPType.class );
         File metaInf = Arrays.stream( asicDir.listFiles() )

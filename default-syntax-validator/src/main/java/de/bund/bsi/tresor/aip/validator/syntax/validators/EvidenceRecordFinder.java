@@ -1,15 +1,10 @@
 package de.bund.bsi.tresor.aip.validator.syntax.validators;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-
-import de.bund.bsi.tresor.aip.validator.syntax.context.DefaultSyntaxValidatorContext;
+import de.bund.bsi.tresor.aip.validator.api.control.ModuleLogger;
 import eu.europa.esig.dss.asic.cades.validation.ASiCContainerWithCAdESValidator;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.asic.common.validation.AbstractASiCContainerValidator;
 import eu.europa.esig.dss.asic.xades.validation.ASiCContainerWithXAdESValidator;
-import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 
 /**
@@ -29,7 +24,7 @@ public class EvidenceRecordFinder
      * @param asic
      *            the asic container
      */
-    public static void findEvidenceRecord( DefaultSyntaxValidatorContext syntaxContext, byte[] asic )
+    public static void findEvidenceRecordManifest( byte[] asic )
     {
         var dssDocument = new InMemoryDocument( asic );
         ASiCContainerWithCAdESValidator cAdESValidator = new ASiCContainerWithCAdESValidator( dssDocument );
@@ -42,12 +37,11 @@ public class EvidenceRecordFinder
         }
         
         AbstractASiCContainerValidator validator = cAdESValidatorIsSupported ? cAdESValidator : xAdESValidator;
+        
         validator.getUnsupportedDocuments().stream()
                 .filter( dssDoc -> isEvidenceRecordArchiveManifest( dssDoc.getName() ) )
                 .findAny()
-                .ifPresent( doc -> {
-                    syntaxContext.setAsicAIPContainer( asic );
-                } );
+                .ifPresent( doc -> ModuleLogger.log( "found embedded evidenceRecord in ASiC-AIP" ) );
     }
     
     /**
@@ -63,10 +57,4 @@ public class EvidenceRecordFinder
                 && fileName.endsWith( ASiCUtils.XML_EXTENSION );
     }
     
-    private static Optional<DSSDocument> findDssDocument( List<DSSDocument> documents, String filename )
-    {
-        return documents.stream()
-                .filter( dssDoc -> Objects.equals( dssDoc.getName(), filename ) )
-                .findAny();
-    }
 }
