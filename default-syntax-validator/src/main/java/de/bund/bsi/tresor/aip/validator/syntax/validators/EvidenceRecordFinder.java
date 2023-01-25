@@ -19,8 +19,6 @@ public class EvidenceRecordFinder
      * Detecting if an evidenceRecord is inside the provided asic and adding the asicContainer to the syntaxContext if an evidenceReport was
      * found
      * 
-     * @param syntaxContext
-     *            context of the syntaxValidator
      * @param asic
      *            the asic container
      */
