@@ -42,8 +42,6 @@ import javax.xml.ws.BindingProvider;
 
 import org.w3c.dom.Node;
 
-import com.sun.xml.ws.client.BindingProviderProperties;
-
 import de.bund.bsi.ecard.api._1.ECard_Service;
 import de.bund.bsi.ecard.api._1.VerifyRequest;
 import de.bund.bsi.ecard.api._1.VerifyResponse;
@@ -75,6 +73,9 @@ import oasis.names.tc.dss_x._1_0.profiles.verificationreport.schema_.TimeStampVa
  */
 public class VerificationClient
 {
+    private static final String   CONNECT_TIMEOUT = "com.sun.xml.ws.connect.timeout";
+    private static final String   REQUEST_TIMEOUT = "com.sun.xml.ws.request.timeout";
+    
     private ECard_Service         service;
     private DefaultVerifierConfig config;
     
@@ -115,8 +116,8 @@ public class VerificationClient
                         .orElseGet( () -> new ECard_Service( wsdlUrl ) );
                 
                 Map<String, Object> requestContext = ((BindingProvider) service.getECard()).getRequestContext();
-                requestContext.put( BindingProviderProperties.CONNECT_TIMEOUT, config.getConnectTimeout() );
-                requestContext.put( BindingProviderProperties.REQUEST_TIMEOUT, config.getRequestTimeout() );
+                requestContext.put( CONNECT_TIMEOUT, config.getConnectTimeout() );
+                requestContext.put( REQUEST_TIMEOUT, config.getRequestTimeout() );
             }
             
             connection.disconnect();
@@ -238,6 +239,7 @@ public class VerificationClient
         {
             JAXBContext context = JAXBContext.newInstance( IndividualReportType.class );
             Unmarshaller unmarshaller = context.createUnmarshaller();
+            
             for ( Object obj : response.getOptionalOutputs().getAny() )
             {
                 if ( obj instanceof Node )

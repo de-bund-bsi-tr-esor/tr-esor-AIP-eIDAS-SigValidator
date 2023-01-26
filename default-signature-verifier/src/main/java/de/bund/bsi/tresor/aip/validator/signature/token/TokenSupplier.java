@@ -34,7 +34,7 @@ import java.util.Optional;
 import de.bund.bsi.tresor.aip.validator.signature.DefaultVerifierConfig;
 
 /**
- * Supplier implementation of the optional identityToken which is being used as an additional header for the ECM requests.
+ * Supplier implementation of the optional identityToken which is being used as an additional header for the requests.
  * 
  * @author wolffs
  */

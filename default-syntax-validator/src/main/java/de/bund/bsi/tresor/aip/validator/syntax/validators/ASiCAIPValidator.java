@@ -23,9 +23,6 @@ import java.util.zip.ZipInputStream;
 
 import javax.xml.bind.DataBindingException;
 import javax.xml.bind.JAXB;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.dom.DOMSource;
 
 import org.apache.commons.io.FileUtils;
@@ -42,6 +39,7 @@ import de.bund.bsi.tresor.aip.validator.api.control.AIPUtil;
 import de.bund.bsi.tresor.aip.validator.api.control.ModuleLogger;
 import de.bund.bsi.tresor.aip.validator.syntax.context.DefaultSyntaxValidatorContext;
 import eu.europa.esig.dss.asic.cades.validation.ASiCContainerWithCAdESValidatorFactory;
+import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.asic.xades.validation.ASiCContainerWithXAdESValidatorFactory;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -71,10 +69,11 @@ public enum ASiCAIPValidator
         {
             DSSDocument document = new InMemoryDocument( new ByteArrayInputStream( data ) );
             
+            boolean isASiCE = ASiCUtils.isASiCEContainer( document );
             boolean isCAdESASiC = cadesASiCValidator.isSupported( document );
             boolean isXAdESASiC = xadesASiCValidator.isSupported( document );
             
-            boolean isASiC = isCAdESASiC || isXAdESASiC;
+            boolean isASiC = isASiCE && (isCAdESASiC || isXAdESASiC);
             ModuleLogger.verbose( isASiC ? "data is ASiC-AIP" : "data is not ASiC-AIP" );
             
             return isASiC;
@@ -133,13 +132,16 @@ public enum ASiCAIPValidator
             else if ( validAIPFiles.size() == 1 )
             {
                 File xaipFile = validAIPFiles.get( 0 );
-                EvidenceRecordFinder.findEvidenceRecordManifest( zippedData );
                 syntaxContext.setAsicAIPContainer( zippedData );
                 // do not change the order of the line above and below
                 zippedData = FileUtils.readFileToByteArray( xaipFile );
                 unzipped.ifPresent( asicDir -> {
                     validateASiCAIPStructure( asicDir, xaipFile );
                 } );
+            }
+            else
+            {
+                throw new IllegalStateException( "asic container does not contain a valid aip file" );
             }
         }
         finally
@@ -184,43 +186,43 @@ public enum ASiCAIPValidator
         String aoid = AIPUtil.findAoid( xaip ).orElseThrow( () -> new IllegalArgumentException( "missing aoid in xaip" ) );
         Map<String, Set<String>> oidsByVersion = AIPUtil.oidsByVersion( xaip );
         
-        try
+        Map<String, Set<String>> errorsByManifest = new HashMap<>();
+        for ( File file : metaInf.listFiles() )
         {
-            JAXBContext context = JAXBContext.newInstance( ASiCManifestType.class );
-            Unmarshaller unmarshaller = context.createUnmarshaller();
-            Map<String, Set<String>> errorsByManifest = new HashMap<>();
-            for ( File file : metaInf.listFiles() )
+            try
             {
-                try
+                Set<String> errors = new HashSet<>();
+                ASiCManifestType manifest = JAXB.unmarshal( file, ASiCManifestType.class );
+                
+                if ( file.getName().toLowerCase().contains( "evidence" ) )
                 {
-                    ASiCManifestType manifest = (ASiCManifestType) unmarshaller.unmarshal( file );
-                    Set<String> errors = validateManifest( metaInf, manifest, aoid, oidsByVersion );
-                    
-                    if ( !errors.isEmpty() )
-                    {
-                        errorsByManifest.put( file.getName(), errors );
-                    }
+                    // TODO
                 }
-                catch ( ClassCastException | JAXBException | DataBindingException e )
+                else
                 {
-                    ModuleLogger.log( "manifest search: skipping " + file.getName() );
-                    ModuleLogger.verbose( "file is not an asicManifest: " + file.getName(), e );
+                    errors.addAll( validateManifest( metaInf, manifest, aoid, oidsByVersion ) );
+                }
+                
+                if ( !errors.isEmpty() )
+                {
+                    errorsByManifest.put( file.getName(), errors );
                 }
             }
-            
-            if ( !oidsByVersion.isEmpty() )
+            catch ( ClassCastException | DataBindingException e )
             {
-                ModuleLogger.log( "[WARN] missing optional aisc-manifest containerID for versions: " + oidsByVersion.keySet().toString() );
-            }
-            
-            if ( !errorsByManifest.isEmpty() )
-            {
-                throw new IllegalArgumentException( "invalid asic-aip structure: " + errorsByManifest.toString() );
+                ModuleLogger.log( "manifest search: skipping " + file.getName() );
+                ModuleLogger.verbose( "file is not an asicManifest: " + file.getName(), e );
             }
         }
-        catch ( JAXBException e )
+        
+        if ( !oidsByVersion.isEmpty() )
         {
-            throw new IllegalStateException( "could not create unmarshaller for asicManifest", e );
+            ModuleLogger.log( "[WARN] missing optional aisc-manifest containerID for versions: " + oidsByVersion.keySet().toString() );
+        }
+        
+        if ( !errorsByManifest.isEmpty() )
+        {
+            throw new IllegalArgumentException( errorsByManifest.toString() );
         }
     }
     

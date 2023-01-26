@@ -1,198 +1,209 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>de.bund.bsi.tr_esor</groupId>
-    <artifactId>tr-esor-AIP-eIDAS-SigValidator</artifactId>
-    <version>1.1.0-3-SNAPSHOT</version>
-    <name>AIP-eIDAS-SigValidator</name>
-    <description>Validator for TR-ESOR AIP documents </description>
-    <packaging>pom</packaging>
-    <inceptionYear>2021</inceptionYear>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>de.bund.bsi.tr_esor</groupId>
+	<artifactId>tr-esor-AIP-eIDAS-SigValidator</artifactId>
+	<version>1.1.0-3-SNAPSHOT</version>
+	<name>AIP-eIDAS-SigValidator</name>
+	<description>Validator for TR-ESOR AIP documents </description>
+	<packaging>pom</packaging>
+	<inceptionYear>2021</inceptionYear>
 
-    <modules>
-        <module>default-syntax-validator</module>
-        <module>default-signature-finder</module>
-        <module>default-signature-verifier</module>
-        <module>default-protocol-assembler</module>
-        <module>aip-validator-cli</module>
-        <module>aip-validator-soap</module>
-        <module>aip-validator-api</module>
-        <module>aip-validator-dispatcher</module>
-    </modules>
+	<modules>
+		<module>default-syntax-validator</module>
+		<module>default-signature-finder</module>
+		<module>default-signature-verifier</module>
+		<module>default-protocol-assembler</module>
+		<module>aip-validator-cli</module>
+		<module>aip-validator-soap</module>
+		<module>aip-validator-api</module>
+		<module>aip-validator-dispatcher</module>
+	</modules>
 
-    <properties>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
-        <jar.plugin.version>3.2.2</jar.plugin.version>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
+	<properties>
+		<maven.compiler.source>11</maven.compiler.source>
+		<maven.compiler.target>11</maven.compiler.target>
+		<jar.plugin.version>3.2.2</jar.plugin.version>
+		<dss.lib.version>5.11.1</dss.lib.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
 
-    <licenses>
-        <license>
-            <name>Apache-2.0</name>
-            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
-            <distribution>manual</distribution>
-        </license>
-    </licenses>
+	<licenses>
+		<license>
+			<name>Apache-2.0</name>
+			<url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>manual</distribution>
+		</license>
+	</licenses>
 
-    <organization>
-        <name>Federal Office for Information Security (BSI)</name>
-        <url>https://bsi.bund.de/</url>
-    </organization>
+	<organization>
+		<name>Federal Office for Information Security (BSI)</name>
+		<url>https://bsi.bund.de/</url>
+	</organization>
 
-    <developers>
-        <developer>
-            <email>info@procilon.de</email>
-            <organization>procilon GROUP</organization>
-            <organizationUrl>https://www.procilon.de</organizationUrl>
-        </developer>
-    </developers>
+	<developers>
+		<developer>
+			<email>info@procilon.de</email>
+			<organization>procilon GROUP</organization>
+			<organizationUrl>https://www.procilon.de</organizationUrl>
+		</developer>
+	</developers>
 
-    <repositories>
-        <repository>
-            <id>dss-repo</id>
-            <url>https://ec.europa.eu/cefdigital/artifact/content/groups/public/</url>
-        </repository>
-    </repositories>
+	<repositories>
+		<repository>
+			<id>dss-repo</id>
+			<url>https://ec.europa.eu/cefdigital/artifact/content/groups/public/</url>
+		</repository>
+	</repositories>
 
-    <dependencyManagement>
-        <dependencies>
-            <!-- external dependencies -->
-            <dependency>
-                <groupId>org.projectlombok</groupId>
-                <artifactId>lombok</artifactId>
-                <version>1.18.12</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>javax.xml.bind</groupId>
-                <artifactId>jaxb-api</artifactId>
-                <version>2.3.1</version>
-            </dependency>
-            <dependency>
-                <groupId>com.sun.xml.bind</groupId>
-                <artifactId>jaxb-core</artifactId>
-                <version>2.3.0.1</version>
-            </dependency>
-            <dependency>
-                <groupId>com.sun.xml.bind</groupId>
-                <artifactId>jaxb-impl</artifactId>
-                <version>2.3.1</version>
-            </dependency>
-            <dependency>
-                <groupId>org.junit.jupiter</groupId>
-                <artifactId>junit-jupiter</artifactId>
-                <version>5.6.2</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>3.2.2</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
+	<dependencyManagement>
+		<dependencies>
+			<!-- external dependencies -->
+			<dependency>
+				<groupId>org.projectlombok</groupId>
+				<artifactId>lombok</artifactId>
+				<version>1.18.12</version>
+				<scope>provided</scope>
+			</dependency>
+			<dependency>
+				<groupId>javax.xml.bind</groupId>
+				<artifactId>jaxb-api</artifactId>
+				<version>2.3.1</version>
+			</dependency>
+			<dependency>
+				<groupId>com.sun.xml.bind</groupId>
+				<artifactId>jaxb-core</artifactId>
+				<version>2.3.0.1</version>
+			</dependency>
+			<dependency>
+				<groupId>com.sun.xml.bind</groupId>
+				<artifactId>jaxb-impl</artifactId>
+				<version>2.3.1</version>
+			</dependency>
+			<dependency>
+				<groupId>org.junit.jupiter</groupId>
+				<artifactId>junit-jupiter</artifactId>
+				<version>5.6.2</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>3.2.2</version>
+			</dependency>
+			<!-- DSS-Lib -->
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-asic-cades</artifactId>
+				<version>${dss.lib.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-asic-xades</artifactId>
+				<version>${dss.lib.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-utils-apache-commons</artifactId>
+				<version>${dss.lib.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-token</artifactId>
+				<version>${dss.lib.version}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter</artifactId>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
+	<dependencies>
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.0.0-M5</version>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-checkstyle-plugin</artifactId>
-                <version>3.1.0</version>
-                <executions>
-                    <execution>
-                        <id>verify-style</id>
-                        <phase>process-classes</phase>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <suppressionsLocation>checkstyle-suppressions.xml</suppressionsLocation>
-                    <logViolationsToConsole>true</logViolationsToConsole>
-                    <checkstyleRules>
-                        <module name="Checker">
-                            <module name="FileLength">
-                                <property name="max"
-                                    value="2000" />
-                                <property name="fileExtensions"
-                                    value="java" />
-                            </module>
-                            <module name="FileTabCharacter" />
-                            <module name="TreeWalker">
-                                <module name="StaticVariableName" />
-                                <module name="TypeName" />
-                                <module name="JavadocType" />
-                                <module name="JavadocMethod">
-                                    <property name="scope"
-                                        value="protected" />
-                                    <property
-                                        name="allowUndeclaredRTE"
-                                        value="true" />
-                                </module>
-                                <module name="MethodLength">
-                                    <property name="tokens"
-                                        value="METHOD_DEF" />
-                                    <property name="max"
-                                        value="60" />
-                                </module>
-                                <module name="MethodLength">
-                                    <property name="tokens"
-                                        value="CTOR_DEF" />
-                                    <property name="max"
-                                        value="15" />
-                                </module>
-                            </module>
-                        </module>
-                    </checkstyleRules>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>license-maven-plugin</artifactId>
-                <version>2.0.0</version>
-                <executions>
-                    <execution>
-                        <id>update-file-header-UTF-8</id>
-                        <goals>
-                            <goal>update-file-header</goal>
-                        </goals>
-                        <configuration>
-                            <excludes>
-                                <exclude>**/*.properties</exclude>
-                            </excludes>
-                            <encoding>UTF-8</encoding>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>update-file-header-ISO-8859-1</id>
-                        <goals>
-                            <goal>update-file-header</goal>
-                        </goals>
-                        <configuration>
-                            <includes>
-                                <include>**/*.properties</include>
-                            </includes>
-                            <encoding>ISO-8859-1</encoding>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>3.0.0-M5</version>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-checkstyle-plugin</artifactId>
+				<version>3.1.0</version>
+				<executions>
+					<execution>
+						<id>verify-style</id>
+						<phase>process-classes</phase>
+						<goals>
+							<goal>check</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<suppressionsLocation>checkstyle-suppressions.xml</suppressionsLocation>
+					<logViolationsToConsole>true</logViolationsToConsole>
+					<checkstyleRules>
+						<module name="Checker">
+							<module name="FileLength">
+								<property name="max" value="2000" />
+								<property name="fileExtensions" value="java" />
+							</module>
+							<module name="FileTabCharacter" />
+							<module name="TreeWalker">
+								<module name="StaticVariableName" />
+								<module name="TypeName" />
+								<module name="JavadocType" />
+								<module name="JavadocMethod">
+									<property name="scope" value="protected" />
+									<property name="allowUndeclaredRTE" value="true" />
+								</module>
+								<module name="MethodLength">
+									<property name="tokens" value="METHOD_DEF" />
+									<property name="max" value="60" />
+								</module>
+								<module name="MethodLength">
+									<property name="tokens" value="CTOR_DEF" />
+									<property name="max" value="15" />
+								</module>
+							</module>
+						</module>
+					</checkstyleRules>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>license-maven-plugin</artifactId>
+				<version>2.0.0</version>
+				<executions>
+					<execution>
+						<id>update-file-header-UTF-8</id>
+						<goals>
+							<goal>update-file-header</goal>
+						</goals>
+						<configuration>
+							<excludes>
+								<exclude>**/*.properties</exclude>
+							</excludes>
+							<encoding>UTF-8</encoding>
+						</configuration>
+					</execution>
+					<execution>
+						<id>update-file-header-ISO-8859-1</id>
+						<goals>
+							<goal>update-file-header</goal>
+						</goals>
+						<configuration>
+							<includes>
+								<include>**/*.properties</include>
+							</includes>
+							<encoding>ISO-8859-1</encoding>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 </project>

@@ -139,11 +139,14 @@ public class DefaultSignatureVerifier implements SignatureVerifier
                     {
                         String requestId = "asicAip-embedded-content";
                         result = client.request( requestId, Optional.of( new SignatureObject() ), Optional.of( asicAIPContainer ) );
+                        for ( int i = 0; i < result.size(); i++ )
+                        {
+                            result.get( i ).setCredentialID( requestId + "-" + i );
+                        }
                     }
                     catch ( Exception e )
                     {
-                        ModuleLogger.log( "[ WARN ] evidence record found in asicAIP, "
-                                + "but could not send the container to the signature verification service" );
+                        ModuleLogger.log( "could not send the asic-container to the signature verification service", e );
                     }
                     
                     return result;
