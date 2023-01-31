@@ -34,8 +34,8 @@ public class CLITestM
     /**
      * Configuration of the wsdl url location if the parameter -v is being used
      */
-    // private static final String WSDL_URL = "https://tresortest.protectr.de/VerificationService/eCard?wsdl";
-    private static final String WSDL_URL              = "http://localhost:8080/VerificationService/eCard?wsdl";
+    private static final String WSDL_URL              = "https://tresortest.protectr.de/VerificationService/eCard?wsdl";
+    // private static final String WSDL_URL = "http://localhost:8080/VerificationService/eCard?wsdl";
     // private static final String WSDL_URL = "http://10.3.141.126:8080/VerificationService/S4?wsdl";
     
     private static final String SCHEMA_DIR            = ".././default-syntax-validator/src/main/resources/definitions";
@@ -46,7 +46,9 @@ public class CLITestM
     private static final String BATCH_TEST_RESULT_DIR = "/tmp/reports";
     
     // private static final String TEST_FILE = "/tmp/cli/TST-24-xades-att-enveloped-xml-single/XAIP13-xades-att-enveloped-xml-single.xml";
-    private static final String TEST_FILE             = "/tmp/cli/TST-93-ASIC-AIP_LXAIP_OK_SIG_OK/ASIC_AIP_LXAIP_OK_SIG_OK.asice";
+    // private static final String TEST_FILE = "/tmp/cli/TST-93-ASIC-AIP_LXAIP_OK_SIG_OK/ASIC_AIP_LXAIP_OK_SIG_OK.asice";
+    
+    private static final String TEST_FILE             = "/home/wolffs/Downloads/230124_an_Procilon/TST-95-ASIC_AIP_XAIP_OK_SIG_OK_ER_OK_nsfix.asice";
     private static final String TEST_RESULT_FILE      = "/tmp/report.xml";
     
     @Test
