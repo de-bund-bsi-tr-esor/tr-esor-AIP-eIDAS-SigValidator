@@ -269,7 +269,7 @@ public enum ASiCAIPValidator
                     .map( DataObjectReferenceType::getURI )
                     .anyMatch( ref -> ref.contains( oid ) ) ) )
             {
-                errors.add( "missing or invalid oid-ref" );
+                errors.add( "invalid oid-ref" );
             }
             
             return errors;
@@ -284,7 +284,7 @@ public enum ASiCAIPValidator
         
         if ( !Arrays.stream( metaInf.list() ).anyMatch( name -> name.equals( substring ) ) )
         {
-            errors.add( "missing sigRef" );
+            errors.add( "invalid sigRef" );
         }
         
         return errors;
