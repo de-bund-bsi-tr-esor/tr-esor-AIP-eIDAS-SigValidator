@@ -30,11 +30,13 @@ import javax.xml.bind.JAXB;
 import javax.xml.transform.dom.DOMSource;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.etsi.uri._02918.v1_2.ASiCManifestType;
 import org.etsi.uri._02918.v1_2.DataObjectReferenceType;
 import org.etsi.uri._02918.v1_2.ExtensionsListType;
 import org.etsi.uri._02918.v1_2.SigReferenceType;
 import org.etsi.uri._19512.v1_1.ContainerIDType;
+import org.etsi.uri._19512.v1_1.ObjectFactory;
 import org.w3c.dom.Element;
 
 import de.bund.bsi.tr_esor.xaip.XAIPType;
@@ -59,6 +61,12 @@ public enum ASiCAIPValidator
     
     private static ASiCContainerWithCAdESValidatorFactory cadesASiCValidator = new ASiCContainerWithCAdESValidatorFactory();
     private static ASiCContainerWithXAdESValidatorFactory xadesASiCValidator = new ASiCContainerWithXAdESValidatorFactory();
+    
+    private static ObjectFactory                          fact               = new ObjectFactory();
+    private static org.etsi.uri._02918.v1_2.ObjectFactory fact2              = new org.etsi.uri._02918.v1_2.ObjectFactory();
+    
+    private static String                                 containerNS        = fact.createContainerID( null ).getName().getNamespaceURI();
+    private static String                                 manifestNS         = fact2.createASiCManifest( null ).getName().getNamespaceURI();
     
     /**
      * Checking if the data contains a valid ASiC container
@@ -214,11 +222,6 @@ public enum ASiCAIPValidator
             }
         }
         
-        if ( !oidsByVersion.isEmpty() )
-        {
-            ModuleLogger.log( "[WARN] missing optional aisc-manifest containerID for versions: " + oidsByVersion.keySet().toString() );
-        }
-        
         if ( !hasManifest )
         {
             throw new IllegalArgumentException( "container is missing asicManifest" );
@@ -255,6 +258,16 @@ public enum ASiCAIPValidator
             Set<String> errors = new HashSet<>();
             String manifestAoid = container.getPOID();
             String manifestVersion = container.getVersionID();
+            
+            if ( StringUtils.isAllBlank( manifestAoid, manifestVersion ) )
+            {
+                ModuleLogger.log(
+                        "[WARN] found optional container extension which does not have any content, this can happen when the container is using a different namespace than "
+                                + containerNS );
+                
+                errors.add( "container extension does not use ns " + containerNS );
+                return errors;
+            }
             
             Set<String> oids = new HashSet<>();
             if ( !aoid.equals( manifestAoid ) )
@@ -373,10 +386,23 @@ public enum ASiCAIPValidator
     Set<String> validateManifest( File asicDir, File metaInf, ASiCManifestType manifest, XAIPType xaip, String aoid,
             Map<String, Set<String>> oidsByVersion )
     {
+        SigReferenceType sigRef = manifest.getSigReference();
+        List<DataObjectReferenceType> dataObjectRef = manifest.getDataObjectReference();
+        
         Set<String> errors = new HashSet<>();
         errors.addAll( validateContainerExtension( manifest, aoid, oidsByVersion ) );
-        errors.addAll( validateSigRef( metaInf, manifest.getSigReference() ) );
-        errors.addAll( validateDataRef( asicDir, xaip, manifest.getDataObjectReference() ) );
+        
+        if ( sigRef == null && dataObjectRef.isEmpty() )
+        {
+            ModuleLogger.log(
+                    "[WARN] found empty manifest, this can happen when the container is using a different namespace than " + containerNS );
+            errors.add( "manifest does not use ns " + manifestNS );
+        }
+        else
+        {
+            errors.addAll( validateSigRef( metaInf, sigRef ) );
+            errors.addAll( validateDataRef( asicDir, xaip, dataObjectRef ) );
+        }
         
         return errors;
     }
