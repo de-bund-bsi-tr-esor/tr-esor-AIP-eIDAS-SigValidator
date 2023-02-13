@@ -293,9 +293,12 @@ public enum ASiCAIPValidator
     {
         Set<String> errors = new HashSet<>();
         String uri = sigReference.getURI();
-        String substring = uri.substring( uri.lastIndexOf( File.separatorChar ) + 1 );
         
-        if ( !Arrays.stream( metaInf.list() ).anyMatch( name -> name.equals( substring ) ) )
+        // have to keep this since windows can also use linux style path at this point which won't be resolved ny file.separatorChar
+        String unixName = uri.substring( uri.lastIndexOf( "/" ) + 1 );
+        String windowsName = uri.substring( uri.lastIndexOf( "\\" ) + 1 );
+        
+        if ( !Arrays.stream( metaInf.list() ).anyMatch( name -> name.equals( unixName ) || name.equals( windowsName ) ) )
         {
             errors.add( "invalid sigRef" );
         }
