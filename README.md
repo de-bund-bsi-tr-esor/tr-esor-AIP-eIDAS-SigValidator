@@ -43,10 +43,10 @@ java -jar aip-validator-cli/target/aip-validator-cli.jar -v -c default.conf -i ~
 
 # SOAP Server
 # Mac/Linux
-java -cp "aip-validator-soap/target/aip-validator-soap-1.1.0-2.jar:aip-validator-soap/target/dependency/*" de.bund.bsi.tresor.aip.validator.soap.Server -Mvalidator.schemaDir=default-syntax-validator/src/main/resources/definitions -Mverifier.wsdlUrl="http://host:port/VerificationService/eCard\?wsdl"
+java -cp "aip-validator-soap/target/aip-validator-soap-1.1.0-2.jar:aip-validator-soap/target/dependency/*" de.bund.bsi.tresor.aip.validator.soap.Server -v -Mvalidator.schemaDir=default-syntax-validator/src/main/resources/definitions -Mverifier.wsdlUrl="http://host:port/VerificationService/eCard\?wsdl"
 
 # Windows
-java -cp "aip-validator-soap/target/aip-validator-soap-1.1.0-2.jar;aip-validator-soap/target/dependency/*" de.bund.bsi.tresor.aip.validator.soap.Server -Mvalidator.schemaDir=default-syntax-validator/src/main/resources/definitions -Mverifier.wsdlUrl="https://host:port/VerificationService/eCard\?wsdl"
+java -cp "aip-validator-soap/target/aip-validator-soap-1.1.0-2.jar;aip-validator-soap/target/dependency/*" de.bund.bsi.tresor.aip.validator.soap.Server -v -Mvalidator.schemaDir=default-syntax-validator/src/main/resources/definitions -Mverifier.wsdlUrl="https://host:port/VerificationService/eCard\?wsdl"
 ```
 
 ## Prerequisites
@@ -268,6 +268,10 @@ Any known issues about the validator are being explained at the bottom of this p
 
 --path <path>
 	Custom path the service should be used, `/aip-validate` by default
+	
+-v, --verify
+    This flags enables the signature verification which is being executed by the [SignatureVerifierModule].
+    Omitting this flag will only execute the syntax validation.
     
 -d, --debug
     Flag to enable debug output for a better analysis of the validator behaviour.
