@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pres:Profile xmlns:pres="http://uri.etsi.org/19512/v1.1.2#" xmlns:md="http://docs.oasis-open.org/dss-x/ns/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://uri.etsi.org/19512/v1.1.2# ./19512-Preservation-API_V.1.1.2.xsd">
+	<!-- ===================================================== -->
+	<!-- Profile of BSI-TR-ESOR-S.4-V1.3 Interface (MIN)       -->
+	<!-- ===================================================== -->
+	<!-- Version of 15.03.2022                                 -->
+	<!-- ===================================================== -->
+	<md:ProfileIdentifier>http://www.bsi.bund.de/tr-esor/V1.3/profile/S.4/v1.0_MIN</md:ProfileIdentifier>
+	<md:Specification>https://www.bsi.bund.de/SharedDocs/Downloads/DE/BSI/Publikationen/TechnischeRichtlinien/TR03125/BSI_TR_03125_Anlage_E_V1_3.pdf</md:Specification>
+	<md:Description xml:lang="DE">Dieses Profil beschreibt die TR-S.4 Schnittstelle gem. BSI-TR-ESOR V1.3 in deren minimalen Ausprägung.</md:Description>
+	<md:Operation>
+		<md:Name>ArchiveSubmission</md:Name>
+		<md:Specification>https://www.bsi.bund.de/SharedDocs/Downloads/DE/BSI/Publikationen/TechnischeRichtlinien/TR03125/BSI_TR_03125_Anlage_E_V1_3.pdf</md:Specification>
+		<md:Description xml:lang="DE">Siehe Kap. 3.1</md:Description>
+		<md:Input>
+			<md:Name>ArchiveSubmissionRequest</md:Name>
+			<md:Description xml:lang="DE">Siehe Kap. 3.1.1</md:Description>
+		</md:Input>
+		<md:Output>
+			<md:Name>ArchiveSubmissionResponse</md:Name>
+			<md:Description xml:lang="DE">Siehe Kap. 3.1.2</md:Description>
+		</md:Output>
+	</md:Operation>
+	<md:Operation>
+		<md:Name>ArchiveUpdate</md:Name>
+		<md:Specification>https://www.bsi.bund.de/SharedDocs/Downloads/DE/BSI/Publikationen/TechnischeRichtlinien/TR03125/BSI_TR_03125_Anlage_E_V1_3.pdf</md:Specification>
+		<md:Description xml:lang="DE">Siehe Kap. 3.2</md:Description>
+		<md:Input>
+			<md:Name>ArchiveUpdateRequest</md:Name>
+			<md:Description xml:lang="DE">Siehe Kap. 3.2.1</md:Description>
+		</md:Input>
+		<md:Output>
+			<md:Name>ArchiveUpdateResponse</md:Name>
+			<md:Description xml:lang="DE">Siehe Kap. 3.2.2</md:Description>
+		</md:Output>
+	</md:Operation>
+	<md:Operation>
+		<md:Name>ArchiveRetrieval</md:Name>
+		<md:Specification>https://www.bsi.bund.de/SharedDocs/Downloads/DE/BSI/Publikationen/TechnischeRichtlinien/TR03125/BSI_TR_03125_Anlage_E_V1_3.pdf</md:Specification>
+		<md:Description xml:lang="DE">Siehe Kap. 3.3</md:Description>
+		<md:Input>
+			<md:Name>ArchiveRetrievalRequest</md:Name>
+			<md:Description xml:lang="DE">Siehe KAp. 3.3.1</md:Description>
+		</md:Input>
+		<md:Output>
+			<md:Name>ArchiveRetrievalResponse</md:Name>
+			<md:Description xml:lang="DE">Siehe Kap. 3.3.2</md:Description>
+		</md:Output>
+	</md:Operation>
+	<md:Operation>
+		<md:Name>ArchiveEvidence</md:Name>
+		<md:Specification>https://www.bsi.bund.de/SharedDocs/Downloads/DE/BSI/Publikationen/TechnischeRichtlinien/TR03125/BSI_TR_03125_Anlage_E_V1_3.pdf</md:Specification>
+		<md:Description xml:lang="DE">Siehe Kap. 3.4</md:Description>
+		<md:Input>
+			<md:Name>ArchiveEvidenceRequest</md:Name>
+			<md:Description xml:lang="DE">Siehe Kap. 3.4.1</md:Description>
+		</md:Input>
+		<md:Output>
+			<md:Name>ArchiveEvidenceResponse</md:Name>
+			<md:Description xml:lang="DE">Siehe Kap. 3.4.2</md:Description>
+		</md:Output>
+	</md:Operation>
+	<md:Operation>
+		<md:Name>ArchiveDeletion</md:Name>
+		<md:Specification>https://www.bsi.bund.de/SharedDocs/Downloads/DE/BSI/Publikationen/TechnischeRichtlinien/TR03125/BSI_TR_03125_Anlage_E_V1_3.pdf</md:Specification>
+		<md:Description xml:lang="DE">Siehe Kap. 3.5</md:Description>
+		<md:Input>
+			<md:Name>ArchiveDeletionRequest</md:Name>
+			<md:Description xml:lang="DE">Siehe Kap. 3.5.1</md:Description>
+		</md:Input>
+		<md:Output>
+			<md:Name>ArchiveDeletionResponse</md:Name>
+			<md:Description xml:lang="DE">Siehe Kap. 3.5.2</md:Description>
+		</md:Output>
+	</md:Operation>
+	<md:Operation>
+		<md:Name>Verify</md:Name>
+		<md:Specification>https://www.bsi.bund.de/SharedDocs/Downloads/DE/BSI/Publikationen/TechnischeRichtlinien/TR03125/BSI_TR_03125_Anlage_E_V1_3.pdf</md:Specification>
+		<md:Description xml:lang="DE">Siehe Kap. 3.7</md:Description>
+		<md:Input>
+			<md:Name>VerifyRequest</md:Name>
+			<md:Description xml:lang="DE">Siehe Kap. 3.7.1</md:Description>
+		</md:Input>
+		<md:Output>
+			<md:Name>VerifyResponse</md:Name>
+			<md:Description xml:lang="DE">Siehe Kap. 3.7.2</md:Description>
+		</md:Output>
+	</md:Operation>
+	<md:Operation>
+		<md:Name>RetrieveInfo</md:Name>
+		<md:Specification>https://www.bsi.bund.de/SharedDocs/Downloads/DE/BSI/Publikationen/TechnischeRichtlinien/TR03125/BSI_TR_03125_Anlage_E_V1_3.pdf</md:Specification>
+		<md:Description xml:lang="DE">Siehe Kap. 3.8</md:Description>
+		<md:Input>
+			<md:Name>RetrieveInfoRequest</md:Name>
+			<md:Description xml:lang="DE">Siehe Kap. 3.8.1</md:Description>
+		</md:Input>
+		<md:Output>
+			<md:Name>RetrieveInfoResponse</md:Name>
+			<md:Description xml:lang="DE">Siehe Kap. 3.8.2</md:Description>
+		</md:Output>
+	</md:Operation>
+	<md:Policy>
+		<md:PolicyByRef>
+			<md:PolicyID>
+				http://www.bsi.bund.de/DE/tr-esor/prespolicy/default/1.0
+			</md:PolicyID>
+		</md:PolicyByRef>
+	</md:Policy>
+	<!-- One of the three signature policies listed below shall be chosen by the TR-ESOR-product manufacturer or respectively the trust service provider. -->
+	<md:Policy>
+		<md:PolicyByRef>
+			<md:PolicyID>
+				http://www.bsi.bund.de/DE/tr-esor/sigpolicy/verify-xaip
+			</md:PolicyID>
+		</md:PolicyByRef>
+	</md:Policy>
+	<md:Policy>
+		<md:PolicyByRef>
+			<md:PolicyID>
+				http://www.bsi.bund.de/DE/tr-esor/sigpolicy/verify-xaip/chain
+			</md:PolicyID>
+		</md:PolicyByRef>
+	</md:Policy>
+	<md:Policy>
+		<md:PolicyByRef>
+			<md:PolicyID>
+				http://www.bsi.bund.de/DE/tr-esor/sigpolicy/verify-xaip/shell
+			</md:PolicyID>
+		</md:PolicyByRef>
+	</md:Policy>
+	<!-- One of the three timestamp policies listed below shall be chosen by the TR-ESOR-product manufacturer or respectively the trust service provider. -->
+	<md:Policy>
+		<md:PolicyByRef>
+			<md:PolicyID>
+				http://www.bsi.bund.de/DE/tr-esor/sigpolicy/verify-timestamp			
+			</md:PolicyID>
+		</md:PolicyByRef>
+	</md:Policy>
+	<md:Policy>
+		<md:PolicyByRef>
+			<md:PolicyID>
+				http://www.bsi.bund.de/DE/tr-esor/sigpolicy/verify-timestamp/chain				
+			</md:PolicyID>
+		</md:PolicyByRef>
+	</md:Policy>
+	<md:Policy>
+		<md:PolicyByRef>
+			<md:PolicyID>
+				http://www.bsi.bund.de/DE/tr-esor/sigpolicy/verify-timestamp/shell
+			</md:PolicyID>
+		</md:PolicyByRef>
+	</md:Policy>
+	<pres:SchemeIdentifier>http://uri.etsi.org/19512/scheme/pds+pgd+aug+wst+ers</pres:SchemeIdentifier>
+	<pres:ProfileValidityPeriod>
+		<pres:ValidFrom>2022-05-04T00:00:00Z</pres:ValidFrom>
+	</pres:ProfileValidityPeriod>
+	<pres:PreservationStorageModel>WithStorage</pres:PreservationStorageModel>
+	<!-- TR-ESOR supports all three Preservation Goals -->
+	<pres:PreservationGoal>http://uri.etsi.org/19512/goal/pds</pres:PreservationGoal>
+	<pres:PreservationGoal>http://uri.etsi.org/19512/goal/pgd</pres:PreservationGoal>
+	<pres:PreservationGoal>http://uri.etsi.org/19512/goal/aug</pres:PreservationGoal>
+	<pres:EvidenceFormat>
+		<md:FormatID>urn:ietf:rfc:4998</md:FormatID>
+		<md:Specification>https://ietf.org/rfc/rfc4998.txt</md:Specification>
+	</pres:EvidenceFormat>
+</pres:Profile>

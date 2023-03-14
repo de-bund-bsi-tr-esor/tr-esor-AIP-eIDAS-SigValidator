@@ -5,7 +5,7 @@
     <parent>
         <groupId>de.bund.bsi.tr_esor</groupId>
         <artifactId>tr-esor-AIP-eIDAS-SigValidator</artifactId>
-        <version>1.1.0-1-SNAPSHOT</version>
+        <version>1.1.0-3-SNAPSHOT</version>
 
     </parent>
     <artifactId>default-signature-finder</artifactId>
@@ -41,17 +41,14 @@
         <dependency>
             <groupId>eu.europa.ec.joinup.sd-dss</groupId>
             <artifactId>dss-asic-cades</artifactId>
-            <version>5.8</version>
         </dependency>
         <dependency>
             <groupId>eu.europa.ec.joinup.sd-dss</groupId>
             <artifactId>dss-asic-xades</artifactId>
-            <version>5.8</version>
         </dependency>
         <dependency>
             <groupId>eu.europa.ec.joinup.sd-dss</groupId>
             <artifactId>dss-utils-apache-commons</artifactId>
-            <version>5.8</version>
         </dependency>
         <!-- Test -->
         <dependency>

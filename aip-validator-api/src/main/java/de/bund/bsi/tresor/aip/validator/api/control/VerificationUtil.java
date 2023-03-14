@@ -73,9 +73,11 @@ public class VerificationUtil
      *            the content
      * @param checksum
      *            the checksum to validate against
+     * @param applyC14n
+     *            if the c14n of packageHeader for the xaip should be applied
      * @return the verification result
      */
-    public static VerificationResultType verifyChecksum( InputStream content, CheckSumType checksum )
+    public static VerificationResultType verifyChecksum( InputStream content, CheckSumType checksum, boolean applyC14n )
     {
         Builder result = DigestAlgorithm.fromXmlSyntax( checksum.getCheckSumAlgorithm() )
                 .map( DigestAlgorithm::getJavaName )
@@ -83,7 +85,8 @@ public class VerificationUtil
                     Builder builder = DefaultResult.invalid();
                     try
                     {
-                        byte[] canonXml = Canonicalization.canonicalize( IOUtils.toByteArray( content ) );
+                        byte[] canonXml = applyC14n ? Canonicalization.canonicalize( IOUtils.toByteArray( content ) )
+                                : IOUtils.toByteArray( content );
                         MessageDigest md = MessageDigest.getInstance( digestAlg, new BouncyCastleProvider() );
                         try ( ByteArrayInputStream in = new ByteArrayInputStream( canonXml );
                                 DigestInputStream digestIn = new DigestInputStream( in, md ) )

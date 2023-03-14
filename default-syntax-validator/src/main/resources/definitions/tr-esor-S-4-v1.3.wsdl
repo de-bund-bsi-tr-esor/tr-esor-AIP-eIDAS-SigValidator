@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:dss="urn:oasis:names:tc:dss:1.0:core:schema" xmlns:tr="http://www.bsi.bund.de/tr-esor/api/1.3" targetNamespace="http://www.bsi.bund.de/tr-esor/api/1.3">
+	<!--============================================================-->
+	<!-- Version 1.3.0 of 14.03.2022                                -->
+	<!--============================================================-->
+	<!-- ======================== -->
+	<!-- Definition of types      -->
+	<!-- (only include XSDs)      -->
+	<!-- ======================== -->
+	<wsdl:types>
+		<xsd:schema targetNamespace="http://www.bsi.bund.de/tr-esor/api/1.3" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xaip="http://www.bsi.bund.de/tr-esor/xaip" xmlns:dss="urn:oasis:names:tc:dss:1.0:core:schema" elementFormDefault="qualified">
+			<xsd:include schemaLocation="tr-esor-interfaces-v1.3.xsd"/>
+		</xsd:schema>
+	</wsdl:types>
+	<!-- ======================== -->
+	<!-- Definition of messages   -->
+	<!-- ======================== -->
+	<!-- RetrieveInfo -->
+	<wsdl:message name="RetrieveInfoRequest">
+		<wsdl:part name="parameters" element="tr:RetrieveInfoRequest"/>
+	</wsdl:message>
+	<wsdl:message name="RetrieveInfoResponse">
+		<wsdl:part name="parameters" element="tr:RetrieveInfoResponse"/>
+	</wsdl:message>
+	<!-- Archivesubmission -->
+	<wsdl:message name="ArchiveSubmissionRequest">
+		<wsdl:part name="parameters" element="tr:ArchiveSubmissionRequest"/>
+	</wsdl:message>
+	<wsdl:message name="ArchiveSubmissionResponse">
+		<wsdl:part name="parameters" element="tr:ArchiveSubmissionResponse"/>
+	</wsdl:message>
+	<!-- ArchiveUpdate -->
+	<wsdl:message name="ArchiveUpdateRequest">
+		<wsdl:part name="parameters" element="tr:ArchiveUpdateRequest"/>
+	</wsdl:message>
+	<wsdl:message name="ArchiveUpdateResponse">
+		<wsdl:part name="parameters" element="tr:ArchiveUpdateResponse"/>
+	</wsdl:message>
+	<!-- ArchiveRetrieval -->
+	<wsdl:message name="ArchiveRetrievalRequest">
+		<wsdl:part name="parameters" element="tr:ArchiveRetrievalRequest"/>
+	</wsdl:message>
+	<wsdl:message name="ArchiveRetrievalResponse">
+		<wsdl:part name="parameters" element="tr:ArchiveRetrievalResponse"/>
+	</wsdl:message>
+	<!-- ArchiveEvidence -->
+	<wsdl:message name="ArchiveEvidenceRequest">
+		<wsdl:part name="parameters" element="tr:ArchiveEvidenceRequest"/>
+	</wsdl:message>
+	<wsdl:message name="ArchiveEvidenceResponse">
+		<wsdl:part name="parameters" element="tr:ArchiveEvidenceResponse"/>
+	</wsdl:message>
+	<!-- ArchiveDeletion -->
+	<wsdl:message name="ArchiveDeletionRequest">
+		<wsdl:part name="parameters" element="tr:ArchiveDeletionRequest"/>
+	</wsdl:message>
+	<wsdl:message name="ArchiveDeletionResponse">
+		<wsdl:part name="parameters" element="tr:ArchiveDeletionResponse"/>
+	</wsdl:message>
+	<!-- ArchiveData -->
+	<wsdl:message name="ArchiveDataRequest">
+		<wsdl:part name="parameters" element="tr:ArchiveDataRequest"/>
+	</wsdl:message>
+	<wsdl:message name="ArchiveDataResponse">
+		<wsdl:part name="parameters" element="tr:ArchiveDataResponse"/>
+	</wsdl:message>
+	<!-- Verify -->
+	<wsdl:message name="VerifyRequest">
+		<wsdl:part name="parameters" element="dss:VerifyRequest"/>
+	</wsdl:message>
+	<wsdl:message name="VerifyResponse">
+		<wsdl:part name="parameters" element="dss:VerifyResponse"/>
+	</wsdl:message>
+	<!-- ArchiveTrace -->
+	<wsdl:message name="ArchiveTraceRequest">
+		<wsdl:part name="parameters" element="tr:ArchiveTraceRequest"/>
+	</wsdl:message>
+	<wsdl:message name="ArchiveTraceResponse">
+		<wsdl:part name="parameters" element="tr:ArchiveTraceResponse"/>
+	</wsdl:message>
+	<!-- ====================== -->
+	<!-- Definition of portType -->
+	<!-- ====================== -->
+	<wsdl:portType name="S4">
+		<wsdl:operation name="RetrieveInfo">
+			<wsdl:input message="tr:RetrieveInfoRequest"/>
+			<wsdl:output message="tr:RetrieveInfoResponse"/>
+		</wsdl:operation>
+		<wsdl:operation name="ArchiveSubmission">
+			<wsdl:input message="tr:ArchiveSubmissionRequest"/>
+			<wsdl:output message="tr:ArchiveSubmissionResponse"/>
+		</wsdl:operation>
+		<wsdl:operation name="ArchiveUpdate">
+			<wsdl:input message="tr:ArchiveUpdateRequest"/>
+			<wsdl:output message="tr:ArchiveUpdateResponse"/>
+		</wsdl:operation>
+		<wsdl:operation name="ArchiveRetrieval">
+			<wsdl:input message="tr:ArchiveRetrievalRequest"/>
+			<wsdl:output message="tr:ArchiveRetrievalResponse"/>
+		</wsdl:operation>
+		<wsdl:operation name="ArchiveEvidence">
+			<wsdl:input message="tr:ArchiveEvidenceRequest"/>
+			<wsdl:output message="tr:ArchiveEvidenceResponse"/>
+		</wsdl:operation>
+		<wsdl:operation name="ArchiveDeletion">
+			<wsdl:input message="tr:ArchiveDeletionRequest"/>
+			<wsdl:output message="tr:ArchiveDeletionResponse"/>
+		</wsdl:operation>
+		<wsdl:operation name="ArchiveData">
+			<wsdl:input message="tr:ArchiveDataRequest"/>
+			<wsdl:output message="tr:ArchiveDataResponse"/>
+		</wsdl:operation>
+		<wsdl:operation name="Verify">
+			<wsdl:input message="tr:VerifyRequest"/>
+			<wsdl:output message="tr:VerifyResponse"/>
+		</wsdl:operation>
+		<wsdl:operation name="ArchiveTrace">
+			<wsdl:input message="tr:ArchiveTraceRequest"/>
+			<wsdl:output message="tr:ArchiveTraceResponse"/>
+		</wsdl:operation>
+	</wsdl:portType>
+	<!-- ===================== -->
+	<!-- Definition of Binding -->
+	<!-- ===================== -->
+	<wsdl:binding name="S4" type="tr:S4">
+		<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+		<wsdl:operation name="RetrieveInfo">
+			<soap:operation soapAction="http://www.bsi.bund.de/tr-esor/RetrieveInfo"/>
+			<wsdl:input>
+				<soap:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="ArchiveSubmission">
+			<soap:operation soapAction="http://www.bsi.bund.de/tr-esor/ArchiveSubmission"/>
+			<wsdl:input>
+				<soap:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="ArchiveUpdate">
+			<soap:operation soapAction="http://www.bsi.bund.de/tr-esor/ArchiveUpdate"/>
+			<wsdl:input>
+				<soap:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="ArchiveRetrieval">
+			<soap:operation soapAction="http://www.bsi.bund.de/tr-esor/ArchiveRetrieval"/>
+			<wsdl:input>
+				<soap:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="ArchiveEvidence">
+			<soap:operation soapAction="http://www.bsi.bund.de/tr-esor/ArchiveEvidence"/>
+			<wsdl:input>
+				<soap:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="ArchiveDeletion">
+			<soap:operation soapAction="http://www.bsi.bund.de/tr-esor/ArchiveDeletion"/>
+			<wsdl:input>
+				<soap:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="ArchiveData">
+			<soap:operation soapAction="http://www.bsi.bund.de/tr-esor/ArchiveData"/>
+			<wsdl:input>
+				<soap:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="Verify">
+			<soap:operation soapAction="http://www.bsi.bund.de/tr-esor/Verify"/>
+			<wsdl:input>
+				<soap:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="ArchiveTrace">
+			<soap:operation soapAction="http://www.bsi.bund.de/tr-esor/ArchiveTrace"/>
+			<wsdl:input>
+				<soap:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+	</wsdl:binding>
+	<!-- ===================== -->
+	<!-- Definition of Service -->
+	<!-- ===================== -->
+	<wsdl:service name="S4">
+		<wsdl:port name="S4" binding="tr:S4">
+			<soap:address location="http://127.0.0.1:18080"/>
+		</wsdl:port>
+	</wsdl:service>
+</wsdl:definitions>

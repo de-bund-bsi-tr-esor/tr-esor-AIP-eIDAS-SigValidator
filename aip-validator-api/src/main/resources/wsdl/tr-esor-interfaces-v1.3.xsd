@@ -1,16 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<schema xmlns="http://www.w3.org/2001/XMLSchema"
-  xmlns:tr="http://www.bsi.bund.de/tr-esor/api/1.3"
-  xmlns:xaip="http://www.bsi.bund.de/tr-esor/xaip"
-  xmlns:ers="urn:ietf:params:xml:ns:ers"
-  xmlns:ec="http://www.bsi.bund.de/ecard/api/1.1"
-  xmlns:dss="urn:oasis:names:tc:dss:1.0:core:schema"
-  xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" 
-  xmlns:xmime="http://www.w3.org/2005/05/xmlmime"
-  xmlns:pres="http://uri.etsi.org/19512/v1.1.2#"
-  xmlns:asic="http://uri.etsi.org/02918/v1.2.1#"
-  targetNamespace="http://www.bsi.bund.de/tr-esor/api/1.3"
-  elementFormDefault="qualified" attributeFormDefault="unqualified" version="1.3.0">
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:tr="http://www.bsi.bund.de/tr-esor/api/1.3" xmlns:xaip="http://www.bsi.bund.de/tr-esor/xaip" xmlns:ers="urn:ietf:params:xml:ns:ers" xmlns:ec="http://www.bsi.bund.de/ecard/api/1.1" xmlns:dss="urn:oasis:names:tc:dss:1.0:core:schema" xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" xmlns:xmime="http://www.w3.org/2005/05/xmlmime" xmlns:pres="http://uri.etsi.org/19512/v1.1.2#" xmlns:asic="http://uri.etsi.org/02918/v1.2.1#" targetNamespace="http://www.bsi.bund.de/tr-esor/api/1.3" elementFormDefault="qualified" attributeFormDefault="unqualified" version="1.3.0">
 	<!-- ======================================= -->
 	<!-- Version 1.3.0 vom 14.03.2022 -->
 	<!-- ======================================= -->
@@ -24,7 +13,7 @@
 	<import namespace="http://uri.etsi.org/19512/v1.1.2#" schemaLocation="19512-Preservation-API_V.1.1.2.xsd"/>
 	<import namespace="http://uri.etsi.org/02918/v1.2.1#" schemaLocation="./deps/en_31916201v010101.xsd"/>
 	<!-- =================================== -->
-	<!-- Uebergreifende Definitionen         -->
+	<!-- Uebergreifende Definitionen -->
 	<!-- =================================== -->
 	<complexType name="RequestType">
 		<complexContent>
@@ -49,7 +38,7 @@
 	<element name="VerifyUnderSignaturePolicy" type="anyURI"/>
 	<element name="XPathFilter" type="string"/>
 	<!-- ================================ -->
-	<!-- RetrieveInfo                     -->
+	<!-- RetrieveInfo -->
 	<!-- ================================ -->
 	<element name="RetrieveInfoRequest">
 		<complexType>
@@ -75,7 +64,7 @@
 		</complexType>
 	</element>
 	<!-- ================================ -->
-	<!-- ArchiveSubmission                -->
+	<!-- ArchiveSubmission -->
 	<!-- ================================ -->
 	<complexType name="ArchiveDataType" xmime:expectedContentTypes="*/*">
 		<simpleContent>
@@ -118,7 +107,7 @@
 		</complexType>
 	</element>
 	<!-- ========================== -->
-	<!-- ArchiveUpdate              -->
+	<!-- ArchiveUpdate -->
 	<!-- ========================== -->
 	<element name="ArchiveUpdateRequest">
 		<complexType>
@@ -143,7 +132,7 @@
 		</complexType>
 	</element>
 	<!-- ================================ -->
-	<!-- ArchiveRetrieval                 -->
+	<!-- ArchiveRetrieval -->
 	<!-- ================================ -->
 	<element name="ArchiveRetrievalRequest">
 		<complexType>
@@ -170,7 +159,7 @@
 		</complexType>
 	</element>
 	<!-- ================================ -->
-	<!-- ArchiveEvidence                  -->
+	<!-- ArchiveEvidence -->
 	<!-- ================================ -->
 	<element name="ArchiveEvidenceRequest">
 		<complexType>
@@ -197,7 +186,7 @@
 		</complexType>
 	</element>
 	<!-- ================================ -->
-	<!-- ArchiveDeletion                  -->
+	<!-- ArchiveDeletion -->
 	<!-- ================================ -->
 	<element name="ArchiveDeletionRequest">
 		<complexType>
@@ -220,7 +209,7 @@
 	</element>
 	<element name="ArchiveDeletionResponse" type="tr:ResponseType"/>
 	<!-- ========================== -->
-	<!-- ArchiveData                -->
+	<!-- ArchiveData -->
 	<!-- ========================== -->
 	<element name="ArchiveDataRequest">
 		<complexType>
@@ -263,7 +252,7 @@
 		</complexType>
 	</element>
 	<!-- ========================== -->
-	<!-- ArchiveTrace               -->
+	<!-- ArchiveTrace -->
 	<!-- ========================== -->
 	<element name="ArchiveTraceRequest">
 		<complexType>
@@ -288,7 +277,7 @@
 		</complexType>
 	</element>
 	<!-- ========================== -->
-	<!-- Upload                     -->
+	<!-- Upload -->
 	<!-- ========================== -->
 	<element name="UploadResponse">
 		<complexType>
@@ -302,7 +291,7 @@
 		</complexType>
 	</element>
 	<!-- ========================== -->
-	<!-- Download                   -->
+	<!-- Download -->
 	<!-- ========================== -->
 	<element name="DownloadRequest">
 		<complexType>

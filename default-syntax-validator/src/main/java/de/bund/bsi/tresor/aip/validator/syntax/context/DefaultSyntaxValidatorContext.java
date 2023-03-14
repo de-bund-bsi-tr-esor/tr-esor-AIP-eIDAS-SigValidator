@@ -21,11 +21,8 @@
  */
 package de.bund.bsi.tresor.aip.validator.syntax.context;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 import de.bund.bsi.tr_esor.vr.CredentialValidityType.RelatedObjects;
 import de.bund.bsi.tresor.aip.validator.syntax.DefaultSyntaxValidator;
@@ -39,24 +36,17 @@ import lombok.NoArgsConstructor;
  * 
  * @author wolffs
  */
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
 public class DefaultSyntaxValidatorContext
 {
+    @Getter
     private byte[]                      rawData;
-
-    private Map<String, RelatedObjects> relatedObjectByCredId = new HashMap<>();
-
-    private String tempPath = "";
     
-    /**
-     * Returns an new inputStream of raw xaip data
-     * 
-     * @return the inputStream
-     */
-    public InputStream rawXaipInput()
-    {
-        return new ByteArrayInputStream( rawData );
-    }
+    private Map<String, RelatedObjects> relatedObjectByCredId = new HashMap<>();
+    
+    private String                      tempPath              = "";
+    
+    private byte[]                      asicAIPContainer;
 }

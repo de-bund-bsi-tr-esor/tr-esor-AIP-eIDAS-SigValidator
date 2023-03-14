@@ -25,7 +25,6 @@ import static java.util.stream.Collectors.toSet;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
@@ -60,6 +59,7 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.SystemUtils;
 import org.etsi.uri._02918.v1_2.DataObjectReferenceType;
 import org.w3c.dom.Node;
 
@@ -316,7 +316,8 @@ public class AIPUtil
                 ByteArrayOutputStream bos = new ByteArrayOutputStream();
                 transformer.transform( new DOMSource( xmlContent ), new StreamResult( bos ) );
                 
-                xmlData = Optional.of( bos.toByteArray() );
+                byte[] data = bos.toByteArray();
+                xmlData = Optional.of( extractLxaipData( data ).orElse( data ) );
             }
             catch ( JAXBException | TransformerException e )
             {
@@ -376,6 +377,7 @@ public class AIPUtil
      *            the file url
      * @return the loaded file bytes
      * @throws IllegalArgumentException
+     *             when the file could not be loaded
      */
     public static byte[] loadFileFromRelativeURI( IllegalArgumentException e, String url )
             throws IllegalArgumentException
@@ -400,14 +402,22 @@ public class AIPUtil
      *            the file url
      * @return the loaded file bytes
      * @throws IllegalArgumentException
+     *             when the file could not be loaded
      */
     public static Path loadRelativeURI( IllegalArgumentException e, String url )
             throws IllegalArgumentException
     {
         if ( e.getMessage().equals( "Missing scheme" ) )
         {
-            return Paths.get( URI.create( "file://" + System.getProperty( TEMP_FOLDER_PATH )
-                    + File.separatorChar + url ) );
+            String scheme = "file://";
+            String tmpPath = System.getProperty( TEMP_FOLDER_PATH );
+            if ( SystemUtils.IS_OS_WINDOWS )
+            {
+                scheme += "/";
+                tmpPath = tmpPath.replaceAll( "\\\\", "/" );
+            }
+            
+            return Paths.get( URI.create( scheme + tmpPath + "/" + url ) );
         }
         
         throw e;

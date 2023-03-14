@@ -25,7 +25,6 @@ import static de.bund.bsi.tresor.aip.validator.signature.XmlSignatureEncoder.b64
 import static de.bund.bsi.tresor.aip.validator.signature.XmlSignatureEncoder.b64EncodeDataObjectPlainXml;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -38,8 +37,6 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
-import org.dom4j.Document;
-import org.dom4j.io.SAXReader;
 import org.etsi.uri._02918.v1_2.DataObjectReferenceType;
 
 import de.bund.bsi.tr_esor.vr.CredentialValidityType;
@@ -71,8 +68,10 @@ import oasis.names.tc.dss._1_0.core.schema.SignatureObject;
 @Getter
 public class DefaultSignatureVerifier implements SignatureVerifier
 {
-    private final String          vendor  = "BSI";
-    private final String          version = "1.1.0";
+    private final String          vendor        = "BSI";
+    private final String          version       = "1.1.0";
+    
+    private final String          generated_pfx = "generated-";
     
     private DefaultVerifierConfig config;
     private VerificationClient    client;
@@ -95,6 +94,8 @@ public class DefaultSignatureVerifier implements SignatureVerifier
         Optional<DefaultSyntaxValidatorContext> syntaxContext = context.find( DefaultSyntaxValidatorContext.class );
         
         List<CredentialValidityType> resultList = new ArrayList<>();
+        resultList.addAll( verifyEvidenceRecord( syntaxContext ) );
+        
         for ( Entry<String, Set<String>> entry : credIdsByDataId.entrySet() )
         {
             Optional<String> oid = Optional.ofNullable( entry.getKey() );
@@ -103,7 +104,8 @@ public class DefaultSignatureVerifier implements SignatureVerifier
             Set<String> credIds = entry.getValue();
             if ( credIds.isEmpty() && data.isPresent() )
             {
-                List<CredentialValidityType> result = verifySignature( oid.get(), null, Optional.empty(), data, syntaxContext );
+                Optional<SignatureObject> sigObj = Optional.of( new SignatureObject() );
+                List<CredentialValidityType> result = verifySignature( generated_pfx + oid.get(), null, sigObj, data, syntaxContext );
                 resultList.addAll( addMissingRelations( oid, result ) );
             }
             else
@@ -117,7 +119,6 @@ public class DefaultSignatureVerifier implements SignatureVerifier
                             .map( this::resolveCredential )
                             .filter( Objects::nonNull )
                             .findAny();
-                    // TODO lxaip from esor:other/asic:DataObjectReference
                     
                     List<CredentialValidityType> result = verifySignature( oid.orElse( null ), credId, signObj, data, syntaxContext );
                     resultList.addAll( addMissingRelations( oid, result ) );
@@ -126,6 +127,31 @@ public class DefaultSignatureVerifier implements SignatureVerifier
         }
         
         return resultList;
+    }
+    
+    List<CredentialValidityType> verifyEvidenceRecord( Optional<DefaultSyntaxValidatorContext> syntaxContext )
+    {
+        return syntaxContext.map( DefaultSyntaxValidatorContext::getAsicAIPContainer )
+                .filter( Objects::nonNull )
+                .map( asicAIPContainer -> {
+                    List<CredentialValidityType> result = new ArrayList<>();
+                    try
+                    {
+                        String requestId = "asicAip-embedded-content";
+                        result = client.request( requestId, Optional.of( new SignatureObject() ), Optional.of( asicAIPContainer ) );
+                        for ( int i = 0; i < result.size(); i++ )
+                        {
+                            result.get( i ).setCredentialID( requestId + "-" + i );
+                        }
+                    }
+                    catch ( Exception e )
+                    {
+                        ModuleLogger.log( "could not send the asic-container to the signature verification service", e );
+                    }
+                    
+                    return result;
+                } )
+                .orElse( new ArrayList<>() );
     }
     
     @Override
@@ -154,6 +180,20 @@ public class DefaultSignatureVerifier implements SignatureVerifier
                 
                 result.add( validityType );
             }
+            
+            // technically not correct but adding credential for embedded signatures inside the dataObject
+            if ( StringUtils.isNoneBlank( dataId ) && entry.getValue().isEmpty() )
+            {
+                CredentialValidityType validityType = new CredentialValidityType();
+                validityType.setCredentialID( generated_pfx + dataId );
+                validityType.setOther( VerificationUtil.verificationResult( skippedResult ) );
+                
+                RelatedObjects relatedObjects = new RelatedObjects();
+                relatedObjects.getXPath().add( AIPUtil.xPathForObjectId( dataId ) );
+                validityType.setRelatedObjects( relatedObjects );
+                
+                result.add( validityType );
+            }
         }
         
         return result;
@@ -161,6 +201,8 @@ public class DefaultSignatureVerifier implements SignatureVerifier
     
     Optional<byte[]> binaryDataFromObject( XAIPType xaip, Optional<String> oid )
     {
+        // TODO FIXME Canonicalize before returning xml Data!
+        
         Optional<byte[]> data = Optional.ofNullable( xaip.getDataObjectsSection() ).stream()
                 .map( DataObjectsSectionType::getDataObject )
                 .flatMap( List::stream )
@@ -192,20 +234,20 @@ public class DefaultSignatureVerifier implements SignatureVerifier
         {
             Optional<byte[]> encodedXmlData = Optional.empty();
             Optional<SignatureObject> encodedSignatureObj = Optional.empty();
-            Optional<InputStream> optRawXaip = ctx.map( DefaultSyntaxValidatorContext::rawXaipInput );
+            Optional<byte[]> optRawXaip = ctx.map( DefaultSyntaxValidatorContext::getRawData );
             if ( optRawXaip.isPresent() )
             {
-                try ( InputStream rawXaip = optRawXaip.get() )
+                try
                 {
-                    Document document = new SAXReader().read( rawXaip );
+                    byte[] rawXaip = optRawXaip.get();
                     if ( encodeDataObj )
                     {
-                        encodedXmlData = b64EncodeDataObjectPlainXml( document, dataId );
+                        encodedXmlData = b64EncodeDataObjectPlainXml( rawXaip, dataId.replaceAll( generated_pfx, "" ) );
                     }
                     
                     if ( encodeCredObj )
                     {
-                        encodedSignatureObj = b64EncodeCredentialXmlSignatureObject( document, credId );
+                        encodedSignatureObj = b64EncodeCredentialXmlSignatureObject( rawXaip, credId.replaceAll( generated_pfx, "" ) );
                     }
                     
                     encodedXmlData = chooseData( dataObjContent, encodedXmlData );
@@ -275,7 +317,7 @@ public class DefaultSignatureVerifier implements SignatureVerifier
                     {
                         return Files.readAllBytes( Paths.get( URI.create( url ) ) );
                     }
-                    catch( IllegalArgumentException e )
+                    catch ( IllegalArgumentException e )
                     {
                         return AIPUtil.loadFileFromRelativeURI( e, url );
                     }

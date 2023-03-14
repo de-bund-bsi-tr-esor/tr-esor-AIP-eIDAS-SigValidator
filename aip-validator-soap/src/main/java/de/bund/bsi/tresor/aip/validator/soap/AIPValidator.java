@@ -28,6 +28,7 @@ import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Optional;
 
 import javax.jws.WebService;
@@ -50,6 +51,7 @@ import de.bund.bsi.tresor.aip.validator.soap.config.DispatcherArgs;
 import de.bund.bsi.tresor.aip.validator.soap.config.ServerConfig;
 import lombok.AllArgsConstructor;
 import oasis.names.tc.dss._1_0.core.schema.AnyType;
+import oasis.names.tc.dss._1_0.core.schema.Base64Data;
 import oasis.names.tc.dss._1_0.core.schema.DocumentType;
 import oasis.names.tc.dss._1_0.core.schema.InlineXMLType;
 import oasis.names.tc.dss._1_0.core.schema.InputDocuments;
@@ -65,10 +67,10 @@ import oasis.names.tc.dss_x._1_0.profiles.verificationreport.schema_.Verificatio
 @MTOM
 @SchemaValidation
 @AllArgsConstructor
-@WebService( endpointInterface = "de.bund.bsi.ecard.api._1.S4",
+@WebService( endpointInterface = "de.bund.bsi.tr_esor.api._1.S4",
         serviceName = "S4",
         portName = "S4",
-        targetNamespace = "http://www.bsi.bund.de/ecard/api/1.1",
+        targetNamespace = "http://www.bsi.bund.de/tr-esor/api/1.3",
         wsdlLocation = "/wsdl/tr-esor-S-4-v1.3.wsdl" )
 public class AIPValidator implements S4
 {
@@ -81,14 +83,11 @@ public class AIPValidator implements S4
     
     private ServerConfig        config;
     
-    VerificationReportType dispatch( XAIPType xaip )
+    VerificationReportType dispatch( ByteArrayInputStream xaipCandidate )
     {
-        ByteArrayOutputStream xaipProvider = new ByteArrayOutputStream();
-        JAXB.marshal( AIPUtil.asElement( xaip ), xaipProvider );
-        
         ByteArrayOutputStream resultOutput = new ByteArrayOutputStream();
         DispatcherArgs args = DispatcherArgs.builder()
-                .input( new ByteArrayInputStream( xaipProvider.toByteArray() ) )
+                .input( xaipCandidate )
                 .output( resultOutput )
                 .verbose( config.isVerbose() )
                 .log( config.getLog() )
@@ -101,17 +100,61 @@ public class AIPValidator implements S4
         return JAXB.unmarshal( new ByteArrayInputStream( resultOutput.toByteArray() ), VerificationReportType.class );
     }
     
-    List<XAIPType> findXAIPs( List<Object> objects ) throws JAXBException
+    List<ByteArrayInputStream> findXAIPCandidate( List<Object> objects ) throws JAXBException
     {
         return objects.stream()
                 .filter( DocumentType.class::isInstance )
                 .map( DocumentType.class::cast )
+                .map( type -> base64Data( type )
+                        .or( () -> inlineXml( type ) )
+                        .or( () -> base64Xml( type ) )
+                        .orElse( null ) )
+                .filter( Objects::nonNull )
+                .collect( toList() );
+    }
+    
+    Optional<ByteArrayInputStream> base64Data( DocumentType type )
+    {
+        return Optional.ofNullable( type )
+                .map( DocumentType::getBase64Data )
+                .map( Base64Data::getValue )
+                .map( ByteArrayInputStream::new );
+    }
+    
+    Optional<ByteArrayInputStream> base64Xml( DocumentType type )
+    {
+        return Optional.ofNullable( type )
+                .map( DocumentType::getBase64XML )
+                .map( ByteArrayInputStream::new );
+    }
+    
+    Optional<ByteArrayInputStream> inlineXml( DocumentType type )
+    {
+        return Optional.ofNullable( type )
                 .map( DocumentType::getInlineXML )
                 .map( InlineXMLType::getAny )
-                .filter( Node.class::isInstance )
-                .map( Node.class::cast )
-                .map( node -> JAXB.unmarshal( new DOMSource( node ), XAIPType.class ) )
-                .collect( toList() );
+                .map( obj -> {
+                    Optional<XAIPType> optXaip = Optional.empty();
+                    if ( obj instanceof JAXBElement )
+                    {
+                        JAXBElement<XAIPType> elem = (JAXBElement) obj;
+                        optXaip = Optional.ofNullable( elem.getValue() );
+                    }
+                    
+                    if ( optXaip.isEmpty() && obj instanceof Node )
+                    {
+                        Node node = (Node) obj;
+                        XAIPType xaip = JAXB.unmarshal( new DOMSource( node ), XAIPType.class );
+                        optXaip = Optional.ofNullable( xaip );
+                    }
+                    
+                    return optXaip.map( xaip -> {
+                        ByteArrayOutputStream xaipProvider = new ByteArrayOutputStream();
+                        JAXB.marshal( AIPUtil.asElement( xaip ), xaipProvider );
+                        
+                        return new ByteArrayInputStream( xaipProvider.toByteArray() );
+                    } ).orElse( null );
+                } );
     }
     
     @Override
@@ -128,13 +171,13 @@ public class AIPValidator implements S4
                     .map( InputDocuments::getDocumentOrTransformedDataOrDocumentHash )
                     .orElse( new ArrayList<>() );
             
-            List<XAIPType> xaips = findXAIPs( documents );
-            if ( xaips.isEmpty() )
+            var candidates = findXAIPCandidate( documents );
+            if ( candidates.isEmpty() )
             {
                 throw new AIPValidatorException( "no xaip provided in the input documents" );
             }
             
-            reports = xaips.stream()
+            reports = candidates.stream()
                     .map( this::dispatch )
                     .map( vr -> new JAXBElement<>( VERIFICATION_REPORT, VerificationReportType.class, vr ) )
                     .collect( toList() );

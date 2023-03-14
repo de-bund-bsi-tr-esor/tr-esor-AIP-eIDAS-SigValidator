@@ -147,7 +147,7 @@ public enum MetaDataValidator
                                     .map( ByteArrayInputStream::new )
                                     .orElse( new ByteArrayInputStream( new byte[0] ) ) )
                     {
-                        return VerificationUtil.verifyChecksum( stream, metaData.getCheckSum() );
+                        return VerificationUtil.verifyChecksum( stream, metaData.getCheckSum(), true );
                     }
                     catch ( IllegalStateException | IOException e )
                     {

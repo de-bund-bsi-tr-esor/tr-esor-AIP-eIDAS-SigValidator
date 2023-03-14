@@ -110,7 +110,7 @@ public class DefaultProtocolAssembler implements ProtocolAssembler
         anyType.getAny().add( AIPUtil.asElement( xaipReport ) );
         
         IndividualReportType individualReport = new IndividualReportType();
-        individualReport.setResult( resultSummary( xaipReport ) );
+        individualReport.setResult( resultSummary( xaipReport, !credentialReports.isEmpty() ) );
         individualReport.setSignedObjectIdentifier( new SignedObjectIdentifierType() );
         individualReport.setDetails( anyType );
         
@@ -135,37 +135,20 @@ public class DefaultProtocolAssembler implements ProtocolAssembler
         return completeReport;
     }
     
-    Result resultSummary( XAIPValidityType report )
+    Result resultSummary( XAIPValidityType report, boolean hasSignatures )
     {
         Major resultMajor = Major.fromUri( report.getFormatOK().getResultMajor() )
-                .map( major -> major.isPositive() ? Major.SUCCESS : Major.ERROR )
-                .orElse( Major.ERROR );
+                .map( major -> major.isPositive() ? Major.SUCCESS : Major.REQUESTER_ERROR )
+                .orElse( Major.REQUESTER_ERROR );
         
-        String resultMessage = resultMajor.isPositive() ? "successfully validated the xaip structure and containing signatures"
-                : "error on schema validation";
+        String positiveMessage = hasSignatures ? "successfully validated the xaip structure and containing signatures"
+                : "successfully validated the xaip structure";
+        String resultMessage = resultMajor.isPositive() ? positiveMessage : "error on schema validation";
         try
         {
-            JAXBContext context = JAXBContext.newInstance( XAIPValidityType.class );
-            Marshaller marshaller = context.createMarshaller();
-            
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder builder = factory.newDocumentBuilder();
-            
-            JAXBElement<XAIPValidityType> xaipReport = AIPUtil.asElement( report );
-            Document doc = builder.newDocument();
-            marshaller.marshal( xaipReport, doc );
-            
-            NSMapping nsMapping = new NSMapping();
-            nsMapping.putNamespace( "ns", "urn:oasis:names:tc:dss-x:1.0:profiles:verificationreport:schema#" );
-            
-            XPathFactory xPathfactory = XPathFactory.newInstance();
-            XPath xpath = xPathfactory.newXPath();
-            xpath.setNamespaceContext( nsMapping );
-            
-            XPathExpression expr = xpath.compile( "//ns:DetailedSignatureReport/ns:SignatureOK/ns:SigMathOK/ns:ResultMajor" );
-            NodeList result = (NodeList) expr.evaluate( doc, XPathConstants.NODESET );
-            
             boolean error = false;
+            NodeList result = findValidationResult( report );
+            
             for ( int i = 0; i < result.getLength(); i++ )
             {
                 Optional<Major> major = DefaultResult.Major.fromString( result.item( i ).getTextContent() );
@@ -176,9 +159,12 @@ public class DefaultProtocolAssembler implements ProtocolAssembler
                 }
             }
             
-            if ( error || hasCredentialOtherError( report ) )
+            Major otherMajor = credentialOtherMajor( report );
+            if ( error || !otherMajor.isPositive() )
             {
-                resultMajor = Major.REQUESTER_ERROR;
+                boolean useOtherMajor = !otherMajor.isPositive() && otherMajor.getUri().contains( ":resultmajor:" );
+                
+                resultMajor = useOtherMajor ? otherMajor : Major.REQUESTER_ERROR;
                 resultMessage = "invalid signature(s) were found";
             }
         }
@@ -188,13 +174,41 @@ public class DefaultProtocolAssembler implements ProtocolAssembler
             ModuleLogger.log( "could not analyse and merge signature results into summary", e );
         }
         
-        if ( resultMajor.isPositive() && !args.isVerify() )
+        if ( !args.isVerify() && hasSignatures )
         {
             resultMajor = Major.INSUFFICIENT_INFORMATION;
-            resultMessage = "the signature validation has been skipped";
+            resultMessage = "the signature validation has been skipped for containing signature(s)";
         }
         
         return DefaultResult.major( resultMajor ).message( resultMessage, ResultLanguage.ENGLISH ).build();
+    }
+    
+    NodeList findValidationResult( XAIPValidityType report ) throws JAXBException, ParserConfigurationException, XPathExpressionException
+    {
+        JAXBContext context = JAXBContext.newInstance( XAIPValidityType.class );
+        Marshaller marshaller = context.createMarshaller();
+        
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder = factory.newDocumentBuilder();
+        
+        JAXBElement<XAIPValidityType> xaipReport = AIPUtil.asElement( report );
+        Document doc = builder.newDocument();
+        marshaller.marshal( xaipReport, doc );
+        
+        NSMapping nsMapping = new NSMapping();
+        nsMapping.putNamespace( "ns", "urn:oasis:names:tc:dss-x:1.0:profiles:verificationreport:schema#" );
+        nsMapping.putNamespace( "vr", "http://www.bsi.bund.de/tr-esor/vr" );
+        
+        XPathFactory xPathfactory = XPathFactory.newInstance();
+        XPath xpath = xPathfactory.newXPath();
+        xpath.setNamespaceContext( nsMapping );
+        
+        XPathExpression expr = xpath
+                .compile( "(//ns:DetailedSignatureReport|//ns:IndividualTimeStampReport)/ns:SignatureOK/ns:SigMathOK/ns:ResultMajor" +
+                        "|//vr:EvidenceRecordReport/vr:FormatOK/ns:ResultMajor" );
+        NodeList result = (NodeList) expr.evaluate( doc, XPathConstants.NODESET );
+        
+        return result;
     }
     
     /**
@@ -204,9 +218,9 @@ public class DefaultProtocolAssembler implements ProtocolAssembler
      *            the report
      * @return if an error was found
      */
-    boolean hasCredentialOtherError( XAIPValidityType report )
+    Major credentialOtherMajor( XAIPValidityType report )
     {
-        return !Optional.ofNullable( report )
+        return Optional.ofNullable( report )
                 .map( XAIPValidityType::getCredentialsSection )
                 .map( CredentialsSectionValidityType::getCredential )
                 .orElse( emptyList() )
@@ -216,8 +230,7 @@ public class DefaultProtocolAssembler implements ProtocolAssembler
                 .map( VerificationResultType::getResultMajor )
                 .map( Major::fromString )
                 .flatMap( Optional::stream )
-                .reduce( Major.SUCCESS, DefaultResult::merge )
-                .isPositive();
+                .reduce( Major.SUCCESS, DefaultResult::merge );
     }
     
     Set<CredentialValidityType> addRelations( ModuleContext context, Set<CredentialValidityType> reports )

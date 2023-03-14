@@ -1,13 +1,17 @@
 package de.bund.bsi.tresor.aip.validator.syntax.validators;
 
-import static java.util.Collections.emptyList;
+import static java.util.Collections.emptySet;
+import static java.util.stream.Collectors.toList;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -23,25 +27,25 @@ import java.util.zip.ZipInputStream;
 
 import javax.xml.bind.DataBindingException;
 import javax.xml.bind.JAXB;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.dom.DOMSource;
 
-import de.bund.bsi.tresor.aip.validator.syntax.context.DefaultSyntaxValidatorContext;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.etsi.uri._02918.v1_2.ASiCManifestType;
 import org.etsi.uri._02918.v1_2.DataObjectReferenceType;
-import org.etsi.uri._02918.v1_2.ExtensionType;
 import org.etsi.uri._02918.v1_2.ExtensionsListType;
 import org.etsi.uri._02918.v1_2.SigReferenceType;
 import org.etsi.uri._19512.v1_1.ContainerIDType;
+import org.etsi.uri._19512.v1_1.ObjectFactory;
 import org.w3c.dom.Element;
 
 import de.bund.bsi.tr_esor.xaip.XAIPType;
 import de.bund.bsi.tresor.aip.validator.api.control.AIPUtil;
+import de.bund.bsi.tresor.aip.validator.api.control.AipUriResolver;
 import de.bund.bsi.tresor.aip.validator.api.control.ModuleLogger;
+import de.bund.bsi.tresor.aip.validator.syntax.context.DefaultSyntaxValidatorContext;
 import eu.europa.esig.dss.asic.cades.validation.ASiCContainerWithCAdESValidatorFactory;
+import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.asic.xades.validation.ASiCContainerWithXAdESValidatorFactory;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -58,6 +62,12 @@ public enum ASiCAIPValidator
     private static ASiCContainerWithCAdESValidatorFactory cadesASiCValidator = new ASiCContainerWithCAdESValidatorFactory();
     private static ASiCContainerWithXAdESValidatorFactory xadesASiCValidator = new ASiCContainerWithXAdESValidatorFactory();
     
+    private static ObjectFactory                          fact               = new ObjectFactory();
+    private static org.etsi.uri._02918.v1_2.ObjectFactory fact2              = new org.etsi.uri._02918.v1_2.ObjectFactory();
+    
+    private static String                                 containerNS        = fact.createContainerID( null ).getName().getNamespaceURI();
+    private static String                                 manifestNS         = fact2.createASiCManifest( null ).getName().getNamespaceURI();
+    
     /**
      * Checking if the data contains a valid ASiC container
      * 
@@ -71,10 +81,11 @@ public enum ASiCAIPValidator
         {
             DSSDocument document = new InMemoryDocument( new ByteArrayInputStream( data ) );
             
+            boolean isASiCE = ASiCUtils.isASiCEContainer( document );
             boolean isCAdESASiC = cadesASiCValidator.isSupported( document );
             boolean isXAdESASiC = xadesASiCValidator.isSupported( document );
             
-            boolean isASiC = isCAdESASiC || isXAdESASiC;
+            boolean isASiC = isASiCE && (isCAdESASiC || isXAdESASiC);
             ModuleLogger.verbose( isASiC ? "data is ASiC-AIP" : "data is not ASiC-AIP" );
             
             return isASiC;
@@ -106,8 +117,6 @@ public enum ASiCAIPValidator
         try
         {
             unzipped = Optional.ofNullable( unzip( zippedData ) );
-            
-            // do ifPresent?
             if ( unzipped.isPresent() )
             {
                 File asicAip = unzipped.get();
@@ -124,7 +133,8 @@ public enum ASiCAIPValidator
                         }
                     }
                 }
-                syntaxContext.setTempPath(  unzipped.get().getAbsolutePath() );
+                
+                syntaxContext.setTempPath( unzipped.get().getAbsolutePath() );
                 System.setProperty( AIPUtil.TEMP_FOLDER_PATH, unzipped.get().getAbsolutePath() );
             }
             
@@ -135,18 +145,22 @@ public enum ASiCAIPValidator
             else if ( validAIPFiles.size() == 1 )
             {
                 File xaipFile = validAIPFiles.get( 0 );
+                syntaxContext.setAsicAIPContainer( zippedData );
+                // do not change the order of the line above and below
                 zippedData = FileUtils.readFileToByteArray( xaipFile );
-                
-                // TODO enable when asic validation is implemented
                 unzipped.ifPresent( asicDir -> {
                     validateASiCAIPStructure( asicDir, xaipFile );
                 } );
             }
+            else
+            {
+                throw new IllegalStateException( "asic container does not contain a valid aip file" );
+            }
         }
         finally
         {
-            //needs to be done later to be able to load the referenced files
-            //unzipped.ifPresent( FileUtils::deleteQuietly );
+            // needs to be done later to be able to load the referenced files
+            // unzipped.ifPresent( FileUtils::deleteQuietly );
         }
         
         return zippedData;
@@ -158,18 +172,19 @@ public enum ASiCAIPValidator
      * @param asicDir
      *            the unzipped asic directory
      * @param xaipFile
-     *            the xaip file
+     *            the file
      */
     public void validateASiCAIPStructure( File asicDir, File xaipFile )
     {
         XAIPType xaip = JAXB.unmarshal( xaipFile, XAIPType.class );
-        File metaInf = Arrays.stream( asicDir.listFiles() )
+        Arrays.stream( asicDir.listFiles() )
                 .filter( file -> file.isDirectory() )
                 .filter( file -> file.getName().equals( "META-INF" ) )
                 .findAny()
-                .orElseThrow( () -> new IllegalArgumentException( "missing asic META-INF directory" ) );
-        
-        validateMetaInf( xaip, metaInf );
+                .ifPresentOrElse( metaInf -> validateMetaInf( xaip, asicDir, metaInf ),
+                        () -> {
+                            throw new IllegalArgumentException( "missing asic META-INF directory" );
+                        } );
     }
     
     /**
@@ -180,50 +195,183 @@ public enum ASiCAIPValidator
      * @param metaInf
      *            the asic metaInf folder
      */
-    void validateMetaInf( XAIPType xaip, File metaInf )
+    void validateMetaInf( XAIPType xaip, File asicDir, File metaInf )
     {
         String aoid = AIPUtil.findAoid( xaip ).orElseThrow( () -> new IllegalArgumentException( "missing aoid in xaip" ) );
         Map<String, Set<String>> oidsByVersion = AIPUtil.oidsByVersion( xaip );
         
-        try
+        boolean hasManifest = false;
+        Map<String, Set<String>> errorsByManifest = new HashMap<>();
+        for ( File file : metaInf.listFiles() )
         {
-            JAXBContext context = JAXBContext.newInstance( ASiCManifestType.class );
-            Unmarshaller unmarshaller = context.createUnmarshaller();
-            Map<String, Set<String>> errorsByManifest = new HashMap<>();
-            for ( File file : metaInf.listFiles() )
+            try
             {
-                try
+                ASiCManifestType manifest = JAXB.unmarshal( file, ASiCManifestType.class );
+                Set<String> errors = validateManifest( asicDir, metaInf, manifest, xaip, aoid, oidsByVersion );
+                
+                hasManifest = true;
+                if ( !errors.isEmpty() )
                 {
-                    ASiCManifestType manifest = (ASiCManifestType) unmarshaller.unmarshal( file );
-                    Set<String> errors = validateManifest( metaInf, manifest, aoid, oidsByVersion );
-                    
-                    if ( !errors.isEmpty() )
-                    {
-                        errorsByManifest.put( file.getName(), errors );
-                    }
-                }
-                catch ( ClassCastException | JAXBException | DataBindingException e )
-                {
-                    ModuleLogger.log( "manifest search: skipping " + file.getName() );
-                    ModuleLogger.verbose( "file is not an asicManifest: " + file.getName(), e );
+                    errorsByManifest.put( file.getName(), errors );
                 }
             }
-            
-            if ( !oidsByVersion.isEmpty() )
+            catch ( ClassCastException | DataBindingException e )
             {
-                ModuleLogger.log( "[WARN] missing optional aisc-manifest containerID for versions: " + oidsByVersion.keySet().toString() );
-            }
-            
-            if ( !errorsByManifest.isEmpty() )
-            {
-                throw new IllegalArgumentException( "invalid asic-aip structure: " + errorsByManifest.toString() );
+                ModuleLogger.log( "manifest search: skipping " + file.getName() );
+                ModuleLogger.verbose( "file is not an asicManifest: " + file.getName(), e );
             }
         }
-        catch ( JAXBException e )
+        
+        if ( !hasManifest )
         {
-            throw new IllegalStateException( "could not create unmarshaller for asicManifest", e );
+            throw new IllegalArgumentException( "container is missing asicManifest" );
+        }
+        else if ( !errorsByManifest.isEmpty() )
+        {
+            throw new IllegalArgumentException( errorsByManifest.toString() );
         }
     }
+    
+    //////////////////////////////////////////////////////////////////////////////////////////////////////
+    
+    Optional<ContainerIDType> extractContainer( ASiCManifestType manifest )
+    {
+        return Optional.ofNullable( manifest.getASiCManifestExtensions() )
+                .map( ExtensionsListType::getExtension ).stream()
+                .flatMap( List::stream )
+                .map( f -> f.getContent() )
+                .flatMap( List::stream )
+                .filter( Element.class::isInstance )
+                .map( Element.class::cast )
+                .peek( e -> e.getNodeValue() )
+                // .map( JAXBElement.class::cast )
+                // .map( JAXBElement::getValue )
+                .map( e -> JAXB.unmarshal( new DOMSource( e ), ContainerIDType.class ) )
+                .filter( ContainerIDType.class::isInstance )
+                .map( ContainerIDType.class::cast )
+                .findAny();
+    }
+    
+    Set<String> validateContainerExtension( ASiCManifestType manifest, String aoid, Map<String, Set<String>> oidsByVersion )
+    {
+        return extractContainer( manifest ).map( container -> {
+            Set<String> errors = new HashSet<>();
+            String manifestAoid = container.getPOID();
+            String manifestVersion = container.getVersionID();
+            
+            if ( StringUtils.isAllBlank( manifestAoid, manifestVersion ) )
+            {
+                ModuleLogger.log(
+                        "[WARN] found optional container extension which does not have any content, this can happen when the container is using a different namespace than "
+                                + containerNS );
+                
+                errors.add( "container extension does not use ns " + containerNS );
+                return errors;
+            }
+            
+            Set<String> oids = new HashSet<>();
+            if ( !aoid.equals( manifestAoid ) )
+            {
+                errors.add( "aoid mismatch" );
+            }
+            
+            Optional.ofNullable( oidsByVersion.remove( manifestVersion ) )
+                    .ifPresentOrElse( s -> {}, () -> errors.add( "referencing non existing version" ) );
+            
+            if ( !oids.stream().allMatch( oid -> manifest.getDataObjectReference().stream()
+                    .map( DataObjectReferenceType::getURI )
+                    .anyMatch( ref -> ref.contains( oid ) ) ) )
+            {
+                errors.add( "invalid oid-ref" );
+            }
+            
+            return errors;
+        } ).orElse( emptySet() );
+    }
+    
+    Set<String> validateSigRef( File metaInf, SigReferenceType sigReference )
+    {
+        Set<String> errors = new HashSet<>();
+        String uri = sigReference.getURI();
+        
+        // have to keep this since windows can also use linux style path at this point which won't be resolved ny file.separatorChar
+        String unixName = uri.substring( uri.lastIndexOf( "/" ) + 1 );
+        String windowsName = uri.substring( uri.lastIndexOf( "\\" ) + 1 );
+        
+        if ( !Arrays.stream( metaInf.list() ).anyMatch( name -> name.equals( unixName ) || name.equals( windowsName ) ) )
+        {
+            errors.add( "invalid sigRef" );
+        }
+        
+        return errors;
+    }
+    
+    Set<String> validateDataRef( File asicDir, XAIPType xaip, List<DataObjectReferenceType> references )
+    {
+        Set<String> errors = new HashSet<>();
+        List<File> rootFiles = Arrays.asList( asicDir.listFiles() ).stream().filter( File::isFile ).collect( toList() );
+        
+        for ( DataObjectReferenceType dataRef : references )
+        {
+            String uriRef = dataRef.getURI();
+            try
+            {
+                URI uri = new URI( uriRef );
+                String scheme = uri.getScheme();
+                String authority = uri.getAuthority();
+                
+                boolean isFileScheme = Optional.ofNullable( scheme )
+                        .map( f -> f.startsWith( "file" ) )
+                        .orElse( false );
+                
+                if ( scheme == null || isFileScheme )
+                {
+                    String fileName = isFileScheme ? authority : uriRef;
+                    if ( !findInRoot( rootFiles, fileName ).isPresent() )
+                    {
+                        errors.add( "file " + fileName + " is not in root" );
+                    }
+                }
+                else if ( scheme.startsWith( "xaip" ) )
+                {
+                    findInRoot( rootFiles, authority )
+                            .filter( xaipFile -> !isValidXaipRef( uri, xaipFile ) )
+                            .ifPresent( file -> errors.add( "invalid pointer for uri " + uriRef ) );
+                }
+            }
+            catch ( URISyntaxException e )
+            {
+                errors.add( "invalid uri scheme in " + uriRef );
+            }
+        }
+        
+        return errors;
+    }
+    
+    Optional<File> findInRoot( List<File> rootFiles, String name )
+    {
+        return rootFiles.stream()
+                .filter( f -> f.getName().equals( name ) )
+                .findAny();
+    }
+    
+    boolean isValidXaipRef( URI uri, File xaipFile )
+    {
+        AipUriResolver r = new AipUriResolver();
+        try ( ByteArrayOutputStream os = r.resolve( uri, xaipFile ) )
+        {
+            boolean hasContent = os.size() > 0;
+            os.reset();
+            
+            return hasContent;
+        }
+        catch ( Exception e )
+        {
+            return false;
+        }
+    }
+    
+    //////////////////////////////////////////////////////////////////////////////////////////////////////
     
     /**
      * Validating the asic manifest against the provided xaip informations
@@ -238,63 +386,25 @@ public enum ASiCAIPValidator
      *            the oids of the asic-xaip by the versions
      * @return a set of errorMessages
      */
-    Set<String> validateManifest( File metaInf, ASiCManifestType manifest, String aoid, Map<String, Set<String>> oidsByVersion )
+    Set<String> validateManifest( File asicDir, File metaInf, ASiCManifestType manifest, XAIPType xaip, String aoid,
+            Map<String, Set<String>> oidsByVersion )
     {
+        SigReferenceType sigRef = manifest.getSigReference();
+        List<DataObjectReferenceType> dataObjectRef = manifest.getDataObjectReference();
+        
         Set<String> errors = new HashSet<>();
-        SigReferenceType sigReference = manifest.getSigReference();
-        String uri = sigReference.getURI();
-        String substring = uri.substring( uri.lastIndexOf( File.separatorChar ) + 1 );
+        errors.addAll( validateContainerExtension( manifest, aoid, oidsByVersion ) );
         
-        List<ExtensionType> extensions = Optional.ofNullable( manifest.getASiCManifestExtensions() )
-                .map( ExtensionsListType::getExtension )
-                .orElse( emptyList() );
-        
-        Optional<ContainerIDType> optContainer = extensions.stream()
-                .map( f -> f.getContent() )
-                .flatMap( List::stream )
-                .filter( Element.class::isInstance )
-                .map( Element.class::cast )
-                // .map( JAXBElement.class::cast )
-                // .map( JAXBElement::getValue )
-                .map( e -> JAXB.unmarshal( new DOMSource( e ), ContainerIDType.class ) )
-                .filter( ContainerIDType.class::isInstance )
-                .map( ContainerIDType.class::cast )
-                .findAny();
-        
-        if ( !Arrays.stream( metaInf.list() )
-                .anyMatch( name -> name.equals( substring ) ) )
+        if ( sigRef == null && dataObjectRef.isEmpty() )
         {
-            errors.add( "missing sigRef" );
+            ModuleLogger.log(
+                    "[WARN] found empty manifest, this can happen when the container is using a different namespace than " + containerNS );
+            errors.add( "manifest does not use ns " + manifestNS );
         }
-        
-        if ( optContainer.isPresent() )
+        else
         {
-            ContainerIDType container = optContainer.get();
-            String manifestAoid = container.getPOID();
-            String manifestVersion = container.getVersionID();
-            
-            Set<String> oids = new HashSet<>();
-            if ( !aoid.equals( manifestAoid ) )
-            {
-                errors.add( "aoid mismatch" );
-            }
-            
-            if ( oidsByVersion.containsKey( manifestVersion ) )
-            {
-                oids = oidsByVersion.remove( manifestVersion );
-            }
-            else
-            {
-                errors.add( "referencing non existing version" );
-            }
-            
-            if ( !oids.stream()
-                    .allMatch( oid -> manifest.getDataObjectReference().stream()
-                            .map( DataObjectReferenceType::getURI )
-                            .anyMatch( ref -> ref.contains( oid ) ) ) )
-            {
-                errors.add( "missing or invalid oid-ref" );
-            }
+            errors.addAll( validateSigRef( metaInf, sigRef ) );
+            errors.addAll( validateDataRef( asicDir, xaip, dataObjectRef ) );
         }
         
         return errors;

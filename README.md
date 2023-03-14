@@ -3,6 +3,9 @@
 # tr-esor-AIP-eIDAS-SigValidator
 The tr-esor-AIP-eIDAS-SigValidator (or short AIP-Validator) is a tool designed for validation of XML formatted Archival Information Package (XAIP) and logical XML formatted Archival Information Packge (LXAIP). Using a modular structure and plugin mechanism, the validator is validating an XAIP by using those modules which can vary by their implementation.
 
+The master branch is supporting the newest tresor specification which is 1.3.
+Versions of this tool for older specifications can be found in branches with the respective names in it.
+
 Supported signature formats are:
 - asic
 - asic-aip
@@ -35,13 +38,15 @@ java -jar aip-validator-cli/target/aip-validator-cli.jar -i ~/sample.xaip -Mvali
 # Mac/Linux/Windows
 java -jar aip-validator-cli/target/aip-validator-cli.jar -i ~/sample.xaip -Mvalidator.schemaDir=default-syntax-validator/src/main/resources/definitions
 
+# Online verification using default config for verificaionService and default schemes
+java -jar aip-validator-cli/target/aip-validator-cli.jar -v -c default.conf -i ~/sample.xaip -o ~/report.xml
 
 # SOAP Server
 # Mac/Linux
-java -cp "aip-validator-soap/target/aip-validator-soap-1.0.8-2.jar:aip-validator-soap/target/dependency/*" de.bund.bsi.tresor.aip.validator.soap.Server -Mvalidator.schemaDir=default-syntax-validator/src/main/resources/definitions -Mverifier.wsdlUrl="http://host:port/VerificationService/S4?wsdl"
+java -cp "aip-validator-soap/target/aip-validator-soap-1.1.0-2.jar:aip-validator-soap/target/dependency/*" de.bund.bsi.tresor.aip.validator.soap.Server -v -Mvalidator.schemaDir=default-syntax-validator/src/main/resources/definitions -Mverifier.wsdlUrl="http://host:port/VerificationService/eCard\?wsdl"
 
 # Windows
-java -cp "aip-validator-soap/target/aip-validator-soap-1.0.8-2.jar;target/dependency/*" de.bund.bsi.tresor.aip.validator.soap.Server -Mvalidator.schemaDir=default-syntax-validator/src/main/resources/definitions -Mverifier.wsdlUrl="https://host:port/VerificationService/S4?wsdl"
+java -cp "aip-validator-soap/target/aip-validator-soap-1.1.0-2.jar;aip-validator-soap/target/dependency/*" de.bund.bsi.tresor.aip.validator.soap.Server -v -Mvalidator.schemaDir=default-syntax-validator/src/main/resources/definitions -Mverifier.wsdlUrl="https://host:port/VerificationService/eCard\?wsdl"
 ```
 
 ## Prerequisites
@@ -130,7 +135,7 @@ A successful build should print a *`BUILD SUCCESS`* message. When following mess
 The tool can be found in the target directory of the *`aip-validator-cli`* submodule:
 ```
 $ ls aip-validator-cli/target/
-archive-tmp           checkstyle-checker.xml  checkstyle-rules.xml         classes            generated-test-sources  maven-status  aip-validator-cli-1.0.8-1.jar
+archive-tmp           checkstyle-checker.xml  checkstyle-rules.xml         classes            generated-test-sources  maven-status  aip-validator-cli-1.1.0-2.jar
 checkstyle-cachefile  checkstyle-result.xml   checkstyle-suppressions.xml  generated-sources  maven-archiver          test-classes  aip-validator-cli.jar
 ```
 
@@ -222,7 +227,7 @@ Any known issues about the validator are being explained at the bottom of this p
 
 **Description:** The server version of the AIPValidator is being used to provide a soap service implementing the verify function of the eCard api. This api can be used to send a verifyRequest containing an AIP which will be validated in the following steps.
 
-**Usage:** `java -cp "target/aip-validator-soap-1.0.8-2.jar:target/dependency/*" de.bund.bsi.tresor.aip.validator.soap.Server [OPTION [ARG]*]*`
+**Usage:** `java -cp "target/aip-validator-soap-1.1.0-2.jar:target/dependency/*" de.bund.bsi.tresor.aip.validator.soap.Server [OPTION [ARG]*]*`
 
 **Options:**
 
@@ -263,6 +268,10 @@ Any known issues about the validator are being explained at the bottom of this p
 
 --path <path>
 	Custom path the service should be used, `/aip-validate` by default
+	
+-v, --verify
+    This flags enables the signature verification which is being executed by the [SignatureVerifierModule].
+    Omitting this flag will only execute the syntax validation.
     
 -d, --debug
     Flag to enable debug output for a better analysis of the validator behaviour.
@@ -300,7 +309,7 @@ Any known issues about the validator are being explained at the bottom of this p
 
 | ConfigName        | Example                                                   | Description                          |
 |-------------------|-----------------------------------------------------------|--------------------------------------|
-| *verifier.wsdlUrl | https://host:port/VerificationService/S4?wsdl             | url of the verification service wsdl |
+| *verifier.wsdlUrl | https://host:port/VerificationService/eCard?wsdl          | url of the verification service wsdl |
 
 \* - required configuration
 
@@ -319,6 +328,7 @@ The following limitations apply:
 - Information for `TransformInfoType` is currently not generated due to inconsistencies in the verification report scheme
 - Extensions are not evaluated due to their dependency to specific profiles
 - The content of Metadata sections is not evaluated with the exception of their well-formedness
+- The reference implementation of the VerificationService (see test environment) might return an unsupported signature result in case of an invalid ASiC container due to some limitations in the dss-lib
 
 The following issues are known:
 - **[XVAL-1]** When using the paramter `-o` the provided argument has to be a file which is not in the current directory

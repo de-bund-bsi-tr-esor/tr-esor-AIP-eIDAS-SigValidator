@@ -67,14 +67,16 @@ public class ServerConfig
             descriptionKey = MessageBundle.SERVER_PATH )
     private String              path         = "/xaip-validate";
     
-    @Parameter( order = 7, names = { "-d", "--debug", "--verbose" }, descriptionKey = MessageBundle.SERVER_VERBOSE )
+    @Parameter( order = 7, names = { "-v", "--verify" }, descriptionKey = MessageBundle.SERVER_USAGE_VERIFY )
+    private boolean             verify;
+    
+    @Parameter( order = 8, names = { "-d", "--debug", "--verbose" }, descriptionKey = MessageBundle.SERVER_VERBOSE )
     private boolean             verbose      = false;
     
-    @Parameter( order = 8, names = { "-h", "--help" }, help = true, descriptionKey = MessageBundle.SERVER_HELP )
+    @Parameter( order = 9, names = { "-h", "--help" }, help = true, descriptionKey = MessageBundle.SERVER_HELP )
     private boolean             help;
     
     // -- Following values are default parameter for the server
     private final OutputStream  log          = System.out;
     
-    private final boolean       verify       = true;
 }

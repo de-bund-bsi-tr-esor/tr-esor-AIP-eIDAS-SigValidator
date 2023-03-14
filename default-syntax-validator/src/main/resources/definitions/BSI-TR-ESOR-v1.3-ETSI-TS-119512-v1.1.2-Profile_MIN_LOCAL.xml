@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pres:Profile xmlns:pres="http://uri.etsi.org/19512/v1.1.2#" xmlns:md="http://docs.oasis-open.org/dss-x/ns/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://uri.etsi.org/19512/v1.1.2# ./19512-Preservation-API_V.1.1.2.xsd">
+	<!-- ============================================================= -->
+	<!-- Profile of BSI-TR_03125 TR-ESOR V1.3 TS119512 interface (MIN) -->
+	<!-- ============================================================= -->
+	<!-- Version of 15.03.2022                                         -->
+	<!-- ============================================================= -->
+	<md:ProfileIdentifier>http://www.bsi.bund.de/tr-esor/V1.3/profile/preservation-api/V1.1.2_MIN</md:ProfileIdentifier>
+	<md:Specification>https://www.bsi.bund.de/SharedDocs/Downloads/DE/BSI/Publikationen/TechnischeRichtlinien/TR03125/BSI_TR_03125_Anlage_TRANS_V1_3.pdf</md:Specification>
+	<md:Description xml:lang="EN">The present Profile describes the TR-ESOR V1.3 TS119512-interface with maximal functionality</md:Description>
+	<md:Operation>
+		<md:Name>RetrieveInfo</md:Name>
+		<md:Specification>https://www.bsi.bund.de/SharedDocs/Downloads/DE/BSI/Publikationen/TechnischeRichtlinien/TR03125/BSI_TR_03125_Anlage_TRANS_V1_3.pdf</md:Specification>
+		<md:Description xml:lang="EN">See Clause 3.1</md:Description>
+		<md:Input>
+			<md:Name>RetrieveInfoRequest</md:Name>
+			<md:Description xml:lang="EN">See Clause 3.1.1</md:Description>
+		</md:Input>
+		<md:Output>
+			<md:Name>RetrieveInfoResponse</md:Name>
+			<md:Description xml:lang="EN">See Clause 3.1.2</md:Description>
+		</md:Output>
+	</md:Operation>
+	<md:Operation>
+		<md:Name>PreservePO</md:Name>
+		<md:Specification>https://www.bsi.bund.de/SharedDocs/Downloads/DE/BSI/Publikationen/TechnischeRichtlinien/TR03125/BSI_TR_03125_Anlage_TRANS_V1_3.pdf</md:Specification>
+		<md:Description xml:lang="EN">See Clause 3.2</md:Description>
+		<md:Input>
+			<md:Name>PreservePORequest</md:Name>
+			<md:Description xml:lang="EN">See Clause 3.2.1.</md:Description>
+		</md:Input>
+		<md:Output>
+			<md:Name>PreservePOResponse</md:Name>
+			<md:Description xml:lang="EN">See Clause 3.2.2</md:Description>
+		</md:Output>
+	</md:Operation>
+	<md:Operation>
+		<md:Name>UpdatePOC</md:Name>
+		<md:Specification>https://www.bsi.bund.de/SharedDocs/Downloads/DE/BSI/Publikationen/TechnischeRichtlinien/TR03125/BSI_TR_03125_Anlage_TRANS_V1_3.pdf</md:Specification>
+		<md:Description xml:lang="EN">See Clause 3.3</md:Description>
+		<md:Input>
+			<md:Name>UpdatePOCRequest</md:Name>
+			<md:Description xml:lang="EN">See Clause 3.3.1</md:Description>
+		</md:Input>
+		<md:Output>
+			<md:Name>UpdatePOCResponse</md:Name>
+			<md:Description xml:lang="EN">See Clause 3.3.2</md:Description>
+		</md:Output>
+	</md:Operation>
+	<md:Operation>
+		<md:Name>RetrievePO</md:Name>
+		<md:Specification>https://www.bsi.bund.de/SharedDocs/Downloads/DE/BSI/Publikationen/TechnischeRichtlinien/TR03125/BSI_TR_03125_Anlage_TRANS_V1_3.pdf</md:Specification>
+		<md:Description xml:lang="EN">See Clause 3.5</md:Description>
+		<md:Input>
+			<md:Name>RetrievePORequest</md:Name>
+			<md:Description xml:lang="EN">See Clause 3.5.1</md:Description>
+		</md:Input>
+		<md:Output>
+			<md:Name>RetrievePOResponse</md:Name>
+			<md:Description xml:lang="EN">See Clause 3.5.2</md:Description>
+		</md:Output>
+	</md:Operation>
+	<md:Operation>
+		<md:Name>DeletePO</md:Name>
+		<md:Specification>https://www.bsi.bund.de/SharedDocs/Downloads/DE/BSI/Publikationen/TechnischeRichtlinien/TR03125/BSI_TR_03125_Anlage_TRANS_V1_3.pdf</md:Specification>
+		<md:Description xml:lang="EN">See Clause 3.6</md:Description>
+		<md:Input>
+			<md:Name>DeletePORequest</md:Name>
+			<md:Description xml:lang="EN">See Clause 3.6.1</md:Description>
+		</md:Input>
+		<md:Output>
+			<md:Name>DeletePOResponse</md:Name>
+			<md:Description xml:lang="EN">See Clause 3.6.2</md:Description>
+		</md:Output>
+	</md:Operation>
+	<md:Operation>
+		<md:Name>ValidateEvidence</md:Name>
+		<md:Specification>https://www.bsi.bund.de/SharedDocs/Downloads/DE/BSI/Publikationen/TechnischeRichtlinien/TR03125/BSI_TR_03125_Anlage_TRANS_V1_3.pdf</md:Specification>
+		<md:Description xml:lang="EN">See Clause 3.7</md:Description>
+		<md:Input>
+			<md:Name>ValidateEvidenceRequest</md:Name>
+			<md:Description xml:lang="EN">See Clause 3.7.1</md:Description>
+		</md:Input>
+		<md:Output>
+			<md:Name>ValidateEvidenceResponse</md:Name>
+			<md:Description xml:lang="EN">See Clause 3.7.2</md:Description>
+		</md:Output>
+	</md:Operation>
+	<md:Policy>
+		<md:PolicyByRef>
+			<md:PolicyID>http://www.bsi.bund.de/DE/tr-esor/prespolicy/default/1.0</md:PolicyID>
+		</md:PolicyByRef>
+	</md:Policy>
+	<!-- One of the three signature policies listed below shall be chosen by the TR-ESOR-product manufacturer or respectively the trust service provider. -->
+	<md:Policy>
+		<md:PolicyByRef>
+			<md:PolicyID>
+				http://www.bsi.bund.de/DE/tr-esor/sigpolicy/verify-xaip
+			</md:PolicyID>
+		</md:PolicyByRef>
+	</md:Policy>
+	<md:Policy>
+		<md:PolicyByRef>
+			<md:PolicyID>
+				http://www.bsi.bund.de/DE/tr-esor/sigpolicy/verify-xaip/chain
+			</md:PolicyID>
+		</md:PolicyByRef>
+	</md:Policy>
+	<md:Policy>
+		<md:PolicyByRef>
+			<md:PolicyID>
+				http://www.bsi.bund.de/DE/tr-esor/sigpolicy/verify-xaip/shell
+			</md:PolicyID>
+		</md:PolicyByRef>
+	</md:Policy>
+	<!-- One of the three timestamp policies listed below shall be chosen by the TR-ESOR-product manufacturer or respectively the trust service provider. -->
+	<md:Policy>
+		<md:PolicyByRef>
+			<md:PolicyID>
+				http://www.bsi.bund.de/DE/tr-esor/sigpolicy/verify-timestamp			
+			</md:PolicyID>
+		</md:PolicyByRef>
+	</md:Policy>
+	<md:Policy>
+		<md:PolicyByRef>
+			<md:PolicyID>
+				http://www.bsi.bund.de/DE/tr-esor/sigpolicy/verify-timestamp/chain				
+			</md:PolicyID>
+		</md:PolicyByRef>
+	</md:Policy>
+	<md:Policy>
+		<md:PolicyByRef>
+			<md:PolicyID>
+				http://www.bsi.bund.de/DE/tr-esor/sigpolicy/verify-timestamp/shell
+			</md:PolicyID>
+		</md:PolicyByRef>
+	</md:Policy>
+	<pres:SchemeIdentifier>http://uri.etsi.org/19512/scheme/pds+pgd+aug+wst+ers</pres:SchemeIdentifier>
+	<pres:ProfileValidityPeriod>
+		<pres:ValidFrom>2022-05-04T00:00:00Z</pres:ValidFrom>
+	</pres:ProfileValidityPeriod>
+	<pres:PreservationStorageModel>WithStorage</pres:PreservationStorageModel>
+	<pres:PreservationGoal>http://uri.etsi.org/19512/goal/pds</pres:PreservationGoal>
+	<pres:PreservationGoal>http://uri.etsi.org/19512/goal/pgd</pres:PreservationGoal>
+	<pres:PreservationGoal>http://uri.etsi.org/19512/goal/aug</pres:PreservationGoal>
+	<pres:EvidenceFormat>
+		<md:FormatID>urn:ietf:rfc:4998</md:FormatID>
+		<md:Specification>https://ietf.org/rfc/rfc4998.txt</md:Specification>
+	</pres:EvidenceFormat>
+</pres:Profile>

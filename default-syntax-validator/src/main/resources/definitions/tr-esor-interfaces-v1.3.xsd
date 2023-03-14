@@ -1,0 +1,313 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:tr="http://www.bsi.bund.de/tr-esor/api/1.3" xmlns:xaip="http://www.bsi.bund.de/tr-esor/xaip" xmlns:ers="urn:ietf:params:xml:ns:ers" xmlns:ec="http://www.bsi.bund.de/ecard/api/1.1" xmlns:dss="urn:oasis:names:tc:dss:1.0:core:schema" xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" xmlns:xmime="http://www.w3.org/2005/05/xmlmime" xmlns:pres="http://uri.etsi.org/19512/v1.1.2#" xmlns:asic="http://uri.etsi.org/02918/v1.2.1#" targetNamespace="http://www.bsi.bund.de/tr-esor/api/1.3" elementFormDefault="qualified" attributeFormDefault="unqualified" version="1.3.0">
+	<!-- ======================================= -->
+	<!-- Version 1.3.0 vom 14.03.2022 -->
+	<!-- ======================================= -->
+	<import namespace="http://www.bsi.bund.de/tr-esor/xaip" schemaLocation="tr-esor-xaip-v1.3.xsd"/>
+	<import namespace="urn:oasis:names:tc:dss:1.0:core:schema" schemaLocation="./deps/oasis-dss-core-schema-v1.0-os.xsd"/>
+	<import namespace="urn:ietf:params:xml:ns:ers" schemaLocation="./deps/xml-ers-rfc6283.xsd"/>
+	<import namespace="http://www.bsi.bund.de/ecard/api/1.1" schemaLocation="./deps/eCard.xsd"/>
+	<import namespace="urn:oasis:names:tc:SAML:2.0:assertion" schemaLocation="./deps/saml-schema-assertion-2.0.xsd"/>
+	<import namespace="http://www.w3.org/2005/05/xmlmime" schemaLocation="./deps/xmlmime.xsd"/>
+	<import namespace="http://uri.etsi.org/19512/v1.1.2#" schemaLocation="19512-Preservation-API_V.1.1.2.xsd"/>
+	<import namespace="http://uri.etsi.org/02918/v1.2.1#" schemaLocation="./deps/en_31916201v010101.xsd"/>
+	<!-- =================================== -->
+	<!-- Uebergreifende Definitionen -->
+	<!-- =================================== -->
+	<complexType name="RequestType">
+		<complexContent>
+			<restriction base="dss:RequestBaseType">
+				<sequence>
+					<element ref="dss:OptionalInputs" minOccurs="0"/>
+				</sequence>
+			</restriction>
+		</complexContent>
+	</complexType>
+	<complexType name="ResponseType">
+		<complexContent>
+			<restriction base="dss:ResponseBaseType">
+				<sequence>
+					<element ref="dss:Result"/>
+					<element ref="dss:OptionalOutputs" minOccurs="0"/>
+				</sequence>
+			</restriction>
+		</complexContent>
+	</complexType>
+	<element name="AOID" type="string"/>
+	<element name="VerifyUnderSignaturePolicy" type="anyURI"/>
+	<element name="XPathFilter" type="string"/>
+	<!-- ================================ -->
+	<!-- RetrieveInfo -->
+	<!-- ================================ -->
+	<element name="RetrieveInfoRequest">
+		<complexType>
+			<complexContent>
+				<extension base="tr:RequestType">
+					<sequence>
+						<element name="ProfileIdentifier" type="anyURI" minOccurs="0"/>
+						<element name="Status" type="pres:StatusType" minOccurs="0"/>
+					</sequence>
+				</extension>
+			</complexContent>
+		</complexType>
+	</element>
+	<element name="RetrieveInfoResponse">
+		<complexType>
+			<complexContent>
+				<extension base="tr:ResponseType">
+					<sequence>
+						<element ref="pres:Profile" minOccurs="0" maxOccurs="unbounded"/>
+					</sequence>
+				</extension>
+			</complexContent>
+		</complexType>
+	</element>
+	<!-- ================================ -->
+	<!-- ArchiveSubmission -->
+	<!-- ================================ -->
+	<complexType name="ArchiveDataType" xmime:expectedContentTypes="*/*">
+		<simpleContent>
+			<extension base="base64Binary">
+				<attribute name="Type" type="anyURI" use="required"/>
+				<attribute name="archiveDataID" type="ID" use="required"/>
+				<attribute name="MimeType" type="string" use="optional"/>
+				<attribute name="relatedObjects" type="IDREFS" use="optional"/>
+			</extension>
+		</simpleContent>
+	</complexType>
+	<element name="ImportEvidence" type="tr:ImportEvidenceType"/>
+	<complexType name="ImportEvidenceType">
+		<choice>
+			<element ref="xaip:evidenceRecord" maxOccurs="unbounded"/>
+			<element name="CredentialID" type="string" maxOccurs="unbounded"/>
+		</choice>
+	</complexType>
+	<element name="ArchiveSubmissionRequest">
+		<complexType>
+			<complexContent>
+				<extension base="tr:RequestType">
+					<choice>
+						<element ref="xaip:XAIP"/>
+						<element name="ArchiveData" type="tr:ArchiveDataType" maxOccurs="unbounded"/>
+					</choice>
+				</extension>
+			</complexContent>
+		</complexType>
+	</element>
+	<element name="ArchiveSubmissionResponse">
+		<complexType>
+			<complexContent>
+				<extension base="tr:ResponseType">
+					<sequence>
+						<element name="AOID" type="string" minOccurs="0"/>
+					</sequence>
+				</extension>
+			</complexContent>
+		</complexType>
+	</element>
+	<!-- ========================== -->
+	<!-- ArchiveUpdate -->
+	<!-- ========================== -->
+	<element name="ArchiveUpdateRequest">
+		<complexType>
+			<complexContent>
+				<extension base="tr:RequestType">
+					<sequence>
+						<element ref="xaip:DXAIP"/>
+					</sequence>
+				</extension>
+			</complexContent>
+		</complexType>
+	</element>
+	<element name="ArchiveUpdateResponse">
+		<complexType>
+			<complexContent>
+				<extension base="tr:ResponseType">
+					<sequence>
+						<element name="VersionID" type="string" minOccurs="0"/>
+					</sequence>
+				</extension>
+			</complexContent>
+		</complexType>
+	</element>
+	<!-- ================================ -->
+	<!-- ArchiveRetrieval -->
+	<!-- ================================ -->
+	<element name="ArchiveRetrievalRequest">
+		<complexType>
+			<complexContent>
+				<extension base="tr:RequestType">
+					<sequence>
+						<element name="AOID" type="string"/>
+						<element name="VersionID" type="string" minOccurs="0" maxOccurs="unbounded"/>
+					</sequence>
+				</extension>
+			</complexContent>
+		</complexType>
+	</element>
+	<element name="IncludeERS" type="anyURI"/>
+	<element name="ArchiveRetrievalResponse">
+		<complexType>
+			<complexContent>
+				<extension base="tr:ResponseType">
+					<sequence>
+						<element ref="xaip:XAIP" minOccurs="0"/>
+					</sequence>
+				</extension>
+			</complexContent>
+		</complexType>
+	</element>
+	<!-- ================================ -->
+	<!-- ArchiveEvidence -->
+	<!-- ================================ -->
+	<element name="ArchiveEvidenceRequest">
+		<complexType>
+			<complexContent>
+				<extension base="tr:RequestType">
+					<sequence>
+						<element name="AOID" type="string"/>
+						<element name="VersionID" type="string" minOccurs="0" maxOccurs="unbounded"/>
+					</sequence>
+				</extension>
+			</complexContent>
+		</complexType>
+	</element>
+	<element name="ERSFormat" type="anyURI"/>
+	<element name="ArchiveEvidenceResponse">
+		<complexType>
+			<complexContent>
+				<extension base="tr:ResponseType">
+					<sequence>
+						<element ref="xaip:evidenceRecord" minOccurs="0" maxOccurs="unbounded"/>
+					</sequence>
+				</extension>
+			</complexContent>
+		</complexType>
+	</element>
+	<!-- ================================ -->
+	<!-- ArchiveDeletion -->
+	<!-- ================================ -->
+	<element name="ArchiveDeletionRequest">
+		<complexType>
+			<complexContent>
+				<extension base="tr:RequestType">
+					<sequence>
+						<element name="AOID" type="string"/>
+					</sequence>
+				</extension>
+			</complexContent>
+		</complexType>
+	</element>
+	<element name="ReasonOfDeletion">
+		<complexType>
+			<sequence>
+				<element name="RequestorName" type="saml:NameIDType"/>
+				<element name="RequestInfo" type="string"/>
+			</sequence>
+		</complexType>
+	</element>
+	<element name="ArchiveDeletionResponse" type="tr:ResponseType"/>
+	<!-- ========================== -->
+	<!-- ArchiveData -->
+	<!-- ========================== -->
+	<element name="ArchiveDataRequest">
+		<complexType>
+			<complexContent>
+				<extension base="tr:RequestType">
+					<sequence>
+						<element name="AOID" type="string"/>
+						<element ref="tr:DataLocation" maxOccurs="unbounded"/>
+					</sequence>
+				</extension>
+			</complexContent>
+		</complexType>
+	</element>
+	<element name="DataLocation">
+		<complexType>
+			<complexContent>
+				<extension base="anyType">
+					<attribute name="Type" type="anyURI"/>
+				</extension>
+			</complexContent>
+		</complexType>
+	</element>
+	<element name="ArchiveDataResponse">
+		<complexType>
+			<complexContent>
+				<extension base="tr:ResponseType">
+					<sequence>
+						<element name="XAIPData" maxOccurs="unbounded">
+							<complexType>
+								<sequence>
+									<element ref="dss:Result"/>
+									<element ref="tr:DataLocation"/>
+									<element name="Value" type="anyType" minOccurs="0"/>
+								</sequence>
+							</complexType>
+						</element>
+					</sequence>
+				</extension>
+			</complexContent>
+		</complexType>
+	</element>
+	<!-- ========================== -->
+	<!-- ArchiveTrace -->
+	<!-- ========================== -->
+	<element name="ArchiveTraceRequest">
+		<complexType>
+			<complexContent>
+				<extension base="tr:RequestType">
+					<sequence>
+						<element ref="tr:AOID"/>
+					</sequence>
+				</extension>
+			</complexContent>
+		</complexType>
+	</element>
+	<element name="ArchiveTraceResponse">
+		<complexType>
+			<complexContent>
+				<extension base="tr:ResponseType">
+					<sequence>
+						<element ref="pres:Trace"/>
+					</sequence>
+				</extension>
+			</complexContent>
+		</complexType>
+	</element>
+	<!-- ========================== -->
+	<!-- Upload -->
+	<!-- ========================== -->
+	<element name="UploadResponse">
+		<complexType>
+			<complexContent>
+				<extension base="tr:ResponseType">
+					<sequence>
+						<element ref="asic:DataObjectReference" minOccurs="0" maxOccurs="unbounded"/>
+					</sequence>
+				</extension>
+			</complexContent>
+		</complexType>
+	</element>
+	<!-- ========================== -->
+	<!-- Download -->
+	<!-- ========================== -->
+	<element name="DownloadRequest">
+		<complexType>
+			<complexContent>
+				<extension base="tr:RequestType">
+					<sequence>
+						<element ref="asic:DataObjectReference" maxOccurs="unbounded"/>
+					</sequence>
+				</extension>
+			</complexContent>
+		</complexType>
+	</element>
+	<element name="DownloadResponse">
+		<complexType>
+			<complexContent>
+				<extension base="tr:ResponseType"/>
+			</complexContent>
+		</complexType>
+	</element>
+</schema>
