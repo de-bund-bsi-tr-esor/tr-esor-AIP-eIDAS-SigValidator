@@ -9,3 +9,6 @@
 .idea/*
 *.iml
 .swp
+/invalid.conf
+/local.conf
+/test.sh
