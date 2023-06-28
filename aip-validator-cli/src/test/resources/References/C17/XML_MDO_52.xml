@@ -1,0 +1,6 @@
+<ns1:TestMetadata xmlns:ns1="http://www.bsi.bund.de/tr-esor/xaip/metadata">
+	<ns1:MetadataItem>
+		<ns1:Name>Die Bezeichnung dieser Metadaten</ns1:Name>
+		<ns1:Value>Der Wert für die Testzwecke</ns1:Value>
+	</ns1:MetadataItem>
+</ns1:TestMetadata>
