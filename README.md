@@ -342,7 +342,7 @@ e-mail: tresor@bsi.bund.de
 and
 
 **procilon IT-Logistics GmbH**\
-Leipziger Straße 110\
-04425 Taucha bei Leipzig, Germany\
+Nikolaistraße 12-14\
+04109 Leipzig, Germany\
 phone: +49 34298 4878 31\
 e-mail: anfrage@procilon.de
