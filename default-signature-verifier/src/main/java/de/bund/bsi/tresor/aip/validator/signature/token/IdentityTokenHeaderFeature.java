@@ -21,8 +21,8 @@
  */
 package de.bund.bsi.tresor.aip.validator.signature.token;
 
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
+import jakarta.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBException;
 import javax.xml.namespace.QName;
 
 import org.apache.cxf.Bus;

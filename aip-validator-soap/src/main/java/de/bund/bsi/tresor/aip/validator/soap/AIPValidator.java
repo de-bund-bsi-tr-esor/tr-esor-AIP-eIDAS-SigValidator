@@ -31,13 +31,13 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
 
-import javax.jws.WebService;
-import javax.xml.bind.JAXB;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
+import jakarta.jws.WebService;
+import jakarta.xml.bind.JAXB;
+import jakarta.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBException;
 import javax.xml.namespace.QName;
 import javax.xml.transform.dom.DOMSource;
-import javax.xml.ws.soap.MTOM;
+import jakarta.xml.ws.soap.MTOM;
 
 import org.apache.cxf.annotations.SchemaValidation;
 import org.w3c.dom.Node;

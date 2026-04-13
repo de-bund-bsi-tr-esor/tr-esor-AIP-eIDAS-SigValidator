@@ -15,8 +15,8 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Optional;
 
-import javax.xml.bind.JAXB;
-import javax.xml.bind.JAXBException;
+import jakarta.xml.bind.JAXB;
+import jakarta.xml.bind.JAXBException;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.BeforeEach;

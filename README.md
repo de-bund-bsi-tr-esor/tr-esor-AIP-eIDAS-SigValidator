@@ -43,14 +43,14 @@ java -jar aip-validator-cli/target/aip-validator-cli.jar -v -c default.conf -i ~
 
 # SOAP Server
 # Mac/Linux
-java -cp "aip-validator-soap/target/aip-validator-soap-1.1.0-2.jar:aip-validator-soap/target/dependency/*" de.bund.bsi.tresor.aip.validator.soap.Server -v -Mvalidator.schemaDir=default-syntax-validator/src/main/resources/definitions -Mverifier.wsdlUrl="http://host:port/VerificationService/eCard\?wsdl"
+java -cp "aip-validator-soap/target/aip-validator-soap-1.1.0-2.jar:aip-validator-soap/target/dependency/*" de.bund.bsi.tresor.aip.validator.soap.Server -v -Mvalidator.schemaDir=default-syntax-validator/src/main/resources/definitions -Mverifier.wsdlUrl="http://host:port/VerificationService/eCard?wsdl"
 
 # Windows
-java -cp "aip-validator-soap/target/aip-validator-soap-1.1.0-2.jar;aip-validator-soap/target/dependency/*" de.bund.bsi.tresor.aip.validator.soap.Server -v -Mvalidator.schemaDir=default-syntax-validator/src/main/resources/definitions -Mverifier.wsdlUrl="https://host:port/VerificationService/eCard\?wsdl"
+java -cp "aip-validator-soap/target/aip-validator-soap-1.1.0-2.jar;aip-validator-soap/target/dependency/*" de.bund.bsi.tresor.aip.validator.soap.Server -v -Mvalidator.schemaDir=default-syntax-validator/src/main/resources/definitions -Mverifier.wsdlUrl="https://host:port/VerificationService/eCard?wsdl"
 ```
 
 ## Prerequisites
-- java 11 (>= 11.0.10)
+- java 17 (>= 17.0.17)
 
 	- for executing the CLI jar
 - maven
@@ -62,9 +62,9 @@ java -cp "aip-validator-soap/target/aip-validator-soap-1.1.0-2.jar;aip-validator
 	- to pull this project, alternatively the project can be downloaded manually via git web
 
 ## Installation
-- **Step 1:** Install Java 11
+- **Step 1:** Install Java 17
 
-	- OpenJDK: https://openjdk.java.net/install/
+	- OpenJDK: https://www.azul.com/downloads/?package=jdk#zulu
 
 - **Step 2:** Install Maven
 
@@ -307,9 +307,9 @@ Any known issues about the validator are being explained at the bottom of this p
 
 **Configurations:**
 
-| ConfigName        | Example                                                   | Description                          |
-|-------------------|-----------------------------------------------------------|--------------------------------------|
-| *verifier.wsdlUrl | https://host:port/VerificationService/eCard?wsdl          | url of the verification service wsdl |
+| ConfigName        | Example                                                | Description                          |
+|-------------------|--------------------------------------------------------|--------------------------------------|
+| *verifier.wsdlUrl | https://\<HOST>:\<PORT>/VerificationService/eCard?wsdl | url of the verification service wsdl |
 
 \* - required configuration
 

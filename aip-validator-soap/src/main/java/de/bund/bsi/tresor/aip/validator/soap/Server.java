@@ -29,7 +29,7 @@ import java.nio.file.Files;
 import java.util.Map;
 import java.util.Properties;
 
-import javax.xml.ws.Endpoint;
+import jakarta.xml.ws.Endpoint;
 
 import com.beust.jcommander.JCommander;
 
