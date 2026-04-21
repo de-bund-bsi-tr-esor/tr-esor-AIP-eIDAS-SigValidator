@@ -16,10 +16,8 @@
  -->
 	<import namespace="http://uri.etsi.org/01903/v1.3.2#" schemaLocation="XAdES01903v132-201601.xsd"/>
 	<import namespace="urn:iso:std:iso-iec:24727:tech:schema" schemaLocation="ISO24727-Protocols.xsd"/>
-	<!-- not necessary
-	<import namespace="urn:iso:std:iso-iec:24727:tech:schema"
-		schemaLocation="ISO24727-3.xsd" />
--->
+	<import namespace="urn:iso:std:iso-iec:24727:tech:schema" schemaLocation="ISO24727-3.xsd"/>
+
 	<import namespace="urn:oasis:names:tc:dss:1.0:core:schema" schemaLocation="oasis-dss-core-schema-v1.0-os.xsd"/>
 	<import namespace="urn:oasis:names:tc:dss-x:1.0:profiles:verificationreport:schema#" schemaLocation="oasis-dssx-1.0-profiles-verification-report-cs1.xsd"/>
 	<import namespace="http://www.setcce.org/schemas/ers" schemaLocation="xmlers-schema-draft-v0.3.xsd"/>
