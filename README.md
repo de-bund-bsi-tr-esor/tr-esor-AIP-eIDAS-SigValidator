@@ -10,6 +10,7 @@ Supported signature formats are:
 - asic
 - asic-aip
 - cades
+- jades
 - pades
 - xades
 

@@ -25,6 +25,7 @@
 		<jar.plugin.version>3.2.2</jar.plugin.version>
 		<dss.lib.version>6.0</dss.lib.version>
 		<cxf.version>4.2.0</cxf.version>
+		<jackson.version>2.17.2</jackson.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
@@ -136,6 +137,11 @@
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-asic-xades</artifactId>
+				<version>${dss.lib.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-jades</artifactId>
 				<version>${dss.lib.version}</version>
 			</dependency>
 			<dependency>

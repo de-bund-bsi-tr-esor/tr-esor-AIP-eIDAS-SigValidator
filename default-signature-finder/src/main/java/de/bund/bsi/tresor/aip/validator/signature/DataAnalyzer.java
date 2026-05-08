@@ -28,10 +28,7 @@ import java.util.function.Supplier;
 import de.bund.bsi.tr_esor.xaip.DataObjectType;
 import de.bund.bsi.tr_esor.xaip.MetaDataObjectType;
 import de.bund.bsi.tresor.aip.validator.api.control.AIPUtil;
-import de.bund.bsi.tresor.aip.validator.signature.checker.ASiCChecker;
-import de.bund.bsi.tresor.aip.validator.signature.checker.CAdESChecker;
-import de.bund.bsi.tresor.aip.validator.signature.checker.PAdESChecker;
-import de.bund.bsi.tresor.aip.validator.signature.checker.XAdESChecker;
+import de.bund.bsi.tresor.aip.validator.signature.checker.*;
 import de.bund.bsi.tresor.aip.validator.signature.entity.FinderResult;
 import de.bund.bsi.tresor.aip.validator.signature.entity.SignaturePresence;
 
@@ -129,8 +126,9 @@ public class DataAnalyzer
         boolean isPAdES = PAdESChecker.INSTANCE.isPAdES( data );
         boolean isCAdES = CAdESChecker.INSTANCE.isCAdES( data );
         boolean isASiC = ASiCChecker.INSTANCE.isASiC( data );
+        boolean isJAdES = JAdESChecker.INSTANCE.isJAdES( data );
         
-        SignaturePresence presence = SignaturePresence.fromBoolean( isPAdES || isCAdES || isASiC );
+        SignaturePresence presence = SignaturePresence.fromBoolean( isPAdES || isCAdES || isASiC || isJAdES );
         
         return new FinderResult<T>( dataObject, presence, new ByteArrayInputStream( data ) );
     }
@@ -163,8 +161,9 @@ public class DataAnalyzer
                     boolean isCAdES = CAdESChecker.INSTANCE.isCAdES( d );
                     boolean isXAdES = XAdESChecker.INSTANCE.isXAdES( d );
                     boolean isASiC = ASiCChecker.INSTANCE.isASiC( d );
+                    boolean isJAdES = JAdESChecker.INSTANCE.isJAdES( d );
                     
-                    SignaturePresence presence = SignaturePresence.fromBoolean( isPAdES || isCAdES || isASiC || isXAdES );
+                    SignaturePresence presence = SignaturePresence.fromBoolean( isPAdES || isCAdES || isASiC || isXAdES || isJAdES );
                     
                     return new FinderResult<T>( dataObject, presence, new ByteArrayInputStream( data ) );
                 } )
