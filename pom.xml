@@ -103,6 +103,11 @@
 			</dependency>
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-jades</artifactId>
+				<version>${dss.lib.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-utils-apache-commons</artifactId>
 				<version>${dss.lib.version}</version>
 			</dependency>
