@@ -25,6 +25,7 @@
 		<jar.plugin.version>3.2.2</jar.plugin.version>
 		<dss.lib.version>6.0</dss.lib.version>
 		<cxf.version>4.2.0</cxf.version>
+		<bc.version>1.84</bc.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
