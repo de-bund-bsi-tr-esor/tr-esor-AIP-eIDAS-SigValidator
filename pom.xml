@@ -20,8 +20,8 @@
 	</modules>
 
 	<properties>
-		<maven.compiler.source>17</maven.compiler.source>
-		<maven.compiler.target>17</maven.compiler.target>
+		<maven.compiler.source>21</maven.compiler.source>
+		<maven.compiler.target>21</maven.compiler.target>
 		<jar.plugin.version>3.2.2</jar.plugin.version>
 		<dss.lib.version>6.0</dss.lib.version>
 		<cxf.version>4.2.0</cxf.version>
