@@ -1,0 +1,8 @@
+{
+  "protected": "eyJhbGciOiJSUzI1NiJ9",
+  "payload": "ZHVtbXk",
+  "signature": "ZHVtbXk",
+  "unprotected": {
+    "etsiU": []
+  }
+}
