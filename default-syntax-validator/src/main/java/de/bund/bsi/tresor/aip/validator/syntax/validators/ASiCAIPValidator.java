@@ -25,8 +25,8 @@ import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import javax.xml.bind.DataBindingException;
-import javax.xml.bind.JAXB;
+import jakarta.xml.bind.DataBindingException;
+import jakarta.xml.bind.JAXB;
 import javax.xml.transform.dom.DOMSource;
 
 import org.apache.commons.io.FileUtils;

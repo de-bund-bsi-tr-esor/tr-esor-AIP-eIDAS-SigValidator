@@ -26,11 +26,10 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.cos.COSDocument;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.cos.COSObject;
-import org.apache.pdfbox.io.RandomAccessBuffer;
-import org.apache.pdfbox.pdfparser.PDFParser;
 import org.apache.pdfbox.pdmodel.PDDocument;
 
 import de.bund.bsi.tresor.aip.validator.api.control.ModuleLogger;
@@ -90,13 +89,11 @@ public enum PAdESChecker
         boolean isPAdES = false;
         try
         {
-            PDFParser parser = new PDFParser( new RandomAccessBuffer( data ) );
-            parser.parse();
             
-            try ( PDDocument pdf = parser.getPDDocument() )
+            try ( PDDocument pdf = Loader.loadPDF(data) )
             {
                 COSDocument document = pdf.getDocument();
-                List<COSObject> dssObjects = document.getObjectsByType( "DSS" );
+                List<COSObject> dssObjects = document.getObjectsByType( COSName.DSS );
                 List<COSObject> sigObjects = document.getObjectsByType( COSName.SIG );
                 
                 isPAdES = !dssObjects.isEmpty() || !sigObjects.isEmpty();

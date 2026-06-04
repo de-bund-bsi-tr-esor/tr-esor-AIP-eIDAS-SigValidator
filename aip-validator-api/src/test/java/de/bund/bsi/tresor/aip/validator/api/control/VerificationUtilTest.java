@@ -28,9 +28,9 @@ import static org.hamcrest.Matchers.is;
 import java.io.IOException;
 import java.io.InputStream;
 
-import javax.activation.DataHandler;
-import javax.activation.DataSource;
-import javax.activation.FileDataSource;
+import jakarta.activation.DataHandler;
+import jakarta.activation.DataSource;
+import jakarta.activation.FileDataSource;
 
 import org.bouncycastle.util.encoders.Hex;
 import org.junit.jupiter.api.DisplayName;

@@ -51,7 +51,7 @@ java -cp "aip-validator-soap/target/aip-validator-soap-1.1.0-2.jar;aip-validator
 ```
 
 ## Prerequisites
-- java 11 (>= 11.0.10)
+- java 21 (>= 21.0.11)
 
 	- for executing the CLI jar
 - maven
@@ -63,9 +63,9 @@ java -cp "aip-validator-soap/target/aip-validator-soap-1.1.0-2.jar;aip-validator
 	- to pull this project, alternatively the project can be downloaded manually via git web
 
 ## Installation
-- **Step 1:** Install Java 11
+- **Step 1:** Install Java 21
 
-	- OpenJDK: https://openjdk.java.net/install/
+	- OpenJDK: https://www.azul.com/downloads/?package=jdk#zulu
 
 - **Step 2:** Install Maven
 
@@ -308,9 +308,9 @@ Any known issues about the validator are being explained at the bottom of this p
 
 **Configurations:**
 
-| ConfigName        | Example                                                   | Description                          |
-|-------------------|-----------------------------------------------------------|--------------------------------------|
-| *verifier.wsdlUrl | https://host:port/VerificationService/eCard?wsdl          | url of the verification service wsdl |
+| ConfigName        | Example                                                | Description                          |
+|-------------------|--------------------------------------------------------|--------------------------------------|
+| *verifier.wsdlUrl | https://\<HOST>:\<PORT>/VerificationService/eCard?wsdl | url of the verification service wsdl |
 
 \* - required configuration
 
@@ -330,6 +330,8 @@ The following limitations apply:
 - Extensions are not evaluated due to their dependency to specific profiles
 - The content of Metadata sections is not evaluated with the exception of their well-formedness
 - The reference implementation of the VerificationService (see test environment) might return an unsupported signature result in case of an invalid ASiC container due to some limitations in the dss-lib
+- Negative validation results may occur due to expired cryptographic algorithms.
+	See section "Interpretation of Validation Results" for details.
 
 The following issues are known:
 - **[XVAL-1]** When using the paramter `-o` the provided argument has to be a file which is not in the current directory
@@ -340,6 +342,29 @@ The following issues are known:
 - Test material can be found in `aip-validator-cli/src/test/resources`
 	- Table 7/8 from annex C of the specification matches `aip-validator-cli/src/test/resources/AIP`
 	- Table 9 from annex C of the specification matches `aip-validator-cli/src/test/resources/ASiC-AIP`
+
+### Interpretation of Validation Results ###
+
+The reference implementation of the VerificationService applies a strict policy regarding the validity of cryptographic algorithms.
+
+Negative validation results may occur if a cryptographic algorithm used in a signature was no longer valid at the time the signature was created, e.g.:
+
+```
+Creation time after algorithm validity period. Creation time: Tue May 05 11:17:21 CEST 2026 Algorithm valid until: Mon Jan 01 00:00:00 CET 2024
+
+```
+#### Meaning ####
+- The validator strictly checks the validity of algorithms according to the defined policy.
+- If a signature is created **after the algorithm’s validity period has expired**, it is considered **invalid**.
+- This applies even if the signature itself is technically correct.
+
+#### Classification ####
+This behavior is **intentional and not a system error**.
+
+It is specific to the policy enforced by the reference verification service. Other implementations of a VerificationService may apply different validation policies and therefore may produce different results.
+
+Adjustments to the algorithm catalog are technically possible but do not change the fundamental evaluation:  
+signatures created with algorithms that are no longer valid will still result in negative validation outcomes under this policy.
 
 ## License ##
 
