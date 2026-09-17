@@ -8,25 +8,25 @@ import java.util.Optional;
 /**
  * Types of electronic attestation of attributes, distinguished by the SD-JWT-VC {@code category} claim.
  */
-public enum EAType
+public enum EAAType
 {
     EAA( null, false, false ),
-    PUBEA( "urn:etsi:esi:eaa:eu:pub", true, true ),
+    PUBEAA( "urn:etsi:esi:eaa:eu:pub", true, true ),
     QEAA( "urn:etsi:esi:eaa:eu:qualified", true, true );
-    
+
     private Optional<String> category;
     private boolean          requiresIssuingAuthority;
     private boolean          requiresIssuingCountry;
-    
-    EAType( String category, boolean requiresIssuingAuthority, boolean requiresIssuingCountry )
+
+    EAAType( String category, boolean requiresIssuingAuthority, boolean requiresIssuingCountry )
     {
         this.category = Optional.ofNullable( category );
         this.requiresIssuingAuthority = requiresIssuingAuthority;
         this.requiresIssuingCountry = requiresIssuingCountry;
     }
-    
+
     /**
-     * Checking if the provided claims match this EA type's expected {@code category} and required issuer claims
+     * Checking if the provided claims match this EAA type's expected {@code category} and required issuer claims
      *
      * @param claims
      *            the parsed JWT claims

@@ -3,7 +3,7 @@ package de.bund.bsi.tresor.aip.validator.signature.checker;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import de.bund.bsi.tresor.aip.validator.api.control.ModuleLogger;
-import de.bund.bsi.tresor.aip.validator.signature.entity.EAType;
+import de.bund.bsi.tresor.aip.validator.signature.entity.EAAType;
 
 import java.text.ParseException;
 import java.util.Optional;
@@ -11,9 +11,9 @@ import java.util.Optional;
 import static java.util.Arrays.stream;
 
 /**
- * Idenifies QEAA, EAA and pubEA
+ * Idenifies QEAA, EAA and PubEAA
  */
-public enum EAChecker
+public enum EAAChecker
 {
     INSTANCE;
 
@@ -22,38 +22,38 @@ public enum EAChecker
      *
      * @param data
      *            the data to check
-     * @return true if the data is an EA type
+     * @return true if the data is an EAA type
      */
-    public boolean isEAType( byte[] data )
+    public boolean isEAAType( byte[] data )
     {
-        boolean isEA = false;
+        boolean isEAA = false;
         try
         {
             SignedJWT jwt = SignedJWT.parse( new String( data ) );
             JWTClaimsSet claims = jwt.getJWTClaimsSet();
-            
-            Optional<EAType> eaType = stream( EAType.values() )
+
+            Optional<EAAType> eaaType = stream( EAAType.values() )
                     .filter( type -> type.isType( claims ) )
                     .findAny();
-            
-            if ( eaType.isPresent() && isSDJWTVC( claims ) )
+
+            if ( eaaType.isPresent() && isSDJWTVC( claims ) )
             {
-                isEA = true;
-                ModuleLogger.verbose( "found ea-type " + eaType.get() );
+                isEAA = true;
+                ModuleLogger.verbose( "found eaa-type " + eaaType.get() );
             }
         }
         catch ( ParseException e )
         {
-            // not an ea type
-            // ModuleLogger.verbose( "data is no ea-type", e );
+            // not an eaa type
+            // ModuleLogger.verbose( "data is no eaa-type", e );
         }
-        
-        if ( !isEA )
+
+        if ( !isEAA )
         {
-            ModuleLogger.verbose( "data is no ea-type" );
+            ModuleLogger.verbose( "data is no eaa-type" );
         }
-        
-        return isEA;
+
+        return isEAA;
     }
     
     // checking if all sd-jwt vc requirements are met

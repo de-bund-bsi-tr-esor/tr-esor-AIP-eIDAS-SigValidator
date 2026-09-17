@@ -127,9 +127,9 @@ public class DataAnalyzer
         boolean isCAdES = CAdESChecker.INSTANCE.isCAdES( data );
         boolean isASiC = ASiCChecker.INSTANCE.isASiC( data );
         boolean isJades = JAdESChecker.INSTANCE.isJAdES( data );
-        boolean isEA = EAChecker.INSTANCE.isEAType( data );
+        boolean isEAA = EAAChecker.INSTANCE.isEAAType( data );
 
-        SignaturePresence presence = SignaturePresence.fromBoolean( isPAdES || isCAdES || isASiC || isJades || isEA );
+        SignaturePresence presence = SignaturePresence.fromBoolean( isPAdES || isCAdES || isASiC || isJades || isEAA );
         
         return new FinderResult<T>( dataObject, presence, new ByteArrayInputStream( data ) );
     }
