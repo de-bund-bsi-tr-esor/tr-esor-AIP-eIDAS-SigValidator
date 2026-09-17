@@ -5,6 +5,9 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.Optional;
 
+/**
+ * Types of electronic attestation of attributes, distinguished by the SD-JWT-VC {@code category} claim.
+ */
 public enum EAType
 {
     EAA( null, false, false ),
@@ -22,6 +25,13 @@ public enum EAType
         this.requiresIssuingCountry = requiresIssuingCountry;
     }
     
+    /**
+     * Checking if the provided claims match this EA type's expected {@code category} and required issuer claims
+     *
+     * @param claims
+     *            the parsed JWT claims
+     * @return true if the claims match this type
+     */
     public boolean isType( JWTClaimsSet claims )
     {
         try

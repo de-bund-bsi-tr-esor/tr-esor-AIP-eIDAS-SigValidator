@@ -16,7 +16,14 @@ import static java.util.Arrays.stream;
 public enum EAChecker
 {
     INSTANCE;
-    
+
+    /**
+     * Checking if the provided data is an electronic attestation of attributes (EAA, QEAA or PubEAA) in SD-JWT-VC representation
+     *
+     * @param data
+     *            the data to check
+     * @return true if the data is an EA type
+     */
     public boolean isEAType( byte[] data )
     {
         boolean isEA = false;
