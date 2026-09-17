@@ -1,24 +1,27 @@
 package de.bund.bsi.tresor.aip.validator.signature.checker;
 
-import com.nimbusds.jwt.JWTClaimsSet;
-import com.nimbusds.jwt.SignedJWT;
+import java.util.Arrays;
+
 import de.bund.bsi.tresor.aip.validator.api.control.ModuleLogger;
-import de.bund.bsi.tresor.aip.validator.signature.entity.EAAType;
-
-import java.text.ParseException;
-import java.util.Optional;
-
-import static java.util.Arrays.stream;
+import eu.europa.esig.dss.attestation.common.validation.DefaultAttestationDocumentAnalyzer;
+import eu.europa.esig.dss.enumerations.EAACategory;
+import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimString;
+import eu.europa.esig.dss.spi.attestation.Attestation;
+import eu.europa.esig.dss.spi.attestation.AttestationPayload;
+import eu.europa.esig.dss.spi.validation.analyzer.attestation.AttestationDocumentAnalyzer;
 
 /**
- * Idenifies QEAA, EAA and PubEAA
+ * Idenifies QEAA, EAA and PubEAA in SD-JWT-VC or mdoc/CBOR representation, delegating the parsing and {@code category} claim resolution
+ * to esig-dss (dss-sd-jwt/dss-mdoc, format auto-detected via the {@code AttestationDocumentValidatorFactory} SPI).
  */
 public enum EAAChecker
 {
     INSTANCE;
 
     /**
-     * Checking if the provided data is an electronic attestation of attributes (EAA, QEAA or PubEAA) in SD-JWT-VC representation
+     * Checking if the provided data is an electronic attestation of attributes (EAA, QEAA or PubEAA) in SD-JWT-VC or mdoc/CBOR
+     * representation
      *
      * @param data
      *            the data to check
@@ -29,46 +32,44 @@ public enum EAAChecker
         boolean isEAA = false;
         try
         {
-            SignedJWT jwt = SignedJWT.parse( new String( data ) );
-            JWTClaimsSet claims = jwt.getJWTClaimsSet();
-
-            Optional<EAAType> eaaType = stream( EAAType.values() )
-                    .filter( type -> type.isType( claims ) )
-                    .findAny();
-
-            if ( eaaType.isPresent() && isSDJWTVC( claims ) )
-            {
-                isEAA = true;
-                ModuleLogger.verbose( "found eaa-type " + eaaType.get() );
-            }
+            AttestationDocumentAnalyzer analyzer = DefaultAttestationDocumentAnalyzer.fromDocument( new InMemoryDocument( data ) );
+            isEAA = analyzer.getAttestationPresentation().getAttestations().stream()
+                    .map( Attestation::getPayload )
+                    .anyMatch( this::isElectronicAttestationOfAttributes );
         }
-        catch ( ParseException e )
+        catch ( Exception e )
         {
             // not an eaa type
-            // ModuleLogger.verbose( "data is no eaa-type", e );
         }
 
         if ( !isEAA )
         {
             ModuleLogger.verbose( "data is no eaa-type" );
         }
+        else
+        {
+            ModuleLogger.verbose( "found eaa-type" );
+        }
 
         return isEAA;
     }
-    
-    // checking if all sd-jwt vc requirements are met
-    boolean isSDJWTVC( JWTClaimsSet claims )
+
+    // an EAA has no category claim; a QEAA/PubEAA has one of the two known EAACategory URNs. Any other, spec-deviating category value
+    // is deliberately NOT treated as a match (see PAMP-168 decision against a spec-deviating fallback).
+    boolean isElectronicAttestationOfAttributes( AttestationPayload payload )
     {
-        try
+        if ( payload == null )
         {
-            return Optional.ofNullable( claims.getClaimAsString( "vct" ) ).isPresent();
-        }
-        catch ( Exception e )
-        {
-            // ModuleLogger.verbose( "data is no sd-jwt vc", e );
-            
             return false;
         }
-        
+
+        VerifiedClaimString category = payload.getCategory();
+        if ( category == null || category.isNullOrEmpty() )
+        {
+            return true;
+        }
+
+        String value = category.getValueAsString();
+        return Arrays.stream( EAACategory.values() ).map( EAACategory::getUrn ).anyMatch( value::equals );
     }
 }
