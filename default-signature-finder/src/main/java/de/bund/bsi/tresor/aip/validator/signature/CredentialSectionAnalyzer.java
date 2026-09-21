@@ -37,6 +37,7 @@ import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
 import org.etsi.uri._02918.v1_2.DataObjectReferenceType;
+import org.jose4j.json.JsonUtil;
 
 import de.bund.bsi.tr_esor.xaip.CredentialType;
 import de.bund.bsi.tr_esor.xaip.DataObjectType;
@@ -48,6 +49,7 @@ import de.bund.bsi.tresor.aip.validator.api.control.AIPUtil;
 import de.bund.bsi.tresor.aip.validator.api.control.ModuleLogger;
 import de.bund.bsi.tresor.aip.validator.signature.entity.FinderResult;
 import de.bund.bsi.tresor.aip.validator.signature.entity.SignaturePresence;
+import eu.europa.esig.dss.jades.DSSJsonUtils;
 import oasis.names.tc.dss._1_0.core.schema.Base64Signature;
 import oasis.names.tc.dss._1_0.core.schema.SignatureObject;
 import oasis.names.tc.dss._1_0.core.schema.SignaturePtr;
@@ -225,7 +227,7 @@ public class CredentialSectionAnalyzer
         String disclosureSuffix = tilde >= 0 ? text.substring( tilde ) : "";
 
         String[] segments = jwsPart.split( "\\.", -1 );
-        if ( segments.length != 3 || !segments[1].isEmpty() )
+        if ( segments.length != 3 || !segments[1].isEmpty() || !isJwsHeader( segments[0] ) )
         {
             return Optional.empty();
         }
@@ -234,6 +236,28 @@ public class CredentialSectionAnalyzer
         String reconstructed = segments[0] + "." + encodedPayload + "." + segments[2] + disclosureSuffix;
 
         return Optional.of( reconstructed.getBytes( StandardCharsets.US_ASCII ) );
+    }
+
+    /**
+     * Checking whether a base64url segment decodes to a JWS/JAdES protected header, i.e. a JSON object carrying an {@code alg} claim
+     * (RFC 7515 4.1.1). This distinguishes an actual detached JWS header from an unrelated binary signature (e.g. CAdES/PAdES/XAdES DER)
+     * that merely happens to contain two adjacent {@code '.'} bytes.
+     *
+     * @param headerSegment
+     *            the first compact-serialization segment
+     * @return {@code true} if the segment is a valid JWS protected header
+     */
+    private static boolean isJwsHeader( String headerSegment )
+    {
+        try
+        {
+            Map<String, Object> header = JsonUtil.parseJson( new String( DSSJsonUtils.fromBase64Url( headerSegment ), StandardCharsets.UTF_8 ) );
+            return header.containsKey( "alg" );
+        }
+        catch ( Exception e )
+        {
+            return false;
+        }
     }
 
     static byte[] dataFromURI( String url )

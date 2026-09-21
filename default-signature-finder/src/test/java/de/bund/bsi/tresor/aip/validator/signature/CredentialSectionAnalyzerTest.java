@@ -33,34 +33,37 @@ import org.junit.jupiter.api.Test;
 class CredentialSectionAnalyzerTest
 {
 
+    // base64url("{\"alg\":\"ES256\"}"), a minimal but valid JWS protected header
+    private static final String HEADER = "eyJhbGciOiJFUzI1NiJ9";
+
     @Test
     void shouldSubstitutePayloadIntoDetachedJws()
     {
-        byte[] signature = "header..signature".getBytes( StandardCharsets.US_ASCII );
+        byte[] signature = (HEADER + "..signature").getBytes( StandardCharsets.US_ASCII );
         byte[] payload = "payload".getBytes( StandardCharsets.US_ASCII );
 
         Optional<byte[]> result = CredentialSectionAnalyzer.reconstructDetachedJws( signature, payload );
 
         assertTrue( result.isPresent() );
-        assertEquals( "header.payload.signature", new String( result.get(), StandardCharsets.US_ASCII ) );
+        assertEquals( HEADER + ".payload.signature", new String( result.get(), StandardCharsets.US_ASCII ) );
     }
 
     @Test
     void shouldPreserveDisclosureSuffixWhenSubstitutingPayload()
     {
-        byte[] signature = "header..signature~disclosure1~disclosure2~".getBytes( StandardCharsets.US_ASCII );
+        byte[] signature = (HEADER + "..signature~disclosure1~disclosure2~").getBytes( StandardCharsets.US_ASCII );
         byte[] payload = "payload".getBytes( StandardCharsets.US_ASCII );
 
         Optional<byte[]> result = CredentialSectionAnalyzer.reconstructDetachedJws( signature, payload );
 
         assertTrue( result.isPresent() );
-        assertEquals( "header.payload.signature~disclosure1~disclosure2~", new String( result.get(), StandardCharsets.US_ASCII ) );
+        assertEquals( HEADER + ".payload.signature~disclosure1~disclosure2~", new String( result.get(), StandardCharsets.US_ASCII ) );
     }
 
     @Test
     void shouldNotSubstituteWhenPayloadSegmentIsNotEmpty()
     {
-        byte[] signature = "header.existingPayload.signature".getBytes( StandardCharsets.US_ASCII );
+        byte[] signature = (HEADER + ".existingPayload.signature").getBytes( StandardCharsets.US_ASCII );
         byte[] payload = "payload".getBytes( StandardCharsets.US_ASCII );
 
         Optional<byte[]> result = CredentialSectionAnalyzer.reconstructDetachedJws( signature, payload );
@@ -72,6 +75,19 @@ class CredentialSectionAnalyzerTest
     void shouldNotSubstituteForNonJwsSignatures()
     {
         byte[] signature = { 0x30, (byte) 0x82, 0x01, 0x02 }; // arbitrary DER-like binary, not JWS-shaped
+        byte[] payload = "payload".getBytes( StandardCharsets.US_ASCII );
+
+        Optional<byte[]> result = CredentialSectionAnalyzer.reconstructDetachedJws( signature, payload );
+
+        assertFalse( result.isPresent() );
+    }
+
+    @Test
+    void shouldNotSubstituteWhenFirstSegmentIsNotAValidJwsHeader()
+    {
+        // exactly two adjacent '.' bytes and nothing else, but the leading segment is not base64url-JSON: must not be
+        // mistaken for a detached JWS (regression test for the CAdES/PAdES binary false-positive risk)
+        byte[] signature = "notAHeader..signature".getBytes( StandardCharsets.US_ASCII );
         byte[] payload = "payload".getBytes( StandardCharsets.US_ASCII );
 
         Optional<byte[]> result = CredentialSectionAnalyzer.reconstructDetachedJws( signature, payload );
