@@ -33,8 +33,27 @@ import eu.europa.esig.dss.spi.attestation.AttestationPayload;
 import eu.europa.esig.dss.spi.validation.analyzer.attestation.AttestationDocumentAnalyzer;
 
 /**
- * Idenifies QEAA, EAA and PubEAA in SD-JWT-VC or mdoc/CBOR representation, delegating the parsing and {@code category} claim resolution
+ * Identifies QEAA, EAA and PubEAA in SD-JWT-VC or mdoc/CBOR representation, delegating the parsing and {@code category} claim resolution
  * to esig-dss (dss-sd-jwt/dss-mdoc, format auto-detected via the {@code AttestationDocumentValidatorFactory} SPI).
+ *
+ * <p>
+ * Behaviour inherited from the underlying DSS classification, worth keeping in mind:
+ * </p>
+ * <ul>
+ * <li>every SD-JWT/mdoc structurally recognized by DSS as an attestation is treated as an EAA candidate; the {@code vct}/{@code typ}
+ * claims are not inspected here.</li>
+ * <li>a {@code category} claim that is present but not a string, or that DSS could not resolve, is treated the same as a missing
+ * claim, i.e. as a plain EAA.</li>
+ * <li>a {@code category} claim with an empty string value ({@code ""}) is <em>not</em> treated as missing: DSS'
+ * {@link VerifiedClaimString#isNullOrEmpty()} only checks for {@code null}, so {@code ""} falls through to the URN comparison below,
+ * matches neither known {@link EAACategory}, and the payload is therefore not classified as any EAA type at all - not even a plain
+ * EAA.</li>
+ * <li>a {@code category} value that is a non-empty string but not one of the two defined {@link EAACategory} URNs is treated as
+ * "not an EAA type" here. DSS's own qualification process has a distinct {@code UNKNOWN} outcome for this case; this checker does not
+ * expose that distinction and simply rejects it, which is the intended behaviour for this ticket's detection scope (no
+ * spec-deviating-value fallback).</li>
+ * <li>mdoc/CBOR attestations are only recognized in their raw CBOR form, not base64-encoded.</li>
+ * </ul>
  */
 public enum EAAChecker
 {
