@@ -168,10 +168,9 @@ public class DataAnalyzer
                     boolean isXAdES = XAdESChecker.INSTANCE.isXAdES( d );
                     boolean isASiC = ASiCChecker.INSTANCE.isASiC( d );
                     boolean isJAdES = JAdESChecker.INSTANCE.isJAdES( d );
-                    boolean isEAA = EAAChecker.INSTANCE.isEAAType( d );
-                    
-                    SignaturePresence presence = SignaturePresence.fromBoolean( isPAdES || isCAdES || isASiC || isXAdES || isJAdES || isEAA );
-                    
+
+                    SignaturePresence presence = SignaturePresence.fromBoolean( isPAdES || isCAdES || isASiC || isXAdES || isJAdES );
+
                     return new FinderResult<T>( dataObject, presence, new ByteArrayInputStream( data ) );
                 } )
                 .orElseGet( normalCheck ) : normalCheck.get();
