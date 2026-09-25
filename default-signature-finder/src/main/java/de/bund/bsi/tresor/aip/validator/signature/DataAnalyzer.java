@@ -21,6 +21,10 @@
  */
 package de.bund.bsi.tresor.aip.validator.signature;
 
+import java.io.ByteArrayInputStream;
+import java.util.Optional;
+import java.util.function.Supplier;
+
 import de.bund.bsi.tr_esor.xaip.DataObjectType;
 import de.bund.bsi.tr_esor.xaip.MetaDataObjectType;
 import de.bund.bsi.tresor.aip.validator.api.control.AIPUtil;
@@ -32,10 +36,6 @@ import de.bund.bsi.tresor.aip.validator.signature.checker.PAdESChecker;
 import de.bund.bsi.tresor.aip.validator.signature.checker.XAdESChecker;
 import de.bund.bsi.tresor.aip.validator.signature.entity.FinderResult;
 import de.bund.bsi.tresor.aip.validator.signature.entity.SignaturePresence;
-
-import java.io.ByteArrayInputStream;
-import java.util.Optional;
-import java.util.function.Supplier;
 
 /**
  * This class is exposing methods which are being used to analyze dataObjects
