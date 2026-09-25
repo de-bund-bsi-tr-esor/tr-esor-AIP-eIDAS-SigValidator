@@ -55,9 +55,20 @@
             <artifactId>dss-utils-apache-commons</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.nimbusds</groupId>
-            <artifactId>nimbus-jose-jwt</artifactId>
-            <version>10.9.1</version>
+            <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+            <artifactId>dss-validation</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+            <artifactId>dss-attestation</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+            <artifactId>dss-sd-jwt</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+            <artifactId>dss-mdoc</artifactId>
         </dependency>
         <!-- Test -->
         <dependency>
