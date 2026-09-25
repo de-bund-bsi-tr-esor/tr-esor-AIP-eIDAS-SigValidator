@@ -106,6 +106,54 @@ class EAACheckerTest
     }
 
     @Test
+    void shouldDetectQeaaByLegacyAttestationLegalCategoryClaim() throws Exception
+    {
+        String sdJwtVc = SyntheticSdJwtVcFixtures.buildWithLegacyCategoryClaim( "urn:eudi:eaa:1", "urn:etsi:esi:eaa:eu:qualified" );
+
+        boolean result = eaaChecker.isEAAType( sdJwtVc.getBytes( StandardCharsets.UTF_8 ) );
+
+        assertTrue( result, "An SD-JWT-VC using the legacy 'attestation_legal_category' claim name must still be detected as an EAA type" );
+    }
+
+    @Test
+    void shouldDetectSdJwtVcInFlattenedJsonSerialization() throws Exception
+    {
+        String sdJwtVcJson = SyntheticSdJwtVcFixtures.buildJson( "urn:eudi:eaa:1", "urn:etsi:esi:eaa:eu:qualified" );
+
+        boolean result = eaaChecker.isEAAType( sdJwtVcJson.getBytes( StandardCharsets.UTF_8 ) );
+
+        assertTrue( result, "An SD-JWT-VC in flattened JWS JSON serialization must be detected the same as its compact form" );
+    }
+
+    @Test
+    void shouldNotDetectJwsWithoutDisclosureMarker() throws Exception
+    {
+        String sdJwtVc = SyntheticSdJwtVcFixtures.build( "urn:eudi:eaa:1", null );
+        String withoutTilde = sdJwtVc.substring( 0, sdJwtVc.length() - 1 ); // drop the trailing '~'
+
+        boolean result = eaaChecker.isEAAType( withoutTilde.getBytes( StandardCharsets.UTF_8 ) );
+
+        assertFalse( result, "A plain JWS (header.payload.signature) without the SD-JWT disclosure marker '~' must not be detected as"
+                + " an EAA type" );
+    }
+
+    @Test
+    void shouldNotDetectJAdESSignatureAsEaa()
+    {
+        // structurally JAdES-shaped protected header (ETSI TS 119 182-1: alg + at least one ETSI header, here sigT), but not an
+        // SD-JWT: no trailing '~' disclosure marker
+        String header = "{\"alg\":\"RS256\",\"x5t#S256\":\"dGVzdA\",\"sigT\":\"2026-01-01T00:00:00Z\"}";
+        String payload = "{\"title\":\"not an attestation\"}";
+        String headerB64 = Base64.getUrlEncoder().withoutPadding().encodeToString( header.getBytes( StandardCharsets.UTF_8 ) );
+        String payloadB64 = Base64.getUrlEncoder().withoutPadding().encodeToString( payload.getBytes( StandardCharsets.UTF_8 ) );
+        String jades = headerB64 + "." + payloadB64 + ".signature";
+
+        boolean result = eaaChecker.isEAAType( jades.getBytes( StandardCharsets.UTF_8 ) );
+
+        assertFalse( result, "A JAdES-shaped signature must not be detected as an EAA type" );
+    }
+
+    @Test
     void shouldNotDetectDuplicateJsonKeysWithConflictingValues() throws Exception
     {
         String sdJwtVc = SyntheticSdJwtVcFixtures.build( "urn:eudi:eaa:1", null );

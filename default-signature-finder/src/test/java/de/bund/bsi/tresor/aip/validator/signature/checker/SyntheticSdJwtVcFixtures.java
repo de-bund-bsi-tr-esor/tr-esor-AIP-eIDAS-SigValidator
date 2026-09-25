@@ -62,6 +62,49 @@ final class SyntheticSdJwtVcFixtures
      */
     static String build( String vct, String category ) throws Exception
     {
+        SignedParts parts = sign( vct, "category", category );
+
+        // trailing '~' denotes zero selective disclosures, matching real SD-JWT-VC compact form
+        return parts.headerB64 + "." + parts.payloadB64 + "." + parts.signatureB64 + "~";
+    }
+
+    /**
+     * Builds the same SD-JWT-VC content as {@link #build(String, String)}, but in the flattened JWS JSON serialization
+     * ({@code {"payload":...,"protected":...,"signature":...}}) instead of the compact form.
+     *
+     * @param vct
+     *            the {@code vct} claim
+     * @param category
+     *            the {@code category} claim, or {@code null} to omit it (generic EAA)
+     * @return the flattened JWS JSON serialization of the SD-JWT-VC
+     */
+    static String buildJson( String vct, String category ) throws Exception
+    {
+        SignedParts parts = sign( vct, "category", category );
+
+        return "{\"payload\":\"" + parts.payloadB64 + "\",\"protected\":\"" + parts.headerB64
+                + "\",\"signature\":\"" + parts.signatureB64 + "\"}";
+    }
+
+    /**
+     * Builds a compact SD-JWT-VC like {@link #build(String, String)}, but using the legacy {@code attestation_legal_category} claim
+     * name instead of {@code category}. DSS falls back to this claim when {@code category} is absent.
+     *
+     * @param vct
+     *            the {@code vct} claim
+     * @param category
+     *            the {@code attestation_legal_category} claim value
+     * @return the compact SD-JWT-VC representation, terminated with {@code ~} (zero disclosures)
+     */
+    static String buildWithLegacyCategoryClaim( String vct, String category ) throws Exception
+    {
+        SignedParts parts = sign( vct, "attestation_legal_category", category );
+
+        return parts.headerB64 + "." + parts.payloadB64 + "." + parts.signatureB64 + "~";
+    }
+
+    private static SignedParts sign( String vct, String categoryClaimName, String category ) throws Exception
+    {
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance( "RSA" );
         keyPairGenerator.initialize( 2048 );
         KeyPair keyPair = keyPairGenerator.generateKeyPair();
@@ -77,7 +120,7 @@ final class SyntheticSdJwtVcFixtures
         payload.append( ",\"vct\":\"" ).append( vct ).append( "\"" );
         if ( category != null )
         {
-            payload.append( ",\"category\":\"" ).append( category ).append( "\"" );
+            payload.append( ",\"" ).append( categoryClaimName ).append( "\":\"" ).append( category ).append( "\"" );
         }
         payload.append( ",\"issuing_authority\":\"Test Authority\",\"issuing_country\":\"DE\"" );
         payload.append( ",\"given_name\":\"Erika\",\"family_name\":\"Mustermann\"" );
@@ -92,8 +135,21 @@ final class SyntheticSdJwtVcFixtures
         signature.update( signingInput.getBytes( StandardCharsets.UTF_8 ) );
         String signatureB64 = base64Url( signature.sign() );
 
-        // trailing '~' denotes zero selective disclosures, matching real SD-JWT-VC compact form
-        return signingInput + "." + signatureB64 + "~";
+        return new SignedParts( headerB64, payloadB64, signatureB64 );
+    }
+
+    private static final class SignedParts
+    {
+        private final String headerB64;
+        private final String payloadB64;
+        private final String signatureB64;
+
+        private SignedParts( String headerB64, String payloadB64, String signatureB64 )
+        {
+            this.headerB64 = headerB64;
+            this.payloadB64 = payloadB64;
+            this.signatureB64 = signatureB64;
+        }
     }
 
     private static String base64Url( byte[] data )
