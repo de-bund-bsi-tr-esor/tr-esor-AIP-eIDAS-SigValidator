@@ -76,7 +76,8 @@ public enum EAAChecker
     }
 
     // an EAA has no category claim; a QEAA/PubEAA has one of the two known EAACategory URNs. Any other, spec-deviating category value
-    // is deliberately NOT treated as a match (see PAMP-168 decision against a spec-deviating fallback).
+    // is deliberately not treated as a match, so that detection stays strictly conformant to the category URNs defined in
+    // ETSI TS 119 472-1 instead of guessing at non-standard values.
     boolean isElectronicAttestationOfAttributes( AttestationPayload payload )
     {
         if ( payload == null )

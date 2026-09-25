@@ -102,7 +102,7 @@ class EAACheckerTest
         boolean result = eaaChecker.isEAAType( sdJwtVc.getBytes( StandardCharsets.UTF_8 ) );
 
         assertFalse( result, "A category value matching neither known EAACategory URN must not be treated as an EAA type"
-                + " (deliberate design decision, see PAMP-168 - no fallback for spec-deviating values)" );
+                + " (deliberate design decision - no fallback for spec-deviating values)" );
     }
 
     @Test
