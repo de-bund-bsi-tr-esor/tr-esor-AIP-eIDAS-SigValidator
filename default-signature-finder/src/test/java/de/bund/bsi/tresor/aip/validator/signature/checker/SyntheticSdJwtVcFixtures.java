@@ -1,5 +1,5 @@
 /*-
- * Copyright (c) 2020
+ * Copyright (c) 2026
  * Federal Office for Information Security (BSI),
  * Godesberger Allee 185-189,
  * 53175 Bonn, Germany,
