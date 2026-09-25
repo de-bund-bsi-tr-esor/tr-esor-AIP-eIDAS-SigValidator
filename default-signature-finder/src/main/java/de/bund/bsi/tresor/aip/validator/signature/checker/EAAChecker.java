@@ -60,7 +60,7 @@ public enum EAAChecker
         }
         catch ( Exception e )
         {
-            // not an eaa type
+            ModuleLogger.verbose( "data could not be analyzed as an eaa-type", e );
         }
 
         if ( !isEAA )
