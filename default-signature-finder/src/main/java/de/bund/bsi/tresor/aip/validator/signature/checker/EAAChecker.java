@@ -77,6 +77,12 @@ public enum EAAChecker
                     .map( Attestation::getPayload )
                     .anyMatch( this::isElectronicAttestationOfAttributes );
         }
+        catch ( UnsupportedOperationException e )
+        {
+            // expected for every non-attestation document (e.g. PAdES/CAdES/XAdES/ASiC/JAdES); not logged with a stack trace to avoid
+            // flooding verbose logs on every non-EAA signature check
+            ModuleLogger.verbose( "data is not a recognized attestation format: " + e.getMessage() );
+        }
         catch ( Exception e )
         {
             ModuleLogger.verbose( "data could not be analyzed as an eaa-type", e );
