@@ -47,6 +47,27 @@ import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
  */
 final class SyntheticSdJwtVcFixtures
 {
+    // generated once and reused across all fixtures: the key/certificate identity is irrelevant to EAAChecker's structural detection,
+    // and RSA-2048 key generation is comparatively slow to repeat per test
+    private static final KeyPair    KEY_PAIR;
+    private static final String     CERTIFICATE_B64;
+
+    static
+    {
+        try
+        {
+            KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance( "RSA" );
+            keyPairGenerator.initialize( 2048 );
+            KEY_PAIR = keyPairGenerator.generateKeyPair();
+            X509Certificate certificate = selfSignedCertificate( KEY_PAIR );
+            CERTIFICATE_B64 = Base64.getEncoder().encodeToString( certificate.getEncoded() );
+        }
+        catch ( Exception e )
+        {
+            throw new ExceptionInInitializerError( e );
+        }
+    }
+
     private SyntheticSdJwtVcFixtures()
     {
     }
@@ -105,13 +126,7 @@ final class SyntheticSdJwtVcFixtures
 
     private static SignedParts sign( String vct, String categoryClaimName, String category ) throws Exception
     {
-        KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance( "RSA" );
-        keyPairGenerator.initialize( 2048 );
-        KeyPair keyPair = keyPairGenerator.generateKeyPair();
-        X509Certificate certificate = selfSignedCertificate( keyPair );
-        String certificateB64 = Base64.getEncoder().encodeToString( certificate.getEncoded() );
-
-        String header = "{\"alg\":\"RS256\",\"typ\":\"dc+sd-jwt\",\"x5c\":[\"" + certificateB64 + "\"]}";
+        String header = "{\"alg\":\"RS256\",\"typ\":\"dc+sd-jwt\",\"x5c\":[\"" + CERTIFICATE_B64 + "\"]}";
 
         StringBuilder payload = new StringBuilder();
         payload.append( "{\"iss\":\"https://issuer.example.test\"" );
@@ -131,7 +146,7 @@ final class SyntheticSdJwtVcFixtures
         String signingInput = headerB64 + "." + payloadB64;
 
         Signature signature = Signature.getInstance( "SHA256withRSA" );
-        signature.initSign( keyPair.getPrivate() );
+        signature.initSign( KEY_PAIR.getPrivate() );
         signature.update( signingInput.getBytes( StandardCharsets.UTF_8 ) );
         String signatureB64 = base64Url( signature.sign() );
 
