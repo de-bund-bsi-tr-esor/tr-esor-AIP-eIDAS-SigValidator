@@ -102,10 +102,20 @@ class JAdESCheckerTest
     void shouldNotDetectJsonAsJades()
     {
         byte[] json = "{ \"title\": \"Hello World!\" }".getBytes( StandardCharsets.UTF_8 );
-        
+
         boolean result = jAdESChecker.isJAdES( json );
-        
+
         assertFalse( result, "Plain JSON should not be detected as JAdES." );
+    }
+
+    @Test
+    void shouldNotDetectSdJwtVcAsJades() throws Exception
+    {
+        String sdJwtVc = SyntheticSdJwtVcFixtures.build( "urn:eudi:eaa:1", "urn:etsi:esi:eaa:eu:qualified" );
+
+        boolean result = jAdESChecker.isJAdES( sdJwtVc.getBytes( StandardCharsets.UTF_8 ) );
+
+        assertFalse( result, "An SD-JWT-VC must not be detected as JAdES, independent of what makes JAdES detection fail for it." );
     }
 
 }

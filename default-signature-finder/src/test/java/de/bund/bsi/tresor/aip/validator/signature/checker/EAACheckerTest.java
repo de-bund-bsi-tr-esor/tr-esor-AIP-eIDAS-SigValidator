@@ -106,6 +106,17 @@ class EAACheckerTest
     }
 
     @Test
+    void shouldNotDetectEmptyStringCategoryValue() throws Exception
+    {
+        String sdJwtVc = SyntheticSdJwtVcFixtures.build( "urn:eudi:eaa:1", "" );
+
+        boolean result = eaaChecker.isEAAType( sdJwtVc.getBytes( StandardCharsets.UTF_8 ) );
+
+        assertFalse( result, "An empty category value is not treated as missing (DSS' isNullOrEmpty() only checks for null), so it"
+                + " must not be classified as any EAA type, not even a plain EAA" );
+    }
+
+    @Test
     void shouldDetectQeaaByLegacyAttestationLegalCategoryClaim() throws Exception
     {
         String sdJwtVc = SyntheticSdJwtVcFixtures.buildWithLegacyCategoryClaim( "urn:eudi:eaa:1", "urn:etsi:esi:eaa:eu:qualified" );
