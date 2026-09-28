@@ -28,23 +28,28 @@ import java.util.function.Supplier;
 import de.bund.bsi.tr_esor.xaip.DataObjectType;
 import de.bund.bsi.tr_esor.xaip.MetaDataObjectType;
 import de.bund.bsi.tresor.aip.validator.api.control.AIPUtil;
-import de.bund.bsi.tresor.aip.validator.signature.checker.*;
+import de.bund.bsi.tresor.aip.validator.signature.checker.ASiCChecker;
+import de.bund.bsi.tresor.aip.validator.signature.checker.CAdESChecker;
+import de.bund.bsi.tresor.aip.validator.signature.checker.EAAChecker;
+import de.bund.bsi.tresor.aip.validator.signature.checker.JAdESChecker;
+import de.bund.bsi.tresor.aip.validator.signature.checker.PAdESChecker;
+import de.bund.bsi.tresor.aip.validator.signature.checker.XAdESChecker;
 import de.bund.bsi.tresor.aip.validator.signature.entity.FinderResult;
 import de.bund.bsi.tresor.aip.validator.signature.entity.SignaturePresence;
 
 /**
  * This class is exposing methods which are being used to analyze dataObjects
- * 
+ *
  * @author wolffs
  */
 public class DataAnalyzer
 {
     /**
      * Analyzing if the provided document data contains a signature. Possible lxaipContent is being ignored in this check
-     * 
+     *
      * @param <T>
      *            type of the dataContainer in the finderResult
-     *            
+     *
      * @param dataObject
      *            the dataObject which is being related to the document
      * @param document
@@ -59,7 +64,7 @@ public class DataAnalyzer
     
     /**
      * Analyzing if the dataObject contains any signature
-     * 
+     *
      * @param dataObject
      *            the dataObject
      * @return the finderResult
@@ -75,7 +80,7 @@ public class DataAnalyzer
     
     /**
      * Analyzing if the metaDataObject contains any signature
-     * 
+     *
      * @param metaDataObject
      *            the metaDataObject
      * @return the finderResult
@@ -91,10 +96,10 @@ public class DataAnalyzer
     
     /**
      * Analyzing if the dataObject contains any type of a signature
-     * 
+     *
      * @param <T>
      *            dataContainer type of the finderResults
-     *            
+     *
      * @param dataObject
      *            the dataObject to analyze
      * @param binData
@@ -111,10 +116,10 @@ public class DataAnalyzer
     
     /**
      * Analyzing if the binary data contains a PAdES or CAdES signature
-     * 
+     *
      * @param <T>
      *            dataContainer type of the finderResults
-     *            
+     *
      * @param dataObject
      *            the dataObject related to the data
      * @param data
@@ -127,18 +132,19 @@ public class DataAnalyzer
         boolean isCAdES = CAdESChecker.INSTANCE.isCAdES( data );
         boolean isASiC = ASiCChecker.INSTANCE.isASiC( data );
         boolean isJades = JAdESChecker.INSTANCE.isJAdES( data );
+        boolean isEAA = EAAChecker.INSTANCE.isEAAType( data );
         
-        SignaturePresence presence = SignaturePresence.fromBoolean( isPAdES || isCAdES || isASiC || isJades );
+        SignaturePresence presence = SignaturePresence.fromBoolean( isPAdES || isCAdES || isASiC || isJades || isEAA );
         
         return new FinderResult<T>( dataObject, presence, new ByteArrayInputStream( data ) );
     }
     
     /**
      * Analyzing if the xml data contains a XAdES signature
-     * 
+     *
      * @param <T>
      *            dataContainer type of the finderResults
-     *            
+     *
      * @param dataObject
      *            the dataObject related to the data
      * @param data
@@ -162,9 +168,9 @@ public class DataAnalyzer
                     boolean isXAdES = XAdESChecker.INSTANCE.isXAdES( d );
                     boolean isASiC = ASiCChecker.INSTANCE.isASiC( d );
                     boolean isJAdES = JAdESChecker.INSTANCE.isJAdES( d );
-                    
+
                     SignaturePresence presence = SignaturePresence.fromBoolean( isPAdES || isCAdES || isASiC || isXAdES || isJAdES );
-                    
+
                     return new FinderResult<T>( dataObject, presence, new ByteArrayInputStream( data ) );
                 } )
                 .orElseGet( normalCheck ) : normalCheck.get();
