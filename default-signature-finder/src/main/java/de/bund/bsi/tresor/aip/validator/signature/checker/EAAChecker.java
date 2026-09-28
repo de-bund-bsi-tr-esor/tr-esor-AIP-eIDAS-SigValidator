@@ -34,7 +34,7 @@ import eu.europa.esig.dss.spi.validation.analyzer.attestation.AttestationDocumen
 
 /**
  * Identifies QEAA, EAA and PubEAA in SD-JWT-VC or mdoc/CBOR representation, delegating the parsing and {@code category} claim resolution
- * to esig-dss (dss-sd-jwt/dss-mdoc, format auto-detected via the {@code AttestationDocumentValidatorFactory} SPI).
+ * to esig-dss (dss-sd-jwt/dss-mdoc, format auto-detected via the {@code AttestationDocumentAnalyzerFactory} SPI).
  *
  * <p>
  * Behaviour inherited from the underlying DSS classification, worth keeping in mind:
@@ -50,7 +50,7 @@ import eu.europa.esig.dss.spi.validation.analyzer.attestation.AttestationDocumen
  * EAA.</li>
  * <li>a {@code category} value that is a non-empty string but not one of the two defined {@link EAACategory} URNs is treated as
  * "not an EAA type" here. DSS's own qualification process has a distinct {@code UNKNOWN} outcome for this case; this checker does not
- * expose that distinction and simply rejects it, which is the intended behaviour for this ticket's detection scope (no
+ * expose that distinction and simply rejects it, which is the intended behaviour for this checker's detection scope (no
  * spec-deviating-value fallback).</li>
  * <li>mdoc/CBOR attestations are only recognized in their raw CBOR form, not base64-encoded.</li>
  * </ul>
