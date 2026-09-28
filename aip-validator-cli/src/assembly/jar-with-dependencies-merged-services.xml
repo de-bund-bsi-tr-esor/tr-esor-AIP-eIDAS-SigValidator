@@ -8,11 +8,11 @@
     <includeBaseDirectory>false</includeBaseDirectory>
     <!--
         Same effect as the built-in "jar-with-dependencies" descriptorRef, but with a
-        containerDescriptorHandler for META-INF/services: several esig-dss modules
-        (dss-sd-jwt, dss-mdoc) register a provider for the same
-        eu.europa.esig.dss.attestation.common.validation.AttestationDocumentValidatorFactory
-        SPI file. The built-in descriptorRef unpacks dependencies with a plain file
-        overwrite, so only the last-copied module's registration survives; this handler
+        containerDescriptorHandler for META-INF/services: esig-dss modules can register a
+        provider for the same
+        eu.europa.esig.dss.spi.validation.analyzer.attestation.AttestationDocumentAnalyzerFactory
+        SPI file (e.g. dss-sd-jwt). The built-in descriptorRef unpacks dependencies with a plain
+        file overwrite, so only the last-copied module's registration would survive; this handler
         concatenates same-named META-INF/services files instead.
     -->
     <containerDescriptorHandlers>

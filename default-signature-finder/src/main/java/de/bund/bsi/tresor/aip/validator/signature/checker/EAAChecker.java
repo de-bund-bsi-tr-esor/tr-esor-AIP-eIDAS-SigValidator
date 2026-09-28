@@ -33,14 +33,14 @@ import eu.europa.esig.dss.spi.attestation.AttestationPayload;
 import eu.europa.esig.dss.spi.validation.analyzer.attestation.AttestationDocumentAnalyzer;
 
 /**
- * Identifies QEAA, EAA and PubEAA in SD-JWT-VC or mdoc/CBOR representation, delegating the parsing and {@code category} claim resolution
- * to esig-dss (dss-sd-jwt/dss-mdoc, format auto-detected via the {@code AttestationDocumentAnalyzerFactory} SPI).
+ * Identifies QEAA, EAA and PubEAA in SD-JWT-VC representation, delegating the parsing and {@code category} claim resolution to
+ * esig-dss (dss-sd-jwt, format auto-detected via the {@code AttestationDocumentAnalyzerFactory} SPI).
  *
  * <p>
  * Behaviour inherited from the underlying DSS classification, worth keeping in mind:
  * </p>
  * <ul>
- * <li>every SD-JWT/mdoc structurally recognized by DSS as an attestation is treated as an EAA candidate; the {@code vct}/{@code typ}
+ * <li>every SD-JWT structurally recognized by DSS as an attestation is treated as an EAA candidate; the {@code vct}/{@code typ}
  * claims are not inspected here.</li>
  * <li>a {@code category} claim that is present but not a string, or that DSS could not resolve, is treated the same as a missing
  * claim, i.e. as a plain EAA.</li>
@@ -52,7 +52,6 @@ import eu.europa.esig.dss.spi.validation.analyzer.attestation.AttestationDocumen
  * "not an EAA type" here. DSS's own qualification process has a distinct {@code UNKNOWN} outcome for this case; this checker does not
  * expose that distinction and simply rejects it, which is the intended behaviour for this checker's detection scope (no
  * spec-deviating-value fallback).</li>
- * <li>mdoc/CBOR attestations are only recognized in their raw CBOR form, not base64-encoded.</li>
  * </ul>
  */
 public enum EAAChecker
@@ -60,8 +59,7 @@ public enum EAAChecker
     INSTANCE;
 
     /**
-     * Checking if the provided data is an electronic attestation of attributes (EAA, QEAA or PubEAA) in SD-JWT-VC or mdoc/CBOR
-     * representation
+     * Checking if the provided data is an electronic attestation of attributes (EAA, QEAA or PubEAA) in SD-JWT-VC representation
      *
      * @param data
      *            the data to check

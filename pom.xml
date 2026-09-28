@@ -169,11 +169,6 @@
 				<artifactId>dss-sd-jwt</artifactId>
 				<version>${dss.lib.version}</version>
 			</dependency>
-			<dependency>
-				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-				<artifactId>dss-mdoc</artifactId>
-				<version>${dss.lib.version}</version>
-			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
